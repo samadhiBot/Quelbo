@@ -62,13 +62,21 @@ final class SyntaxTests: XCTestCase {
         )
     }
 
+    func testAtomThatLooksLikeNumber() {
+        let input = "0?"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .atom("isZero")
+        )
+    }
+
     // MARK: - Bools
 
     func testTrue() {
         let input = "T"
         XCTAssertNoDifference(
             try parser.parse(input),
-            .bool(true)
+            .atom("T") // Must handle specially when boolean true is needed
         )
     }
 
@@ -240,8 +248,8 @@ final class SyntaxTests: XCTestCase {
             try parser.parse(input),
             .string(
                 """
-                This string|
-                spans multiple|
+                This string
+                spans multiple
                 lines
                 """
             )

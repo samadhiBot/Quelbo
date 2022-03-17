@@ -87,7 +87,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/sessions/Samadhibot/Zork/Resources/ZilZork/"
+            argument = "/Users/sessions/Samadhibot/Zork/Resources/ZilZork/1actions.zil"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

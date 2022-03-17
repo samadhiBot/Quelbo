@@ -7,30 +7,8 @@
 
 import Parsing
 
-/// A ZIL syntax parser.
+/// A recursive ZIL syntax parser.
 struct Syntax {
-
-    /// The set of tokens to be parsed from ZIL source code.
-    indirect enum Token: Equatable {
-        case atom(String)
-        case bool(Bool)
-        // case byte(Int8)
-        // case character(Character)
-        case commented(Self)
-        case decimal(Int)
-        case form([Self])
-        // case global(Self)
-        // case hashed(Self)
-        case list([Self])
-        // case local(Self)
-        // case macro(Self)
-        case quoted(Self)
-        // case segment(Self)
-        case string(String)
-        // case table([Self])
-        // case vector([Self])
-    }
-
     var parser: AnyParser<Substring.UTF8View, Token>
 
     init() {
@@ -59,6 +37,11 @@ struct Syntax {
                     .init(ascii: ")"),
                 ].contains(element)
             }.map { String(Substring($0)) }
+        }
+
+        let atomOddities = OneOf {
+            "0?".utf8.map { "isZero" }
+            "1?".utf8.map { "isOne" }
         }
 
         let boolFalse = Parse {
@@ -99,7 +82,7 @@ struct Syntax {
             } element: {
                 OneOf {
                     Prefix(1...) { $0 != .init(ascii: "\"") && $0 != .init(ascii: "\\") }
-                        .map { String(Substring($0)) }
+                        .map { String(Substring($0)).translateMultiline }
                     Parse {
                         "\\".utf8
                         OneOf {
@@ -128,8 +111,9 @@ struct Syntax {
                 form.map(Token.form)
                 list.map(Token.list)
                 string.map(Token.string)
+                atomOddities.map(Token.atom)
                 Int.parser().map(Token.decimal)
-                atom.map { $0 == "T" ? Token.bool(true) : Token.atom($0) }
+                atom.map(Token.atom)
             }
             Skip { Whitespace() }
         }

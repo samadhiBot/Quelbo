@@ -1,5 +1,5 @@
 //
-//  Game.swift
+//  Game+Parsing.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/7/22.
@@ -7,10 +7,7 @@
 
 import Parsing
 
-struct Game {
-    let parser: AnyParser<Substring.UTF8View, Array<Syntax.Token>>
-    var tokens: [Syntax.Token] = []
-
+extension Game {
     init() {
         let syntax = Syntax().parser
 

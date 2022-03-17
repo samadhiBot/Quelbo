@@ -28,6 +28,12 @@ struct Quelbo: ParsableCommand {
         }
 
         Pretty.prettyPrint(game.tokens)
+
+        print(try zilEmulationFile())
+
+        try game.process()
+
+        print(game.output)
     }
 }
 
@@ -38,5 +44,12 @@ private extension Quelbo {
             return [file]
         }
         return folder.files.map { $0 }
+    }
+
+    func zilEmulationFile() throws -> String {
+        let file = try Files.Folder.current.file(
+            at: "Sources/quelbo/Processing/Emulation.swift"
+        )
+        return try file.readAsString()
     }
 }
