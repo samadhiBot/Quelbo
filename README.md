@@ -2,18 +2,30 @@
 
 > Quelbo: Transmute coconuts into gold
 
-The goal of Quelbo is to translate [ZIL](https://www.ifwiki.org/ZIL) (Zork Implementation Language) into Swift. An initial phase uses Point-Free's [swift-parsing](https://github.com/pointfreeco/swift-parsing) library to recursively parse ZIL into a set of Swift enumerated tokens. A second phase processes the tokens into Swift code.
+Quelbo is a commandline tool that translates [ZIL](https://www.ifwiki.org/ZIL) (Zork Implementation Language) into Swift. Translation consists of two phases:
 
-Quelbo is part of a larger effort to create a Swift version of Zork with a CoreML-based natural language parser in place of Infocom's original parser. Details can be found at the [Nitfol](https://github.com/samadhiBot/Nitfol) project.
+An initial phase uses the Point-Free [swift-parsing](https://github.com/pointfreeco/swift-parsing) library to recursively parse ZIL into a set of enumerated Swift tokens.
 
-For the intrepid adventurer who wants to translate ZIL into a language other than Swift, it should be straightforward to fork Quelbo and alter the processing phase to output your language of choice.
+A second phase processes the tokens into Swift code. The [Swil](https://github.com/samadhiBot/Swil) library provides Swift implementations of any [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) necessary for the processed code to compile and run.
+
+Quelbo is part of a longer term experiment to create Swift versions of Zork and other ZIL titles, and replace the original ZIL parser with a CoreML-based natural language parser. Details can be found at the [Nitfol](https://github.com/samadhiBot/Nitfol) project.
 
 ## Usage
 
 ```bash
-swift run quelbo path/to/zil/file(s)
+ॐ  swift run quelbo -h
+
+USAGE: quelbo <path> [--print-tokens] [--output <output>]
+
+ARGUMENTS:
+  <path>                  The path to a ZIL file or a directory containing one or more ZIL files.
+
+OPTIONS:
+  -p, --print-tokens      Whether to print the ZIL tokens derived in the parsing phase.
+  -o, --output <output>   The path to an output directory. If unspecified, Quelbo prints results.
+  -h, --help              Show help information.
 ```
 
 ## Progress
 
-Currently Quelbo can successfully parse the ZIL source files at [historicalsource/zork1](https://github.com/historicalsource/zork1) into an incomplete set of tokens. Processing work is in progress, and parsing will be enhanced as needed to support it.
+Currently Quelbo can parse and naïvely process the ZIL source files at [historicalsource/zork1](https://github.com/historicalsource/zork1). While the translated Swift code does not yet compile, work is ongoing in [Quelbo](https://github.com/samadhiBot/Quelbo) and [Swil](https://github.com/samadhiBot/Swil) to fine tune ZIL->Swift processing, and provide Swift implementations of [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) as necessary.

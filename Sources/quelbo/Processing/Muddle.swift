@@ -55,7 +55,8 @@ extension Muddle {
         case .insertFile:
             throw Err.unimplemented("insertFile \(tokens)")
         case .object:
-            throw Err.unimplemented("object \(tokens)")
+            var object = Object(tokens)
+            return try object.process()
         case .or:
             throw Err.unimplemented("or \(tokens)")
         case .princ:
@@ -63,7 +64,8 @@ extension Muddle {
         case .propdef:
             throw Err.unimplemented("propdef \(tokens)")
         case .room:
-            throw Err.unimplemented("room \(tokens)")
+            var room = Room(tokens)
+            return try room.process()
         case .routine:
             var routine = Routine(tokens)
             return try routine.process()

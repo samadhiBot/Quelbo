@@ -11,12 +11,16 @@ extension Muddle {
     enum DefType: Equatable {
         case directions
         case global
+        case object
+        case room
         case routine
     }
 
     enum DataType: String {
         case bool   = "Bool"
         case int    = "Int"
+        case object = "Object"
+        case room   = "Room"
         case string = "String"
         case table  = "Table"
     }

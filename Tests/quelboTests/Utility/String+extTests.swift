@@ -10,6 +10,78 @@ import XCTest
 @testable import quelbo
 
 final class StringExtTests: XCTestCase {
+    func testConvertToMultiline() {
+        XCTAssertEqual(
+            """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """.convertToMultiline(),
+            #"""
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
+            sed do eiusmod tempor incididunt ut labore et dolore magna \
+            aliqua. Ut enim ad minim veniam, quis nostrud exercitation \
+            ullamco laboris nisi ut aliquip ex ea commodo consequat. \
+            Duis aute irure dolor in reprehenderit in voluptate velit \
+            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint \
+            occaecat cupidatat non proident, sunt in culpa qui officia \
+            deserunt mollit anim id est laborum.
+            """#
+        )
+    }
+
+    func testConvertToMultilineShortString() {
+        XCTAssertEqual("hello".convertToMultiline(), "hello")
+    }
+
+    func testConvertToMultilineAlreadyMultiline() {
+        XCTAssertEqual(
+            """
+            I'm already
+
+            multiline!
+            """.convertToMultiline(),
+            """
+            I'm already
+
+            multiline!
+            """
+        )
+    }
+
+    func testConvertToMultilineCustomLimit() {
+        XCTAssertEqual(
+            """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            """.convertToMultiline(limit: 20),
+            #"""
+            Lorem ipsum dolor \
+            sit amet, \
+            consectetur \
+            adipiscing elit, \
+            sed do eiusmod \
+            tempor incididunt \
+            ut labore et dolore \
+            magna aliqua.
+            """#
+        )
+    }
+
+    func testConvertToMultilineHandleTooLongWord() {
+        XCTAssertEqual(
+            """
+            Lorem ipsum dolor sit amet, LoremIpsumDolorSitAmetConsecteturAdipiscingElit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            """.convertToMultiline(limit: 20),
+            #"""
+            Lorem ipsum dolor \
+            sit amet, \
+            LoremIpsumDolorSitAmetConsecteturAdipiscingElit, \
+            sed do eiusmod \
+            tempor incididunt \
+            ut labore et dolore \
+            magna aliqua.
+            """#
+        )
+    }
+
     func testIndented() {
         XCTAssertEqual("hello".indented(0), "hello")
 

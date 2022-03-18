@@ -40,17 +40,10 @@ extension Directions {
 fileprivate extension Directions {
     func directions() throws -> String {
         try tokens.map { (token: Token) -> String in
-            guard case .atom(let direction) = token else {
+            guard case .atom(let zilName) = token else {
                 throw Err.unexpectedTokenType
             }
-            switch direction {
-            case "NE": return "case northEast = \"NE\""
-            case "NW": return "case northWest = \"NW\""
-            case "SE": return "case southEast = \"SE\""
-            case "SW": return "case southWest = \"SW\""
-            case "IN": return "case `in` = \"IN\""
-            default:   return "case \(direction.lowerCamelCase) = \"\(direction)\""
-            }
+            return Direction.case(for: zilName)
         }
         .joined(separator: "\n")
     }

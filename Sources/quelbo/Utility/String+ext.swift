@@ -8,6 +8,39 @@
 import Foundation
 
 extension String {
+    /// Returns the `String` split into multiple lines if its length exceeds the specified `limit`.
+    ///
+    /// - Parameter limit: The maximum line length before splitting into multiple lines.
+    ///
+    /// - Returns: The converted `String`.
+    func convertToMultiline(limit: Int = 60) -> String {
+        guard count > limit && !contains("\n") else { return self }
+
+        var multiline: [String] = []
+        var line = ""
+        var words = split(separator: " ")
+
+        while !words.isEmpty {
+            let word = words.removeFirst()
+
+            if line.count + word.count < limit {
+                line.append("\(word) ")
+            } else {
+                let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+                if !trimmedLine.isEmpty {
+                    multiline.append(trimmedLine)
+                }
+                line = "\(word) "
+            }
+        }
+        let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+        if !trimmedLine.isEmpty {
+            multiline.append(trimmedLine)
+        }
+
+        return multiline.joined(separator: " \\\n")
+    }
+
     /// Returns the `String` with each line indented four spaces per `indentLevel`.
     ///
     /// - Parameter indentLevel: The number of levels to indent the `String`.
@@ -37,14 +70,15 @@ extension String {
     /// 
     /// - Returns: The quoted `String`.
     func quoted(_ indentLevel: Int = 0) -> String {
-        if contains("\n") {
+        let text = convertToMultiline()
+        if text.contains("\n") {
             return """
                 \"""
-                \(self.indented(1))
+                \(text.indented(1))
                     \"""
                 """
         } else {
-            return "\"\(self)\""
+            return "\"\(text)\""
         }
     }
 

@@ -33,6 +33,16 @@ extension Game {
             .map { $0.code }
             .joined(separator: "\n\n")
 
+        let objects = Self.objects
+            .sorted { $0.name < $1.name }
+            .map { $0.code }
+            .joined(separator: "\n\n")
+
+        let rooms = Self.rooms
+            .sorted { $0.name < $1.name }
+            .map { $0.code }
+            .joined(separator: "\n\n")
+
         let routines = Self.routines
             .sorted { $0.name < $1.name }
             .map { $0.code }
@@ -52,6 +62,15 @@ extension Game {
         // Routines
 
         \(routines)
+
+        // Objects
+
+        \(objects)
+
+        // Rooms
+
+        \(rooms)
+        
         """
     }
 }
@@ -84,6 +103,14 @@ extension Game {
 
     static var globals: [Muddle.Definition] {
         definitions.filter { $0.defType == .global }
+    }
+
+    static var objects: [Muddle.Definition] {
+        definitions.filter { $0.defType == .object }
+    }
+
+    static var rooms: [Muddle.Definition] {
+        definitions.filter { $0.defType == .room }
     }
 
     static var routines: [Muddle.Definition] {
