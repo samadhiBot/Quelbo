@@ -34,7 +34,7 @@ final class ZilConditionTests: XCTestCase {
 
         XCTAssertNoDifference(zil, """
             if isInfested(getb(t, 0)) {
-                ZIL.set(&ng, to: 1)
+                set(&ng, to: 1)
                 break
             }
             """

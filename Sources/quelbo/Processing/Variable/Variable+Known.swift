@@ -44,8 +44,8 @@ extension Variable {
             case .indirectObject:  return "Object"
             case .longDescription: return "String"
             case .openText:        return "String"
-            case .rarg:            return "RoomArg"
-            case .table:           return "ZIL.Table"
+            case .rarg:            return "Int"
+            case .table:           return "Table"
             case .takeValue:       return "Int"
             }
         }

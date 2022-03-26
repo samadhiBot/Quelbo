@@ -26,17 +26,18 @@ final class GlobalTable: XCTestCase {
                 .atom("FOREST-1"),
             ])
         ], isMutable: true)
+
         XCTAssertNoDifference(
             try global.process().code,
             """
-            let foo = ZIL.Table(
+            let foo: [TableElement] = [
                 .atom("FOREST-1"),
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
                 .atom("PATH"),
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
-            )
+            ]
             """
         )
     }
@@ -72,32 +73,33 @@ final class GlobalTable: XCTestCase {
                 ])
             ])
         ], isMutable: true)
+
         XCTAssertNoDifference(
             try global.process().code,
             """
-            var villains = ZIL.Table(
-                .table(
+            var villains: [TableElement] = [
+                .table([
                     .atom("TROLL"),
                     .atom("SWORD"),
                     .decimal(1),
                     .decimal(0),
                     .atom("TROLL-MELEE"),
-                ),
-                .table(
+                ]),
+                .table([
                     .atom("THIEF"),
                     .atom("KNIFE"),
                     .decimal(1),
                     .decimal(0),
                     .atom("THIEF-MELEE"),
-                ),
-                .table(
+                ]),
+                .table([
                     .atom("CYCLOPS"),
                     .bool(false),
                     .decimal(0),
                     .decimal(0),
                     .atom("CYCLOPS-MELEE"),
-                ),
-            )
+                ]),
+            ]
             """
         )
     }
@@ -126,14 +128,15 @@ final class GlobalTable: XCTestCase {
                 )
             ])
         ], isMutable: true)
+
         XCTAssertNoDifference(
             try global.process().code,
             """
-            var def1Res = ZIL.Table(
+            var def1Res: [TableElement] = [
                 .atom("DEF1"),
                 .decimal(0),
                 .decimal(0),
-            )
+            ]
             """
         )
     }

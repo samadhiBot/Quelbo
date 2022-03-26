@@ -30,7 +30,8 @@ final class DirectionsTests: XCTestCase {
         XCTAssertNoDifference(
             try directions.process().code,
             """
-            enum Directions: String {
+            /// The set of possible movement directions.
+            public enum Direction: String {
                 case north = "NORTH"
                 case east = "EAST"
                 case west = "WEST"

@@ -10,13 +10,35 @@ import XCTest
 @testable import quelbo
 
 final class ZilComparisonTests: XCTestCase {
-    func testCompareAtomWithBool() throws {
+    func testCompareAtomWithDecimel() throws {
         let zil = try Zil("L?")?.process([
             .atom(".ANSWER"),
             .decimal(43),
         ])
 
         XCTAssertNoDifference(zil, "answer < 43")
+    }
+
+    func testCompareAtomEqualToMultipleValues() throws {
+        let zil = try Zil("EQUAL?")?.process([
+            .atom(".ANSWER"),
+            .decimal(41),
+            .decimal(42),
+            .decimal(43),
+        ])
+
+        XCTAssertNoDifference(zil, "[41, 42, 43].contains { answer == $0 }")
+    }
+
+    func testCompareAtomNotEqualToMultipleValues() throws {
+        let zil = try Zil("N==?")?.process([
+            .atom(".ANSWER"),
+            .decimal(41),
+            .decimal(42),
+            .decimal(43),
+        ])
+
+        XCTAssertNoDifference(zil, "[41, 42, 43].allSatisfy { answer != $0 }")
     }
 
     func testCompareAtomWithForm() throws {
@@ -33,6 +55,6 @@ final class ZilComparisonTests: XCTestCase {
             .decimal(1),
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&n, to: (n - 1)) < 1")
+        XCTAssertNoDifference(zil, "set(&n, to: (n - 1)) < 1")
     }
 }

@@ -44,7 +44,7 @@ extension Global {
                         let nestedTable = try Table(tokens, nestLevel: nestLevel + 1)
                         values.append(nestedTable.definition)
                     default:
-                        fatalError("❌ \(tokens)")
+                        throw Err.unknownType("\(type) \(tokens)")
                     }
                 case .list(let tokens):
                     if tokens == [.atom("PURE")] {
@@ -65,6 +65,7 @@ extension Global {
 extension Global.Table {
     enum Err: Error {
         case missingType
+        case unknownType(String)
     }
 
     var declare: String {
@@ -72,10 +73,19 @@ extension Global.Table {
     }
 
     var definition: String {
-        [
-            "\(nestLevel == 0 ? "ZIL.Table" : ".table")(",
-            "\(values.joined(separator: ",\n")),".indented(1),
-            ")"
-        ].joined(separator: "\n")
+        let elements = "\(values.joined(separator: ",\n")),".indented()
+        if nestLevel == 0 {
+            return """
+                [
+                \(elements)
+                ]
+                """
+        } else {
+            return """
+                .table([
+                \(elements)
+                ])
+                """
+        }
     }
 }

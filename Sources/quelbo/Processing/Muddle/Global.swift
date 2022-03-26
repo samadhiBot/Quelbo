@@ -30,6 +30,7 @@ extension Global {
         case missingValue
         case missingType
         case unconsumedTokens(String)
+        case unknownType(String)
     }
 
     mutating func process() throws -> Muddle.Definition {
@@ -52,14 +53,16 @@ extension Global {
                 name: name,
                 code: "\(declare) \(name): Bool = true",
                 dataType: .bool,
-                defType: .global
+                defType: .global,
+                isMutable: isMutable
             )
         case .bool(let value):
             return .init(
                 name: name,
                 code: "\(declare) \(name): Bool = \(value)",
                 dataType: .bool,
-                defType: .global
+                defType: .global,
+                isMutable: isMutable
             )
         case .commented:
             throw Err.invalidValue("commented: \(token)")
@@ -68,7 +71,8 @@ extension Global {
                 name: name,
                 code: "\(declare) \(name): Int = \(value)",
                 dataType: .int,
-                defType: .global
+                defType: .global,
+                isMutable: isMutable
             )
         case .form(let values):
             return try processForm(name, values)
@@ -81,7 +85,8 @@ extension Global {
                 name: name,
                 code: "\(declare) \(name): String = \(value.quoted())",
                 dataType: .string,
-                defType: .global
+                defType: .global,
+                isMutable: isMutable
             )
         }
     }
@@ -98,16 +103,25 @@ private extension Global {
             throw Err.missingType
         }
         switch type {
+        case "itable":
+            return .init(
+                name: name,
+                code: "var \(name): String = \"\"",
+                dataType: .string,
+                defType: .global,
+                isMutable: isMutable
+            )
         case "ltable", "table":
             let table = try Table(tokens, isMutable: isMutable)
             return .init(
                 name: name,
-                code: "\(table.declare) \(name) = \(table.definition)",
+                code: "\(table.declare) \(name): [TableElement] = \(table.definition)",
                 dataType: .table,
-                defType: .global
+                defType: .global,
+                isMutable: table.isMutable
             )
         default:
-            fatalError("❌ \(formTokens)")
+            throw Err.unknownType("\(type) \(tokens)")
         }
     }
 }

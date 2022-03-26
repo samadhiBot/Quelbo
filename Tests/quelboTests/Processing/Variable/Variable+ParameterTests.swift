@@ -47,22 +47,22 @@ final class VariableParameterTests: XCTestCase {
         let param = try Variable.Parameter(.atom("RARG"), .normal)
         XCTAssertNoDifference(param, .init(
             name: "rarg",
-            type: "RoomArg",
+            type: "Int",
             defaultValue: "",
             context: .normal
         ))
-        XCTAssertNoDifference(param.definition, "rarg: RoomArg")
+        XCTAssertNoDifference(param.definition, "rarg: Int")
     }
 
     func testAtomTBL() throws {
         let param = try Variable.Parameter(.atom("TBL"), .normal)
         XCTAssertNoDifference(param, .init(
             name: "table",
-            type: "ZIL.Table",
+            type: "Table",
             defaultValue: "",
             context: .normal
         ))
-        XCTAssertNoDifference(param.definition, "table: ZIL.Table")
+        XCTAssertNoDifference(param.definition, "table: Table")
     }
 
     func testAtomUnknown() throws {

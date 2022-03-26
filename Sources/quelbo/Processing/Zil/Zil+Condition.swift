@@ -27,13 +27,31 @@ extension Zil.Condition {
     }
 
     mutating func process() throws -> String {
-        try tokens.compactMap { (list: Token) -> Conditional? in
-            guard case .list(var listTokens) = list else {
-                if case .commented = list {
-                    return nil // ignore comments
+        var macroQuoted = false
+
+        return try tokens.compactMap { (list: Token) -> Conditional? in
+            var listTokens: [Token] = []
+
+            switch list {
+            case .atom(let value):
+                if value == "%" || value == "'" {
+                    macroQuoted = true
+                    return nil // skip over macro and quoted annotations
                 }
-                throw Err.unexpectedTokenInList("\(tokens)")
+            case .commented:
+                return nil // ignore comments
+            case .form(var tokens):
+                guard macroQuoted, case .atom("COND") = tokens.shiftAtom() else { break }
+                listTokens = tokens
+            case .list(let tokens):
+                listTokens = tokens
+            default:
+                break
             }
+            if listTokens.isEmpty {
+                throw Err.unexpectedTokenInList("\(list) ❌\(tokens)")
+            }
+            macroQuoted = false
             guard let predicate = listTokens.shift() else {
                 throw Err.missingPredicate("\(tokens)")
             }

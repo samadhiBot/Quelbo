@@ -215,6 +215,76 @@ final class SyntaxTests: XCTestCase {
         )
     }
 
+    func testFormWithMultilineString() {
+        let input = """
+            <ROOM FOYER
+                (DESC "Foyer of the Opera House")
+                (IN ROOMS)
+                (LDESC "You are standing in a spacious hall, splendidly decorated in red
+            and gold, with glittering chandeliers overhead. The entrance from
+            the street is to the north, and there are doorways south and west.")
+                (SOUTH TO BAR)
+                (WEST TO CLOAKROOM)
+                (NORTH SORRY "You've only just arrived, and besides, the weather outside
+            seems to be getting worse.")
+                (FLAGS LIGHTBIT)>
+            """
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .form(
+                [
+                    .atom("ROOM"),
+                    .atom("FOYER"),
+                    .list(
+                        [
+                            .atom("DESC"),
+                            .string("Foyer of the Opera House")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("IN"),
+                            .atom("ROOMS")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("LDESC"),
+                            .string("You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west.")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("SOUTH"),
+                            .atom("TO"),
+                            .atom("BAR")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("WEST"),
+                            .atom("TO"),
+                            .atom("CLOAKROOM")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("NORTH"),
+                            .atom("SORRY"),
+                            .string("You\'ve only just arrived, and besides, the weather outside seems to be getting worse.")
+                        ]
+                    ),
+                    .list(
+                        [
+                            .atom("FLAGS"),
+                            .atom("LIGHTBIT")
+                        ]
+                    )
+                ]
+            )
+        )
+    }
+
     // MARK: - Lists
 
     //(THIS IS A (NESTED LIST (WITH MORE (NESTING))))

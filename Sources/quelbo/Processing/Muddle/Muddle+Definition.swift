@@ -17,18 +17,21 @@ extension Muddle {
     }
 
     enum DataType: String {
-        case bool   = "Bool"
-        case int    = "Int"
-        case object = "Object"
-        case room   = "Room"
-        case string = "String"
-        case table  = "Table"
+        case bool      = "Bool"
+        case direction = "Direction"
+        case int       = "Int"
+        case object    = "Object"
+        case room      = "Room"
+        case string    = "String"
+        case table     = "Table"
+        case void      = "Void"
     }
 
     struct Definition: Equatable {
         let name: String
         let code: String
-        let dataType: DataType?
+        let dataType: DataType
         let defType: DefType
+        let isMutable: Bool
     }
 }

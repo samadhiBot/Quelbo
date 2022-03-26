@@ -61,11 +61,11 @@ final class GlobalTests: XCTestCase {
         XCTAssertNoDifference(
             try global.process().code,
             """
-            var foo = ZIL.Table(
+            var foo: [TableElement] = [
                 .atom("FOREST-1"),
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
-            )
+            ]
             """
         )
     }
@@ -150,11 +150,11 @@ final class GlobalTests: XCTestCase {
         XCTAssertNoDifference(
             try global.process().code,
             """
-            let foo = ZIL.Table(
+            let foo: [TableElement] = [
                 .atom("FOREST-1"),
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
-            )
+            ]
             """
         )
     }

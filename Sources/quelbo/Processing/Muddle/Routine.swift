@@ -37,12 +37,13 @@ extension Routine {
             name: name,
             code: """
                 /// The `\(name)` (\(zilName)) routine.
-                func \(name)(\(parameters.joined(separator: ", "))) {
+                func \(name)(\(parameters.joined(separator: ", "))) -> Bool {
                 \(auxiliaryDefs)\(try codeBlock.process().indented(1))
                 }
                 """,
-            dataType: nil,
-            defType: .routine
+            dataType: .bool,
+            defType: .routine,
+            isMutable: false
         )
     }
 }

@@ -15,6 +15,18 @@ struct Quelbo: ParsableCommand {
     @Argument(help: "The path to a ZIL file or a directory containing one or more ZIL files.")
     var path: String
 
+    @Flag(
+        name: .shortAndLong,
+        help: "Whether to print the ZIL tokens derived in the parsing phase."
+    )
+    var printTokens = false
+
+    @Option(
+        name: .shortAndLong,
+        help: "A target directory path to write results. If unspecified, Quelbo prints results."
+    )
+    var target: String?
+
     func run() throws {
         var game = Game()
 
@@ -27,13 +39,17 @@ struct Quelbo: ParsableCommand {
             try game.parse(zil)
         }
 
-        Pretty.prettyPrint(game.tokens)
-
-        print(try zilEmulationFile())
+        if printTokens {
+            Pretty.prettyPrint(game.tokens)
+        }
 
         try game.process()
 
-        print(game.output)
+        if let target = target {
+            try game.package(path: target)
+        } else {
+            game.print()
+        }
     }
 }
 
@@ -44,12 +60,5 @@ private extension Quelbo {
             return [file]
         }
         return folder.files.map { $0 }
-    }
-
-    func zilEmulationFile() throws -> String {
-        let file = try Files.Folder.current.file(
-            at: "Sources/quelbo/Processing/Emulation.swift"
-        )
-        return try file.readAsString()
     }
 }

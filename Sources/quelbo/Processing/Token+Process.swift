@@ -24,7 +24,12 @@ extension Token {
 
 private extension Token {
     func processAtom(_ value: String) throws -> String {
-        Variable(value).name
+        guard !value.hasPrefix("!\\") else {
+            var character = value
+            character.removeFirst(2)
+            return character.quoted()
+        }
+        return Variable(value).name
     }
 
     func processBool(_ value: Bool) throws -> String {

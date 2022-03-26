@@ -14,31 +14,30 @@ extension String {
     ///
     /// - Returns: The converted `String`.
     func convertToMultiline(limit: Int = 60) -> String {
-        guard count > limit && !contains("\n") else { return self }
+        guard count > limit else { return self }
 
+        let lines = self
+            .replacingOccurrences(of: "\n", with: "__CR__\n")
+            .split(separator: "\n")
         var multiline: [String] = []
-        var line = ""
-        var words = split(separator: " ")
 
-        while !words.isEmpty {
-            let word = words.removeFirst()
-
-            if line.count + word.count < limit {
-                line.append("\(word) ")
-            } else {
-                let trimmedLine = line.trimmingCharacters(in: .whitespaces)
-                if !trimmedLine.isEmpty {
-                    multiline.append(trimmedLine)
+        lines.forEach {
+            var line = ""
+            var words = $0.replacingOccurrences(of: "__CR__", with: "")
+                .rightTrimmed
+                .split(separator: " ")
+            while !words.isEmpty {
+                let word = words.removeFirst()
+                if line.count + word.count < limit {
+                    line = line.isEmpty ? "\(word)" : "\(line) \(word)"
+                } else {
+                    multiline.append("\(line) \\")
+                    line = "\(word)"
                 }
-                line = "\(word) "
             }
+            multiline.append(line)
         }
-        let trimmedLine = line.trimmingCharacters(in: .whitespaces)
-        if !trimmedLine.isEmpty {
-            multiline.append(trimmedLine)
-        }
-
-        return multiline.joined(separator: " \\\n")
+        return multiline.joined(separator: "\n")
     }
 
     /// Returns the `String` with each line indented four spaces per `indentLevel`.
@@ -90,10 +89,18 @@ extension String {
             string.removeFirst()
         }
         if string.hasSuffix("-F") {
-            string.removeLast(2)
-            string.append("-FUNCTION")
-        }
-        if string.hasSuffix("?") {
+            string.removeLast()
+            string.append("FUNC")
+        } else if string.hasSuffix("-FCN") {
+            string.removeLast(3)
+            string.append("FUNC")
+        } else if string.hasSuffix("-FUNCTION") {
+            string.removeLast(8)
+            string.append("FUNC")
+        } else if string.hasSuffix("-R") {
+            string.removeLast()
+            string.append("ROUTINE")
+        } else if string.hasSuffix("?") {
             string.removeLast()
             string = "IS-\(string)"
         }
@@ -102,10 +109,11 @@ extension String {
 
     /// Translates a multiline `String` from ZIL to Swift syntax formatting.
     var translateMultiline: String {
-        self.replacingOccurrences(of: "|\n", with: "__PICR__")
-            .replacingOccurrences(of: "\n", with: " \\\n")
+        self.replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "|\n", with: "__PIPE__")
+            .replacingOccurrences(of: "\n", with: " ")
             .replacingOccurrences(of: "|", with: "\n")
-            .replacingOccurrences(of: "__PICR__", with: "\n")
+            .replacingOccurrences(of: "__PIPE__", with: "\n")
     }
 
     /// Translates a ZIL name `String` from dash-separated ALL-CAPS to camel case with a uppercase
@@ -114,5 +122,16 @@ extension String {
         scrubbed.split(separator: "_")
             .map { $0.capitalized }
             .joined()
+    }
+}
+
+private extension StringProtocol {
+    @inline(__always)
+    var rightTrimmed: Self.SubSequence {
+        var view = self[...]
+        while view.last?.isWhitespace == true {
+            view = view.dropLast()
+        }
+        return view
     }
 }

@@ -218,7 +218,7 @@ final class ZilTests: XCTestCase {
             .atom(",EGYPT-ROOM")
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.move(World.coffin, to: World.egyptRoom)")
+        XCTAssertNoDifference(zil, "move(World.coffin, to: World.egyptRoom)")
     }
 
     func testMoveToComputedDestination() throws {
@@ -234,7 +234,7 @@ final class ZilTests: XCTestCase {
             ])
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.move(f, to: World.aboveGround[random(l)])")
+        XCTAssertNoDifference(zil, "move(f, to: World.aboveGround[random(l)])")
     }
 
     func testMultiply() throws {
@@ -267,6 +267,123 @@ final class ZilTests: XCTestCase {
         XCTAssertNoDifference(zil, "res == World.killed || res == World.sittingDuck")
     }
 
+    func testPrintCharacter() throws {
+        let zil = try Zil("PRINTC")?.process([
+            .decimal(115)
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output("s")
+            """
+        )
+    }
+
+    func testPrintCharacterBangEscaped() throws {
+        let zil = try Zil("PRINTC")?.process([
+            .atom(#"!\s"#)
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output("s")
+            """
+        )
+    }
+
+    func testPrintDescription() throws {
+        let zil = try Zil("PRINTD")?.process([
+            .atom(".OBJ")
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output(object.description)
+            """
+        )
+    }
+
+    func testPrintNumber() throws {
+        let zil = try Zil("PRINTN")?.process([
+            .decimal(42)
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output(42)
+            """
+        )
+    }
+
+    func testPrintNumberForm() throws {
+        let zil = try Zil("PRINTN")?.process([
+            .form([
+                .atom("*"),
+                .decimal(6),
+                .decimal(7),
+            ])
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output(6 * 7)
+            """
+        )
+    }
+
+    func testPrintStringAtom() throws {
+        let zil = try Zil("PRINT")?.process([
+            .atom(".MESSAGE")
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output(message)
+            """
+        )
+    }
+
+    func testPrintStringString() throws {
+        let zil = try Zil("PRINT")?.process([
+            .string("Message")
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output("Message")
+            """
+        )
+    }
+
+    func testPrintStringCR() throws {
+        let zil = try Zil("PRINTR")?.process([
+            .string("No more bottles of beer on the wall!")
+        ])
+
+        XCTAssertNoDifference(
+            zil,
+            """
+            output(
+                "No more bottles of beer on the wall!",
+                withCarriageReturn: true
+            )
+            """
+        )
+    }
+
+    func testPrintTable() throws {
+        XCTAssertThrowsError(
+            try Zil("PRINTF")?.process([])
+        )
+    }
+
     func testProgramBlock() throws {
         let zil = try Zil("PROG")?.process([
             .list([
@@ -294,10 +411,11 @@ final class ZilTests: XCTestCase {
 
     func testPutProperty() throws {
         Game.definitions.append(.init(
-            name: "deadFunction",
+            name: "deadFunc",
             code: "",
-            dataType: nil,
-            defType: .routine
+            dataType: .void,
+            defType: .routine,
+            isMutable: false
         ))
 
         let zil = try Zil("PUTP")?.process([
@@ -306,7 +424,7 @@ final class ZilTests: XCTestCase {
             .atom("DEAD-FUNCTION")
         ])
 
-        XCTAssertNoDifference(zil, "World.winner.action = deadFunction()")
+        XCTAssertNoDifference(zil, "World.winner.action = deadFunc()")
     }
 
     func testPutPropertyString() throws {
@@ -365,7 +483,7 @@ final class ZilTests: XCTestCase {
 
         XCTAssertNoDifference(zil, """
             repeat {
-                if ZIL.set(&n, to: (n - 1)) < 1 {
+                if set(&n, to: (n - 1)) < 1 {
                     break
                 } else {
                     tell(
@@ -396,7 +514,7 @@ final class ZilTests: XCTestCase {
             .bool(true),
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&isRobbed, to: true)")
+        XCTAssertNoDifference(zil, "set(&isRobbed, to: true)")
     }
 
     func testSetVariableCalledT() throws {
@@ -409,7 +527,7 @@ final class ZilTests: XCTestCase {
             ])
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&t, to: getpt(World.here, p))")
+        XCTAssertNoDifference(zil, "set(&t, to: getpt(World.here, p))")
     }
 
     func testSetToLocalVariable() throws {
@@ -418,7 +536,7 @@ final class ZilTests: XCTestCase {
             .atom(".N"),
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&x, to: n)")
+        XCTAssertNoDifference(zil, "set(&x, to: n)")
     }
 
     func testSetToFunctionResult() throws {
@@ -430,7 +548,7 @@ final class ZilTests: XCTestCase {
             ]),
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&n, to: isNext(x))")
+        XCTAssertNoDifference(zil, "set(&n, to: isNext(x))")
     }
 
     func testSetToModifiedSelf() throws {
@@ -443,7 +561,7 @@ final class ZilTests: XCTestCase {
             ])
         ])
 
-        XCTAssertNoDifference(zil, "ZIL.set(&n, to: (n - 1))")
+        XCTAssertNoDifference(zil, "set(&n, to: (n - 1))")
     }
 
     func testSetFlag() throws {
@@ -519,7 +637,8 @@ final class ZilTests: XCTestCase {
         XCTAssertNoDifference(zil, #"""
             tell(
                 """
-                    You hear a scream of anguish as you violate the robber's hideaway. \
+                    You hear a scream of anguish as you violate the robber's \
+                    hideaway. \
                     Using passages unknown to you, he rushes to its defense."),
                     """,
                 carriageReturn

@@ -20,8 +20,8 @@ final class RoutineTests: XCTestCase {
         XCTAssertNoDifference(
             try routine.process().code,
             """
-            /// The `bagOfCoinsFunction` (BAG-OF-COINS-F) routine.
-            func bagOfCoinsFunction() {
+            /// The `bagOfCoinsFunc` (BAG-OF-COINS-F) routine.
+            func bagOfCoinsFunc() -> Bool {
                 // noop
             }
             """
@@ -41,7 +41,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `westHouse` (WEST-HOUSE) routine.
-            func westHouse(rarg: RoomArg) {
+            func westHouse(rarg: Int) -> Bool {
                 // noop
             }
             """
@@ -64,7 +64,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `isWinning` (WINNING?) routine.
-            func isWinning(v: Unknown) {
+            func isWinning(v: Unknown) -> Bool {
                 var vs: Unknown
                 var ps: Unknown
 
@@ -93,7 +93,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `thiefVsAdventurer` (THIEF-VS-ADVENTURER) routine.
-            func thiefVsAdventurer(isHere: Bool) {
+            func thiefVsAdventurer(isHere: Bool) -> Bool {
                 var isRobbed: Bool
                 var isWinnerRobbed: Bool = false
 
@@ -117,7 +117,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `batD` (BAT-D) routine.
-            func batD(foo: Unknown? = nil) {
+            func batD(foo: Unknown? = nil) -> Bool {
                 // noop
             }
             """
@@ -142,7 +142,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `contrived` (CONTRIVED) routine.
-            func contrived(foo: Unknown? = nil, bar: Int = 42) {
+            func contrived(foo: Unknown? = nil, bar: Int = 42) -> Bool {
                 // noop
             }
             """
@@ -167,8 +167,8 @@ final class RoutineTests: XCTestCase {
         XCTAssertNoDifference(
             try routine.process().code,
             """
-            /// The `deadFunction` (DEAD-FUNCTION) routine.
-            func deadFunction(foo: Bool = false) {
+            /// The `deadFunc` (DEAD-FUNCTION) routine.
+            func deadFunc(foo: Bool = false) -> Bool {
                 var m: Unknown
 
                 // noop
@@ -208,7 +208,7 @@ final class RoutineTests: XCTestCase {
             try routine.process().code,
             """
             /// The `remark` (REMARK) routine.
-            func remark(remark: Unknown, d: Unknown, w: Unknown) {
+            func remark(remark: Unknown, d: Unknown, w: Unknown) -> Bool {
                 var len: Unknown = [quelbo.Token.atom("GET"), quelbo.Token.atom(".REMARK"), quelbo.Token.decimal(0)]
                 var cnt: Int = 0
                 var str: Unknown

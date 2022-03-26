@@ -22,57 +22,6 @@ extension Game {
             }
         }
     }
-
-    var output: String {
-        let directions = Self.directions
-            .map { $0.code }
-            .joined(separator: "\n")
-
-        let globals = Self.globals
-            .sorted { $0.name < $1.name }
-            .map { $0.code }
-            .joined(separator: "\n\n")
-
-        let objects = Self.objects
-            .sorted { $0.name < $1.name }
-            .map { $0.code }
-            .joined(separator: "\n\n")
-
-        let rooms = Self.rooms
-            .sorted { $0.name < $1.name }
-            .map { $0.code }
-            .joined(separator: "\n\n")
-
-        let routines = Self.routines
-            .sorted { $0.name < $1.name }
-            .map { $0.code }
-            .joined(separator: "\n\n")
-
-        return """
-        // Directions
-
-        \(directions)
-
-        // Globals
-
-        struct World {
-        \(globals.indented())
-        }
-
-        // Routines
-
-        \(routines)
-
-        // Objects
-
-        \(objects)
-
-        // Rooms
-
-        \(rooms)
-        
-        """
-    }
 }
 
 extension Game {
@@ -98,22 +47,37 @@ extension Game {
 
 extension Game {
     static var directions: [Muddle.Definition] {
-        definitions.filter { $0.defType == .directions }
+        definitions
+            .filter { $0.defType == .directions }
+    }
+
+    static var constants: [Muddle.Definition] {
+        definitions
+            .filter { $0.defType == .global && !$0.isMutable }
+            .sorted { $0.name < $1.name }
     }
 
     static var globals: [Muddle.Definition] {
-        definitions.filter { $0.defType == .global }
+        definitions
+            .filter { $0.defType == .global && $0.isMutable }
+            .sorted { $0.name < $1.name }
     }
 
     static var objects: [Muddle.Definition] {
-        definitions.filter { $0.defType == .object }
+        definitions
+            .filter { $0.defType == .object }
+            .sorted { $0.name < $1.name }
     }
 
     static var rooms: [Muddle.Definition] {
-        definitions.filter { $0.defType == .room }
+        definitions
+            .filter { $0.defType == .room }
+            .sorted { $0.name < $1.name }
     }
 
     static var routines: [Muddle.Definition] {
-        definitions.filter { $0.defType == .routine }
+        definitions
+            .filter { $0.defType == .routine }
+            .sorted { $0.name < $1.name }
     }
 }

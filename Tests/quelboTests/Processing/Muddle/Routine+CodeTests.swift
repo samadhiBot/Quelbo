@@ -87,7 +87,8 @@ final class RoutineCodeTests: XCTestCase {
             try code.process(),
             #"""
             """
-                Your rather indelicate handling of the egg has caused it some damage,
+                Your rather indelicate handling of the egg has caused it \
+                some damage,
                 although you have succeeded in opening it.
                 """
             """#

@@ -11,7 +11,7 @@ import XCTest
 
 final class ObjectTests: XCTestCase {
     func testWhiteHouse() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("WHITE-HOUSE"),
             .list([
                 .atom("IN"),
@@ -47,21 +47,26 @@ final class ObjectTests: XCTestCase {
                 /// The `whiteHouse` (WHITE-HOUSE) object.
                 var whiteHouse = Object(
                     name: "whiteHouse",
-                    action: whiteHouseFunction,
-                    adjectives: ["white", "beauti", "coloni"],
+                    action: whiteHouseFunc,
+                    adjectives: [
+                        "beauti",
+                        "coloni",
+                        "white",
+                    ],
+                    attributes: [.noDescribe],
                     description: "white house",
-                    flags: [ndescbit],
                     parent: localGlobals,
                     synonyms: ["house"]
                 )
                 """,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testBrokenEgg() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("BROKEN-EGG"),
             .list([
                 .atom("SYNONYM"),
@@ -105,22 +110,32 @@ final class ObjectTests: XCTestCase {
                 /// The `brokenEgg` (BROKEN-EGG) object.
                 var brokenEgg = Object(
                     name: "brokenEgg",
-                    adjectives: ["broken", "birds", "encrusted", "jewel"],
+                    adjectives: [
+                        "birds",
+                        "broken",
+                        "encrusted",
+                        "jewel",
+                    ],
+                    attributes: [
+                        .container,
+                        .openable,
+                        .takeable,
+                    ],
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
-                    flags: [takebit, contbit, openbit],
                     longDescription: "There is a somewhat ruined egg here.",
                     synonyms: ["egg", "treasure"],
                     takeValue: 2
                 )
                 """,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testBat() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("BAT"),
             .list([
                 .atom("IN"),
@@ -161,22 +176,23 @@ final class ObjectTests: XCTestCase {
                 /// The `bat` (BAT) object.
                 var bat = Object(
                     name: "bat",
-                    action: batFunction,
-                    adjectives: ["vampire", "deranged"],
+                    action: batFunc,
+                    adjectives: ["deranged", "vampire"],
+                    attributes: [.actor, .tryTake],
                     description: "bat",
                     descriptionFunction: batD,
-                    flags: [actorbit, trytakebit],
                     parent: batRoom,
                     synonyms: ["bat", "vampire"]
                 )
                 """,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testSkull() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("SKULL"),
             .list([
                 .atom("IN"),
@@ -224,26 +240,31 @@ final class ObjectTests: XCTestCase {
                 var skull = Object(
                     name: "skull",
                     adjectives: ["crystal"],
+                    attributes: [.takeable],
                     description: "crystal skull",
                     firstDescription: """
                         Lying in one corner of the room is a beautifully carved \
                         crystal skull. It appears to be grinning at you rather \
                         nastily.
                         """,
-                    flags: [takebit],
                     parent: landOfLivingDead,
-                    synonyms: ["skull", "head", "treasure"],
+                    synonyms: [
+                        "head",
+                        "skull",
+                        "treasure",
+                    ],
                     takeValue: 10,
                     value: 10
                 )
                 """#,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testWater() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("WATER"),
             .list([
                 .atom("IN"),
@@ -282,21 +303,31 @@ final class ObjectTests: XCTestCase {
                 /// The `water` (WATER) object.
                 var water = Object(
                     name: "water",
-                    action: waterFunction,
+                    action: waterFunc,
+                    attributes: [
+                        .drinkable,
+                        .takeable,
+                        .tryTake,
+                    ],
                     description: "quantity of water",
-                    flags: [trytakebit, takebit, drinkbit],
                     parent: bottle,
                     size: 4,
-                    synonyms: ["water", "quantity", "liquid", "h2o"]
+                    synonyms: [
+                        "h2o",
+                        "liquid",
+                        "quantity",
+                        "water",
+                    ]
                 )
                 """,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testTroll() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("TROLL"),
             .list([
                 .atom("IN"),
@@ -343,10 +374,14 @@ final class ObjectTests: XCTestCase {
                 /// The `troll` (TROLL) object.
                 var troll = Object(
                     name: "troll",
-                    action: trollFcn,
+                    action: trollFunc,
                     adjectives: ["nasty"],
+                    attributes: [
+                        .actor,
+                        .openable,
+                        .tryTake,
+                    ],
                     description: "troll",
-                    flags: [actorbit, openbit, trytakebit],
                     longDescription: """
                         A nasty-looking troll, brandishing a bloody axe, blocks all \
                         passages out of the room.
@@ -357,12 +392,13 @@ final class ObjectTests: XCTestCase {
                 )
                 """#,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testAdvertisement() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("ADVERTISEMENT"),
             .list([
                 .atom("IN"),
@@ -397,6 +433,7 @@ final class ObjectTests: XCTestCase {
                 .atom("TEXT"),
                 .string("""
                     "WELCOME TO ZORK!
+
                     ZORK is a game of adventure, danger, and low cunning. In it you \
                     will explore some of the most amazing territory ever seen by mortals. \
                     No computer should be without one!"
@@ -415,25 +452,38 @@ final class ObjectTests: XCTestCase {
                 var advertisement = Object(
                     name: "advertisement",
                     adjectives: ["small"],
+                    attributes: [
+                        .burnable,
+                        .readable,
+                        .takeable,
+                    ],
                     description: "leaflet",
-                    flags: [readbit, takebit, burnbit],
                     longDescription: "A small leaflet is on the ground.",
                     parent: mailbox,
                     size: 2,
-                    synonyms: ["advertisement", "leaflet", "booklet", "mail"],
+                    synonyms: [
+                        "advertisement",
+                        "booklet",
+                        "leaflet",
+                        "mail",
+                    ],
                     text: """
                         "WELCOME TO ZORK!
-                        ZORK is a game of adventure, danger, and low cunning. In it you will explore some of the most amazing territory ever seen by mortals. No computer should be without one!"
+                        *
+                        ZORK is a game of adventure, danger, and low cunning. In it \
+                        you will explore some of the most amazing territory ever \
+                        seen by mortals. No computer should be without one!"
                         """
                 )
-                """#,
+                """#.replacingOccurrences(of: "*", with: ""),
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
         ))
     }
 
     func testTrophyCase() throws {
-        var object = Object([
+        var object = Object(.object, [
             .atom("TROPHY-CASE"),
             .commented(.string("first obj so L.R. desc looks right.")),
             .list([
@@ -476,17 +526,206 @@ final class ObjectTests: XCTestCase {
                 /// The `trophyCase` (TROPHY-CASE) object.
                 var trophyCase = Object(
                     name: "trophyCase",
-                    action: trophyCaseFcn,
+                    action: trophyCaseFunc,
                     adjectives: ["trophy"],
+                    attributes: [
+                        .container,
+                        .noDescribe,
+                        .searchable,
+                        .trans,
+                        .tryTake,
+                    ],
                     capacity: 10000,
                     description: "trophy case",
-                    flags: [transbit, contbit, ndescbit, trytakebit, searchbit],
                     parent: livingRoom,
                     synonyms: ["case"]
                 )
                 """,
             dataType: .object,
-            defType: .object
+            defType: .object,
+            isMutable: true
+        ))
+    }
+
+    func testGlobalObjects() throws {
+        var object = Object(.object, [
+            .atom("GLOBAL-OBJECTS"),
+            .list([
+                .atom("FLAGS"),
+                .atom("RMUNGBIT"),
+                .atom("INVISIBLE"),
+                .atom("TOUCHBIT"),
+                .atom("SURFACEBIT"),
+                .atom("TRYTAKEBIT"),
+                .atom("OPENBIT"),
+                .atom("SEARCHBIT"),
+                .atom("TRANSBIT"),
+                .atom("ONBIT"),
+                .atom("RLANDBIT"),
+                .atom("FIGHTBIT"),
+                .atom("STAGGERED"),
+                .atom("WEARBIT")
+            ])
+        ])
+
+        XCTAssertNoDifference(try object.process(), .init(
+            name: "globalObjects",
+            code: """
+                /// The `globalObjects` (GLOBAL-OBJECTS) object.
+                var globalObjects = Object(
+                    name: "globalObjects",
+                    attributes: [
+                        .fightable,
+                        .invisible,
+                        .on,
+                        .openable,
+                        .rLand,
+                        .rMung,
+                        .searchable,
+                        .staggered,
+                        .surface,
+                        .touchable,
+                        .trans,
+                        .tryTake,
+                        .wearable,
+                    ]
+                )
+                """,
+            dataType: .object,
+            defType: .object,
+            isMutable: true
+        ))
+    }
+
+    func testLocalGlobals() throws {
+        var object = Object(.object, [
+            .atom("LOCAL-GLOBALS"),
+            .list([
+                .atom("IN"),
+                .atom("GLOBAL-OBJECTS")
+            ]),
+            .list([
+                .atom("SYNONYM"),
+                .atom("ZZMGCK")
+            ]),
+            .list([
+                .atom("DESCFCN"),
+                .atom("PATH-OBJECT")
+            ]),
+            .list([
+                .atom("GLOBAL"),
+                .atom("GLOBAL-OBJECTS")
+            ]),
+            .list([
+                .atom("ADVFCN"),
+                .decimal(0)
+            ]),
+            .list([
+                .atom("FDESC"),
+                .string("F")
+            ]),
+            .list([
+                .atom("LDESC"),
+                .string("F")
+            ]),
+            .list([
+                .atom("PSEUDO"),
+                .string("FOOBAR"),
+                .atom("V-WALK")
+            ]),
+            .list([
+                .atom("CONTFCN"),
+                .decimal(0)
+            ]),
+            .list([
+                .atom("VTYPE"),
+                .decimal(1)
+            ]),
+            .list([
+                .atom("SIZE"),
+                .decimal(0)
+            ]),
+            .list([
+                .atom("CAPACITY"),
+                .decimal(0)
+            ])
+        ])
+
+        XCTAssertNoDifference(try object.process(), .init(
+            name: "localGlobals",
+            code: """
+                /// The `localGlobals` (LOCAL-GLOBALS) object.
+                var localGlobals = Object(
+                    name: "localGlobals",
+                    capacity: 0,
+                    descriptionFunction: pathObject,
+                    firstDescription: "F",
+                    globals: [globalObjects],
+                    longDescription: "F",
+                    parent: globalObjects,
+                    pseudos: [
+                        "foobar": vWalk
+                    ],
+                    size: 0,
+                    synonyms: ["zzmgck"],
+                    vType: 1
+                )
+                """,
+            dataType: .object,
+            defType: .object,
+            isMutable: true
+        ))
+    }
+
+    func testAdventurer() throws {
+        var object = Object(.object, [
+            .atom("ADVENTURER"),
+            .list([
+                .atom("SYNONYM"),
+                .atom("ADVENTURER")
+            ]),
+            .list([
+                .atom("DESC"),
+                .string("cretin")
+            ]),
+            .list([
+                .atom("FLAGS"),
+                .atom("NDESCBIT"),
+                .atom("INVISIBLE"),
+                .atom("SACREDBIT"),
+                .atom("ACTORBIT")
+            ]),
+            .list([
+                .atom("STRENGTH"),
+                .decimal(0)
+            ]),
+            .list([
+                .atom("ACTION"),
+                .decimal(0)
+            ])
+        ])
+
+        XCTAssertNoDifference(try object.process(), .init(
+            name: "adventurer",
+            code: """
+                /// The `adventurer` (ADVENTURER) object.
+                var adventurer = Object(
+                    name: "adventurer",
+                    action: 0,
+                    attributes: [
+                        .actor,
+                        .invisible,
+                        .noDescribe,
+                        .sacred,
+                    ],
+                    description: "cretin",
+                    strength: 0,
+                    synonyms: ["adventurer"]
+                )
+                """,
+            dataType: .object,
+            defType: .object,
+            isMutable: true
         ))
     }
 }

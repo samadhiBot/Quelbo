@@ -41,7 +41,7 @@ extension Variable {
             self.type = known.type
         } else if let routine = Game.routines.first(where: { $0.name == name }) {
             self.name = "\(routine.name)()"
-            self.type = routine.dataType?.rawValue
+            self.type = routine.dataType.rawValue
         } else {
             switch value {
             case .bool:      self.type = "Bool"

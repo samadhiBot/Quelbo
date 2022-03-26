@@ -16,8 +16,8 @@ final class StringExtTests: XCTestCase {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             """.convertToMultiline(),
             #"""
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
-            sed do eiusmod tempor incididunt ut labore et dolore magna \
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed \
+            do eiusmod tempor incididunt ut labore et dolore magna \
             aliqua. Ut enim ad minim veniam, quis nostrud exercitation \
             ullamco laboris nisi ut aliquip ex ea commodo consequat. \
             Duis aute irure dolor in reprehenderit in voluptate velit \
@@ -56,11 +56,11 @@ final class StringExtTests: XCTestCase {
             Lorem ipsum dolor \
             sit amet, \
             consectetur \
-            adipiscing elit, \
-            sed do eiusmod \
-            tempor incididunt \
-            ut labore et dolore \
-            magna aliqua.
+            adipiscing elit, sed \
+            do eiusmod tempor \
+            incididunt ut labore \
+            et dolore magna \
+            aliqua.
             """#
         )
     }
@@ -75,8 +75,8 @@ final class StringExtTests: XCTestCase {
             sit amet, \
             LoremIpsumDolorSitAmetConsecteturAdipiscingElit, \
             sed do eiusmod \
-            tempor incididunt \
-            ut labore et dolore \
+            tempor incididunt ut \
+            labore et dolore \
             magna aliqua.
             """#
         )
@@ -113,7 +113,7 @@ final class StringExtTests: XCTestCase {
     func testLowerCamelCase() {
         XCTAssertEqual("OPEN-CLOSE".lowerCamelCase, "openClose")
 
-        XCTAssertEqual("GRANITE-WALL-F".lowerCamelCase, "graniteWallFunction")
+        XCTAssertEqual("GRANITE-WALL-F".lowerCamelCase, "graniteWallFunc")
 
         XCTAssertEqual("EQUAL?".lowerCamelCase, "isEqual")
     }
@@ -130,17 +130,23 @@ final class StringExtTests: XCTestCase {
 
     func testQuotedMultiline() {
         let string = """
-            You are standing in an open field west of a white house, with a boarded
-            front door.
+            "WELCOME TO ZORK!
+
+            ZORK is a game of adventure, danger, and low cunning. In it you \
+            will explore some of the most amazing territory ever seen by mortals. \
+            No computer should be without one!"
             """
         XCTAssertNoDifference(
             string.quoted(),
             #"""
             """
-                You are standing in an open field west of a white house, with a boarded
-                front door.
+                "WELCOME TO ZORK!
+                *
+                ZORK is a game of adventure, danger, and low cunning. In it \
+                you will explore some of the most amazing territory ever \
+                seen by mortals. No computer should be without one!"
                 """
-            """#
+            """#.replacingOccurrences(of: "*", with: "")
         )
     }
 
@@ -153,16 +159,15 @@ final class StringExtTests: XCTestCase {
         mangled bodies in one corner. Thousands of voices, lamenting some
         hideous fate, can be heard.
         """
-        XCTAssertNoDifference(string.translateMultiline, #"""
+        XCTAssertNoDifference(string.translateMultiline, """
             You are outside a large gateway, on which is inscribed
 
-              Abandon every hope \
-            all ye who enter here!
+              Abandon every hope all ye who enter here!
 
-            The gate is open; through it you can see a desolation, with a pile of \
-            mangled bodies in one corner. Thousands of voices, lamenting some \
-            hideous fate, can be heard.
-            """#
+            The gate is open; through it you can see a desolation, with \
+            a pile of mangled bodies in one corner. Thousands of voices, \
+            lamenting some hideous fate, can be heard.
+            """
         )
     }
 
@@ -187,7 +192,7 @@ final class StringExtTests: XCTestCase {
                This boat is made of thin plastic.|
                Good Luck!
             """
-        XCTAssertNoDifference(string.translateMultiline, #"""
+        XCTAssertNoDifference(string.translateMultiline, """
               !!!!FROBOZZ MAGIC BOAT COMPANY!!!!
 
             Hello, Sailor!
@@ -200,12 +205,32 @@ final class StringExtTests: XCTestCase {
 
             Warranty:
 
-              This boat is guaranteed against all defects for a period of 76 \
-            milliseconds from date of purchase or until first used, whichever comes first.
+              This boat is guaranteed against all defects for a period of \
+            76 milliseconds from date of purchase or until first used, \
+            whichever comes first.
 
             Warning:
                This boat is made of thin plastic.
                Good Luck!
+            """
+        )
+    }
+
+    func testTranslateMultilineQuoted() {
+        let string = """
+        Cloak of Darkness|
+        A basic IF demonstration.|
+        Original game by Roger Firth|
+        ZIL conversion by Jesse McGrew, Jayson Smith, and Josh Lawrence
+        """
+        XCTAssertNoDifference(string.translateMultiline.quoted(), #"""
+            """
+                Cloak of Darkness
+                A basic IF demonstration.
+                Original game by Roger Firth
+                ZIL conversion by Jesse McGrew, Jayson Smith, and Josh \
+                Lawrence
+                """
             """#
         )
     }
@@ -213,7 +238,7 @@ final class StringExtTests: XCTestCase {
     func testUpperCamelCase() {
         XCTAssertEqual("OPEN-CLOSE".upperCamelCase, "OpenClose")
 
-        XCTAssertEqual("GRANITE-WALL-F".upperCamelCase, "GraniteWallFunction")
+        XCTAssertEqual("GRANITE-WALL-F".upperCamelCase, "GraniteWallFunc")
 
         XCTAssertEqual("EQUAL?".upperCamelCase, "IsEqual")
     }

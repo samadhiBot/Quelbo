@@ -8,23 +8,23 @@
 import Foundation
 
 enum Muddle: String {
-    case constant = "CONSTANT"
-    case define = "DEFINE"
-    case defmac = "DEFMAC"
-    case directions = "DIRECTIONS"
-    case frequentWords = "FREQUENT-WORDS?"
-    case global = "GLOBAL"
+    case constant          = "CONSTANT"
+    case define            = "DEFINE"
+    case defmac            = "DEFMAC"
+    case directions        = "DIRECTIONS"
+    case frequentWords     = "FREQUENT-WORDS?"
+    case global            = "GLOBAL"
     case globalDeclaration = "GDECL"
-    case insertFile = "INSERT-FILE"
-    case object = "OBJECT"
-    case or = "OR"
-    case princ = "PRINC"
-    case propdef = "PROPDEF"
-    case room = "ROOM"
-    case routine = "ROUTINE"
-    case set = "SET"
-    case setg = "SETG"
-    case version = "VERSION"
+    case insertFile        = "INSERT-FILE"
+    case object            = "OBJECT"
+    case or                = "OR"
+    case princ             = "PRINC"
+    case propdef           = "PROPDEF"
+    case room              = "ROOM"
+    case routine           = "ROUTINE"
+    case set               = "SET"
+    case setg              = "SETG"
+    case version           = "VERSION"
 }
 
 extension Muddle {
@@ -50,12 +50,11 @@ extension Muddle {
             var global = Global(tokens, isMutable: true)
             return try global.process()
         case .globalDeclaration:
-            // Ignored
-            return nil
+            return nil // Ignored
         case .insertFile:
-            throw Err.unimplemented("insertFile \(tokens)")
+            return nil // Ignored
         case .object:
-            var object = Object(tokens)
+            var object = Object(.object, tokens)
             return try object.process()
         case .or:
             throw Err.unimplemented("or \(tokens)")
@@ -64,7 +63,7 @@ extension Muddle {
         case .propdef:
             throw Err.unimplemented("propdef \(tokens)")
         case .room:
-            var room = Room(tokens)
+            var room = Object(.room, tokens)
             return try room.process()
         case .routine:
             var routine = Routine(tokens)
@@ -74,7 +73,7 @@ extension Muddle {
         case .setg:
             throw Err.unimplemented("setg \(tokens)")
         case .version:
-            throw Err.unimplemented("version \(tokens)")
+            return nil // Ignored
         }
     }
 }

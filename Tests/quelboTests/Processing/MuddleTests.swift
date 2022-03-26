@@ -60,7 +60,49 @@ final class MuddleTests: XCTestCase {
     }
 
     func testObject() throws {
-        throw XCTSkip("TODO: test Object")
+        XCTAssertNoDifference(
+            try Muddle(rawValue: "OBJECT")?.process([
+                .atom("GRATE"),
+                .list([
+                    .atom("IN"),
+                    .atom("LOCAL-GLOBALS")
+                ]),
+                .list([
+                    .atom("SYNONYM"),
+                    .atom("GRATE"),
+                    .atom("GRATING")
+                ]),
+                .list([
+                    .atom("DESC"),
+                    .string("grating")
+                ]),
+                .list([
+                    .atom("FLAGS"),
+                    .atom("DOORBIT"),
+                    .atom("NDESCBIT"),
+                    .atom("INVISIBLE")
+                ]),
+                .list([
+                    .atom("ACTION"),
+                    .atom("GRATE-FUNCTION")
+                ])
+            ])?.code,
+            """
+            /// The `grate` (GRATE) object.
+            var grate = Object(
+                name: "grate",
+                action: grateFunc,
+                attributes: [
+                    .door,
+                    .invisible,
+                    .noDescribe,
+                ],
+                description: "grating",
+                parent: localGlobals,
+                synonyms: ["grate", "grating"]
+            )
+            """
+        )
     }
 
     func testOr() throws {
@@ -76,7 +118,46 @@ final class MuddleTests: XCTestCase {
     }
 
     func testRoom() throws {
-        throw XCTSkip("TODO: test Room")
+        XCTAssertNoDifference(
+            try Muddle(rawValue: "ROOM")?.process([
+                .atom("SANDY-CAVE"),
+                .commented(.string("was TCAVE")),
+                .list([
+                    .atom("IN"),
+                    .atom("ROOMS")
+                ]),
+                .list([
+                    .atom("LDESC"),
+                    .string("This is a sand-filled cave whose exit is to the southwest.")
+                ]),
+                .list([
+                    .atom("DESC"),
+                    .string("Sandy Cave")
+                ]),
+                .list([
+                    .atom("SW"),
+                    .atom("TO"),
+                    .atom("SANDY-BEACH")
+                ]),
+                .list([
+                    .atom("FLAGS"),
+                    .atom("RLANDBIT")
+                ])
+            ])?.code,
+            """
+            /// The `sandyCave` (SANDY-CAVE) room.
+            var sandyCave = Room(
+                name: "sandyCave",
+                attributes: [.rLand],
+                description: "Sandy Cave",
+                directions: [
+                    .southWest: .to(sandyBeach),
+                ],
+                longDescription: "This is a sand-filled cave whose exit is to the southwest.",
+                parent: rooms
+            )
+            """
+        )
     }
 
     func testRoutine() throws {
@@ -110,8 +191,8 @@ final class MuddleTests: XCTestCase {
                 ])
             ])?.code,
             """
-            /// The `trollRoomFunction` (TROLL-ROOM-F) routine.
-            func trollRoomFunction(rarg: RoomArg) {
+            /// The `trollRoomFunc` (TROLL-ROOM-F) routine.
+            func trollRoomFunc(rarg: Int) -> Bool {
                 if rarg == World.mEnter && isIn(World.troll, World.here) {
                     thisIsIt(World.troll)
                 }
