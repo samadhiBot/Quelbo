@@ -9,7 +9,7 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class SyntaxTests: XCTestCase {
+final class SyntaxTests: QuelboTests {
     let parser = Syntax().parser
 
     // MARK: - Atoms

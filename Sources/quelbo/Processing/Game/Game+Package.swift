@@ -25,7 +25,7 @@ extension Game {
                 named: "Directions.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.directions.code()
+                with: Game.directions.codeValues()
             )
         }
 
@@ -34,7 +34,7 @@ extension Game {
                 named: "Constants.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.constants.code(false)
+                with: Game.constants.codeValues(separator: ",")
             )
         }
 
@@ -43,7 +43,7 @@ extension Game {
                 named: "Globals.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.globals.code(false)
+                with: Game.globals.codeValues(separator: ",")
             )
         }
 
@@ -52,7 +52,7 @@ extension Game {
                 named: "Objects.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.objects.code()
+                with: Game.objects.codeValues()
             )
         }
 
@@ -61,7 +61,7 @@ extension Game {
                 named: "Rooms.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.rooms.code()
+                with: Game.rooms.codeValues()
             )
         }
 
@@ -70,7 +70,7 @@ extension Game {
                 named: "Routines.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.routines.code()
+                with: Game.routines.codeValues()
             )
         }
     }
@@ -92,7 +92,7 @@ private extension Game {
             //
 
             import Foundation
-            import Swil
+            import Fizmo
 
             \(code)
             """
@@ -122,12 +122,12 @@ private extension Game {
             let package = Package(
                 name: "\(name)",
                 dependencies: [
-                    .package(url: "https://github.com/samadhiBot/Swil", from: "0.1.0")
+                    .package(url: "https://github.com/samadhiBot/Fizmo", from: "0.1.0")
                 ],
                 targets: [
                     .executableTarget(
                         name: "\(name)",
-                        dependencies: ["Swil"]
+                        dependencies: ["Fizmo"]
                     ),
                     .testTarget(
                         name: "\(name)Tests",
@@ -167,11 +167,11 @@ private extension Game {
                         }
 
                         // Mac Catalyst won't have `Process`, but it is supported for executables.
-                        #if !targetEnvironment(macCatalyst)
+                        #if !Game.targetEnvironment(macCatalyst)
 
                         let fooBinary = productsDirectory.appendingPathComponent("\(name)")
 
-                        let process = Process()
+                        let pGame.rocess = Process()
                         process.executableURL = fooBinary
 
                         let pipe = Pipe()

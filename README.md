@@ -6,7 +6,7 @@ Quelbo is a commandline tool that translates [ZIL](https://www.ifwiki.org/ZIL) (
 
 An initial phase uses the Point-Free [swift-parsing](https://github.com/pointfreeco/swift-parsing) library to recursively parse ZIL into a set of enumerated Swift tokens.
 
-A second phase processes the tokens into Swift code. The [Swil](https://github.com/samadhiBot/Swil) library provides Swift implementations of any [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) necessary for the processed code to compile and run.
+A second phase processes the tokens into Swift code. The [Fizmo](https://github.com/samadhiBot/Fizmo) library provides Swift implementations of any [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) necessary for the processed code to compile and run.
 
 Quelbo is part of a longer term experiment to create Swift versions of Zork and other ZIL titles, and replace the original ZIL parser with a CoreML-based natural language parser. Details can be found at the [Nitfol](https://github.com/samadhiBot/Nitfol) project.
 
@@ -28,4 +28,4 @@ OPTIONS:
 
 ## Progress
 
-Currently Quelbo can parse and naïvely process the ZIL source files at [historicalsource/zork1](https://github.com/historicalsource/zork1). While the translated Swift code does not yet compile, work is ongoing in [Quelbo](https://github.com/samadhiBot/Quelbo) and [Swil](https://github.com/samadhiBot/Swil) to fine tune ZIL->Swift processing, and provide Swift implementations of [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) as necessary.
+Currently Quelbo can parse and naïvely process the ZIL source files at [historicalsource/zork1](https://github.com/historicalsource/zork1). While the translated Swift code does not yet compile, work is ongoing in [Quelbo](https://github.com/samadhiBot/Quelbo) and [Fizmo](https://github.com/samadhiBot/Fizmo) to fine tune ZIL->Swift processing, and provide Swift implementations of [Z-code built-in functions](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6) as necessary.

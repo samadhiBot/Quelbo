@@ -8,76 +8,117 @@
 import Foundation
 
 extension Game {
-    mutating func process() throws {
-        try tokens.forEach { token in
+    mutating func process(
+        _ attempt: Int = 1,
+        remainingCount: Int = 0
+    ) throws {
+        let count = remainingCount > 0 ? remainingCount : gameTokens.count
+        print(
+            """
+
+            ⚙️  Processing attempt \(attempt), remaining tokens: \(count)
+            ============================================================
+            """
+        )
+        try processTokens()
+        if gameTokens.isEmpty {
+            return print("\nProcessing complete!\n")
+        }
+        if gameTokens.count == remainingCount {
+            throw GameError.failedToProcessTokens(processingErrors)
+        }
+        try process(attempt + 1, remainingCount: gameTokens.count)
+    }
+
+    mutating func processTokens() throws {
+        var unprocessedTokens: [Token] = []
+        processingErrors = []
+        try gameTokens.forEach { token in
             switch token {
-            case .atom:             break // ignored
-            case .bool:             throw Err.unexpectedAtRootLevel(token)
-            case .commented:        break // ignored
-            case .decimal:          throw Err.unexpectedAtRootLevel(token)
-            case .form(let tokens): try processForm(tokens)
-            case .list:             throw Err.unexpectedAtRootLevel(token)
-            case .quoted:           throw Err.unexpectedAtRootLevel(token)
-            case .string:           break // ignored
+            case .atom, .commented, .string:
+                break // ignored
+            case .bool, .decimal, .list, .quoted:
+                throw GameError.unexpectedAtRootLevel(token)
+            case .form(var tokens):
+                do {
+                    guard case .atom(let zil) = tokens.shift() else {
+                        throw GameError.unknownDirective(tokens)
+                    }
+                    guard let factory = try Game.zilSymbolFactories.find(zil)?.init(tokens) else {
+                        throw FactoryError.unknownZilFunction(zil: zil)
+                    }
+                    let symbol = try factory.process()
+                    gameSymbols.append(symbol)
+                } catch {
+                    print("  - \(error)")
+                    processingErrors.append("\(error)")
+                    unprocessedTokens.append(token)
+                }
             }
         }
+        self.gameTokens = unprocessedTokens
     }
 }
 
-extension Game {
-    enum Err: Error {
-        case unexpectedAtRootLevel(Token)
-        case unknownDirective([Token])
-        case unknownOperation(String)
-    }
+// MARK: - GameError
 
-    mutating func processForm(_ formTokens: [Token]) throws {
-        var tokens = formTokens
-        guard case .atom(let directive) = tokens.shiftAtom() else {
-            throw Err.unknownDirective(tokens)
-        }
-        guard let muddle = Muddle(rawValue: directive) else {
-            throw Err.unknownOperation("\(directive): \(tokens)")
-        }
-        if let definition = try muddle.process(tokens) {
-            Self.definitions.append(definition)
-        }
-    }
+enum GameError: Swift.Error {
+    case duplicateSymbolCommit(Symbol)
+    case failedToProcessTokens([String])
+    case symbolNotFound(String, category: String)
+    case unexpectedAtRootLevel(Token)
+    case unknownDirective([Token])
+    case unknownOperation(String)
 }
 
+// MARK: - Symbol Categories
+
 extension Game {
-    static var directions: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .directions }
+    /// <#Description#>
+    static var directions: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .directions }
     }
 
-    static var constants: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .global && !$0.isMutable }
-            .sorted { $0.name < $1.name }
+    /// <#Description#>
+    static var constants: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .constants }
+            .sorted()
     }
 
-    static var globals: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .global && $0.isMutable }
-            .sorted { $0.name < $1.name }
+    /// <#Description#>
+    static var globals: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .globals }
+            .sorted()
     }
 
-    static var objects: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .object }
-            .sorted { $0.name < $1.name }
+    /// <#Description#>
+    static var mutableGlobals: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .globals }
+            .sorted()
     }
 
-    static var rooms: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .room }
-            .sorted { $0.name < $1.name }
+    /// <#Description#>
+    static var objects: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .objects }
+            .sorted()
     }
 
-    static var routines: [Muddle.Definition] {
-        definitions
-            .filter { $0.defType == .routine }
-            .sorted { $0.name < $1.name }
+    /// <#Description#>
+    static var rooms: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .rooms }
+            .sorted()
+    }
+
+    /// <#Description#>
+    static var routines: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .routines }
+            .sorted()
     }
 }

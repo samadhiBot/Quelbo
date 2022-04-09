@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Fizmo
 
 /// The set of tokens to be parsed from ZIL source code.
 indirect enum Token: Equatable {
@@ -26,4 +27,19 @@ indirect enum Token: Equatable {
     case string(String)
     // case table([Token])
     // case vector([Token])
+}
+
+extension Token {
+    public var value: String {
+        switch self {
+        case .atom(let value):      return "\(value)"
+        case .bool(let value):      return "\(value)"
+        case .commented(let token): return "\(token)"
+        case .decimal(let value):   return "\(value)"
+        case .form(let tokens):     return "\(tokens.map { $0.value })"
+        case .list(let tokens):     return "\(tokens.map { $0.value })"
+        case .quoted(let token):    return "\(token)"
+        case .string(let value):    return "\(value)"
+        }
+    }
 }

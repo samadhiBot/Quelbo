@@ -1,9 +1,12 @@
-//
+/*
 //  Zil+Condition.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/12/22.
 //
+
+import Foundation
+import Fizmo
 
 extension Zil {
     struct Condition {
@@ -26,10 +29,11 @@ extension Zil.Condition {
         let actions: [Token]
     }
 
-    mutating func process() throws -> String {
+    mutating func process() throws -> Symbol {
         var macroQuoted = false
+        var symbols: [Symbol] = []
 
-        return try tokens.compactMap { (list: Token) -> Conditional? in
+        let condition = try tokens.compactMap { (list: Token) -> Conditional? in
             var listTokens: [Token] = []
 
             switch list {
@@ -63,7 +67,8 @@ extension Zil.Condition {
             let actions = try conditional.actions
                 .map {
                     let action = try $0.process()
-                    return action == "return()" ? "break" : action
+                    symbols.append(action)
+                    return action.description == "return()" ? "break" : action.description
                 }
                 .joined(separator: "\n")
                 .indented()
@@ -74,12 +79,29 @@ extension Zil.Condition {
                     }
                     """
             } else {
+                let predicate = try conditional.predicate.process()
+                symbols.append(predicate)
                 return """
-                    if \(try conditional.predicate.process()) {
+                    if \(predicate) {
                     \(actions)
                     }
                     """
             }
         }.joined(separator: " else ")
+
+        let returnType = symbols.last?.type ?? .void
+        let conditionalCode = returnType == .void ? condition :
+            """
+            {
+            \(condition.indented())
+            }()
+            """
+        return Symbol(
+            code: conditionalCode,
+            name: "condition()",
+            type: returnType,
+            children: symbols
+        )
     }
 }
+*/

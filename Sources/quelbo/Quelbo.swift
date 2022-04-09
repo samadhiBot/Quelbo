@@ -28,7 +28,7 @@ struct Quelbo: ParsableCommand {
     var target: String?
 
     func run() throws {
-        var game = Game()
+        var game = Game.shared
 
         try gameFiles().forEach { file in
             guard file.extension?.lowercased() == "zil" else {
@@ -40,15 +40,26 @@ struct Quelbo: ParsableCommand {
         }
 
         if printTokens {
-            Pretty.prettyPrint(game.tokens)
+            Pretty.prettyPrint(game.gameTokens)
         }
 
-        try game.process()
+        do {
+            try game.process()
 
-        if let target = target {
-            try game.package(path: target)
-        } else {
-            game.print()
+            if let target = target {
+                try game.package(path: target)
+            } else {
+                game.printSymbols()
+            }
+        } catch {
+            print(
+                """
+
+                💀 Processing failed
+                ============================================================
+                """
+            )
+            Pretty.prettyPrint(error)
         }
     }
 }

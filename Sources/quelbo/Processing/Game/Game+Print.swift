@@ -8,50 +8,61 @@
 import Foundation
 
 extension Game {
-    func print() {
-        Swift.print(Game.output)
+    func printSymbols() {
+        print(output)
     }
 }
 
 extension Game {
-    static var output: String {
+    var output: String {
         var output: [String] = []
 
         if !Game.directions.isEmpty {
-            output.append(display(heading: "Directions", code: Game.directions.code()))
+            output.append(display(
+                heading: "Directions",
+                code: Game.directions.codeValues(lineBreaks: 2)
+            ))
         }
         if !Game.constants.isEmpty {
-            output.append(display(heading: "Constants", code: Game.constants.code(false)))
+            output.append(display(
+                heading: "Constants",
+                code: Game.constants.codeValues(separator: ",")
+            ))
         }
         if !Game.globals.isEmpty {
-            output.append(display(heading: "Globals", code: Game.globals.code(false)))
+            output.append(display(
+                heading: "Globals",
+                code: Game.globals.codeValues(separator: ",")
+            ))
         }
         if !Game.objects.isEmpty {
-            output.append(display(heading: "Objects", code: Game.objects.code()))
+            output.append(display(
+                heading: "Objects",
+                code: Game.objects.codeValues(lineBreaks: 2, sorted: true)
+            ))
         }
         if !Game.rooms.isEmpty {
-            output.append(display(heading: "Rooms", code: Game.rooms.code()))
+            output.append(display(
+                heading: "Rooms",
+                code: Game.rooms.codeValues(lineBreaks: 2, sorted: true)
+            ))
         }
         if !Game.routines.isEmpty {
-            output.append(display(heading: "Routines", code: Game.routines.code()))
+            output.append(display(
+                heading: "Routines",
+                code: Game.routines.codeValues(lineBreaks: 2, sorted: true)
+            ))
         }
 
         return output.joined(separator: "\n\n")
     }
 
-    static func display(heading: String, code: String) -> String {
+    func display(heading: String, code: String) -> String {
         """
         // \(heading)
-        // ================================================================================
+        // ============================================================
 
         \(code)
         """
-    }
-}
-
-extension Array where Element == Muddle.Definition {
-    func code(_ emptyLineAfter: Bool = true) -> String {
-        self.map { $0.code }
-            .joined(separator: emptyLineAfter ? "\n\n" : "\n")
     }
 }
