@@ -15,12 +15,13 @@ final class CondTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
-            Symbol("mEnter", type: .int, category: .globals),
+        try! Game.commit([
+            Symbol("here", type: .object, category: .objects),
             Symbol("isIn", type: .bool, category: .routines),
+            Symbol("mEnter", type: .int, category: .globals),
             Symbol("thisIsIt", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects)
-        )
+            Symbol("troll", type: .object, category: .objects),
+        ])
     }
 
     func testFindFactory() throws {

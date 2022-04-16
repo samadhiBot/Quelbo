@@ -16,7 +16,7 @@ extension Factories {
             ["PRINTN"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .one(.int)
         }
     }

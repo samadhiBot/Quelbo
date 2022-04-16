@@ -16,11 +16,11 @@ extension Factories {
             ["PUTP"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .three(.object, .property, .unknown)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .unknown
         }
 

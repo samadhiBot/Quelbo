@@ -16,11 +16,11 @@ extension Factories {
             ["GET"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .two(.array(.tableElement), .int)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .tableElement
         }
 

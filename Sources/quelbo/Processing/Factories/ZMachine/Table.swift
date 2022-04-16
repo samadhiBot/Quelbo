@@ -16,11 +16,11 @@ extension Factories {
             ["TABLE", "LTABLE"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .twoOrMore(.tableElement)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .array(.tableElement)
         }
 
@@ -28,7 +28,7 @@ extension Factories {
             Symbol(
                 """
                     [
-                    \(symbols.codeValues(separator: ",", lineBreaks: 1).indented()),
+                    \(symbols.codeValues(separator: ",", lineBreaks: 1).indented),
                     ]
                     """,
                 type: .array(.tableElement),

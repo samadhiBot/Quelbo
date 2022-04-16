@@ -9,26 +9,26 @@
 //import Fizmo
 //
 //extension Object {
-//    enum Definition: String {
-//        case action              = "ACTION"
-//        case adjectives          = "ADJECTIVE"
-//        case attributes          = "FLAGS"
-//        case capacity            = "CAPACITY"
-//        case description         = "DESC"
-//        case descriptionFunction = "DESCFCN"
-//        case firstDescription    = "FDESC"
-//        case globals             = "GLOBAL"
-//        case longDescription     = "LDESC"
-//        case parent              = "IN"
-//        case pseudos             = "PSEUDO"
-//        case size                = "SIZE"
-//        case strength            = "STRENGTH"
-//        case synonyms            = "SYNONYM"
-//        case takeValue           = "TVALUE"
-//        case text                = "TEXT"
-//        case value               = "VALUE"
-//        case vType               = "VTYPE"
-//    }
+    enum Definition: String {
+        case action              = "ACTION"
+        case adjectives          = "ADJECTIVE"
+        case attributes          = "FLAGS"
+        case capacity            = "CAPACITY"
+        case description         = "DESC"
+        case descriptionFunction = "DESCFCN"
+        case firstDescription    = "FDESC"
+        case globals             = "GLOBAL"
+        case longDescription     = "LDESC"
+        case parent              = "IN"
+        case pseudos             = "PSEUDO"
+        case size                = "SIZE"
+        case strength            = "STRENGTH"
+        case synonyms            = "SYNONYM"
+        case takeValue           = "TVALUE"
+        case text                = "TEXT"
+        case value               = "VALUE"
+        case vType               = "VTYPE"
+    }
 //}
 //
 //extension Object.Definition {
@@ -42,7 +42,7 @@
 //        if values.count > 2 {
 //            return """
 //                \(key): [
-//                \(values.sorted().joined(separator: ",\n").indented()),
+//                \(values.sorted().joined(separator: ",\n").indented),
 //                ]
 //                """
 //        } else {
@@ -65,7 +65,7 @@
 //                    value.type
 //            )
 //        case .adjectives:
-//            let values = try tokens.map { try $0.process().description.quoted() }
+//            let values = try tokens.map { try $0.process().description.quoted }
 //            return .init(
 //                code: formatted("adjectives", values), type: .
 //                array(.string)
@@ -155,7 +155,7 @@
 //            }
 //            return .init(code: """
 //                pseudos: [
-//                \(pseudos.map { "\"\($0)\": \($1)" }.sorted().joined(separator: ",\n").indented())
+//                \(pseudos.map { "\"\($0)\": \($1)" }.sorted().joined(separator: ",\n").indented)
 //                ]
 //                """,
 //                type: nil
@@ -177,7 +177,7 @@
 //                type: .int
 //            )
 //        case .synonyms:
-//            let values = try tokens.map { try $0.process().description.quoted() }
+//            let values = try tokens.map { try $0.process().description.quoted }
 //            return .init(
 //                code: formatted("synonyms", values), type: .
 //                array(.string)

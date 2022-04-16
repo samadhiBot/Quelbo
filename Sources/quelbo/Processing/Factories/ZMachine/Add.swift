@@ -16,11 +16,11 @@ extension Factories {
             ["+", "ADD"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .twoOrMore(.int)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .int
         }
 

@@ -16,7 +16,7 @@ extension Factories {
             ["-", "SUB"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .oneOrMore(.int)
         }
 

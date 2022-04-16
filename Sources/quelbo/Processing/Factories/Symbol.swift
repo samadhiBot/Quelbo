@@ -103,6 +103,7 @@ extension Symbol {
         case directions
         case globals
         case objects
+        case properties
         case rooms
         case routines
     }
@@ -121,8 +122,10 @@ extension Symbol {
         case list
         case object
         case property
+        case routine
         case string
         case tableElement
+        case thing
         case unknown
         case void
 
@@ -176,7 +179,9 @@ extension Symbol.DataType: CustomStringConvertible {
             case .list:            return "<List>"
             case .object:          return "Object"
             case .property:        return "<Property>"
+            case .routine:         return "Routine"
             case .string:          return "String"
+            case .thing:           return "Thing"
             case .tableElement:    return "TableElement"
             case .unknown:         return "<Unknown>"
             case .void:            return "Void"
@@ -235,6 +240,18 @@ extension Array where Element == Symbol {
         }
     }
 
+    var code: String {
+        guard !isEmpty else {
+            return "[]"
+        }
+        let code = codeValues(separator: ",", lineBreaks: 1)
+        if code.contains("\n") {
+            return "[\n\(code.indented)\n]"
+        } else {
+            return "[\(code)]"
+        }
+    }
+
     /// Finds the common type among the symbols in the array.
     ///
     /// Ignores atoms with ``Symbol/DataType/unknown`` type.
@@ -286,21 +303,13 @@ extension Array where Element == Symbol {
         return nil
     }
 
-//    var types: [Symbol.DataType] {
-//        map { $0.type }
-//    }
-
-//    /// <#Description#>
-//    /// - Parameter type: <#type description#>
-//    /// - Returns: <#description#>
-//    func withUnifiedType(of type: Symbol.DataType? = nil) throws -> [Symbol] {
-//        let commonType = try commonType()
-//        guard let type = type else {
-//            return map { $0.with(commonType) }
-//        }
-//        guard type == commonType else {
-//            throw Symbol.Error.unexpectedType(self, expected: type)
-//        }
-//        return map { $0.with(commonType) }
-//    }
+    /// <#Description#>
+    var quoted: [Symbol] {
+        map { symbol in
+            guard symbol.type == .string else {
+                return symbol
+            }
+            return symbol.with(code: symbol.code.quoted)
+        }
+    }
 }

@@ -20,7 +20,7 @@ extension Factories {
             "lessThan"
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .twoOrMore(.int)
         }
     }

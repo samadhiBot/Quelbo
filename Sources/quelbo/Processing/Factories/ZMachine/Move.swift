@@ -16,11 +16,11 @@ extension Factories {
             ["MOVE"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .two(.object, .object)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .void
         }
 

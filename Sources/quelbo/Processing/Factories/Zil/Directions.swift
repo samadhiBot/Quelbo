@@ -16,11 +16,11 @@ extension Factories {
             ["DIRECTIONS"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .oneOrMore(.direction)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .void
         }
 
@@ -45,7 +45,7 @@ extension Factories {
                 """
                     /// The set of possible movement directions.
                     public enum Direction: String {
-                    \(directions.codeValues(lineBreaks: 1).indented())
+                    \(directions.codeValues(lineBreaks: 1).indented)
                     }
                     """,
                 type: .void,

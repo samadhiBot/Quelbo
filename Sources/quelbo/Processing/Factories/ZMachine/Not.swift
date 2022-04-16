@@ -16,11 +16,11 @@ extension Factories {
             ["NOT"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .one(.bool)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .bool
         }
 

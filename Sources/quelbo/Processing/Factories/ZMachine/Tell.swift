@@ -16,11 +16,11 @@ extension Factories {
             ["TELL"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .oneOrMore(.unknown)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .void
         }
 

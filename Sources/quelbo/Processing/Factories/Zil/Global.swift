@@ -16,7 +16,7 @@ extension Factories {
             ["GLOBAL"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .two(.property, .unknown)
         }
 

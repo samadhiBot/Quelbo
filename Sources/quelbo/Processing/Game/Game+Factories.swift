@@ -8,6 +8,10 @@
 import Foundation
 
 extension Game {
+    /// ``Symbol`` factories for translating ZIL Object properties.
+    static let zilPropertyFactories = _Runtime.subclasses(of: ZilPropertyFactory.self)
+        .map { $0 as! SymbolFactory.Type }
+
     /// ``Symbol`` factories for translating root-level ZIL functions.
     static let zilSymbolFactories = _Runtime.subclasses(of: ZilFactory.self)
         .map { $0 as! SymbolFactory.Type }

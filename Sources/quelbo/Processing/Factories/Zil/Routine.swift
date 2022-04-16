@@ -41,7 +41,7 @@ extension Factories {
                 code: """
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) routine.
                     func \(nameSymbol.code)(\(parameters))\(returnValue) {
-                    \(warningComments)\(auxiliaryDefs)\(code.code.indented())
+                    \(warningComments)\(auxiliaryDefs)\(code.code.indented)
                     }
                     """,
                 type: code.type,
@@ -157,7 +157,7 @@ extension Factories.Routine {
         guard !auxiliaries.isEmpty else { return "" }
         return auxiliaries
             .codeValues(lineBreaks: 1)
-            .indented(1)
+            .indented
             .appending("\n\n")
     }
 
@@ -165,7 +165,7 @@ extension Factories.Routine {
         guard !warnings.isEmpty else { return "" }
         return warnings
             .joined(separator: "\n")
-            .indented(1)
+            .indented
             .appending("\n\n")
     }
 }

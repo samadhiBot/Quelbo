@@ -16,7 +16,7 @@ extension Factories {
             ["COND"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .oneOrMore(.list)
         }
 
@@ -38,7 +38,7 @@ extension Factories {
                 conditions.append(Symbol(
                     """
                     \(ifStatement)\(predicate) {
-                    \(condition.codeValues(lineBreaks: 1).indented())
+                    \(condition.codeValues(lineBreaks: 1).indented)
                     }
                     """,
                     type: (try? condition.commonType()) ?? .void,

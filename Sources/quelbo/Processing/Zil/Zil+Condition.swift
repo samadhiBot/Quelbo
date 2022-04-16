@@ -71,7 +71,7 @@ extension Zil.Condition {
                     return action.description == "return()" ? "break" : action.description
                 }
                 .joined(separator: "\n")
-                .indented()
+                .indented
             if case .atom("T") = conditional.predicate {
                 return """
                     {
@@ -93,13 +93,13 @@ extension Zil.Condition {
         let conditionalCode = returnType == .void ? condition :
             """
             {
-            \(condition.indented())
+            \(condition.indented)
             }()
             """
         return Symbol(
             code: conditionalCode,
             name: "condition()",
-            type: returnType,
+            type: Self.returnType,
             children: symbols
         )
     }

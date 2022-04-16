@@ -16,11 +16,11 @@ extension Factories {
             ["FSET"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .two(.object, .bool)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .bool
         }
 

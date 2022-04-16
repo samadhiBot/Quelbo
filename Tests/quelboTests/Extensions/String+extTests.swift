@@ -83,29 +83,16 @@ final class StringExtTests: QuelboTests {
     }
 
     func testIndented() {
-        XCTAssertEqual("hello".indented(0), "hello")
+        XCTAssertEqual("hello".indented, "    hello")
 
         XCTAssertEqual(
             """
             Hello
             world
-            """.indented(1),
+            """.indented,
             """
                 Hello
                 world
-            """
-        )
-
-        XCTAssertEqual(
-            """
-            if foo == bar {
-                print("It's happening!")
-            }
-            """.indented(2),
-            """
-                    if foo == bar {
-                        print("It's happening!")
-                    }
             """
         )
     }
@@ -121,7 +108,7 @@ final class StringExtTests: QuelboTests {
     func testQuoted() {
         let string = " A secret path leads southwest into the forest."
         XCTAssertEqual(
-            string.quoted(),
+            string.quoted,
             #"""
             " A secret path leads southwest into the forest."
             """#
@@ -137,7 +124,7 @@ final class StringExtTests: QuelboTests {
             No computer should be without one!"
             """
         XCTAssertNoDifference(
-            string.quoted(),
+            string.quoted,
             #"""
             """
                 "WELCOME TO ZORK!
@@ -223,7 +210,7 @@ final class StringExtTests: QuelboTests {
         Original game by Roger Firth|
         ZIL conversion by Jesse McGrew, Jayson Smith, and Josh Lawrence
         """
-        XCTAssertNoDifference(string.translateMultiline.quoted(), #"""
+        XCTAssertNoDifference(string.translateMultiline.quoted, #"""
             """
                 Cloak of Darkness
                 A basic IF demonstration.

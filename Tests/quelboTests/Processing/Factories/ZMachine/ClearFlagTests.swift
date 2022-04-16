@@ -16,7 +16,8 @@ final class ClearFlagTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("trapDoor", type: .object, category: .objects)
+            Symbol("openBit", type: .bool, category: .globals),
+            Symbol("trapDoor", type: .object, category: .objects),
         ])
     }
 
@@ -31,7 +32,7 @@ final class ClearFlagTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "trapDoor.openbit = false",
+            "trapDoor.openBit = false",
             type: .void,
             children: [
                 Symbol(
@@ -41,9 +42,10 @@ final class ClearFlagTests: QuelboTests {
                     category: .objects
                 ),
                 Symbol(
-                    id: "openbit",
-                    code: "openbit",
-                    type: .bool
+                    id: "openBit",
+                    code: "openBit",
+                    type: .bool,
+                    category: .globals
                 )
             ]
         ))
@@ -53,7 +55,7 @@ final class ClearFlagTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .atom(",TRAP-DOOR"),
-                .decimal(11),
+                .string("11"),
             ]).process()
         )
     }

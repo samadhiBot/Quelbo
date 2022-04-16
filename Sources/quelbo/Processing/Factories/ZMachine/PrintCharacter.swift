@@ -17,11 +17,11 @@ extension Factories {
             ["PRINTC", "PRINTU"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .one(.unknown)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .void
         }
 

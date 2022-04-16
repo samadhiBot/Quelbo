@@ -16,7 +16,7 @@ extension Factories {
             ["PRINTF"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .one(.array(.tableElement))
         }
 
@@ -24,7 +24,7 @@ extension Factories {
             try symbol(0).children
                 .map { "\\(\($0))" }
                 .joined(separator: "\n")
-                .indented()
+                .indented
         }
 
         override func process() throws -> Symbol {

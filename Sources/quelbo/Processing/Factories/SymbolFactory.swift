@@ -28,12 +28,12 @@ class SymbolFactory {
     class var zilNames: [String] { [] }
 
     /// The number and types of parameters required by this symbol factory.
-    var parameters: Parameters {
+    class var parameters: Parameters {
         .any
     }
 
     /// The return value type for the ``Symbol`` produced by this symbol factory.
-    var returnType: Symbol.DataType {
+    class var returnType: Symbol.DataType {
         .unknown
     }
 
@@ -78,6 +78,8 @@ class SymbolFactory {
 /// See [MDL built-ins and ZIL library](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2et92p0)
 /// in the _ZILF Reference Guide_ for comprehensive documentation.
 class ZilFactory: SymbolFactory {}
+
+class ZilPropertyFactory: SymbolFactory {}
 
 /// Subclasses of `ZMachineFactory` are factories for symbols used within Zil Routines.
 ///
@@ -183,7 +185,7 @@ extension SymbolFactory {
                     index -= 1
                     return Symbol("/* \(token.value) */", type: .comment)
                 case .string(let string):
-                    return Symbol(string.quoted(), type: .string)
+                    return Symbol(string.quoted, type: .string)
             }
         }
         symbols = try validate(symbols, validateParamCount: validateParamCount)
@@ -207,20 +209,25 @@ extension SymbolFactory {
         guard !zil.hasPrefix("!\\") else {
             var character = zil
             character.removeFirst(2)
-            return Symbol(character.quoted(), type: .string)
+            return Symbol(character.quoted, type: .string)
         }
         let name = zil.lowerCamelCase
         if zil.hasPrefix(".") {
-            return Symbol(name, type: try parameters.type(at: index))
+            return Symbol(name, type: try Self.parameters.type(at: index))
         }
-        //        if zil.hasPrefix(",") {
-        //            return try Game.find(name)
-        //        }
+        if zil.hasPrefix(",P?") {
+            guard let type = try Game.zilPropertyFactories.find(zil.scrubbed)?.returnType else {
+                throw FactoryError.unknownProperty(zil.scrubbed)
+            }
+            return Symbol(name, type: type, category: .properties)
+        }
+        if zil.hasPrefix(",") {
+            return try Game.find(name)
+        }
         if let defined = try? Game.find(name) {
             return defined
         }
-
-        return Symbol(name, type: try parameters.type(at: index))
+        return Symbol(name, type: try Self.parameters.type(at: index))
     }
 
     /// Translates a Zil form ``Token`` into a ``Symbol``.
@@ -275,10 +282,10 @@ extension SymbolFactory {
     ) throws -> [Symbol] {
         if validateParamCount {
             let nonCommentParams = symbols.filter { $0.type != .comment }
-            guard parameters.range.contains(nonCommentParams.count) else {
+            guard Self.parameters.range.contains(nonCommentParams.count) else {
                 throw FactoryError.invalidParameterCount(
                     nonCommentParams.count,
-                    expected: parameters.range,
+                    expected: Self.parameters.range,
                     in: nonCommentParams
                 )
             }
@@ -291,11 +298,11 @@ extension SymbolFactory {
             }
             return try assignType(
                 of: symbol,
-                to: parameters.type(at: index),
+                to: Self.parameters.type(at: index),
                 siblings: symbols
             )
         }
-        switch parameters {
+        switch Self.parameters {
             case .one, .oneOrMore, .twoOrMore:
                 _ = try typedSymbols.commonType()
             default: break
@@ -319,11 +326,14 @@ extension SymbolFactory {
 
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
             case (true, true):
+                if declaredType == .bool && symbol.type == .int {
+                    return Symbol(symbol.id == "0" ? "false" : "true", type: .bool)
+                }
                 if symbol.type == declaredType {
                     return symbol
                 }
             case (true, false):
-                if declaredType.acceptsLiteral {
+                if declaredType.acceptsLiteral || symbol.category == .properties {
                     return symbol
                 }
             case (false, true):
@@ -344,7 +354,7 @@ extension SymbolFactory {
                 return symbol
                     .with(code: """
                         .table([
-                        \(symbol.children.codeValues(separator: ",", lineBreaks: 1).indented()),
+                        \(symbol.children.codeValues(separator: ",", lineBreaks: 1).indented),
                         ])
                         """)
                     .with(.tableElement)
@@ -406,6 +416,7 @@ enum FactoryError: Swift.Error {
     case invalidConditionExpression([Symbol])
     case invalidParameter([Symbol])
     case invalidParameterCount(Int, expected: ClosedRange<Int>, in: [Symbol])
+    case invalidProperty(Token)
     case invalidType(Symbol, expected: Symbol.DataType)
     case invalidTypeLookup(at: Int)
     case invalidValue(Symbol)
@@ -415,11 +426,13 @@ enum FactoryError: Swift.Error {
     case missingParameter(Symbol)
     case missingParameters([Token])
     case missingTypeToken([Token])
+    case missingPropertyValues(Symbol)
     case missingValue([Token])
     case unexpectedParameter(Symbol)
     case unconsumedTokens([Token])
     case unexpectedTableElement(Symbol)
     case unexpectedTypeParameter([Token], expected: Symbol.DataType, found: [Symbol.DataType])
+    case unknownProperty(String)
     case unknownType([Token])
     case unknownZMachineFunction(zil: String)
     case unknownZilFunction(zil: String)

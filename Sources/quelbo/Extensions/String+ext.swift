@@ -5,7 +5,7 @@
 //  Created by Chris Sessions on 3/7/22.
 //
 
-import Foundation
+import AppKit
 
 extension String {
     /// Returns the `String` split into multiple lines if its length exceeds the specified `limit`.
@@ -45,12 +45,9 @@ extension String {
     /// - Parameter indentLevel: The number of levels to indent the `String`.
     ///
     /// - Returns: The indented `String`.
-    func indented(_ indentLevel: Int = 1) -> String {
-        let indent = (0..<4 * indentLevel)
-            .map { _ in " " }
-            .joined(separator: "")
-        let indented = self.replacingOccurrences(of: "\n", with: "\n\(indent)")
-        return "\(indent)\(indented)"
+    var indented: String {
+        let indented = self.replacingOccurrences(of: "\n", with: "\n    ")
+        return "    \(indented)"
     }
 
     /// Translates a ZIL name `String` from dash-separated ALL-CAPS to camel case with a lowercase
@@ -66,14 +63,14 @@ extension String {
     /// multiline `String`.
     ///
     /// - Parameter indentLevel: The level of indentation, with four spaces per level.
-    /// 
+    ///
     /// - Returns: The quoted `String`.
-    func quoted(_ indentLevel: Int = 0) -> String {
+    var quoted: String {
         let text = convertToMultiline()
         if text.contains("\n") {
             return """
                 \"""
-                \(text.indented(1))
+                \(text.indented)
                     \"""
                 """
         } else {
@@ -113,6 +110,9 @@ extension String {
         } else if string.hasSuffix("?") {
             string.removeLast()
             string = "IS-\(string)"
+        } else if string.hasSuffix("BIT") {
+            string.removeLast(3)
+            string.append("-BIT")
         }
         return string.replacingOccurrences(of: "-", with: "_")
     }

@@ -16,11 +16,11 @@ extension Factories {
             ["PRINTD"]
         }
 
-        override var parameters: Parameters {
+        override class var parameters: Parameters {
             .one(.object)
         }
 
-        override var returnType: Symbol.DataType {
+        override class var returnType: Symbol.DataType {
             .void
         }
 

@@ -27,15 +27,15 @@ final class GetPropertyTests: QuelboTests {
     func testGetProperty() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
-            .atom("STRENGTH")
+            .atom(",P?STRENGTH")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.strength",
-            type: .property,
+            type: .int,
             children: [
                 Symbol("troll", type: .object, category: .objects),
-                Symbol("strength", type: .property),
+                Symbol("strength", type: .int, category: .properties),
             ]
         ))
     }
@@ -44,7 +44,7 @@ final class GetPropertyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
-                .atom("STRENGTH")
+                .atom(",P?STRENGTH")
             ]).process()
         )
     }
@@ -53,7 +53,7 @@ final class GetPropertyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("TROLL"),
-                .string("STRENGTH")
+                .string(",P?STRENGTH")
             ]).process()
         )
     }

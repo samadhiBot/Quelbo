@@ -66,14 +66,14 @@
 //    /// multiline `String`.
 //    ///
 //    /// - Parameter indentLevel: The level of indentation, with four spaces per level.
-//    /// 
+//    ///
 //    /// - Returns: The quoted `String`.
 //    func quoted(_ indentLevel: Int = 0) -> String {
 //        let text = convertToMultiline()
 //        if text.contains("\n") {
 //            return """
 //                \"""
-//                \(text.indented(1))
+//                \(text.indented)
 //                    \"""
 //                """
 //        } else {

@@ -85,7 +85,7 @@
 //            symbols.append(.init(
 //                code: """
 //                directions: [
-//                \(directionsList.indented()),
+//                \(directionsList.indented),
 //                ]
 //                """,
 //                type: .array(.direction)
@@ -105,7 +105,7 @@
 //                code: """
 //                    /// The `\(objectName)` (\(zilName)) \(variety.rawValue.lowercased()).
 //                    var \(objectName) = \(variety.rawValue)(
-//                    \(propertyList.indented())
+//                    \(propertyList.indented)
 //                    )
 //                    """,
 //                name: objectName,
@@ -194,7 +194,7 @@
 //
 //        if let message = message {
 //            return .init(
-//                code: ".\(name): .blocked(\(message.quoted()))",
+//                code: ".\(name): .blocked(\(message.quoted))",
 //                type: .direction
 //            )
 //        }
