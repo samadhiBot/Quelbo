@@ -12,26 +12,6 @@ import XCTest
 final class ObjectTests: QuelboTests {
     let factory = Factories.Object.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-//            Symbol("clearing", type: .object, category: .rooms),
-//            Symbol("cyclops", type: .object, category: .objects),
-//            Symbol("cyclopsMelee", type: .bool, category: .routines),
-//            Symbol("forest1", type: .object, category: .rooms),
-//            Symbol("forest2", type: .object, category: .rooms),
-//            Symbol("forest3", type: .object, category: .rooms),
-//            Symbol("knife", type: .object, category: .objects),
-//            Symbol("path", type: .object, category: .rooms),
-//            Symbol("sword", type: .object, category: .objects),
-//            Symbol("thief", type: .object, category: .objects),
-//            Symbol("thiefMelee", type: .bool, category: .routines),
-//            Symbol("troll", type: .object, category: .objects),
-//            Symbol("trollMelee", type: .bool, category: .routines)
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zilSymbolFactories.find("OBJECT"))
     }

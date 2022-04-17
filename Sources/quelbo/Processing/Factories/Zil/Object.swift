@@ -21,13 +21,35 @@ extension Factories {
         }
 
         var nameSymbol: Symbol!
+        var directionSymbols: [Symbol] = []
         var propertySymbols: [Symbol] = []
+
+        var category: Symbol.Category {
+            .objects
+        }
+
+        var typeName: String {
+            "Object"
+        }
 
         override func processTokens() throws {
             var tokens = tokens
 
             self.nameSymbol = try findNameSymbol(in: &tokens)
             self.propertySymbols = try findPropertySymbols(in: &tokens)
+            if !directionSymbols.isEmpty {
+                self.propertySymbols.append(Symbol(
+                    id: "directions",
+                    code: """
+                        directions: [
+                        \(directionSymbols.codeValues(separator: ",", lineBreaks: 1).indented)
+                        ]
+                        """,
+                    type: .array(.direction),
+//                    category: ,
+                    children: directionSymbols
+                ))
+            }
         }
 
         override func process() throws -> Symbol {
@@ -36,13 +58,13 @@ extension Factories {
             let symbol = Symbol(
                 id: nameSymbol.code,
                 code: """
-                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) object.
-                    var \(nameSymbol.code) = Object(
+                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName.lowercased()).
+                    var \(nameSymbol.code) = \(typeName)(
                     \(propertySymbols.codeValues(separator: ",", lineBreaks: 1, sorted: true).indented)
                     )
                     """,
                 type: .object,
-                category: .objects,
+                category: category,
                 children: propertySymbols
             )
             try Game.commit(symbol)
@@ -70,8 +92,18 @@ extension Factories {
                         guard case .atom(let zil) = tokens.shift() else {
                             throw FactoryError.invalidProperty(token)
                         }
-                        if let factory = try Game.zilPropertyFactories.find(zil)?.init(tokens) {
-                            return try factory.process()
+                        if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
+                            do {
+                                let factory = try propertyFactory.init(tokens)
+                                return try factory.process()
+                            } catch {
+                                guard zil == "IN" else { throw error }
+                            }
+                        }
+                        if let moveFactory = Factories.MoveDirection.find(zil) {
+                            let factory = try moveFactory.init(listTokens)
+                            directionSymbols.append(try factory.process())
+                            return nil
                         }
                         let factory = try Factories.Other.init(listTokens)
                         return try factory.process()

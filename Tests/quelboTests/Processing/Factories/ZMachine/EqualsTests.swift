@@ -1,5 +1,5 @@
 //
-//  EqualTests.swift
+//  EqualsTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 4/3/22.
@@ -9,7 +9,7 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class EqualTests: QuelboTests {
+final class EqualsTests: QuelboTests {
     let factory = Factories.Equals.self
 
     override func setUp() {
