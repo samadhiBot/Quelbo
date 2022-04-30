@@ -72,18 +72,24 @@ extension String {
                 \"""
                 \(text.indented)
                     \"""
-                """
+                """.rightTrimmed
         } else {
             return "\"\(text)\""
         }
     }
 
     var rightTrimmed: String {
-        var view = self[...]
-        while view.last?.isWhitespace == true {
-            view = view.dropLast()
-        }
-        return String(view)
+        self.replacingOccurrences(of: "\n", with: "\n__CRLF__")
+            .split(separator: "\n")
+            .map {
+                var view = $0[...]
+                while view.last?.isWhitespace == true {
+                    view = view.dropLast()
+                }
+                return String(view)
+            }
+            .joined(separator: "\n")
+            .replacingOccurrences(of: "__CRLF__", with: "")
     }
 
     /// Removes and/or replaces common ZIL prefixes and suffixes that are either unneeded or illegal

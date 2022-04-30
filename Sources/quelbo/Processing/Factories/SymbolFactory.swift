@@ -9,6 +9,7 @@ import Foundation
 
 /// A base class for symbol factories whose job is to translate a parsed ``Token`` array into a
 /// ``Symbol`` representation of a Zil code element.
+///
 class SymbolFactory {
     /// An array of ``Token`` values parsed from Zil source code.
     let tokens: [Token]
@@ -16,10 +17,17 @@ class SymbolFactory {
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []
 
-    /// <#Description#>
+    /// The type of ``Block`` of a symbol, or in which a symbol exists.
+    var block: ProgramBlockType?
+
+    /// Whether the symbol representation is mutable.
     var isMutable: Bool = true
 
-    required init(_ tokens: [Token]) throws {
+    required init(
+        _ tokens: [Token],
+        in block: ProgramBlockType? = nil
+    ) throws {
+        self.block = block
         self.tokens = tokens
         try processTokens()
     }
@@ -27,12 +35,12 @@ class SymbolFactory {
     /// The Zil directives that correspond to this symbol factory.
     class var zilNames: [String] { [] }
 
-    /// The number and types of parameters required by this symbol factory.
+    /// The number and types of ``Parameters-swift.enum`` required by this symbol factory.
     class var parameters: Parameters {
         .any
     }
 
-    /// The return value type for the ``Symbol`` produced by this symbol factory.
+    /// The return value ``Symbol/DataType`` for the symbol produced by this symbol factory.
     class var returnType: Symbol.DataType {
         .unknown
     }
@@ -77,21 +85,101 @@ class SymbolFactory {
 ///
 /// See [MDL built-ins and ZIL library](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2et92p0)
 /// in the _ZILF Reference Guide_ for comprehensive documentation.
+///
 class ZilFactory: SymbolFactory {}
 
+/// Subclasses of `ZilPropertyFactory` are factories for symbols representing Zil
+/// [OBJECT](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.38czs75) and
+/// [ROOM](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.13qzunr)
+/// properties.
+///
+/// See
+/// in the _ZILF Reference Guide_ for comprehensive documentation.
+///
 class ZilPropertyFactory: SymbolFactory {}
 
 /// Subclasses of `ZMachineFactory` are factories for symbols used within Zil Routines.
 ///
 /// See [Z-code built-ins](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1j4nfs6)
 /// in the _ZILF Reference Guide_ for comprehensive documentation.
+///
 class ZMachineFactory: SymbolFactory {}
+
+// MARK: - SymbolFactory.Container
+
+extension SymbolFactory {
+    enum ProgramBlockType: Equatable {
+        case blockWithActivation(String)
+        case blockWithDefaultActivation
+        case blockWithoutDefaultActivation
+        case repeatingWithActivation(String)
+        case repeatingWithDefaultActivation
+        case repeatingWithoutDefaultActivation
+
+        var activation: String? {
+            switch self {
+            case .blockWithActivation(let string):
+                return string
+            case .repeatingWithActivation(let string):
+                return string
+            default:
+                return nil
+            }
+        }
+
+        var hasActivation: Bool {
+            switch self {
+            case .blockWithoutDefaultActivation, .repeatingWithoutDefaultActivation:
+                return false
+            default:
+                return true
+            }
+        }
+
+        var isRepeating: Bool {
+            switch self {
+            case .repeatingWithActivation, .repeatingWithDefaultActivation:
+                return true
+            default:
+                return false
+            }
+        }
+
+        mutating func makeRepeating() {
+            switch self {
+            case .blockWithActivation(let string):
+                self = .repeatingWithActivation(string)
+            case .blockWithDefaultActivation:
+                self = .repeatingWithDefaultActivation
+            case .blockWithoutDefaultActivation:
+                self = .repeatingWithoutDefaultActivation
+            default:
+                break
+            }
+        }
+
+        mutating func setActivation(_ string: String) {
+            switch self {
+            case .blockWithActivation,
+                 .blockWithDefaultActivation,
+                 .blockWithoutDefaultActivation:
+                self = .blockWithActivation(string)
+            case .repeatingWithActivation,
+                 .repeatingWithDefaultActivation,
+                 .repeatingWithoutDefaultActivation:
+                self = .repeatingWithActivation(string)
+            }
+        }
+    }
+}
 
 // MARK: - SymbolFactory.Parameters
 
 extension SymbolFactory {
     enum Parameters: Equatable {
         case zero
+        case zeroOrOne(Symbol.DataType)
+        case zeroOrMore(Symbol.DataType)
         case one(Symbol.DataType)
         case oneOrMore(Symbol.DataType)
         case two(Symbol.DataType, Symbol.DataType)
@@ -101,44 +189,50 @@ extension SymbolFactory {
 
         var range: ClosedRange<Int> {
             switch self {
-                case .zero:      return 0...0
-                case .one:       return 1...1
-                case .oneOrMore: return 1...Int.max
-                case .two:       return 2...2
-                case .twoOrMore: return 2...Int.max
-                case .three:     return 3...3
-                case .any:       return 0...Int.max
+            case .zero:       return 0...0
+            case .zeroOrOne:  return 0...1
+            case .zeroOrMore: return 0...Int.max
+            case .one:        return 1...1
+            case .oneOrMore:  return 1...Int.max
+            case .two:        return 2...2
+            case .twoOrMore:  return 2...Int.max
+            case .three:      return 3...3
+            case .any:        return 0...Int.max
             }
         }
 
         func type(at index: Int) throws -> Symbol.DataType {
             switch self {
-                case .zero:
-                    throw FactoryError.invalidTypeLookup(at: index)
-                case let .one(type):
-                    switch index {
-                        case 0:  return type
-                        default: throw FactoryError.invalidTypeLookup(at: index)
-                    }
-                case let .oneOrMore(type):
-                    return type
-                case let .two(firstType, secondType):
-                    switch index {
-                        case 0:  return firstType
-                        case 1:  return secondType
-                        default: throw FactoryError.invalidTypeLookup(at: index)
-                    }
-                case let .twoOrMore(type):
-                    return type
-                case let .three(firstType, secondType, thirdType):
-                    switch index {
-                        case 0:  return firstType
-                        case 1:  return secondType
-                        case 2:  return thirdType
-                        default: throw FactoryError.invalidTypeLookup(at: index)
-                    }
-                case .any:
-                    return .unknown
+            case .zero:
+                throw FactoryError.invalidTypeLookup(at: index)
+            case let .zeroOrOne(type):
+                return type
+            case let .zeroOrMore(type):
+                return type
+            case let .one(type):
+                switch index {
+                case 0:  return type
+                default: throw FactoryError.invalidTypeLookup(at: index)
+                }
+            case let .oneOrMore(type):
+                return type
+            case let .two(firstType, secondType):
+                switch index {
+                case 0:  return firstType
+                case 1:  return secondType
+                default: throw FactoryError.invalidTypeLookup(at: index)
+                }
+            case let .twoOrMore(type):
+                return type
+            case let .three(firstType, secondType, thirdType):
+                switch index {
+                case 0:  return firstType
+                case 1:  return secondType
+                case 2:  return thirdType
+                default: throw FactoryError.invalidTypeLookup(at: index)
+                }
+            case .any:
+                return .unknown
             }
         }
     }
@@ -168,24 +262,24 @@ extension SymbolFactory {
                 index += 1
             }
             switch token {
-                case .atom(let string):
-                    return try symbolizeAtom(string, at: index)
-                case .bool(let bool):
-                    return Symbol("\(bool)", type: .bool)
-                case .commented(let token):
-                    index -= 1
-                    return Symbol("/* \(token.value) */", type: .comment)
-                case .decimal(let int):
-                    return Symbol("\(int)", type: .int)
-                case .form(let tokens):
-                    return try symbolizeForm(tokens)
-                case .list(let tokens):
-                    return try symbolizeList(tokens)
-                case .quoted(let token):
-                    index -= 1
-                    return Symbol("/* \(token.value) */", type: .comment)
-                case .string(let string):
-                    return Symbol(string.quoted, type: .string)
+            case .atom(let string):
+                return try symbolizeAtom(string, at: index)
+            case .bool(let bool):
+                return Symbol("\(bool)", type: .bool, literal: true)
+            case .commented(let token):
+                index -= 1
+                return Symbol("/* \(token.value) */", type: .comment)
+            case .decimal(let int):
+                return Symbol("\(int)", type: .int, literal: true)
+            case .form(let tokens):
+                return try symbolizeForm(tokens)
+            case .list(let tokens):
+                return try symbolizeList(tokens)
+            case .quoted(let token):
+                index -= 1
+                return Symbol("/* \(token.value) */", type: .comment)
+            case .string(let string):
+                return Symbol(string.quoted, type: .string, literal: true)
             }
         }
         symbols = try validate(symbols, validateParamCount: validateParamCount)
@@ -205,11 +299,14 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of the Zil atom.
     ///
     /// - Throws: When the `atom` is a global and the global has not (yet) been defined.
-    func symbolizeAtom(_ zil: String, at index: Int) throws -> Symbol {
+    func symbolizeAtom(
+        _ zil: String,
+        at index: Int
+    ) throws -> Symbol {
         guard !zil.hasPrefix("!\\") else {
             var character = zil
             character.removeFirst(2)
-            return Symbol(character.quoted, type: .string)
+            return Symbol(character.quoted, type: .string, literal: true)
         }
         let name = zil.lowerCamelCase
         if zil.hasPrefix(".") {
@@ -221,13 +318,14 @@ extension SymbolFactory {
             }
             return Symbol(name, type: type, category: .properties)
         }
-        if zil.hasPrefix(",") {
-            return try Game.find(name)
-        }
         if let defined = try? Game.find(name) {
-            return defined
+            return defined.with(code: name)
         }
-        return Symbol(name, type: try Self.parameters.type(at: index))
+        let paramType = try Self.parameters.type(at: index)
+        if zil == "T" && paramType != .property {
+            return .trueSymbol
+        }
+        return Symbol(name, type: paramType)
     }
 
     /// Translates a Zil form ``Token`` into a ``Symbol``.
@@ -243,7 +341,10 @@ extension SymbolFactory {
             throw FactoryError.invalidZilForm(tokens)
         }
         let factory: SymbolFactory
-        if let found = try Game.zMachineSymbolFactories.find(zil)?.init(tokens) {
+        if let found = try Game.zMachineSymbolFactories
+            .find(zil)?
+            .init(tokens, in: block)
+        {
             factory = found
         } else {
             factory = try Factories.RoutineCall(formTokens)
@@ -262,11 +363,15 @@ extension SymbolFactory {
     /// - Throws: When the Zil `form` lacks an opening atom.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
         guard !listTokens.isEmpty else {
-            return Symbol("<EmptyList>", type: .list)
+            return Symbol(id: "<EmptyList>", code: "", type: .list)
         }
-        let listSymbols = try symbolize(listTokens, validateParamCount: false)
+        let listSymbols = try symbolize(
+            listTokens,
+            validateParamCount: false
+        )
         return Symbol(
-            "<List>",
+            id: "<List>",
+            code: "",
             type: .list,
             children: try validate(listSymbols, validateParamCount: false)
         )
@@ -296,6 +401,7 @@ extension SymbolFactory {
             defer {
                 if symbol.type != .comment { index += 1 }
             }
+            
             return try assignType(
                 of: symbol,
                 to: Self.parameters.type(at: index),
@@ -303,9 +409,9 @@ extension SymbolFactory {
             )
         }
         switch Self.parameters {
-            case .one, .oneOrMore, .twoOrMore:
-                _ = try typedSymbols.commonType()
-            default: break
+        case .one, .oneOrMore, .twoOrMore:
+            _ = try typedSymbols.commonType()
+        default: break
         }
         return typedSymbols
     }
@@ -319,30 +425,30 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-//        print("// 🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
+        // print("// 🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
         if declaredType == .tableElement {
             return try assignTableElementType(on: symbol)
         }
 
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
-            case (true, true):
-                if declaredType == .bool && symbol.type == .int {
-                    return Symbol(symbol.id == "0" ? "false" : "true", type: .bool)
-                }
-                if symbol.type == declaredType {
-                    return symbol
-                }
-            case (true, false):
-                if declaredType.acceptsLiteral || symbol.category == .properties {
-                    return symbol
-                }
-            case (false, true):
-                return symbol.with(declaredType)
-            case (false, false):
-                if symbol.type.isContainer {
-                    return symbol
-                }
-                return symbol.with(try siblings.commonType())
+        case (true, true):
+            if declaredType == .bool && symbol.type == .int {
+                return Symbol(symbol.id == "0" ? "false" : "true", type: .bool, literal: true)
+            }
+            if symbol.type == declaredType {
+                return symbol
+            }
+        case (true, false):
+            if declaredType.acceptsLiteral || symbol.category == .properties {
+                return symbol
+            }
+        case (false, true):
+            return symbol.with(type: declaredType)
+        case (false, false):
+            if symbol.type.isContainer || symbol.type.hasKnownReturnValue {
+                return symbol
+            }
+            return symbol.with(type: try siblings.commonType())
         }
 
         throw FactoryError.invalidType(symbol, expected: declaredType)
@@ -350,52 +456,63 @@ extension SymbolFactory {
 
     func assignTableElementType(on symbol: Symbol) throws -> Symbol? {
         switch symbol.type {
-            case .array:
-                return symbol
-                    .with(code: """
-                        .table([
-                        \(symbol.children.codeValues(separator: ",", lineBreaks: 1).indented),
-                        ])
-                        """)
-                    .with(.tableElement)
-            case .bool:
-                return symbol
-                    .with(code: ".bool(\(symbol))")
-                    .with(.tableElement)
-            case .comment:
-                return symbol
-                    .with(code: "// \(symbol)")
-                    .with(.tableElement)
-            case .int:
-                return symbol
-                    .with(code: ".int(\(symbol))")
-                    .with(.tableElement)
-            case .list:
-                guard symbol.children.first?.id == "pure" else {
-                    throw FactoryError.unexpectedTableElement(symbol)
-                }
-                isMutable = false
-                return nil
-            case .object:
-                if let category = symbol.category, category == .rooms {
-                    return symbol
-                        .with(code: ".room(\(symbol))")
-                        .with(.tableElement)
-                } else {
-                    return symbol
-                        .with(code: ".object(\(symbol))")
-                        .with(.tableElement)
-                }
-            case .string:
-                return symbol
-                    .with(code: ".string(\(symbol))")
-                    .with(.tableElement)
-            case .tableElement:
-                return symbol
-                    .with(code: ".table(\(symbol))")
-                    .with(.tableElement)
-            default:
+        case .array:
+            return symbol.with(
+                code: """
+                    .table([
+                    \(symbol.children.codeValues(separator: ",", lineBreaks: 1).indented),
+                    ])
+                    """,
+                type: .tableElement
+            )
+        case .bool:
+            return symbol.with(
+                code: ".bool(\(symbol))",
+                type: .tableElement,
+                literal: symbol.literal
+            )
+        case .comment:
+            return symbol.with(
+                code: "// \(symbol)",
+                type: .tableElement
+            )
+        case .int:
+            return symbol.with(
+                code: ".int(\(symbol))",
+                type: .tableElement,
+                literal: symbol.literal
+            )
+        case .list:
+            guard symbol.children.first?.id == "pure" else {
                 throw FactoryError.unexpectedTableElement(symbol)
+            }
+            isMutable = false
+            return nil
+        case .object:
+            if symbol.category == .rooms {
+                return symbol.with(
+                    code: ".room(\(symbol))",
+                    type: .tableElement
+                )
+            } else {
+                return symbol.with(
+                    code: ".object(\(symbol))",
+                    type: .tableElement
+                )
+            }
+        case .string:
+            return symbol.with(
+                code: ".string(\(symbol))",
+                type: .tableElement,
+                literal: symbol.literal
+            )
+        case .tableElement:
+            return symbol.with(
+                code: ".table(\(symbol))",
+                type: .tableElement
+            )
+        default:
+            throw FactoryError.unexpectedTableElement(symbol)
         }
     }
 }
@@ -439,7 +556,7 @@ enum FactoryError: Swift.Error {
     case unknownZilFunction(zil: String)
 }
 
-// MARK: - Special Token handlers
+// MARK: - Special Token processors
 
 extension SymbolFactory {
     /// Scans through a ``Token`` array until it finds an atom, then returns a special ``Symbol``
@@ -486,36 +603,6 @@ extension SymbolFactory {
         }
         throw FactoryError.missingParameters(original)
     }
-
-//    /// <#Description#>
-//    ///
-//    /// - Parameter tokens: <#tokens description#>
-//    ///
-//    /// - Returns: <#description#>
-//    ///
-//    /// - Throws:
-//    func findValueSymbol(
-//        in tokens: inout [Token],
-//        requireLiteral: Bool = false
-//    ) throws -> Symbol {
-//        var symbols = try symbolize(tokens)
-//        var valueSymbol: Symbol?
-//        while let value = symbols.shift() {
-//            if requireLiteral && !value.type.isLiteral {
-//                continue
-//            } else if !value.type.hasReturnValue {
-//                continue
-//            }
-//            guard valueSymbol == nil else {
-//                throw FactoryError.unconsumedTokens(tokens)
-//            }
-//            valueSymbol = value
-//        }
-//        guard let valueSymbol = valueSymbol else {
-//            throw FactoryError.missingValue(tokens)
-//        }
-//        return valueSymbol
-//    }
 }
 
 // MARK: - Array where Element == SymbolFactory
@@ -532,12 +619,12 @@ extension Array where Element == SymbolFactory.Type {
     func find(_ zil: String) throws -> SymbolFactory.Type? {
         let matches = filter { $0.zilNames.contains(zil) }
         switch matches.count {
-            case 0:
-                return nil
-            case 1:
-                return matches[0]
-            default:
-                throw FactoryError.foundMultipleMatchingFactories(zil: zil, matches: matches)
+        case 0:
+            return nil
+        case 1:
+            return matches[0]
+        default:
+            throw FactoryError.foundMultipleMatchingFactories(zil: zil, matches: matches)
         }
     }
 }

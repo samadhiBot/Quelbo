@@ -40,11 +40,11 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "and(true, true)",
+            ".and(true, true)",
             type: .bool,
             children: [
-                Symbol("true", type: .bool),
-                Symbol("true", type: .bool),
+                .trueSymbol,
+                .trueSymbol,
             ]
         ))
     }
@@ -57,12 +57,12 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "and(true, false, true)",
+            ".and(true, false, true)",
             type: .bool,
             children: [
-                Symbol("true", type: .bool),
-                Symbol("false", type: .bool),
-                Symbol("true", type: .bool),
+                .trueSymbol,
+                .falseSymbol,
+                .trueSymbol,
             ]
         ))
     }
@@ -75,12 +75,12 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "and(1, 0, 2)",
+            ".and(1, 0, 2)",
             type: .int,
             children: [
-                Symbol("1", type: .int),
-                Symbol("0", type: .int),
-                Symbol("2", type: .int),
+                Symbol("1", type: .int, literal: true),
+                Symbol("0", type: .int, literal: true),
+                Symbol("2", type: .int, literal: true),
             ]
         ))
     }
@@ -99,7 +99,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "and(rarg.equals(mEnter), !foundTreasureChest)",
+            ".and(rarg.equals(mEnter), !foundTreasureChest)",
             type: .bool,
             children: [
                 Symbol(

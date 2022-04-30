@@ -16,8 +16,13 @@ extension Factories {
             ["RFALSE"]
         }
 
-        override var value: String {
-            "false"
+        override func process() throws -> Symbol {
+            Symbol(
+                id: "<Return>",
+                code: "return false",
+                type: .bool,
+                children: [.falseSymbol]
+            )
         }
     }
 }

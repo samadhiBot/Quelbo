@@ -28,7 +28,7 @@ struct Quelbo: ParsableCommand {
     var target: String?
 
     func run() throws {
-        var game = Game.shared
+        let game = Game.shared
 
         try gameFiles().forEach { file in
             guard file.extension?.lowercased() == "zil" else {
@@ -43,6 +43,9 @@ struct Quelbo: ParsableCommand {
             Pretty.prettyPrint(game.gameTokens)
         }
 
+        try game.setZMachineVersion()
+
+        let total: Int = game.gameTokens.count
         do {
             try game.process()
 
@@ -55,7 +58,7 @@ struct Quelbo: ParsableCommand {
             print(
                 """
 
-                💀 Processing failed
+                💀 Processing failed (\(game.gameTokens.count) of \(total) tokens unprocessed)
                 ============================================================
                 """
             )

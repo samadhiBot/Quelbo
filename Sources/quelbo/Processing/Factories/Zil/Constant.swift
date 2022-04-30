@@ -16,7 +16,7 @@ extension Factories {
             ["CONSTANT"]
         }
 
-        required init(_ tokens: [Token]) throws {
+        required init(_ tokens: [Token], in block: SymbolFactory.ProgramBlockType? = nil) throws {
             try super.init(tokens)
             isMutable = false
         }

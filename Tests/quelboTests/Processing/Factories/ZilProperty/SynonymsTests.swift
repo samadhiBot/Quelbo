@@ -32,8 +32,8 @@ final class SynonymsTests: QuelboTests {
                 """,
             type: .array(.string),
             children: [
-                Symbol("egg", type: .string),
-                Symbol("treasure", type: .string),
+                Symbol("egg", type: .string, literal: true),
+                Symbol("treasure", type: .string, literal: true),
             ]
         ))
     }

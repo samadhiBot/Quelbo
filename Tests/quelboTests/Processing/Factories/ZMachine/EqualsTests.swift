@@ -37,8 +37,8 @@ final class EqualsTests: QuelboTests {
             "2.equals(3)",
             type: .bool,
             children: [
-                Symbol("2", type: .int),
-                Symbol("3", type: .int),
+                Symbol("2", type: .int, literal: true),
+                Symbol("3", type: .int, literal: true),
             ]
         ))
     }
@@ -54,7 +54,7 @@ final class EqualsTests: QuelboTests {
             type: .bool,
             children: [
                 Symbol("n", type: .int),
-                Symbol("3", type: .int),
+                Symbol("3", type: .int, literal: true),
             ]
         ))
     }
@@ -70,9 +70,9 @@ final class EqualsTests: QuelboTests {
             "2.equals(3, 4)",
             type: .bool,
             children: [
-                Symbol("2", type: .int),
-                Symbol("3", type: .int),
-                Symbol("4", type: .int),
+                Symbol("2", type: .int, literal: true),
+                Symbol("3", type: .int, literal: true),
+                Symbol("4", type: .int, literal: true),
             ]
         ))
     }
@@ -87,8 +87,8 @@ final class EqualsTests: QuelboTests {
             id: #""hello".equals("goodBye")"#,
             type: .bool,
             children: [
-                Symbol(id: #""hello""#, type: .string),
-                Symbol(id: #""goodBye""#, type: .string),
+                Symbol(id: #""hello""#, type: .string, literal: true),
+                Symbol(id: #""goodBye""#, type: .string, literal: true),
             ]
         ))
     }

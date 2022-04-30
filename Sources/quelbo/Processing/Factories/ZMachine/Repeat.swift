@@ -16,8 +16,8 @@ extension Factories {
             ["REPEAT"]
         }
 
-        override var function: String {
-            "repeat"
+        override func processTokens() throws {
+            self.pro = try BlockProcessor(tokens, in: .repeatingWithDefaultActivation)
         }
     }
 }

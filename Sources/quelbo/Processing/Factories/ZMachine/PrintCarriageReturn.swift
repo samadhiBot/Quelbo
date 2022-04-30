@@ -20,7 +20,7 @@ extension Factories {
             Symbol(
                 """
                     output(\(try symbol(0)))
-                    output(carriageReturn)
+                    output("\\n")
                     """,
                 type: .void,
                 children: symbols

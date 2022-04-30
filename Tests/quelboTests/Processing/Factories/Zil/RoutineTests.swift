@@ -15,23 +15,22 @@ final class RoutineTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        try! Game.commit([
             Symbol(
                 "sing",
-                type: .int,
+                type: .void,
                 category: .routines,
                 children: [
-                    Symbol("n", type: .int)
+                    Symbol(id: "n", code: "n: Int", type: .int)
                 ]
             )
-        )
+        ])
     }
 
-    
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zilSymbolFactories.find("ROUTINE"))
     }
-    
+
     func testProcessZeroParamsZeroExpressions() throws {
         let symbol = try factory.init([
             .atom("BAG-OF-COINS-F"),
@@ -47,6 +46,7 @@ final class RoutineTests: QuelboTests {
                     /* noop */
                 }
                 """,
+            type: .void,
             category: .routines
         )
 
@@ -68,11 +68,11 @@ final class RoutineTests: QuelboTests {
             id: "go",
             code: """
                 /// The `go` (GO) routine.
-                func go() -> Int {
+                func go() {
                     sing(n: 99)
                 }
                 """,
-            type: .int,
+            type: .void,
             category: .routines
         )
 
@@ -92,16 +92,16 @@ final class RoutineTests: QuelboTests {
                 .decimal(42)
             ])
         ]).process()
-        
+
         let expected = Symbol(
             id: "westHouse",
             code: """
                 /// The `westHouse` (WEST-HOUSE) routine.
-                func westHouse(rarg: Int) -> Int {
+                func westHouse(rarg: Int) {
                     rarg.add(42)
                 }
                 """,
-            type: .int,
+            type: .void,
             category: .routines,
             children: [
                 Symbol(
@@ -127,7 +127,7 @@ final class RoutineTests: QuelboTests {
                 .atom("MESSAGE")
             ])
         ]).process()
-        
+
         let expected = Symbol(
             id: "printMessage",
             code: """
@@ -175,15 +175,14 @@ final class RoutineTests: QuelboTests {
             id: "isDucking",
             code: """
                 /// The `isDucking` (DUCKING?) routine.
-                func isDucking() -> String {
-                    var vs: Int
-                    var ps: String
-
+                func isDucking() {
+                    var vs: Int = 0
+                    var ps: String = ""
                     vs.set(to: 10)
-                    return ps.set(to: "Duck")
+                    ps.set(to: "Duck")
                 }
                 """,
-            type: .string,
+            type: .void,
             category: .routines
         )
 
@@ -207,18 +206,17 @@ final class RoutineTests: QuelboTests {
                 .bool(true)
             ]),
         ]).process()
-        
+
         let expected = Symbol(
             id: "boomRoom",
             code: """
                 /// The `boomRoom` (BOOM-ROOM) routine.
-                func boomRoom() -> Bool {
+                func boomRoom() {
                     var isDummy: Bool = false
-
                     isDummy.set(to: true)
                 }
                 """,
-            type: .bool,
+            type: .void,
             category: .routines
         )
 
@@ -238,7 +236,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO")
             ])
         ]).process()
-        
+
         let expected = Symbol(
             id: "batD",
             code: """
@@ -279,16 +277,16 @@ final class RoutineTests: QuelboTests {
                 .atom("BAR")
             ]),
         ]).process()
-        
+
         let expected = Symbol(
             id: "batBat",
             code: """
                     /// The `batBat` (BAT-BAT) routine.
-                    func batBat(foo: Int? = nil, bar: Int = 42) -> Int {
+                    func batBat(foo: Int? = nil, bar: Int = 42) {
                         foo.add(bar)
                     }
                     """,
-            type: .int,
+            type: .void,
             category: .routines,
             children: [
                 Symbol(id: "foo", code: "foo: Int? = nil", type: .int),
@@ -298,7 +296,7 @@ final class RoutineTests: QuelboTests {
                     type: .list,
                     children: [
                         Symbol("bar", type: .int),
-                        Symbol("42", type: .int),
+                        Symbol("42", type: .int, literal: true),
                     ]
                 )
             ]
@@ -322,7 +320,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO")
             ])
         ]).process()
-        
+
         let expected = Symbol(
             id: "deadFunc",
             code: """
@@ -340,7 +338,7 @@ final class RoutineTests: QuelboTests {
                     type: .list,
                     children: [
                         Symbol("foo", type: .string),
-                        Symbol("\"****  You have died  ****\"", type: .string)
+                        Symbol("\"****  You have died  ****\"", type: .string, literal: true)
                     ]
                 )
             ]
@@ -351,7 +349,7 @@ final class RoutineTests: QuelboTests {
     }
 
     // <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
-    
+
     func testProcessWithMultipleDefaultValueParam() throws {
         let symbol = try factory.init([
             .atom("REMARK"),
@@ -374,7 +372,7 @@ final class RoutineTests: QuelboTests {
                 .atom(".CNT")
             ])
         ]).process()
-        
+
         let expected = Symbol(
             id: "remark",
             code: """
@@ -397,7 +395,7 @@ final class RoutineTests: QuelboTests {
                             type: .tableElement,
                             children: [
                                 Symbol("remark", type: .array(.tableElement)),
-                                Symbol("0", type: .int)
+                                Symbol("0", type: .int, literal: true)
                             ]
                         )
                     ]
@@ -408,7 +406,7 @@ final class RoutineTests: QuelboTests {
                     type: .list,
                     children: [
                         Symbol("cnt", type: .int),
-                        Symbol("0", type: .int)
+                        Symbol("0", type: .int, literal: true)
                     ]
                 )
             ]
@@ -419,9 +417,179 @@ final class RoutineTests: QuelboTests {
     }
 
     // <ROUTINE THIEF-VS-ADVENTURER (HERE? "AUX" ROBBED? (WINNER-ROBBED? <>))
-    
+
     // <ROUTINE ROBBER-FUNCTION ("OPTIONAL" (MODE <>) "AUX" (FLG <>) X N)
-    
+
     // <ROUTINE I-LANTERN ("AUX" TICK (TBL <VALUE LAMP-TABLE>))
-    
+
+    func testBottlesRoutine() throws {
+        let symbol = try factory.init([
+            .atom("BOTTLES"),
+            .list([
+                .atom("N")
+            ]),
+            .form([
+                .atom("PRINTN"),
+                .atom(".N")
+            ]),
+            .form([
+                .atom("PRINTI"),
+                .string(" bottle")
+            ]),
+            .form([
+                .atom("COND"),
+                .list([
+                    .form([
+                        .atom("N==?"),
+                        .atom(".N"),
+                        .decimal(1)
+                    ]),
+                    .form([
+                        .atom("PRINTC"),
+                        .atom(#"!\s"#)
+                    ])
+                ])
+            ]),
+            .form([
+                .atom("RTRUE")
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol, bottlesRoutine)
+        XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
+    }
+
+    func testSingRoutine() throws {
+        try! Game.commit(bottlesRoutine)
+
+        let symbol = try factory.init([
+            .atom("SING"),
+            .list([
+                .atom("N")
+            ]),
+            .form([
+                .atom("REPEAT"),
+                .list([
+                ]),
+                .form([
+                    .atom("BOTTLES"),
+                    .atom(".N")
+                ]),
+                .form([
+                    .atom("PRINTI"),
+                    .string("""
+                         of beer on the wall,
+                        """)
+                ]),
+                .form([
+                    .atom("BOTTLES"),
+                    .atom(".N")
+                ]),
+                .form([
+                    .atom("PRINTI"),
+                    .string("""
+                         of beer,
+                        Take one down, pass it around,
+                        """)
+                ]),
+                .form([
+                    .atom("COND"),
+                    .list([
+                        .form([
+                            .atom("DLESS?"),
+                            .atom("N"),
+                            .decimal(1)
+                        ]),
+                        .form([
+                            .atom("PRINTR"),
+                            .string("No more bottles of beer on the wall!")
+                        ]),
+                        .form([
+                            .atom("RETURN")
+                        ])
+                    ]),
+                    .list([
+                        .atom("ELSE"),
+                        .form([
+                            .atom("BOTTLES"),
+                            .atom(".N")
+                        ]),
+                        .form([
+                            .atom("PRINTI"),
+                            .string(
+                                """
+                                 of beer on the wall!
+
+                                """
+                            )
+                        ])
+                    ])
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "sing",
+            code: #"""
+            /// The `sing` (SING) routine.
+            func sing(n: Int) {
+                var n = n
+                while true {
+                    bottles(n: n)
+                    output(" of beer on the wall,")
+                    bottles(n: n)
+                    output("""
+                         of beer,
+                        Take one down, pass it around,
+                        """)
+                    if n.decrement().isLessThan(1) {
+                        output("No more bottles of beer on the wall!")
+                        output("\n")
+                        break
+                    } else {
+                        bottles(n: n)
+                        output("""
+                             of beer on the wall!
+
+                            """)
+                    }
+                }
+            }
+            """#,
+            type: .void,
+            category: .routines,
+            children: [
+                Symbol(
+                    id: "n",
+                    code: "n: Int",
+                    type: .int
+                )
+            ]
+        ))
+    }
+}
+
+extension RoutineTests {
+    var bottlesRoutine: Symbol {
+        Symbol(
+            id: "bottles",
+            code: """
+                @discardableResult
+                /// The `bottles` (BOTTLES) routine.
+                func bottles(n: Int) -> Bool {
+                    output(n)
+                    output(" bottle")
+                    if n.isNotEqualTo(1) {
+                        output("s")
+                    }
+                    return true
+                }
+                """,
+            type: .bool,
+            category: .routines,
+            children: [
+                Symbol(id: "n", code: "n: Int", type: .int)
+            ]
+        )
+    }
 }

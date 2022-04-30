@@ -38,7 +38,8 @@ final class TextTests: QuelboTests {
                             blank."
                             """
                         """#,
-                    type: .string
+                    type: .string,
+                    literal: true
                 )
             ]
         ))

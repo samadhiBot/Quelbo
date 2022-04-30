@@ -23,7 +23,7 @@ final class OtherTests: QuelboTests {
             code: "advfcn: 0",
             type: .int,
             children: [
-                Symbol("0", type: .int)
+                Symbol("0", type: .int, literal: true)
             ]
         ))
     }

@@ -33,7 +33,7 @@ final class IsOneTests: QuelboTests {
             "2.isOne",
             type: .bool,
             children: [
-                Symbol("2", type: .int)
+                Symbol("2", type: .int, literal: true)
             ]
         ))
     }

@@ -52,7 +52,7 @@ final class SymbolFactoryTests: QuelboTests {
             .bool(true)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("true", type: .bool))
+        XCTAssertNoDifference(symbol, Symbol("true", type: .bool, literal: symbol.literal))
     }
 
     func testSymbolizeBoolFalse() throws {
@@ -60,7 +60,7 @@ final class SymbolFactoryTests: QuelboTests {
             .bool(false)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("false", type: .bool))
+        XCTAssertNoDifference(symbol, Symbol("false", type: .bool, literal: symbol.literal))
     }
 
     func testSymbolizeCommented() throws {
@@ -76,7 +76,7 @@ final class SymbolFactoryTests: QuelboTests {
             .decimal(42)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("42", type: .int))
+        XCTAssertNoDifference(symbol, Symbol("42", type: .int, literal: true))
     }
 
     func testSymbolizeList() throws {
@@ -88,11 +88,12 @@ final class SymbolFactoryTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "<List>",
+            id: "<List>",
+            code: "",
             type: .list,
             children: [
                 Symbol("isFloating", type: .bool),
-                Symbol("false", type: .bool),
+                .falseSymbol
             ]
         ))
     }
@@ -110,6 +111,10 @@ final class SymbolFactoryTests: QuelboTests {
             .string("Plants can talk")
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol(#""Plants can talk""#, type: .string))
+        XCTAssertNoDifference(symbol, Symbol(
+            #""Plants can talk""#,
+            type: .string,
+            literal: symbol.literal
+        ))
     }
 }

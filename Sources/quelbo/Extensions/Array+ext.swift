@@ -6,14 +6,21 @@
 //
 
 import Foundation
-import Fizmo
 
 extension Array {
-    enum Error: Swift.Error {
-        case foundMultipleFactories([SymbolFactory.Type])
-        case noMatchingFactory(for: String)
-        case symbolsTypeMismatch([Symbol])
-        case tokensTypeMismatch([Token])
+//    enum Error: Swift.Error {
+//        case foundMultipleFactories([SymbolFactory.Type])
+//        case noMatchingFactory(for: String)
+//        case symbolsTypeMismatch([Symbol])
+//        case tokensTypeMismatch([Token])
+//    }
+
+    /// Safely shifts an `Element` from the front of an `Array`.
+    ///
+    /// - Returns: The first `Element` of the `Array`. Returns `nil` if the array is empty.
+    public mutating func shift() -> Element? {
+        guard !isEmpty else { return nil }
+        return removeFirst()
     }
 }
 

@@ -11,7 +11,7 @@ import Fizmo
 
 final class BeerSongTests: XCTestCase {
     func testBeerSongRoutine() {
-        var song = BeerSongRoutineVersion()
+        let song = BeerSongRoutineVersion()
         song.go()
 
         XCTAssertNoDifference(

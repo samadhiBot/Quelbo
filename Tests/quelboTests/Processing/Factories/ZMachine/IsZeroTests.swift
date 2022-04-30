@@ -34,7 +34,7 @@ final class IsZeroTests: QuelboTests {
             "2.isZero",
             type: .bool,
             children: [
-                Symbol("2", type: .int)
+                Symbol("2", type: .int, literal: true)
             ]
         ))
     }

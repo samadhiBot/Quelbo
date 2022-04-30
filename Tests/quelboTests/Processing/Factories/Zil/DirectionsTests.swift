@@ -50,7 +50,8 @@ final class DirectionsTests: QuelboTests {
         ]
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            id: "<Directions>",
+            code: """
                 /// The set of possible movement directions.
                 public enum Direction: String {
                     case north

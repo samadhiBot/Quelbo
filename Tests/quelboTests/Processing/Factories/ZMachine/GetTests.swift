@@ -29,17 +29,11 @@ final class GetTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
-                let foo: [TableElement] = [
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                ][2]
-                """,
+            "foo[2]",
             type: .tableElement,
             children: [
-                fooTable,
-                Symbol("2", type: .int)
+                fooTable.with(code: "foo"),
+                Symbol("2", type: .int, literal: true)
             ]
         ))
     }

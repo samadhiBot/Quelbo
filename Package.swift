@@ -14,11 +14,11 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/JohnSundell/Files", from: "4.0.0"),
+        .package(url: "https://github.com/JohnSundell/Files", from: "4.2.0"),
         .package(url: "https://github.com/YusukeHosonuma/SwiftPrettyPrint.git", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.3.0"),
-        .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.8.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.0"),
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.4.0"),
+        .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.9.0"),
     ],
     targets: [
         .executableTarget(

@@ -24,12 +24,13 @@ extension Factories {
             .bool
         }
 
-        var value: String {
-            "true"
-        }
-
         override func process() throws -> Symbol {
-            Symbol("return \(value)", type: .bool)
+            Symbol(
+                id: "<Return>",
+                code: "return true",
+                type: .bool,
+                children: [.trueSymbol]
+            )
         }
     }
 }

@@ -25,10 +25,12 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            Symbol(
-                "\(try symbol(0)).decrement().lessThan(\(try symbol(1)))",
+            let variable = try symbol(0).mutating
+            let value = try symbol(1)
+            return Symbol(
+                "\(variable).decrement().isLessThan(\(value))",
                 type: .bool,
-                children: symbols
+                children: [variable, value]
             )
         }
     }

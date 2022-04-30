@@ -53,7 +53,7 @@ final class TellTests: QuelboTests {
                     "output(\"You are in a large cavernous room\")",
                     type: .void,
                     children: [
-                        Symbol("\"You are in a large cavernous room\"", type: .string)
+                        Symbol("\"You are in a large cavernous room\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -67,21 +67,21 @@ final class TellTests: QuelboTests {
                     "output(42)",
                     type: .void,
                     children: [
-                        Symbol("42", type: .int)
+                        Symbol("42", type: .int, literal: true)
                     ]
                 ),
                 Symbol(
                     "output(\"z\")",
                     type: .void,
                     children: [
-                        Symbol("\"z\"", type: .string)
+                        Symbol("\"z\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
                     "output(utf8: 65)",
                     type: .void,
                     children: [
-                        Symbol("65", type: .int)
+                        Symbol("65", type: .int, literal: true)
                     ]
                 )
             ]

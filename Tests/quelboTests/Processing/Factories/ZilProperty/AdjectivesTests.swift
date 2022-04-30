@@ -34,9 +34,9 @@ final class AdjectivesTests: QuelboTests {
                 """,
             type: .array(.string),
             children: [
-                Symbol("white", type: .string),
-                Symbol("beauti", type: .string),
-                Symbol("coloni", type: .string),
+                Symbol("white", type: .string, literal: true),
+                Symbol("beauti", type: .string, literal: true),
+                Symbol("coloni", type: .string, literal: true),
             ]
         ))
     }

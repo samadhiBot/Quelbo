@@ -35,7 +35,7 @@ final class PrintTests: QuelboTests {
             #"output("Hello World")"#,
             type: .void,
             children: [
-                Symbol(#""Hello World""#, type: .string),
+                Symbol(#""Hello World""#, type: .string, literal: true),
             ]
         ))
     }

@@ -34,7 +34,7 @@ final class PrintCharacterTests: QuelboTests {
             #"output(utf8: 90)"#,
             type: .void,
             children: [
-                Symbol("90", type: .int),
+                Symbol("90", type: .int, literal: true),
             ]
         ))
     }
@@ -57,7 +57,7 @@ final class PrintCharacterTests: QuelboTests {
             #"output("s")"#,
             type: .void,
             children: [
-                Symbol(#""s""#, type: .string),
+                Symbol(#""s""#, type: .string, literal: true),
             ]
         ))
     }
@@ -86,15 +86,15 @@ final class PrintCharacterTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(utf8: 2.add(88))",
+            "output(utf8: .add(2, 88))",
             type: .void,
             children: [
                 Symbol(
-                    "2.add(88)",
+                    ".add(2, 88)",
                     type: .int,
                     children: [
-                        Symbol("2", type: .int),
-                        Symbol("88", type: .int),
+                        Symbol("2", type: .int, literal: true),
+                        Symbol("88", type: .int, literal: true),
                     ]
                 ),
             ]

@@ -33,7 +33,7 @@ final class PrintNumberTests: QuelboTests {
             id: "output(2)",
             type: .void,
             children: [
-                Symbol(id: "2", type: .int),
+                Symbol(id: "2", type: .int, literal: true),
             ]
         ))
     }
@@ -71,15 +71,15 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "output(2.add(3))",
+            id: "output(.add(2, 3))",
             type: .void,
             children: [
                 Symbol(
-                    id: "2.add(3)",
+                    id: ".add(2, 3)",
                     type: .int,
                     children: [
-                        Symbol(id: "2", type: .int),
-                        Symbol(id: "3", type: .int),
+                        Symbol(id: "2", type: .int, literal: true),
+                        Symbol(id: "3", type: .int, literal: true),
                     ]
                 ),
             ]

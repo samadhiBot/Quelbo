@@ -34,11 +34,14 @@ extension Factories {
                 throw FactoryError.missingValue(tokens)
             }
 
-            return Symbol(
-                "\(first).\(function)(\(symbols.codeValues(separator: ",")))",
-                type: .int,
-                children: original
-            )
+            let code: String
+            if first.literal {
+                code = ".\(function)(\(original.codeValues(separator: ",")))"
+            } else {
+                code = "\(first).\(function)(\(symbols.codeValues(separator: ",")))"
+            }
+
+            return Symbol(code, type: .int, children: original)
         }
     }
 }

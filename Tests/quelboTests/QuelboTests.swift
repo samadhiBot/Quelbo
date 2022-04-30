@@ -11,6 +11,7 @@ import XCTest
 class QuelboTests: XCTestCase {
     override func setUp() {
         Game.shared.gameSymbols = []
+        Game.shared.zMachineVersion = .z3
     }
 
     func AssertSameFactory(
@@ -55,5 +56,11 @@ extension QuelboTests {
                 Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
             ]
         )
+    }
+}
+
+extension Symbol {
+    var ignoringChildren: Symbol {
+        self.with(children: [])
     }
 }

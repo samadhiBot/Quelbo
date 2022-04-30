@@ -84,8 +84,8 @@ final class TableTests: QuelboTests {
             children: [
                 Symbol(id: "troll", code: ".object(troll)", type: .tableElement, category: .objects),
                 Symbol(id: "sword", code: ".object(sword)", type: .tableElement, category: .objects),
-                Symbol(id: "1", code: ".int(1)", type: .tableElement),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement),
+                Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
+                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
                 Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .tableElement, category: .routines),
             ]
         ))
@@ -191,8 +191,8 @@ final class TableTests: QuelboTests {
                     children: [
                         Symbol(id: "troll", code: ".object(troll)", type: .tableElement, category: .objects),
                         Symbol(id: "sword", code: ".object(sword)", type: .tableElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .tableElement),
-                        Symbol(id: "0", code: ".int(0)", type: .tableElement),
+                        Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
+                        Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
                         Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .tableElement, category: .routines),
                     ]
                 ),
@@ -219,8 +219,8 @@ final class TableTests: QuelboTests {
                     children: [
                         Symbol(id: "thief", code: ".object(thief)", type: .tableElement, category: .objects),
                         Symbol(id: "knife", code: ".object(knife)", type: .tableElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .tableElement),
-                        Symbol(id: "0", code: ".int(0)", type: .tableElement),
+                        Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
+                        Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
                         Symbol(id: "thiefMelee", code: ".bool(thiefMelee)", type: .tableElement, category: .routines),
                     ]
                 ),

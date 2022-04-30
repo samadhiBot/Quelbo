@@ -24,9 +24,7 @@ final class NotTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             "!true",
             type: .bool,
-            children: [
-                Symbol("true", type: .bool)
-            ]
+            children: [.trueSymbol]
         ))
     }
 

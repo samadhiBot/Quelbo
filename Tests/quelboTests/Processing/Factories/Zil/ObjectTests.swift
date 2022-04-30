@@ -80,7 +80,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"house\"]",
                     type: .array(.string),
                     children: [
-                        Symbol("house", type: .string)
+                        Symbol("house", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -94,9 +94,9 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("white", type: .string),
-                        Symbol("beauti", type: .string),
-                        Symbol("coloni", type: .string)
+                        Symbol("white", type: .string, literal: true),
+                        Symbol("beauti", type: .string, literal: true),
+                        Symbol("coloni", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -104,7 +104,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"white house\"",
                     type: .string,
                     children: [
-                        Symbol("\"white house\"", type: .string)
+                        Symbol("\"white house\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -208,16 +208,8 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "egg",
-                            code: "egg",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "treasure",
-                            code: "treasure",
-                            type: .string
-                        )
+                        Symbol("egg", type: .string, literal: true),
+                        Symbol("treasure", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -232,26 +224,10 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "broken",
-                            code: "broken",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "birds",
-                            code: "birds",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "encrusted",
-                            code: "encrusted",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "jewel",
-                            code: "jewel",
-                            type: .string
-                        )
+                        Symbol("broken", type: .string, literal: true),
+                        Symbol("birds", type: .string, literal: true),
+                        Symbol("encrusted", type: .string, literal: true),
+                        Symbol("jewel", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -259,11 +235,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"broken jewel-encrusted egg\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"broken jewel-encrusted egg\"",
-                            code: "\"broken jewel-encrusted egg\"",
-                            type: .string
-                        )
+                        Symbol("\"broken jewel-encrusted egg\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -277,21 +249,9 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "takeBit",
-                            code: "takeBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "contBit",
-                            code: "contBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "openBit",
-                            code: "openBit",
-                            type: .bool
-                        )
+                        Symbol("takeBit", type: .bool),
+                        Symbol("contBit", type: .bool),
+                        Symbol("openBit", type: .bool),
                     ]
                 ),
                 Symbol(
@@ -299,11 +259,7 @@ final class ObjectTests: QuelboTests {
                     code: "capacity: 6",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "6",
-                            code: "6",
-                            type: .int
-                        )
+                        Symbol("6", type: .int, literal: true)
                     ]
                 ),
                 Symbol(
@@ -311,11 +267,7 @@ final class ObjectTests: QuelboTests {
                     code: "takeValue: 2",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "2",
-                            code: "2",
-                            type: .int
-                        )
+                        Symbol("2", type: .int, literal: true)
                     ]
                 ),
                 Symbol(
@@ -324,9 +276,9 @@ final class ObjectTests: QuelboTests {
                     type: .string,
                     children: [
                         Symbol(
-                            id: "\"There is a somewhat ruined egg here.\"",
-                            code: "\"There is a somewhat ruined egg here.\"",
-                            type: .string
+                            "\"There is a somewhat ruined egg here.\"",
+                            type: .string,
+                            literal: true
                         )
                     ]
                 )
@@ -422,16 +374,8 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "bat",
-                            code: "bat",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "vampire",
-                            code: "vampire",
-                            type: .string
-                        )
+                        Symbol("bat", type: .string, literal: true),
+                        Symbol("vampire", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -444,16 +388,8 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "vampire",
-                            code: "vampire",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "deranged",
-                            code: "deranged",
-                            type: .string
-                        )
+                        Symbol("vampire", type: .string, literal: true),
+                        Symbol("deranged", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -461,11 +397,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"bat\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"bat\"",
-                            code: "\"bat\"",
-                            type: .string
-                        )
+                        Symbol("\"bat\"", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -478,16 +410,8 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "actorBit",
-                            code: "actorBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "trytakeBit",
-                            code: "trytakeBit",
-                            type: .bool
-                        )
+                        Symbol("actorBit", type: .bool),
+                        Symbol("trytakeBit", type: .bool),
                     ]
                 ),
                 Symbol(
@@ -495,11 +419,7 @@ final class ObjectTests: QuelboTests {
                     code: "descriptionFunction: batD",
                     type: .routine,
                     children: [
-                        Symbol(
-                            id: "batD",
-                            code: "batD",
-                            type: .routine
-                        )
+                        Symbol("batD", type: .routine),
                     ]
                 ),
                 Symbol(
@@ -507,11 +427,7 @@ final class ObjectTests: QuelboTests {
                     code: "action: batFunc",
                     type: .routine,
                     children: [
-                        Symbol(
-                            id: "batFunc",
-                            code: "batFunc",
-                            type: .routine
-                        )
+                        Symbol("batFunc", type: .routine),
                     ]
                 )
             ]
@@ -615,17 +531,20 @@ final class ObjectTests: QuelboTests {
                         Symbol(
                             id: "skull",
                             code: "skull",
-                            type: .string
+                            type: .string,
+                            literal: true
                         ),
                         Symbol(
                             id: "head",
                             code: "head",
-                            type: .string
+                            type: .string,
+                            literal: true
                         ),
                         Symbol(
                             id: "treasure",
                             code: "treasure",
-                            type: .string
+                            type: .string,
+                            literal: true
                         )
                     ]
                 ),
@@ -637,7 +556,8 @@ final class ObjectTests: QuelboTests {
                         Symbol(
                             id: "crystal",
                             code: "crystal",
-                            type: .string
+                            type: .string,
+                            literal: true
                         )
                     ]
                 ),
@@ -646,11 +566,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"crystal skull\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"crystal skull\"",
-                            code: "\"crystal skull\"",
-                            type: .string
-                        )
+                        Symbol("\"crystal skull\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -665,21 +581,15 @@ final class ObjectTests: QuelboTests {
                     type: .string,
                     children: [
                         Symbol(
-                            id: #"""
-                        """
-                            Lying in one corner of the room is a beautifully carved \
-                            crystal skull. It appears to be grinning at you rather \
-                            nastily.
+                            #"""
                             """
-                        """#,
-                            code: #"""
-                        """
-                            Lying in one corner of the room is a beautifully carved \
-                            crystal skull. It appears to be grinning at you rather \
-                            nastily.
-                            """
-                        """#,
-                            type: .string
+                                Lying in one corner of the room is a beautifully carved \
+                                crystal skull. It appears to be grinning at you rather \
+                                nastily.
+                                """
+                            """#,
+                            type: .string,
+                            literal: true
                         )
                     ]
                 ),
@@ -688,11 +598,7 @@ final class ObjectTests: QuelboTests {
                     code: "flags: [takeBit]",
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "takeBit",
-                            code: "takeBit",
-                            type: .bool
-                        )
+                        Symbol("takeBit", type: .bool)
                     ]
                 ),
                 Symbol(
@@ -700,11 +606,7 @@ final class ObjectTests: QuelboTests {
                     code: "value: 10",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "10",
-                            code: "10",
-                            type: .int
-                        )
+                        Symbol("10", type: .int, literal: true)
                     ]
                 ),
                 Symbol(
@@ -712,11 +614,7 @@ final class ObjectTests: QuelboTests {
                     code: "takeValue: 10",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "10",
-                            code: "10",
-                            type: .int
-                        )
+                        Symbol("10", type: .int, literal: true)
                     ]
                 )
             ]
@@ -809,26 +707,10 @@ final class ObjectTests: QuelboTests {
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "water",
-                            code: "water",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "quantity",
-                            code: "quantity",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "liquid",
-                            code: "liquid",
-                            type: .string
-                        ),
-                        Symbol(
-                            id: "h2o",
-                            code: "h2o",
-                            type: .string
-                        )
+                        Symbol("water", type: .string, literal: true),
+                        Symbol("quantity", type: .string, literal: true),
+                        Symbol("liquid", type: .string, literal: true),
+                        Symbol("h2o", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -836,11 +718,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"quantity of water\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"quantity of water\"",
-                            code: "\"quantity of water\"",
-                            type: .string
-                        )
+                        Symbol("\"quantity of water\"", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -888,11 +766,7 @@ final class ObjectTests: QuelboTests {
                     code: "size: 4",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "4",
-                            code: "4",
-                            type: .int
-                        )
+                        Symbol("4", type: .int, literal: true),
                     ]
                 )
             ]
@@ -986,11 +860,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"troll\"]",
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "troll",
-                            code: "troll",
-                            type: .string
-                        )
+                        Symbol("troll", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -998,11 +868,7 @@ final class ObjectTests: QuelboTests {
                     code: "adjectives: [\"nasty\"]",
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "nasty",
-                            code: "nasty",
-                            type: .string
-                        )
+                        Symbol("nasty", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -1010,11 +876,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"troll\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"troll\"",
-                            code: "\"troll\"",
-                            type: .string
-                        )
+                        Symbol("\"troll\"", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -1080,7 +942,8 @@ final class ObjectTests: QuelboTests {
                                  passages out of the room.
                                  """
                              """#,
-                            type: .string
+                            type: .string,
+                            literal: true
                         )
                     ]
                 ),
@@ -1089,11 +952,7 @@ final class ObjectTests: QuelboTests {
                     code: "strength: 2",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "2",
-                            code: "2",
-                            type: .int
-                        )
+                        Symbol("2", type: .int, literal: true),
                     ]
                 )
             ]
@@ -1151,35 +1010,39 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code, #"""
-            /// The `advertisement` (ADVERTISEMENT) object.
-            var advertisement = Object(
-                adjectives: ["small"],
-                description: "leaflet",
-                flags: [
-                    readBit,
-                    takeBit,
-                    burnBit
-                ],
-                location: mailbox,
-                longDescription: "A small leaflet is on the ground.",
-                size: 2,
-                synonyms: [
-                    "advertisement",
-                    "leaflet",
-                    "booklet",
-                    "mail"
-                ],
-                text: """
-                    "WELCOME TO ZORK!
-                    *
-                    ZORK is a game of adventure, danger, and low cunning. In it \
-                    you will explore some of the most amazing territory ever \
-                    seen by mortals. No computer should be without one!"
-                    """
-            )
-            """#.replacingOccurrences(of: "*", with: "")
-        )
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "advertisement",
+            code: #"""
+                /// The `advertisement` (ADVERTISEMENT) object.
+                var advertisement = Object(
+                    adjectives: ["small"],
+                    description: "leaflet",
+                    flags: [
+                        readBit,
+                        takeBit,
+                        burnBit
+                    ],
+                    location: mailbox,
+                    longDescription: "A small leaflet is on the ground.",
+                    size: 2,
+                    synonyms: [
+                        "advertisement",
+                        "leaflet",
+                        "booklet",
+                        "mail"
+                    ],
+                    text: """
+                        "WELCOME TO ZORK!
+
+                        ZORK is a game of adventure, danger, and low cunning. In it \
+                        you will explore some of the most amazing territory ever \
+                        seen by mortals. No computer should be without one!"
+                        """
+                )
+                """#.rightTrimmed,
+            type: .object,
+            category: .objects
+        ))
     }
 
     func testTrophyCase() throws {
@@ -1220,25 +1083,29 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code, """
-            /// The `trophyCase` (TROPHY-CASE) object.
-            var trophyCase = Object(
-                action: trophyCaseFunc,
-                adjectives: ["trophy"],
-                capacity: 10000,
-                description: "trophy case",
-                flags: [
-                    transBit,
-                    contBit,
-                    ndescBit,
-                    trytakeBit,
-                    searchBit
-                ],
-                location: livingRoom,
-                synonyms: ["case"]
-            )
-            """
-        )
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "trophyCase",
+            code: """
+                /// The `trophyCase` (TROPHY-CASE) object.
+                var trophyCase = Object(
+                    action: trophyCaseFunc,
+                    adjectives: ["trophy"],
+                    capacity: 10000,
+                    description: "trophy case",
+                    flags: [
+                        transBit,
+                        contBit,
+                        ndescBit,
+                        trytakeBit,
+                        searchBit
+                    ],
+                    location: livingRoom,
+                    synonyms: ["case"]
+                )
+                """,
+            type: .object,
+            category: .objects
+        ))
     }
 
     func testGlobalObjects() throws {
@@ -1429,11 +1296,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"zzmgck\"]",
                     type: .array(.string),
                     children: [
-                        Symbol(
-                            id: "zzmgck",
-                            code: "zzmgck",
-                            type: .string
-                        )
+                        Symbol("zzmgck", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -1465,11 +1328,7 @@ final class ObjectTests: QuelboTests {
                     code: "advfcn: 0",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "0",
-                            code: "0",
-                            type: .int
-                        )
+                        Symbol("0", type: .int, literal: true),
                     ]
                 ),
                 Symbol(
@@ -1477,11 +1336,7 @@ final class ObjectTests: QuelboTests {
                     code: "firstDescription: \"F\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"F\"",
-                            code: "\"F\"",
-                            type: .string
-                        )
+                        Symbol("\"F\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -1489,11 +1344,7 @@ final class ObjectTests: QuelboTests {
                     code: "longDescription: \"F\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"F\"",
-                            code: "\"F\"",
-                            type: .string
-                        )
+                        Symbol("\"F\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -1527,35 +1378,21 @@ final class ObjectTests: QuelboTests {
                     code: "contfcn: 0",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "0",
-                            code: "0",
-                            type: .int
-                        )
+                        Symbol("0", type: .int, literal: true),
                     ]
                 ),
                 Symbol(
                     id: "vehicleType",
                     code: "vehicleType: true",
                     type: .bool,
-                    children: [
-                        Symbol(
-                            id: "true",
-                            code: "true",
-                            type: .bool
-                        )
-                    ]
+                    children: [.trueSymbol]
                 ),
                 Symbol(
                     id: "size",
                     code: "size: 0",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "0",
-                            code: "0",
-                            type: .int
-                        )
+                        Symbol("0", type: .int, literal: true),
                     ]
                 ),
                 Symbol(
@@ -1563,11 +1400,7 @@ final class ObjectTests: QuelboTests {
                     code: "capacity: 0",
                     type: .int,
                     children: [
-                        Symbol(
-                            id: "0",
-                            code: "0",
-                            type: .int
-                        )
+                        Symbol("0", type: .int, literal: true),
                     ]
                 )
             ]
@@ -1605,21 +1438,25 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code, """
-            /// The `adventurer` (ADVENTURER) object.
-            var adventurer = Object(
-                action: 0,
-                description: "cretin",
-                flags: [
-                    ndescBit,
-                    invisible,
-                    sacredBit,
-                    actorBit
-                ],
-                strength: 0,
-                synonyms: ["adventurer"]
-            )
-            """
-        )
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "adventurer",
+            code: """
+                /// The `adventurer` (ADVENTURER) object.
+                var adventurer = Object(
+                    action: 0,
+                    description: "cretin",
+                    flags: [
+                        ndescBit,
+                        invisible,
+                        sacredBit,
+                        actorBit
+                    ],
+                    strength: 0,
+                    synonyms: ["adventurer"]
+                )
+                """,
+            type: .object,
+            category: .objects
+        ))
     }
 }

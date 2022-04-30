@@ -34,7 +34,7 @@ extension Factories {
                 throw FactoryError.invalidParameter(symbols)
             }
             return Symbol(
-                "\(function)(\(symbols.codeValues(separator: ",")))",
+                ".\(function)(\(symbols.codeValues(separator: ",")))",
                 type: argType,
                 children: symbols
             )

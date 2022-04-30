@@ -29,7 +29,7 @@ extension Factories {
                 id: "synonyms",
                 code: "synonyms: \(symbols.quoted.code)",
                 type: Self.returnType,
-                children: symbols
+                children: symbols.map { $0.with(literal: true) }
             )
         }
     }

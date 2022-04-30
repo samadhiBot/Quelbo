@@ -12,14 +12,6 @@ import XCTest
 final class ReturnTrueTests: QuelboTests {
     let factory = Factories.ReturnTrue.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-
-        ])
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("RTRUE"))
     }
@@ -28,9 +20,17 @@ final class ReturnTrueTests: QuelboTests {
         let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "return true",
-            type: .bool
+            id: "<Return>",
+            code: "return true",
+            type: .bool,
+            children: [.trueSymbol]
         ))
+    }
+
+    func testIsReturnStatement() throws {
+        let symbol = try factory.init([]).process()
+
+        XCTAssertTrue(symbol.isReturnStatement)
     }
 
     func testAnyParamThrows() throws {

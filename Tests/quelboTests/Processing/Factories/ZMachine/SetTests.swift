@@ -44,7 +44,7 @@ final class SetTests: QuelboTests {
             type: .int,
             children: [
                 Symbol("foo", type: .int),
-                Symbol("3", type: .int),
+                Symbol("3", type: .int, literal: true),
             ]
         ))
     }
@@ -60,7 +60,7 @@ final class SetTests: QuelboTests {
             type: .string,
             children: [
                 Symbol("foo", type: .string),
-                Symbol(#""Bar!""#, type: .string),
+                Symbol(#""Bar!""#, type: .string, literal: true),
             ]
         ))
     }
@@ -76,7 +76,7 @@ final class SetTests: QuelboTests {
             type: .bool,
             children: [
                 Symbol("isRobbed", type: .bool),
-                Symbol("true", type: .bool),
+                .trueSymbol
             ]
         ))
     }
@@ -87,7 +87,7 @@ final class SetTests: QuelboTests {
             .form([
                 .atom("ADD"),
                 .atom(",THIRTY"),
-                .atom("3"),
+                .decimal(3),
             ])
         ]).process()
 
@@ -101,7 +101,7 @@ final class SetTests: QuelboTests {
                     type: .int,
                     children: [
                         Symbol("thirty", type: .int, category: .globals),
-                        Symbol("3", type: .int)
+                        Symbol("3", type: .int, literal: true)
                     ]
                 )
             ]
@@ -163,7 +163,7 @@ final class SetTests: QuelboTests {
                     type: .int,
                     children: [
                         Symbol("n", type: .int),
-                        Symbol("1", type: .int),
+                        Symbol("1", type: .int, literal: true),
                     ]
                 )
             ]

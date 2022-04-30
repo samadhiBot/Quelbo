@@ -46,7 +46,6 @@ extension Factories {
                         ]
                         """,
                     type: .array(.direction),
-//                    category: ,
                     children: directionSymbols
                 ))
             }

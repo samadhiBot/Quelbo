@@ -16,27 +16,38 @@ extension Factories {
             ["PROG"]
         }
 
-        override class var parameters: Parameters {
-            .twoOrMore(.unknown)
+        var pro: BlockProcessor!
+
+        override func processTokens() throws {
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation)
         }
 
-        override class var returnType: Symbol.DataType {
-            .unknown
-        }
-
-        var function: String {
-            "prog"
+        var codeBlock: String {
+            if pro.isRepeating {
+                return """
+                    \(pro.paramDeclarations())\
+                    \(pro.activation)\
+                    while true {
+                    \(pro.codeBlock.indented)
+                    }
+                    """
+            } else {
+                return """
+                    do {
+                    \(pro.paramDeclarations(indented: true))\
+                    \(pro.codeBlock.indented)
+                    }
+                    """
+            }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                """
-                \(function) {
-                \(symbols.codeValues(lineBreaks: 1).indented)
-                }
-                """,
-                type: .unknown,
-                children: symbols
+                id: "<Block>",
+                code: codeBlock,
+                type: pro.type,
+                children: pro.children,
+                meta: pro.metaData
             )
         }
     }

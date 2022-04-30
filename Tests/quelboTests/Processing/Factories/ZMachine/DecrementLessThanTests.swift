@@ -31,11 +31,11 @@ final class DecrementLessThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.decrement().lessThan(3)",
+            "foo.decrement().isLessThan(3)",
             type: .bool,
             children: [
-                Symbol("foo", type: .int),
-                Symbol("3", type: .int),
+                Symbol("foo", type: .int, meta: ["mutating": "true"]),
+                Symbol("3", type: .int, literal: true),
             ]
         ))
     }

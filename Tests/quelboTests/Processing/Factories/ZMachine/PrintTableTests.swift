@@ -37,7 +37,7 @@ final class PrintTableTests: QuelboTests {
             """#,
             type: .void,
             children: [
-                fooTable
+                fooTable.with(code: "foo")
             ]
         ))
     }

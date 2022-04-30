@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "output(carriageReturn)",
+                #"output("\n")"#,
                 type: .void,
                 children: symbols
             )

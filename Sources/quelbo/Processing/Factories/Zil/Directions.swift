@@ -24,8 +24,8 @@ extension Factories {
             .void
         }
 
-        override func process() throws -> Symbol {
-            let directions: [Symbol] = symbols.map { symbol in
+        var directions: [Symbol] {
+            symbols.map { symbol in
                 var id = symbol.id
                 var code = "case \(symbol.id)"
                 if let improved = Improved(rawValue: symbol.id) {
@@ -40,9 +40,12 @@ extension Factories {
                     children: symbol.children
                 )
             }
+        }
 
+        override func process() throws -> Symbol {
             let symbol = Symbol(
-                """
+                id: "<Directions>",
+                code: """
                     /// The set of possible movement directions.
                     public enum Direction: String {
                     \(directions.codeValues(lineBreaks: 1).indented)

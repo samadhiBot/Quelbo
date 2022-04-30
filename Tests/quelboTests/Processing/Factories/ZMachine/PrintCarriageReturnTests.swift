@@ -32,11 +32,11 @@ final class PrintCarriageReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             #"""
                 output("Hello World")
-                output(carriageReturn)
+                output("\n")
                 """#,
             type: .void,
             children: [
-                Symbol(#""Hello World""#, type: .string),
+                Symbol(#""Hello World""#, type: .string, literal: true),
             ]
         ))
     }
@@ -47,10 +47,10 @@ final class PrintCarriageReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            #"""
                 output(message)
-                output(carriageReturn)
-                """,
+                output("\n")
+                """#,
             type: .void,
             children: [
                 Symbol("message", type: .string, category: .globals),

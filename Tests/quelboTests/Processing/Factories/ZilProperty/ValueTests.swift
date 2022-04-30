@@ -26,7 +26,7 @@ final class ValueTests: QuelboTests {
             code: "value: 10",
             type: .int,
             children: [
-                Symbol("10", type: .int)
+                Symbol("10", type: .int, literal: true)
             ]
         ))
     }

@@ -9,19 +9,23 @@ import Fizmo
 import Parsing
 import Foundation
 
-/// <#Description#>
-struct Game {
-    /// <#Description#>
+/// A container for a Zil to Swift game translation.
+///
+class Game {
+    /// A parser that translates raw Zil code into Swift ``Token`` values.
     let parser: AnyParser<Substring.UTF8View, Array<Token>>
 
-    /// <#Description#>
-    var processingErrors: [String]
+    /// An array of any errors encountered during game processing.
+    var processingErrors: [String] = []
 
-    /// <#Description#>
-    var gameTokens: [Token]
+    /// An array of ``Token`` values parsed from the raw Zil code.
+    var gameTokens: [Token] = []
 
-    /// <#Description#>
-    var gameSymbols: [Symbol]
+    /// An array of ``Symbol`` values processed from the ``gameTokens``.
+    var gameSymbols: [Symbol] = []
+
+    /// The ZMachine version to emulate during processing.
+    var zMachineVersion: Game.ZMachineVersion = .z3
 
     private init() {
         let syntax = Syntax().parser
@@ -37,46 +41,60 @@ struct Game {
         .eraseToAnyParser()
 
         self.parser = parser
-        self.processingErrors = []
-        self.gameTokens = []
-        self.gameSymbols = []
     }
 
+    /// A shared instance of the ``Game`` representation.
     static var shared = Game()
 }
 
 // MARK: - Game symbol storage
 
 extension Game {
+    /// Commit one or more processed ``Symbol`` values to the known ``gameSymbols``.
+    ///
+    /// - Parameter symbols: One or more symbol values to commit.
     static func commit(_ symbols: Symbol...) throws {
         try commit(symbols)
     }
 
+    /// Commit an array of processed ``Symbol`` values to the known ``gameSymbols``.
+    ///
+    /// - Parameter symbols: An array of symbol values to commit.
     static func commit(_ symbols: [Symbol]) throws {
         try symbols.forEach { symbol in
             guard !shared.gameSymbols.contains(symbol) else {
-//                print("⚠️ Conflicting symbol definition \(symbol)")
                 throw GameError.duplicateSymbolCommit(symbol)
-//                return
             }
-//            print("  ✅ committing \(symbol.id)")
             shared.gameSymbols.append(symbol)
         }
     }
 
-    static func find(_ name: String, category: Symbol.Category? = nil) throws -> Symbol {
+    /// Find a ``Symbol`` in the committed ``gameSymbols`` whose ``Symbol/id`` and
+    /// ``Symbol/category-swift.property`` match the ones specified.
+    ///
+    /// - Parameters:
+    ///   - id: The symbol `id` to match.
+    ///   - category: The symbol `category` to match.
+    ///
+    /// - Returns: A symbol that matches the specified `id` and `category`.
+    ///
+    /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
+    static func find(
+        _ id: String,
+        category: Symbol.Category? = nil
+    ) throws -> Symbol {
         guard
             let symbol = shared.gameSymbols.first(where: {
                 guard let category = category else {
-                    return $0.id == name
+                    return $0.id == id
                 }
-                return $0.id == name && $0.category == category
+                return $0.id == id && $0.category == category
             })
         else {
             if let category = category {
-                throw GameError.symbolNotFound(name, category: "\(category)")
+                throw GameError.symbolNotFound(id, category: "\(category)")
             } else {
-                throw GameError.symbolNotFound(name, category: "any")
+                throw GameError.symbolNotFound(id, category: "any")
             }
         }
         return symbol

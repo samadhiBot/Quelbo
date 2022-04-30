@@ -430,9 +430,9 @@ final class GlobalTests: QuelboTests {
             category: .globals,
             children: [
                 Symbol(id: "def1", code: ".table(def1)", type: .tableElement),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement),
+                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
                 Symbol(id: "/* [\"REST\", \",DEF1\", \"2\"] */", code: "// /* [\"REST\", \",DEF1\", \"2\"] */", type: .tableElement),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement),
+                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
                 Symbol(id: "/* [\"REST\", \",DEF1\", \"4\"] */", code: "// /* [\"REST\", \",DEF1\", \"4\"] */", type: .tableElement),
             ]
         )

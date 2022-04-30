@@ -43,7 +43,8 @@ final class FirstDescriptionTests: QuelboTests {
                             nastily.
                             """
                         """#,
-                    type: .string
+                    type: .string,
+                    literal: true
                 )
             ]
         ))

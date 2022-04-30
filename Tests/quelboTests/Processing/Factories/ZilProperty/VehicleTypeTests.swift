@@ -25,9 +25,7 @@ final class VehicleTypeTests: QuelboTests {
             id: "vehicleType",
             code: "vehicleType: true",
             type: .bool,
-            children: [
-                Symbol("true", type: .bool)
-            ]
+            children: [.trueSymbol]
         ))
     }
 
@@ -40,9 +38,7 @@ final class VehicleTypeTests: QuelboTests {
             id: "vehicleType",
             code: "vehicleType: true",
             type: .bool,
-            children: [
-                Symbol("true", type: .bool)
-            ]
+            children: [.trueSymbol]
         ))
     }
 
@@ -55,9 +51,7 @@ final class VehicleTypeTests: QuelboTests {
             id: "vehicleType",
             code: "vehicleType: false",
             type: .bool,
-            children: [
-                Symbol("false", type: .bool)
-            ]
+            children: [.falseSymbol]
         ))
     }
 

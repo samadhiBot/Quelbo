@@ -37,7 +37,7 @@ final class PutPropertyTests: QuelboTests {
             children: [
                 Symbol("troll", type: .object, category: .objects),
                 Symbol("strength", type: .int, category: .properties),
-                Symbol("10", type: .int),
+                Symbol("10", type: .int, literal: true),
             ]
         ))
     }

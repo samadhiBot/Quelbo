@@ -26,7 +26,7 @@ final class CapacityTests: QuelboTests {
             code: "capacity: 6",
             type: .int,
             children: [
-                Symbol("6", type: .int)
+                Symbol("6", type: .int, literal: true)
             ]
         ))
     }

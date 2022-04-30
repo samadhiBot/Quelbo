@@ -16,11 +16,15 @@ final class CondTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("here", type: .object, category: .objects),
+            Symbol("bottles", type: .int, category: .routines),
+            Symbol("clearing", type: .object, category: .rooms),
+            Symbol("here", type: .object, category: .rooms),
+            Symbol("isFunnyReturn", type: .bool, category: .globals),
             Symbol("isIn", type: .bool, category: .routines),
             Symbol("mEnter", type: .int, category: .globals),
             Symbol("thisIsIt", type: .bool, category: .routines),
             Symbol("troll", type: .object, category: .objects),
+            Symbol("wonFlag", type: .bool, category: .globals),
         ])
     }
 
@@ -52,7 +56,8 @@ final class CondTests: QuelboTests {
             type: .list,
             children: [
                 Symbol(
-                    "<List>",
+                    id: "<List>",
+                    code: "",
                     type: .list,
                     children: [
                         Symbol(
@@ -66,9 +71,9 @@ final class CondTests: QuelboTests {
                         Symbol(
                             id: "output(\"Rarg equals mEnter\")",
                             code: "output(\"Rarg equals mEnter\")",
-                            type: .bool,
+                            type: .void,
                             children: [
-                                Symbol("\"Rarg equals mEnter\"", type: .string)
+                                Symbol("\"Rarg equals mEnter\"", type: .string, literal: true)
                             ]
                         )
                     ]
@@ -103,12 +108,129 @@ final class CondTests: QuelboTests {
             ]),
         ]).process()
 
-        XCTAssertNoDifference(symbol.code, """
-        if rarg.equals(mEnter) {
-            output("Rarg equals mEnter")
-        } else if isIn(troll, here) {
-            thisIsIt()
-        }
-        """)
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+                if rarg.equals(mEnter) {
+                    output("Rarg equals mEnter")
+                } else if troll.isIn(here) {
+                    thisIsIt()
+                }
+                """,
+            type: .list
+        ))
+    }
+
+    func testAtomPredicate() throws {
+        let symbol = try factory.init([
+            .list([
+                .atom(",WON-FLAG"),
+                .form([
+                    .atom("TELL"),
+                    .string(" A secret path leads southwest into the forest.")
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+                if wonFlag {
+                    output(" A secret path leads southwest into the forest.")
+                }
+                """,
+            type: .list
+        ))
+    }
+
+    func testTruePredicate() throws {
+        let symbol = try factory.init([
+            .list([
+                .form([
+                    .atom("EQUAL?"),
+                    .atom(",HERE"),
+                    .atom(",CLEARING")
+                ]),
+                .string("The grating opens.")
+            ]),
+            .list([
+                .atom("T"),
+                .string("The grating opens to reveal trees above you.")
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+                if here.equals(clearing) {
+                    "The grating opens."
+                } else {
+                    "The grating opens to reveal trees above you."
+                }
+                """,
+            type: .list
+        ))
+    }
+
+    func testElsePredicate() throws {
+        let symbol = try factory.init([
+            .list([
+                .form([
+                    .atom("DLESS?"),
+                    .atom("N"),
+                    .decimal(1)
+                ]),
+                .form([
+                    .atom("PRINTR"),
+                    .string("No more bottles of beer on the wall!")
+                ])
+            ]),
+            .list([
+                .atom("ELSE"),
+                .form([
+                    .atom("BOTTLES"),
+                    .atom(".N")
+                ]),
+                .form([
+                    .atom("PRINTI"),
+                    .string("""
+                         of beer on the wall!
+                        """)
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            #"""
+                if n.decrement().isLessThan(1) {
+                    output("No more bottles of beer on the wall!")
+                    output("\n")
+                } else {
+                    bottles()
+                    output(" of beer on the wall!")
+                }
+                """#,
+            type: .list
+        ))
+    }
+
+    func testBooleanPredicate() throws {
+        let symbol = try factory.init([
+            .list([
+                .atom(",FUNNY-RETURN?"),
+                .form([
+                    .atom("TELL"),
+                    .string("RETURN EXIT ROUTINE"),
+                    .atom("CR"),
+                    .atom("CR")
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            #"""
+                if isFunnyReturn {
+                    output("RETURN EXIT ROUTINE")
+                }
+                """#,
+            type: .list
+        ))
     }
 }

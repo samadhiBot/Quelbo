@@ -35,11 +35,11 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "2.add(3)",
+            ".add(2, 3)",
             type: .int,
             children: [
-                Symbol(id: "2", type: .int),
-                Symbol(id: "3", type: .int),
+                Symbol("2", type: .int, literal: true),
+                Symbol("3", type: .int, literal: true),
             ]
         ))
     }
@@ -52,12 +52,12 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "2.add(3, 4)",
+            ".add(2, 3, 4)",
             type: .int,
             children: [
-                Symbol(id: "2", type: .int),
-                Symbol(id: "3", type: .int),
-                Symbol(id: "4", type: .int),
+                Symbol("2", type: .int, literal: true),
+                Symbol("3", type: .int, literal: true),
+                Symbol("4", type: .int, literal: true),
             ]
         ))
     }
@@ -69,11 +69,11 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "bigNumber.add(biggerNumber)",
+            "bigNumber.add(biggerNumber)",
             type: .int,
             children: [
-                Symbol(id: "bigNumber", type: .int),
-                Symbol(id: "biggerNumber", type: .int),
+                Symbol("bigNumber", type: .int),
+                Symbol("biggerNumber", type: .int),
             ]
         ))
     }
@@ -85,11 +85,11 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "cyclowrath.add(1)",
+            "cyclowrath.add(1)",
             type: .int,
             children: [
-                Symbol(id: "cyclowrath", type: .int, category: .globals),
-                Symbol(id: "1", type: .int),
+                Symbol("cyclowrath", type: .int, category: .globals),
+                Symbol("1", type: .int, literal: true),
             ]
         ))
     }
@@ -103,10 +103,10 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "baseScore.add(otvalFrob())",
+            "baseScore.add(otvalFrob())",
             type: .int,
             children: [
-                Symbol(id: "baseScore", type: .int, category: .globals),
+                Symbol("baseScore", type: .int, category: .globals),
                 Symbol(id: "otvalFrob", code: "otvalFrob()", type: .int),
             ]
         ))

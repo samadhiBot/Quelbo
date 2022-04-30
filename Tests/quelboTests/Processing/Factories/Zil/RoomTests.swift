@@ -146,11 +146,7 @@ final class RoomTests: QuelboTests {
                     code: "location: rooms",
                     type: .object,
                     children: [
-                        Symbol(
-                            id: "rooms",
-                            code: "rooms",
-                            type: .object
-                        )
+                        Symbol("rooms", type: .object)
                     ]
                 ),
                 Symbol(
@@ -158,11 +154,7 @@ final class RoomTests: QuelboTests {
                     code: "description: \"West of House\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"West of House\"",
-                            code: "\"West of House\"",
-                            type: .string
-                        )
+                        Symbol("\"West of House\"", type: .string, literal: true)
                     ]
                 ),
                 Symbol(
@@ -170,11 +162,7 @@ final class RoomTests: QuelboTests {
                     code: "action: westHouse",
                     type: .routine,
                     children: [
-                        Symbol(
-                            id: "westHouse",
-                            code: "westHouse",
-                            type: .routine
-                        )
+                        Symbol("westHouse", type: .routine)
                     ]
                 ),
                 Symbol(
@@ -188,21 +176,9 @@ final class RoomTests: QuelboTests {
                      """,
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "rlandBit",
-                            code: "rlandBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "onBit",
-                            code: "onBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "sacredBit",
-                            code: "sacredBit",
-                            type: .bool
-                        )
+                        Symbol("rlandBit", type: .bool),
+                        Symbol("onBit", type: .bool),
+                        Symbol("sacredBit", type: .bool),
                     ]
                 ),
                 Symbol(
@@ -216,21 +192,9 @@ final class RoomTests: QuelboTests {
                      """,
                     type: .array(.object),
                     children: [
-                        Symbol(
-                            id: "whiteHouse",
-                            code: "whiteHouse",
-                            type: .object
-                        ),
-                        Symbol(
-                            id: "board",
-                            code: "board",
-                            type: .object
-                        ),
-                        Symbol(
-                            id: "forest",
-                            code: "forest",
-                            type: .object
-                        )
+                        Symbol("whiteHouse", type: .object),
+                        Symbol("board", type: .object),
+                        Symbol("forest", type: .object),
                     ]
                 ),
                 Symbol(
@@ -359,8 +323,9 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code,
-            """
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "reservoirSouth",
+            code: """
             /// The `reservoirSouth` (RESERVOIR-SOUTH) room.
             var reservoirSouth = Room(
                 action: reservoirSouthFunc,
@@ -391,8 +356,10 @@ final class RoomTests: QuelboTests {
                     )
                 ]
             )
-            """
-        )
+            """,
+            type: .object,
+            category: .rooms
+        ))
     }
 
     func testEastOfHouse() throws {
@@ -467,8 +434,9 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code,
-            """
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "eastOfHouse",
+            code: """
             /// The `eastOfHouse` (EAST-OF-HOUSE) room.
             var eastOfHouse = Room(
                 action: eastHouse,
@@ -494,8 +462,10 @@ final class RoomTests: QuelboTests {
                 ],
                 location: rooms
             )
-            """
-        )
+            """,
+            type: .object,
+            category: .rooms
+        ))
     }
 
     func testStudio() throws {
@@ -547,8 +517,9 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code,
-            #"""
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "studio",
+            code: #"""
             /// The `studio` (STUDIO) room.
             var studio = Room(
                 description: "Studio",
@@ -581,8 +552,10 @@ final class RoomTests: QuelboTests {
                     )
                 ]
             )
-            """#
-        )
+            """#,
+            type: .object,
+            category: .rooms
+        ))
     }
 
     func testFoyer() throws {
@@ -621,8 +594,9 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.code,
-            #"""
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "foyer",
+            code: #"""
             /// The `foyer` (FOYER) room.
             var foyer = Room(
                 description: "Foyer of the Opera House",
@@ -643,8 +617,10 @@ final class RoomTests: QuelboTests {
                     doorways south and west.
                     """
             )
-            """#
-        )
+            """#,
+            type: .object,
+            category: .rooms
+        ))
     }
 
     func testInStream() throws {
@@ -759,23 +735,16 @@ final class RoomTests: QuelboTests {
                     type: .string,
                     children: [
                         Symbol(
-                            id: #"""
-                             """
-                                 You are on the gently flowing stream. The upstream route is \
-                                 too narrow to navigate, and the downstream route is \
-                                 invisible due to twisting walls. There is a narrow beach to \
-                                 land on.
-                                 """
-                             """#,
-                            code: #"""
-                             """
-                                 You are on the gently flowing stream. The upstream route is \
-                                 too narrow to navigate, and the downstream route is \
-                                 invisible due to twisting walls. There is a narrow beach to \
-                                 land on.
-                                 """
-                             """#,
-                            type: .string
+                            #"""
+                                """
+                                    You are on the gently flowing stream. The upstream route is \
+                                    too narrow to navigate, and the downstream route is \
+                                    invisible due to twisting walls. There is a narrow beach to \
+                                    land on.
+                                    """
+                                """#,
+                            type: .string,
+                            literal: true
                         )
                     ]
                 ),
@@ -784,11 +753,7 @@ final class RoomTests: QuelboTests {
                     code: "description: \"Stream\"",
                     type: .string,
                     children: [
-                        Symbol(
-                            id: "\"Stream\"",
-                            code: "\"Stream\"",
-                            type: .string
-                        )
+                        Symbol("\"Stream\"", type: .string, literal: true),
                     ]
                 ),
                 Symbol(
@@ -796,11 +761,7 @@ final class RoomTests: QuelboTests {
                     code: "flags: [nonlandBit]",
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "nonlandBit",
-                            code: "nonlandBit",
-                            type: .bool
-                        )
+                        Symbol("nonlandBit", type: .bool)
                     ]
                 ),
                 Symbol(
@@ -808,11 +769,7 @@ final class RoomTests: QuelboTests {
                     code: "globals: [globalWater]",
                     type: .array(.object),
                     children: [
-                        Symbol(
-                            id: "globalWater",
-                            code: "globalWater",
-                            type: .object
-                        )
+                        Symbol("globalWater", type: .object),
                     ]
                 ),
                 Symbol(

@@ -11,47 +11,50 @@ import Fizmo
 // https://foss.heptapod.net/zilf/zilf/-/blob/branch/default/sample/beer/beer.zil
 
 struct BeerSongRoutineVersion {
+    @discardableResult
     /// The `bottles` (BOTTLES) routine.
-    @discardableResult mutating func bottles(_ n: Int) -> Bool {
+    func bottles(n: Int) -> Bool {
         output(n)
         output(" bottle")
-        if n != 1 {
+        if n.isNotEqualTo(1) {
             output("s")
         }
         return true
     }
 
     /// The `go` (GO) routine.
-    @discardableResult mutating func go() -> Bool {
-        sing(3)
+    func go() {
+        sing(n: 3)
     }
 
+    @discardableResult
     /// The `sing` (SING) routine.
-    mutating func sing(_ n: Int) -> Bool {
+    func sing(n: Int) -> Bool {
         var n = n
-        repeat {
-            bottles(n)
+        while true {
+            bottles(n: n)
             output("""
                  of beer on the wall,
 
                 """)
-            bottles(n)
+            bottles(n: n)
             output("""
                  of beer,
                 Take one down, pass it around,
 
                 """)
-            if n.decrement() < 1 {
-                output("No more bottles of beer on the wall!", withCarriageReturn: true)
+            if n.decrement().isLessThan(1) {
+                output("No more bottles of beer on the wall!")
+                output("\n")
+                return true
             } else {
-                bottles(n)
+                bottles(n: n)
                 output("""
                      of beer on the wall!
 
 
                     """)
             }
-        } while n > 0
-        return true
+        }
     }
 }
