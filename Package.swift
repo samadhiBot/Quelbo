@@ -7,18 +7,13 @@ let package = Package(
     platforms: [
         .macOS(.v12),
     ],
-    products: [
-        .library(
-            name: "Fizmo",
-            targets: ["Fizmo"]
-        ),
-    ],
     dependencies: [
         .package(url: "https://github.com/JohnSundell/Files", from: "4.2.0"),
-        .package(url: "https://github.com/YusukeHosonuma/SwiftPrettyPrint.git", from: "1.2.0"),
+        .package(url: "https://github.com/YusukeHosonuma/SwiftPrettyPrint", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.0"),
         .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.4.0"),
         .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.9.0"),
+        .package(url: "https://github.com/samadhiBot/Fizmo", branch: "main"),
     ],
     targets: [
         .executableTarget(
@@ -35,18 +30,7 @@ let package = Package(
             name: "quelboTests",
             dependencies: [
                 "quelbo",
-                .product(name: "CustomDump", package: "swift-custom-dump")
-            ]
-        ),
-        .target(
-            name: "Fizmo",
-            dependencies: []
-        ),
-        .testTarget(
-            name: "FizmoTests",
-            dependencies: [
-                "Fizmo",
-                .product(name: "CustomDump", package: "swift-custom-dump")
+                .product(name: "CustomDump", package: "swift-custom-dump"),
             ]
         ),
     ]

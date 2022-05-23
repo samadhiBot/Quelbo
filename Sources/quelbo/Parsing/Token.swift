@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Fizmo
 
 /// The set of tokens that can be parsed from ZIL source code.
 indirect enum Token: Equatable {
