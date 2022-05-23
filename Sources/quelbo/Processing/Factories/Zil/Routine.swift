@@ -25,36 +25,22 @@ extension Factories {
             self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation)
         }
 
-        var codeBlock: String {
-            if pro.isRepeating {
-                return """
-                    \(pro.deepParameters)\
-                    \(pro.activation)\
-                    while true {
-                    \(pro.auxiliaryDefsWithDefaultValues(indented: true))\
-                    \(pro.codeBlock.indented)
-                    }
-                    """
-            } else {
-                return """
-                    \(pro.auxiliaryDefsWithDefaultValues())\
-                    \(pro.codeBlock)
-                    """
-            }
+        var typeName: String {
+            "routine"
         }
 
         override func process() throws -> Symbol {
-            print("  + Processing routine \(nameSymbol.code)")
+            print("  + Processing \(typeName) \(nameSymbol.code)")
 
             let symbol = Symbol(
                 id: nameSymbol.code,
                 code: """
                     \(pro.discardableResult)\
-                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) routine.
+                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).
                     func \(nameSymbol.code)(\(pro.params))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
-                    \(codeBlock.indented)
+                    \(pro.codeBlock.indented)
                     }
                     """,
                 type: pro.type,

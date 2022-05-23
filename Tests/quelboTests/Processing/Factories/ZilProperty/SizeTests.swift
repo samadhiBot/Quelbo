@@ -26,7 +26,7 @@ final class SizeTests: QuelboTests {
             code: "size: 4",
             type: .int,
             children: [
-                Symbol("4", type: .int, literal: true)
+                Symbol("4", type: .int, meta: [.isLiteral])
             ]
         ))
     }

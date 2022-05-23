@@ -121,6 +121,46 @@ struct ProgramBlockSamples {
     }
     // "START 1 START 2 START 3 "
 
+    // MARK: - DEFINE
+
+    @discardableResult
+    /// The `incForm` (INC-FORM) function.
+    func incForm(a: Int) -> Int {
+        var a = a
+        return a.set(to: .add(1, a))
+    }
+
+    @discardableResult
+    /// The `myadd` (MYADD) function.
+    func myadd(x1: Int, x2: Int) -> Int {
+        var x1 = x1
+        return x1.add(x2)
+    }
+
+    @discardableResult
+    /// The `powerTo` (POWER-TO) function.
+    func powerTo(x: Int, y: Int = 2) -> Int {
+        if y.equals(0) {
+            return 1
+        }
+        var z: Int = 1
+        var i: Int = 0
+        while true {
+            z.set(to: z.multiply(x))
+            i.set(to: i.add(1))
+            if i.equals(y) {
+                return z
+            }
+        }
+    }
+
+    @discardableResult
+    /// The `square` (SQUARE) function.
+    func square(x: Int) -> Int {
+        var x = x
+        return x.multiply(x)
+    }
+    
     // MARK: - PROG
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b

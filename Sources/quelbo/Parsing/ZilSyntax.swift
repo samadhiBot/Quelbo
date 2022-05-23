@@ -1,5 +1,5 @@
 //
-//  Syntax.swift
+//  ZilSyntax.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/5/22.
@@ -8,7 +8,7 @@
 import Parsing
 
 /// A recursive ZIL syntax parser.
-struct Syntax {
+struct ZilSyntax {
     var parser: AnyParser<Substring.UTF8View, Token>
 
     init() {
@@ -35,21 +35,33 @@ struct Syntax {
                     .init(ascii: ">"),
                     .init(ascii: "("),
                     .init(ascii: ")"),
+                    .init(ascii: "["),
+                    .init(ascii: "]"),
                 ].contains(element)
             }.map { String(Substring($0)) }
         }
 
         let atomOddities = OneOf {
-            "0?".utf8.map { "isZero" }
-            "1?".utf8.map { "isOne" }
+            "0?".utf8.map { "0?" }
+            "1?".utf8.map { "1?" }
         }
 
         let boolFalse = Parse {
             "<>".utf8
         }
 
+        let character = Parse {
+            "!\\".utf8
+            atom
+        }
+
         let comment = Parse {
             ";".utf8
+            Lazy { parser! }
+        }
+
+        let eval = Parse {
+            "%".utf8
             Lazy { parser! }
         }
 
@@ -64,6 +76,11 @@ struct Syntax {
             }
         }
 
+        let global = Parse {
+            ",".utf8
+            atom
+        }
+
         let list = Parse {
             "(".utf8
             Many {
@@ -73,6 +90,26 @@ struct Syntax {
             } terminator: {
                 ")".utf8
             }
+        }
+
+        let local = Parse {
+            ".".utf8
+            atom
+        }
+
+        let property = Parse {
+            ",P?".utf8
+            atom
+        }
+
+        let quote = Parse {
+            "'".utf8
+            Lazy { parser! }
+        }
+
+        let segment = Parse {
+            "!".utf8
+            Lazy { parser! }
         }
 
         let string = Parse {
@@ -103,17 +140,46 @@ struct Syntax {
             }
         }
 
+        let type = Parse {
+            "#".utf8
+            atom
+        }
+
+        let vector = Parse {
+            "[".utf8
+            Many {
+                Lazy { parser! }
+            } separator: {
+                Whitespace()
+            } terminator: {
+                "]".utf8
+            }
+        }
+
         parser = Parse {
             Skip { Whitespace() }
             OneOf {
-                boolFalse.map { Token.bool(false) }
-                comment.map(Token.commented)
-                form.map(Token.form)
-                list.map(Token.list)
-                string.map(Token.string)
-                atomOddities.map(Token.atom)
-                Int.parser().map(Token.decimal)
-                atom.map(Token.atom)
+                OneOf {
+                    boolFalse.map { Token.bool(false) }
+                    type.map(Token.type)
+                    character.map(Token.character)
+                    comment.map(Token.commented)
+                    eval.map(Token.eval)
+                    form.map(Token.form)
+                    property.map(Token.property)
+                    global.map(Token.global)
+                    list.map(Token.list)
+                    local.map(Token.local)
+                }
+                OneOf {
+                    quote.map(Token.quote)
+                    segment.map(Token.segment)
+                    vector.map(Token.vector)
+                    string.map(Token.string)
+                    atomOddities.map(Token.atom)
+                    Int.parser().map(Token.decimal)
+                    atom.map(Token.atom)
+                }
             }
             Skip { Whitespace() }
         }

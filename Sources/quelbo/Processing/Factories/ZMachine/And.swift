@@ -21,7 +21,7 @@ extension Factories {
         }
 
         override class var returnType: Symbol.DataType {
-            .unknown
+            .bool
         }
 
         var function: String {
@@ -33,8 +33,9 @@ extension Factories {
             guard [.bool, .int].contains(where: { $0 == argType }) else {
                 throw FactoryError.invalidParameter(symbols)
             }
+
             return Symbol(
-                ".\(function)(\(symbols.codeValues(separator: ",")))",
+                ".\(function)(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: argType,
                 children: symbols
             )

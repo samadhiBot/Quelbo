@@ -27,9 +27,9 @@ extension Factories {
         override func process() throws -> Symbol {
             Symbol(
                 id: "synonyms",
-                code: "synonyms: \(symbols.quoted.code)",
+                code: "synonyms: [\(symbols.quoted.codeValues(.commaSeparated))]",
                 type: Self.returnType,
-                children: symbols.map { $0.with(literal: true) }
+                children: symbols.map { $0.with(meta: [.isLiteral]) }
             )
         }
     }

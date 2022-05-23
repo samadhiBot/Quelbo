@@ -33,7 +33,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "sandwich.isIn(paperBag)",
+            "sandwich.isIn(paperBag)",
             type: .bool,
             children: [
                 Symbol("sandwich", type: .object, category: .objects),
@@ -49,7 +49,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "paperBag.isIn(kitchen)",
+            "paperBag.isIn(kitchen)",
             type: .bool,
             children: [
                 Symbol("paperBag", type: .object, category: .objects),

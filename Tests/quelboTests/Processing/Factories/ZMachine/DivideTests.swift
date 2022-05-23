@@ -35,11 +35,11 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: ".divide(9, 3)",
+            ".divide(9, 3)",
             type: .int,
             children: [
-                Symbol(id: "9", type: .int, literal: true),
-                Symbol(id: "3", type: .int, literal: true),
+                Symbol("9", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -52,12 +52,12 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: ".divide(20, 5, 2)",
+            ".divide(20, 5, 2)",
             type: .int,
             children: [
-                Symbol(id: "20", type: .int, literal: true),
-                Symbol(id: "5", type: .int, literal: true),
-                Symbol(id: "2", type: .int, literal: true),
+                Symbol("20", type: .int, meta: [.isLiteral]),
+                Symbol("5", type: .int, meta: [.isLiteral]),
+                Symbol("2", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -69,44 +69,44 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "bigNumber.divide(biggerNumber)",
+            "bigNumber.divide(biggerNumber)",
             type: .int,
             children: [
-                Symbol(id: "bigNumber", type: .int),
-                Symbol(id: "biggerNumber", type: .int),
+                Symbol("bigNumber", type: .int, meta: [.mutating(true)]),
+                Symbol("biggerNumber", type: .int),
             ]
         ))
     }
 
     func testDivideAtomAndDecimal() throws {
         let symbol = try factory.init([
-            .atom(",CYCLOWRATH"),
+            .global("CYCLOWRATH"),
             .decimal(1),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "cyclowrath.divide(1)",
+            "cyclowrath.divide(1)",
             type: .int,
             children: [
-                Symbol(id: "cyclowrath", type: .int, category: .globals),
-                Symbol(id: "1", type: .int, literal: true),
+                Symbol("cyclowrath", type: .int, category: .globals, meta: [.mutating(true)]),
+                Symbol("1", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testDivideAtomAndFunctionResult() throws {
         let symbol = try factory.init([
-            .atom(",BASE-SCORE"),
+            .global("BASE-SCORE"),
             .form([
                 .atom("OTVAL-FROB")
             ])
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "baseScore.divide(otvalFrob())",
+            "baseScore.divide(otvalFrob())",
             type: .int,
             children: [
-                Symbol(id: "baseScore", type: .int, category: .globals),
+                Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
                 Symbol(id: "otvalFrob", code: "otvalFrob()", type: .int),
             ]
         ))

@@ -34,8 +34,8 @@ final class DecrementLessThanTests: QuelboTests {
             "foo.decrement().isLessThan(3)",
             type: .bool,
             children: [
-                Symbol("foo", type: .int, meta: ["mutating": "true"]),
-                Symbol("3", type: .int, literal: true),
+                Symbol("foo", type: .int, meta: [.mutating(true)]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }

@@ -10,6 +10,8 @@ import XCTest
 
 class QuelboTests: XCTestCase {
     override func setUp() {
+        super.setUp()
+
         Game.shared.gameSymbols = []
         Game.shared.zMachineVersion = .z3
     }
@@ -37,23 +39,30 @@ class QuelboTests: XCTestCase {
 
 // MARK: - Test helpers
 
+class TestFactory: SymbolFactory {
+    override func process() throws -> Symbol {
+        let symbols = try symbolize(tokens)
+        return symbols[0]
+    }
+}
+
 extension QuelboTests {
     var fooTable: Symbol {
         Symbol(
             id: "foo",
             code: """
-                    let foo: [TableElement] = [
+                    let foo: [ZilElement] = [
                         .room(forest1),
                         .room(forest2),
                         .room(forest3),
                     ]
                     """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             category: .globals,
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
             ]
         )
     }

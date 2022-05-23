@@ -34,8 +34,8 @@ final class IsGreaterThanOrEqualToTests: QuelboTests {
             "2.isGreaterThanOrEqualTo(3)",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true),
-                Symbol("3", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -43,14 +43,14 @@ final class IsGreaterThanOrEqualToTests: QuelboTests {
     func testIsGreaterThanOrEqualToGlobal() throws {
         let symbol = try factory.init([
             .decimal(2),
-            .atom(",FOO"),
+            .global("FOO"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isGreaterThanOrEqualTo(foo)",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
                 Symbol("foo", type: .int, category: .globals),
             ]
         ))
@@ -66,7 +66,7 @@ final class IsGreaterThanOrEqualToTests: QuelboTests {
             "2.isGreaterThanOrEqualTo(bar)",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
                 Symbol("bar", type: .int),
             ]
         ))

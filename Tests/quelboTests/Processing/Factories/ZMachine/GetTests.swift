@@ -20,6 +20,7 @@ final class GetTests: QuelboTests {
 
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("GET"))
+        AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("GETB"))
     }
 
     func testGet() throws {
@@ -30,10 +31,10 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo[2]",
-            type: .tableElement,
+            type: .zilElement,
             children: [
                 fooTable.with(code: "foo"),
-                Symbol("2", type: .int, literal: true)
+                Symbol("2", type: .int, meta: [.isLiteral])
             ]
         ))
     }

@@ -29,14 +29,14 @@ final class AdjectivesTests: QuelboTests {
                 adjectives: [
                     "white",
                     "beauti",
-                    "coloni"
+                    "coloni",
                 ]
                 """,
             type: .array(.string),
             children: [
-                Symbol("white", type: .string, literal: true),
-                Symbol("beauti", type: .string, literal: true),
-                Symbol("coloni", type: .string, literal: true),
+                Symbol("white", type: .string, meta: [.isLiteral]),
+                Symbol("beauti", type: .string, meta: [.isLiteral]),
+                Symbol("coloni", type: .string, meta: [.isLiteral]),
             ]
         ))
     }

@@ -44,7 +44,7 @@ final class LongDescriptionTests: QuelboTests {
                             """
                         """#,
                     type: .string,
-                    literal: true
+                    meta: [.isLiteral]
                 )
             ]
         ))

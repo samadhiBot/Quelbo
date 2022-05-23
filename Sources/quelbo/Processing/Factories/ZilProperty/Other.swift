@@ -28,7 +28,7 @@ extension Factories {
                 case 1:
                     code = try symbol(0).code
                 default:
-                    code = symbols.code
+                    code = "[\(symbols.codeValues(.commaSeparated))]"
             }
 
             return Symbol(

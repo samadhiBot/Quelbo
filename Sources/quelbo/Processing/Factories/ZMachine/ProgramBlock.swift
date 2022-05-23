@@ -28,14 +28,14 @@ extension Factories {
                     \(pro.paramDeclarations())\
                     \(pro.activation)\
                     while true {
-                    \(pro.codeBlock.indented)
+                    \(pro.code.code.indented)
                     }
                     """
             } else {
                 return """
                     do {
                     \(pro.paramDeclarations(indented: true))\
-                    \(pro.codeBlock.indented)
+                    \(pro.code.code.indented)
                     }
                     """
             }

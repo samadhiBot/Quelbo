@@ -26,7 +26,7 @@ final class TakeValueTests: QuelboTests {
             code: "takeValue: 10",
             type: .int,
             children: [
-                Symbol("10", type: .int, literal: true)
+                Symbol("10", type: .int, meta: [.isLiteral])
             ]
         ))
     }

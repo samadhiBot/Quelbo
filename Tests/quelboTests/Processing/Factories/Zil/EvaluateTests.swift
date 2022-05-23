@@ -1,5 +1,5 @@
 //
-//  RoutineCallTests.swift
+//  EvaluateTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/30/22.
@@ -9,7 +9,7 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class RoutineCallTests: QuelboTests {
+final class EvaluateTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
@@ -24,7 +24,7 @@ final class RoutineCallTests: QuelboTests {
                 type: .int,
                 category: .routines,
                 children: [
-                    Symbol(id: "number", type: .int, literal: true)
+                    Symbol(id: "number", type: .int, meta: [.isLiteral])
                 ]
             ),
             Symbol(
@@ -32,8 +32,8 @@ final class RoutineCallTests: QuelboTests {
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol("answer", type: .string, literal: true),
-                    Symbol("number", type: .int, literal: true),
+                    Symbol("answer", type: .string, meta: [.isLiteral]),
+                    Symbol("number", type: .int, meta: [.isLiteral]),
                 ]
             ),
             Symbol(
@@ -41,16 +41,16 @@ final class RoutineCallTests: QuelboTests {
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol("answer", type: .string, literal: true),
+                    Symbol("answer", type: .string, meta: [.isLiteral]),
                     Symbol("isValid", type: .bool),
-                    Symbol("number", type: .int, literal: true),
+                    Symbol("number", type: .int, meta: [.isLiteral]),
                 ]
             )
         )
     }
 
     func testProcessRoutineZeroParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.Evaluate.init([
             .atom("BAG-OF-COINS-F")
         ]).process()
 
@@ -62,7 +62,7 @@ final class RoutineCallTests: QuelboTests {
     }
 
     func testProcessRoutineOneParam() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.Evaluate.init([
             .atom("ONE-FCN"),
             .decimal(42)
         ]).process()
@@ -72,13 +72,13 @@ final class RoutineCallTests: QuelboTests {
             code: "oneFunc(number: 42)",
             type: .int,
             children: [
-                Symbol(id: "number", code: "number: 42", type: .int, literal: true)
+                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral])
             ]
         ))
     }
 
     func testProcessRoutineTwoParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.Evaluate.init([
             .atom("TWO-F"),
             .string("Answer"),
             .decimal(42),
@@ -86,17 +86,22 @@ final class RoutineCallTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "twoFunc",
-            code: "twoFunc(answer: \"Answer\", number: 42)",
+            code: """
+                twoFunc(
+                    answer: \"Answer\",
+                    number: 42
+                )
+                """,
             type: .string,
             children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, literal: true),
-                Symbol(id: "number", code: "number: 42", type: .int, literal: true),
+                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
+                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testProcessRoutineThreeParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.Evaluate.init([
             .atom("THREE-FUNCTION"),
             .string("Answer"),
             .bool(true),
@@ -108,12 +113,18 @@ final class RoutineCallTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "threeFunc",
-            code: "threeFunc(answer: \"Answer\", isValid: true, number: oneFunc(number: 42))",
+            code: """
+                threeFunc(
+                    answer: \"Answer\",
+                    isValid: true,
+                    number: oneFunc(number: 42)
+                )
+                """,
             type: .string,
             children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, literal: true),
+                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
                 Symbol(id: "isValid", code: "isValid: true", type: .bool),
-                Symbol(id: "number", code: "number: oneFunc(number: 42)", type: .int, literal: true),
+                Symbol(id: "number", code: "number: oneFunc(number: 42)", type: .int, meta: [.isLiteral]),
             ]
         ))
     }

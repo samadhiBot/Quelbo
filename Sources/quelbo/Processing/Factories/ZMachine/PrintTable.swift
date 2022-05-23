@@ -17,7 +17,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .one(.array(.tableElement))
+            .one(.array(.zilElement))
         }
 
         func tableContents() throws -> String {

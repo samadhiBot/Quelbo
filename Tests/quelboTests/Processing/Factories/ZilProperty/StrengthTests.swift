@@ -26,7 +26,7 @@ final class StrengthTests: QuelboTests {
             code: "strength: 2",
             type: .int,
             children: [
-                Symbol("2", type: .int, literal: true)
+                Symbol("2", type: .int, meta: [.isLiteral])
             ]
         ))
     }

@@ -47,14 +47,14 @@ final class RepeatTests: QuelboTests {
                     .atom("X"),
                     .form([
                         .atom("+"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(1)
                     ])
                 ]),
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .form([
@@ -62,7 +62,7 @@ final class RepeatTests: QuelboTests {
                     .list([
                         .form([
                             .atom("=?"),
-                            .atom(".X"),
+                            .local("X"),
                             .decimal(3)
                         ]),
                         .form([
@@ -133,14 +133,14 @@ final class RepeatTests: QuelboTests {
                     .atom("X"),
                     .form([
                         .atom("+"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(1)
                     ])
                 ]),
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .form([
@@ -148,13 +148,13 @@ final class RepeatTests: QuelboTests {
                     .list([
                         .form([
                             .atom("=?"),
-                            .atom(".X"),
+                            .local("X"),
                             .decimal(3)
                         ]),
                         .form([
                             .atom("COND"),
                             .list([
-                                .atom(",FUNNY-RETURN?"),
+                                .global("FUNNY-RETURN?"),
                                 .form([
                                     .atom("TELL"),
                                     .string("RETURN EXIT ROUTINE"),

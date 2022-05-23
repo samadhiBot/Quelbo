@@ -27,7 +27,7 @@ final class GetPropertyTests: QuelboTests {
     func testGetProperty() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
-            .atom(",P?STRENGTH")
+            .property("STRENGTH")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -44,7 +44,7 @@ final class GetPropertyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
-                .atom(",P?STRENGTH")
+                .global("P?STRENGTH")
             ]).process()
         )
     }

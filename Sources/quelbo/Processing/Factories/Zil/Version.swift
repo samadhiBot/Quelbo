@@ -18,15 +18,9 @@ extension Factories {
 
         override func processTokens() throws {
             let zMachineVersion = try Game.ZMachineVersion(tokens: tokens)
-            symbols.append(Symbol(
-                "zMachineVersion",
-                type: .string
-            ))
-            symbols.append(Symbol(
-                zMachineVersion.rawValue.quoted,
-                type: .string,
-                literal: true
-            ))
+
+            nameSymbol = Symbol("zMachineVersion", type: .string)
+            valueSymbol = Symbol(zMachineVersion.rawValue.quoted, type: .string, meta: [.isLiteral])
         }
     }
 }

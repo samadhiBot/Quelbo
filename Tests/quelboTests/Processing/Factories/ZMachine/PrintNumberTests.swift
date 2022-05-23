@@ -30,10 +30,10 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "output(2)",
+            "output(2)",
             type: .void,
             children: [
-                Symbol(id: "2", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -53,10 +53,10 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "output(infinity)",
+            "output(infinity)",
             type: .void,
             children: [
-                Symbol(id: "infinity", type: .int),
+                Symbol("infinity", type: .int),
             ]
         ))
     }
@@ -71,15 +71,15 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "output(.add(2, 3))",
+            "output(.add(2, 3))",
             type: .void,
             children: [
                 Symbol(
-                    id: ".add(2, 3)",
+                    ".add(2, 3)",
                     type: .int,
                     children: [
-                        Symbol(id: "2", type: .int, literal: true),
-                        Symbol(id: "3", type: .int, literal: true),
+                        Symbol("2", type: .int, meta: [.isLiteral]),
+                        Symbol("3", type: .int, meta: [.isLiteral]),
                     ]
                 ),
             ]

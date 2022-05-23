@@ -30,7 +30,7 @@ final class PseudosTests: QuelboTests {
                         adjectives: [],
                         nouns: ["chasm"],
                         action: chasmPseudo
-                    )
+                    ),
                 ]
                 """#,
             type: .array(.thing),
@@ -60,7 +60,7 @@ final class PseudosTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
-            code: #"""
+            code: """
                 things: [
                     Thing(
                         adjectives: [],
@@ -71,9 +71,9 @@ final class PseudosTests: QuelboTests {
                         adjectives: [],
                         nouns: ["paint"],
                         action: paintPseudo
-                    )
+                    ),
                 ]
-                """#,
+                """,
             type: .array(.thing),
             children: [
                 Symbol(

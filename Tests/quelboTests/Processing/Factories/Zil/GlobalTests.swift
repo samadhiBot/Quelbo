@@ -34,6 +34,7 @@ final class GlobalTests: QuelboTests {
 
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zilSymbolFactories.find("GLOBAL"))
+        AssertSameFactory(factory, try Game.zilSymbolFactories.find("SETG"))
     }
 
     func testAtom() throws {
@@ -102,18 +103,18 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: """
-                    var foo: [TableElement] = [
+                    var foo: [ZilElement] = [
                         .room(forest1),
                         .room(forest2),
                         .room(forest3),
                     ]
                     """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             category: .globals,
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
             ]
         )
 
@@ -141,7 +142,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: """
-                let foo: [TableElement] = [
+                let foo: [ZilElement] = [
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
@@ -150,15 +151,15 @@ final class GlobalTests: QuelboTests {
                     .room(forest1),
                 ]
                 """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             category: .constants,
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
-                Symbol(id: "path", code: ".room(path)", type: .tableElement, category: .rooms),
-                Symbol(id: "clearing", code: ".room(clearing)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
+                Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
+                Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
             ]
         )
 
@@ -201,7 +202,7 @@ final class GlobalTests: QuelboTests {
 //        let expected = Symbol(
 //            id: "villains",
 //            code: """
-//                    var villains: [TableElement] = [
+//                    var villains: [ZilElement] = [
 //                        .table([
 //                            .atom("troll"),
 //                            .atom("sword"),
@@ -225,7 +226,7 @@ final class GlobalTests: QuelboTests {
 //                        ]),
 //                    ]
 //                    """,
-//            type: .array(.tableElement),
+//            type: .array(.zilElement),
 //            category: .globals,
 //            children: [
 //                Symbol(
@@ -238,7 +239,7 @@ final class GlobalTests: QuelboTests {
 //                                .atom("trollMelee"),
 //                            ])
 //                            """,
-//                            type: .array(.tableElement),
+//                            type: .array(.zilElement),
 //                            category: nil,
 //                            children: [
 //                                Symbol(
@@ -289,7 +290,7 @@ final class GlobalTests: QuelboTests {
 //                                .atom("thiefMelee"),
 //                            ])
 //                            """,
-//                            type: .array(.tableElement),
+//                            type: .array(.zilElement),
 //                            category: nil,
 //                            children: [
 //                                Symbol(
@@ -340,7 +341,7 @@ final class GlobalTests: QuelboTests {
 //                                .atom("cyclopsMelee"),
 //                            ])
 //                            """,
-//                            type: .array(.tableElement),
+//                            type: .array(.zilElement),
 //                            category: nil,
 //                            children: [
 //                                Symbol(
@@ -397,43 +398,39 @@ final class GlobalTests: QuelboTests {
                 .atom("TABLE"),
                 .atom("DEF1"),
                 .decimal(0),
-                .commented(
-                    .form([
-                        .atom("REST"),
-                        .atom(",DEF1"),
-                        .decimal(2)
-                    ])
-                ),
+                .commented(.form([
+                    .atom("REST"),
+                    .global("DEF1"),
+                    .decimal(2)
+                ])),
                 .decimal(0),
-                .commented(
-                    .form([
-                        .atom("REST"),
-                        .atom(",DEF1"),
-                        .decimal(4)
-                    ])
-                )
+                .commented(.form([
+                    .atom("REST"),
+                    .global("DEF1"),
+                    .decimal(4)
+                ]))
             ])
         ]).process()
 
         let expected = Symbol(
             id: "def1Res",
             code: """
-                    var def1Res: [TableElement] = [
+                    var def1Res: [ZilElement] = [
                         .table(def1),
                         .int(0),
-                        // /* ["REST", ",DEF1", "2"] */,
+                        // /* ["REST", "DEF1", "2"] */,
                         .int(0),
-                        // /* ["REST", ",DEF1", "4"] */,
+                        // /* ["REST", "DEF1", "4"] */,
                     ]
                     """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             category: .globals,
             children: [
-                Symbol(id: "def1", code: ".table(def1)", type: .tableElement),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
-                Symbol(id: "/* [\"REST\", \",DEF1\", \"2\"] */", code: "// /* [\"REST\", \",DEF1\", \"2\"] */", type: .tableElement),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
-                Symbol(id: "/* [\"REST\", \",DEF1\", \"4\"] */", code: "// /* [\"REST\", \",DEF1\", \"4\"] */", type: .tableElement),
+                Symbol(id: "def1", code: ".table(def1)", type: .zilElement),
+                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                Symbol(id: "/* [\"REST\", \"DEF1\", \"2\"] */", code: "// /* [\"REST\", \"DEF1\", \"2\"] */", type: .zilElement),
+                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                Symbol(id: "/* [\"REST\", \"DEF1\", \"4\"] */", code: "// /* [\"REST\", \"DEF1\", \"4\"] */", type: .zilElement),
             ]
         )
 
@@ -454,7 +451,7 @@ final class GlobalTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("FOO"),
-                .quoted(.string("BAR"))
+                .quote(.string("BAR"))
             ]).process()
         )
     }
@@ -468,13 +465,53 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: """
-                    var foo: String = "Forty Two!"
-                    """,
+                var foo: String = "Forty Two!"
+                """,
             type: .string,
             category: .globals
         )
 
         XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(try Game.find("foo"), expected)
+    }
+
+    func testFunction() throws {
+        let symbol = try factory.init([
+            .atom("SQUARE"),
+            .form([
+                .atom("FUNCTION"),
+                .list([
+                    .atom("X")
+                ]),
+                .form([
+                    .atom("*"),
+                    .local("X"),
+                    .local("X")
+                ])
+            ])
+        ]).process()
+
+        let expected = Symbol(
+            id: "square",
+            code: """
+                let square: (Int) -> Int = { (x: Int) -> Int in
+                    var x = x
+                    return x.multiply(x)
+                }
+                """,
+            type: .int,
+            category: .constants,
+            children: [
+                Symbol(
+                    id: "x",
+                    code: "x: Int",
+                    type: .int,
+                    meta: [.mutating(true)]
+                )
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("square"), expected)
     }
 }

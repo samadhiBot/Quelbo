@@ -21,15 +21,14 @@ extension Factories {
             .two(.property, .unknown)
         }
 
-        override class var returnType: Symbol.DataType {
-            .unknown
-        }
-
         override func process() throws -> Symbol {
-            Symbol(
-                "\(try symbol(0)).set(to: \(try symbol(1)))",
-                type: try symbol(1).type,
-                children: symbols
+            let variable = try symbol(0).with(meta: [.mutating(true)])
+            let value = try symbol(1)
+
+            return Symbol(
+                "\(variable).set(to: \(value))",
+                type: value.type,
+                children: [variable, value]
             )
         }
     }

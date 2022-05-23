@@ -123,17 +123,17 @@ final class RoomTests: QuelboTests {
                         .west: .to(forest1),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
                         .southWest: .conditional(stoneBarrow, if: wonFlag),
-                        .into: .conditional(stoneBarrow, if: wonFlag)
+                        .into: .conditional(stoneBarrow, if: wonFlag),
                     ],
                     flags: [
-                        rlandBit,
-                        onBit,
-                        sacredBit
+                        isDryLand,
+                        isOn,
+                        isSacred,
                     ],
                     globals: [
                         whiteHouse,
                         board,
-                        forest
+                        forest,
                     ],
                     location: rooms
                 )
@@ -154,7 +154,7 @@ final class RoomTests: QuelboTests {
                     code: "description: \"West of House\"",
                     type: .string,
                     children: [
-                        Symbol("\"West of House\"", type: .string, literal: true)
+                        Symbol("\"West of House\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -169,16 +169,16 @@ final class RoomTests: QuelboTests {
                     id: "flags",
                     code: """
                      flags: [
-                         rlandBit,
-                         onBit,
-                         sacredBit
+                         isDryLand,
+                         isOn,
+                         isSacred,
                      ]
                      """,
                     type: .array(.bool),
                     children: [
-                        Symbol("rlandBit", type: .bool),
-                        Symbol("onBit", type: .bool),
-                        Symbol("sacredBit", type: .bool),
+                        Symbol(id: "rlandBit", code: "isDryLand", type: .bool, category: .flags),
+                        Symbol(id: "onBit", code: "isOn", type: .bool, category: .flags),
+                        Symbol(id: "sacredBit", code: "isSacred", type: .bool, category: .flags),
                     ]
                 ),
                 Symbol(
@@ -187,7 +187,7 @@ final class RoomTests: QuelboTests {
                      globals: [
                          whiteHouse,
                          board,
-                         forest
+                         forest,
                      ]
                      """,
                     type: .array(.object),
@@ -208,7 +208,7 @@ final class RoomTests: QuelboTests {
                          .west: .to(forest1),
                          .east: .blocked("The door is boarded and you can't remove the boards."),
                          .southWest: .conditional(stoneBarrow, if: wonFlag),
-                         .into: .conditional(stoneBarrow, if: wonFlag)
+                         .into: .conditional(stoneBarrow, if: wonFlag),
                      ]
                      """,
                     type: .array(.direction),
@@ -338,9 +338,9 @@ final class RoomTests: QuelboTests {
                     .north: .conditionalElse(reservoir,
                         if: lowTide,
                         else: You would drown.
-                    )
+                    ),
                 ],
-                flags: [rlandBit],
+                flags: [isDryLand],
                 globals: [globalWater],
                 location: rooms,
                 things: [
@@ -353,7 +353,7 @@ final class RoomTests: QuelboTests {
                         adjectives: [],
                         nouns: ["chasm"],
                         action: chasmPseudo
-                    )
+                    ),
                 ]
             )
             """,
@@ -448,17 +448,17 @@ final class RoomTests: QuelboTests {
                     .northWest: .to(northOfHouse),
                     .east: .to(clearing),
                     .west: .conditional(kitchen, if: kitchenWindow.isOpen),
-                    .into: .conditional(kitchen, if: kitchenWindow.isOpen)
+                    .into: .conditional(kitchen, if: kitchenWindow.isOpen),
                 ],
                 flags: [
-                    rlandBit,
-                    onBit,
-                    sacredBit
+                    isDryLand,
+                    isOn,
+                    isSacred,
                 ],
                 globals: [
                     whiteHouse,
                     kitchenWindow,
-                    forest
+                    forest,
                 ],
                 location: rooms
             )
@@ -525,9 +525,9 @@ final class RoomTests: QuelboTests {
                 description: "Studio",
                 directions: [
                     .south: .to(gallery),
-                    .up: .per(upChimneyFunc)
+                    .up: .per(upChimneyFunc),
                 ],
-                flags: [rlandBit],
+                flags: [isDryLand],
                 globals: [chimney],
                 location: rooms,
                 longDescription: """
@@ -549,7 +549,7 @@ final class RoomTests: QuelboTests {
                         adjectives: [],
                         nouns: ["paint"],
                         action: paintPseudo
-                    )
+                    ),
                 ]
             )
             """#,
@@ -606,9 +606,9 @@ final class RoomTests: QuelboTests {
                     .north: .blocked("""
                         You've only just arrived, and besides, the weather outside \
                         seems to be getting worse.
-                        """)
+                        """),
                 ],
-                flags: [lightBit],
+                flags: [isLight],
                 location: rooms,
                 longDescription: """
                     You are standing in a spacious hall, splendidly decorated in \
@@ -687,9 +687,9 @@ final class RoomTests: QuelboTests {
                     .west: .blocked("The channel is too narrow."),
                     .land: .to(streamView),
                     .down: .to(reservoir),
-                    .east: .to(reservoir)
+                    .east: .to(reservoir),
                 ],
-                flags: [nonlandBit],
+                flags: [isNotLand],
                 globals: [globalWater],
                 location: rooms,
                 longDescription: """
@@ -703,7 +703,7 @@ final class RoomTests: QuelboTests {
                         adjectives: [],
                         nouns: ["stream"],
                         action: streamPseudo
-                    )
+                    ),
                 ]
             )
             """#,
@@ -744,7 +744,7 @@ final class RoomTests: QuelboTests {
                                     """
                                 """#,
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 ),
@@ -753,15 +753,15 @@ final class RoomTests: QuelboTests {
                     code: "description: \"Stream\"",
                     type: .string,
                     children: [
-                        Symbol("\"Stream\"", type: .string, literal: true),
+                        Symbol("\"Stream\"", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
                     id: "flags",
-                    code: "flags: [nonlandBit]",
+                    code: "flags: [isNotLand]",
                     type: .array(.bool),
                     children: [
-                        Symbol("nonlandBit", type: .bool)
+                        Symbol(id: "nonlandBit", code: "isNotLand", type: .bool, category: .flags)
                     ]
                 ),
                 Symbol(
@@ -780,7 +780,7 @@ final class RoomTests: QuelboTests {
                                  adjectives: [],
                                  nouns: ["stream"],
                                  action: streamPseudo
-                             )
+                             ),
                          ]
                          """,
                     type: .array(.thing),
@@ -806,7 +806,7 @@ final class RoomTests: QuelboTests {
                              .west: .blocked("The channel is too narrow."),
                              .land: .to(streamView),
                              .down: .to(reservoir),
-                             .east: .to(reservoir)
+                             .east: .to(reservoir),
                          ]
                          """,
                     type: .array(.direction),

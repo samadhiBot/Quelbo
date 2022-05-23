@@ -41,9 +41,7 @@ extension Factories {
                 self.propertySymbols.append(Symbol(
                     id: "directions",
                     code: """
-                        directions: [
-                        \(directionSymbols.codeValues(separator: ",", lineBreaks: 1).indented)
-                        ]
+                        directions: [\(directionSymbols.codeValues(.commaSeparated))]
                         """,
                     type: .array(.direction),
                     children: directionSymbols
@@ -59,7 +57,7 @@ extension Factories {
                 code: """
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName.lowercased()).
                     var \(nameSymbol.code) = \(typeName)(
-                    \(propertySymbols.codeValues(separator: ",", lineBreaks: 1, sorted: true).indented)
+                    \(propertySymbols.sorted.codeValues(.commaLineBreakSeparated))
                     )
                     """,
                 type: .object,
@@ -69,46 +67,48 @@ extension Factories {
             try Game.commit(symbol)
             return symbol
         }
+    }
+}
 
-        /// Scans through a ``Token`` array until it finds a parameter list, then returns a translated
-        /// ``Symbol`` array.
-        ///
-        /// The `Token` array is mutated in the course of the search, removing any elements up to and
-        /// including the target list.
-        ///
-        /// - Parameter tokens: A `Token` array to search.
-        ///
-        /// - Returns: An array of `Symbol` translations of the list tokens.
-        ///
-        /// - Throws: When no list is found, or token symbolization fails.
-        func findPropertySymbols(in tokens: inout [Token]) throws -> [Symbol] {
-            try tokens.compactMap { token in
-                switch token {
-                    case .commented:
-                        return nil
-                    case .list(let listTokens):
-                        var tokens = listTokens
-                        guard case .atom(let zil) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
-                        }
-                        if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
-                            do {
-                                let factory = try propertyFactory.init(tokens)
-                                return try factory.process()
-                            } catch {
-                                guard zil == "IN" else { throw error }
-                            }
-                        }
-                        if let moveFactory = Factories.MoveDirection.find(zil) {
-                            let factory = try moveFactory.init(listTokens)
-                            directionSymbols.append(try factory.process())
-                            return nil
-                        }
-                        let factory = try Factories.Other.init(listTokens)
-                        return try factory.process()
-                    default:
-                        throw FactoryError.invalidProperty(token)
+extension Factories.Object {
+    /// Scans through a ``Token`` array until it finds a parameter list, then returns a translated
+    /// ``Symbol`` array.
+    ///
+    /// The `Token` array is mutated in the course of the search, removing any elements up to and
+    /// including the target list.
+    ///
+    /// - Parameter tokens: A `Token` array to search.
+    ///
+    /// - Returns: An array of `Symbol` translations of the list tokens.
+    ///
+    /// - Throws: When no list is found, or token symbolization fails.
+    func findPropertySymbols(in tokens: inout [Token]) throws -> [Symbol] {
+        try tokens.compactMap { token in
+            switch token {
+            case .commented:
+                return nil
+            case .list(let listTokens):
+                var tokens = listTokens
+                guard case .atom(let zil) = tokens.shift() else {
+                    throw FactoryError.invalidProperty(token)
                 }
+                if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
+                    do {
+                        let factory = try propertyFactory.init(tokens)
+                        return try factory.process()
+                    } catch {
+                        guard zil == "IN" else { throw error }
+                    }
+                }
+                if let moveFactory = Factories.MoveDirection.find(zil) {
+                    let factory = try moveFactory.init(listTokens)
+                    directionSymbols.append(try factory.process())
+                    return nil
+                }
+                let factory = try Factories.Other.init(listTokens)
+                return try factory.process()
+            default:
+                throw FactoryError.invalidProperty(token)
             }
         }
     }

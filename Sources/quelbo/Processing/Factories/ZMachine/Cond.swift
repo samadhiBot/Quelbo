@@ -16,18 +16,12 @@ extension Factories {
             ["COND"]
         }
 
-//        override class var parameters: Parameters {
-//            .oneOrMore(.list)
-//        }
-
-
         func conditionalSymbols() throws -> [Symbol] {
             var conditions: [Symbol] = []
             var symbols = symbols
             while let list = symbols.shift() {
                 var condition = list.children
                 guard
-                    list.type == .list,
                     let predicate = condition.shift(),
                     !condition.isEmpty
                 else {
@@ -45,10 +39,9 @@ extension Factories {
                 conditions.append(Symbol(
                     """
                     \(ifStatement){
-                    \(condition.codeValues(lineBreaks: 1).indented)
+                    \(condition.codeValues(.singleLineBreak, .indented))
                     }
                     """,
-//                    type: (try? condition.commonType()) ?? .void,
                     children: list.children
                 ))
             }
@@ -57,8 +50,8 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                try conditionalSymbols().codeValues(separator: " else "),
-                type: (try? symbols.commonType()) ?? .void,
+                try conditionalSymbols().codeValues(.separator(" else ")),
+                type: .void,
                 children: symbols
             )
         }

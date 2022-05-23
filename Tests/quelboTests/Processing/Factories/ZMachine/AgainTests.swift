@@ -42,14 +42,14 @@ final class AgainTests: QuelboTests {
                 .atom("X"),
                 .form([
                     .atom("+"),
-                    .atom(".X"),
+                    .local("X"),
                     .decimal(1)
                 ])
             ]),
             .form([
                 .atom("TELL"),
                 .atom("N"),
-                .atom(".X"),
+                .local("X"),
                 .string(" ")
             ]),
             .form([
@@ -57,7 +57,7 @@ final class AgainTests: QuelboTests {
                 .list([
                     .form([
                         .atom("=?"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(5)
                     ]),
                     .form([
@@ -109,14 +109,14 @@ final class AgainTests: QuelboTests {
                 .atom("X"),
                 .form([
                     .atom("+"),
-                    .atom(".X"),
+                    .local("X"),
                     .decimal(1)
                 ])
             ]),
             .form([
                 .atom("TELL"),
                 .atom("N"),
-                .atom(".X"),
+                .local("X"),
                 .string(" ")
             ]),
             .form([
@@ -124,7 +124,7 @@ final class AgainTests: QuelboTests {
                 .list([
                     .form([
                         .atom("=?"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(5)
                     ]),
                     .form([
@@ -182,14 +182,14 @@ final class AgainTests: QuelboTests {
                     .atom("X"),
                     .form([
                         .atom("+"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(1)
                     ])
                 ]),
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .form([
@@ -197,7 +197,7 @@ final class AgainTests: QuelboTests {
                     .list([
                         .form([
                             .atom("=?"),
-                            .atom(".X"),
+                            .local("X"),
                             .decimal(5)
                         ]),
                         .form([
@@ -207,7 +207,7 @@ final class AgainTests: QuelboTests {
                 ]),
                 .form([
                     .atom("AGAIN"),
-                    .atom(".ACT1")
+                    .local("ACT1")
                 ]),
                 .commented(.string("Start block again from ACT1,"))
             ])
@@ -255,14 +255,14 @@ final class AgainTests: QuelboTests {
                     .atom("X"),
                     .form([
                         .atom("+"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(1)
                     ])
                 ]),
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .form([
@@ -270,7 +270,7 @@ final class AgainTests: QuelboTests {
                     .list([
                         .form([
                             .atom("=?"),
-                            .atom(".X"),
+                            .local("X"),
                             .decimal(5)
                         ]),
                         .form([

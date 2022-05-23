@@ -54,7 +54,7 @@ final class BindTests: QuelboTests {
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .commented(.string("--> 2 (Inner X)"))
@@ -62,7 +62,7 @@ final class BindTests: QuelboTests {
             .form([
                 .atom("TELL"),
                 .atom("N"),
-                .atom(".X"),
+                .local("X"),
                 .string(" ")
             ]),
             .commented(.string("--> 1 (Outer X)")),
@@ -118,14 +118,14 @@ final class BindTests: QuelboTests {
                     .atom("X"),
                     .form([
                         .atom("+"),
-                        .atom(".X"),
+                        .local("X"),
                         .decimal(1)
                     ])
                 ]),
                 .form([
                     .atom("TELL"),
                     .atom("N"),
-                    .atom(".X"),
+                    .local("X"),
                     .string(" ")
                 ]),
                 .form([
@@ -133,7 +133,7 @@ final class BindTests: QuelboTests {
                     .list([
                         .form([
                             .atom("=?"),
-                            .atom(".X"),
+                            .local("X"),
                             .decimal(3)
                         ]),
                         .form([

@@ -23,22 +23,44 @@ final class FlagsTests: QuelboTests {
             .atom("OPENBIT")
         ]).process()
 
+        let flagGlobals = [
+            Symbol(
+                id: "takeBit",
+                code: "isTakable",
+                type: .bool,
+                category: .flags
+            ),
+            Symbol(
+                id: "contBit",
+                code: "isContainer",
+                type: .bool,
+                category: .flags
+            ),
+            Symbol(
+                id: "openBit",
+                code: "isOpen",
+                type: .bool,
+                category: .flags
+            )
+        ]
+
         XCTAssertNoDifference(symbol, Symbol(
             id: "flags",
             code: """
                 flags: [
-                    takeBit,
-                    contBit,
-                    openBit
+                    isContainer,
+                    isOpen,
+                    isTakable,
                 ]
                 """,
             type: .array(.bool),
-            children: [
-                Symbol("takeBit", type: .bool),
-                Symbol("contBit", type: .bool),
-                Symbol("openBit", type: .bool),
-            ]
+            children: flagGlobals
         ))
+
+        try flagGlobals.forEach { flag in
+            let global = try Game.find(flag.id, category: .flags)
+            XCTAssertEqual(flag, global)
+        }
     }
 
     func testEmptyThrows() throws {

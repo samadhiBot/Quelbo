@@ -46,8 +46,7 @@ extension String {
     ///
     /// - Returns: The indented `String`.
     var indented: String {
-        let indented = self.replacingOccurrences(of: "\n", with: "\n    ")
-        return "    \(indented)"
+        "    \(self.replacingOccurrences(of: "\n", with: "\n    "))"
     }
 
     /// Translates a ZIL name `String` from dash-separated ALL-CAPS to camel case with a lowercase
@@ -78,18 +77,20 @@ extension String {
         }
     }
 
+    /// Returns the `String` with any trailing space characters trimmed.
     var rightTrimmed: String {
-        self.replacingOccurrences(of: "\n", with: "\n__CRLF__")
+        self.replacingOccurrences(of: "\n", with: "__PRE__\n__POST__")
             .split(separator: "\n")
-            .map {
-                var view = $0[...]
+            .map { line in
+                var view = line
+                    .replacingOccurrences(of: "__PRE__", with: "")
+                    .replacingOccurrences(of: "__POST__", with: "")[...]
                 while view.last?.isWhitespace == true {
                     view = view.dropLast()
                 }
                 return String(view)
             }
             .joined(separator: "\n")
-            .replacingOccurrences(of: "__CRLF__", with: "")
     }
 
     /// Removes and/or replaces common ZIL prefixes and suffixes that are either unneeded or illegal
@@ -98,7 +99,9 @@ extension String {
         var string = self
         if string.hasPrefix(",P?") {
             string.removeFirst(3)
-        } else if string.hasPrefix(",") || string.hasPrefix(".") {
+        } else if string.hasPrefix("!.") {
+            string.removeFirst(2)
+        } else if string.hasPrefix(",") || string.hasPrefix(".") || string.hasPrefix("'") {
             string.removeFirst()
         }
         if string.hasSuffix("-F") {
@@ -116,6 +119,9 @@ extension String {
         } else if string.hasSuffix("?") {
             string.removeLast()
             string = "IS-\(string)"
+        } else if string.hasSuffix("!") {
+            // See `ZilSyntaxTests.testSegmentFormWithClosingBang`
+            string.removeLast()
         } else if string.hasSuffix("BIT") {
             string.removeLast(3)
             string.append("-BIT")

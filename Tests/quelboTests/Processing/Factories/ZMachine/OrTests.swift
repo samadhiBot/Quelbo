@@ -78,9 +78,9 @@ final class OrTests: QuelboTests {
             ".or(1, 0, 2)",
             type: .int,
             children: [
-                Symbol("1", type: .int, literal: true),
-                Symbol("0", type: .int, literal: true),
-                Symbol("2", type: .int, literal: true),
+                Symbol("1", type: .int, meta: [.isLiteral]),
+                Symbol("0", type: .int, meta: [.isLiteral]),
+                Symbol("2", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -89,17 +89,22 @@ final class OrTests: QuelboTests {
         let symbol = try factory.init([
             .form([
                 .atom("=?"),
-                .atom(".RARG"),
-                .atom(",M-ENTER"),
+                .local("RARG"),
+                .global("M-ENTER"),
             ]),
             .form([
                 .atom("NOT"),
-                .atom(",FOUND-TREASURE-CHEST"),
+                .global("FOUND-TREASURE-CHEST"),
             ]),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".or(rarg.equals(mEnter), !foundTreasureChest)",
+            """
+            .or(
+                rarg.equals(mEnter),
+                !foundTreasureChest
+            )
+            """,
             type: .bool,
             children: [
                 Symbol(
@@ -111,7 +116,7 @@ final class OrTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "!foundTreasureChest",
+                    "!foundTreasureChest",
                     type: .bool,
                     children: [
                         Symbol("foundTreasureChest", type: .bool, category: .globals)

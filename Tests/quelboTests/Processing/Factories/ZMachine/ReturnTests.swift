@@ -124,7 +124,7 @@ final class ReturnTests: QuelboTests {
             code: "return 42",
             type: .int,
             children: [
-                Symbol("42", type: .int, literal: true)
+                Symbol("42", type: .int, meta: [.isLiteral])
             ]
         ))
     }
@@ -139,14 +139,14 @@ final class ReturnTests: QuelboTests {
             code: #"return "grue""#,
             type: .string,
             children: [
-                Symbol(#""grue""#, type: .string, literal: true)
+                Symbol(#""grue""#, type: .string, meta: [.isLiteral])
             ]
         ))
     }
 
     func testReturnGlobal() throws {
         let symbol = try factory.init([
-            .atom(",FOO")
+            .global("FOO")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -172,14 +172,5 @@ final class ReturnTests: QuelboTests {
                 Symbol("forest1", type: .object, category: .rooms)
             ]
         ))
-    }
-
-    func testTooManyParamsThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .bool(false),
-                .bool(true)
-            ]).process()
-        )
     }
 }

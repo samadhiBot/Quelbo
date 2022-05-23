@@ -5,8 +5,8 @@
 //  Created by Chris Sessions on 3/24/22.
 //
 
-import Foundation
 import Fizmo
+import Foundation
 
 // https://foss.heptapod.net/zilf/zilf/-/blob/branch/default/sample/beer/beer.zil
 
@@ -22,9 +22,10 @@ struct BeerSongRoutineVersion {
         return true
     }
 
+    @discardableResult
     /// The `go` (GO) routine.
-    func go() {
-        sing(n: 3)
+    func go() -> Bool {
+        return sing(n: 3)
     }
 
     @discardableResult

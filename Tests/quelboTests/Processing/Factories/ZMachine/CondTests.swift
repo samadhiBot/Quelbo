@@ -37,8 +37,8 @@ final class CondTests: QuelboTests {
             .list([
                 .form([
                     .atom("EQUAL?"),
-                    .atom(".RARG"),
-                    .atom(",M-ENTER")
+                    .local("RARG"),
+                    .global("M-ENTER")
                 ]),
                 .form([
                     .atom("PRINT"),
@@ -53,11 +53,10 @@ final class CondTests: QuelboTests {
                 output("Rarg equals mEnter")
             }
             """,
-            type: .list,
+            type: .void,
             children: [
                 Symbol(
                     id: "<List>",
-                    code: "",
                     type: .list,
                     children: [
                         Symbol(
@@ -73,7 +72,7 @@ final class CondTests: QuelboTests {
                             code: "output(\"Rarg equals mEnter\")",
                             type: .void,
                             children: [
-                                Symbol("\"Rarg equals mEnter\"", type: .string, literal: true)
+                                Symbol("\"Rarg equals mEnter\"", type: .string, meta: [.isLiteral])
                             ]
                         )
                     ]
@@ -87,8 +86,8 @@ final class CondTests: QuelboTests {
             .list([
                 .form([
                     .atom("EQUAL?"),
-                    .atom(".RARG"),
-                    .atom(",M-ENTER")
+                    .local("RARG"),
+                    .global("M-ENTER")
                 ]),
                 .form([
                     .atom("PRINT"),
@@ -98,12 +97,12 @@ final class CondTests: QuelboTests {
             .list([
                 .form([
                     .atom("IN?"),
-                    .atom(",TROLL"),
-                    .atom(",HERE")
+                    .global("TROLL"),
+                    .global("HERE")
                 ]),
                 .form([
                     .atom("THIS-IS-IT"),
-                    .atom(",TROLL")
+                    .global("TROLL")
                 ])
             ]),
         ]).process()
@@ -116,14 +115,14 @@ final class CondTests: QuelboTests {
                     thisIsIt()
                 }
                 """,
-            type: .list
+            type: .void
         ))
     }
 
     func testAtomPredicate() throws {
         let symbol = try factory.init([
             .list([
-                .atom(",WON-FLAG"),
+                .global("WON-FLAG"),
                 .form([
                     .atom("TELL"),
                     .string(" A secret path leads southwest into the forest.")
@@ -137,7 +136,7 @@ final class CondTests: QuelboTests {
                     output(" A secret path leads southwest into the forest.")
                 }
                 """,
-            type: .list
+            type: .void
         ))
     }
 
@@ -146,8 +145,8 @@ final class CondTests: QuelboTests {
             .list([
                 .form([
                     .atom("EQUAL?"),
-                    .atom(",HERE"),
-                    .atom(",CLEARING")
+                    .global("HERE"),
+                    .global("CLEARING")
                 ]),
                 .string("The grating opens.")
             ]),
@@ -165,7 +164,7 @@ final class CondTests: QuelboTests {
                     "The grating opens to reveal trees above you."
                 }
                 """,
-            type: .list
+            type: .void
         ))
     }
 
@@ -186,7 +185,7 @@ final class CondTests: QuelboTests {
                 .atom("ELSE"),
                 .form([
                     .atom("BOTTLES"),
-                    .atom(".N")
+                    .local("N")
                 ]),
                 .form([
                     .atom("PRINTI"),
@@ -207,14 +206,14 @@ final class CondTests: QuelboTests {
                     output(" of beer on the wall!")
                 }
                 """#,
-            type: .list
+            type: .void
         ))
     }
 
     func testBooleanPredicate() throws {
         let symbol = try factory.init([
             .list([
-                .atom(",FUNNY-RETURN?"),
+                .global("FUNNY-RETURN?"),
                 .form([
                     .atom("TELL"),
                     .string("RETURN EXIT ROUTINE"),
@@ -230,7 +229,7 @@ final class CondTests: QuelboTests {
                     output("RETURN EXIT ROUTINE")
                 }
                 """#,
-            type: .list
+            type: .void
         ))
     }
 }

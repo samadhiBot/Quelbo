@@ -1,5 +1,5 @@
 //
-//  SyntaxTests.swift
+//  ZilSyntaxTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/6/22.
@@ -9,8 +9,8 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class SyntaxTests: QuelboTests {
-    let parser = Syntax().parser
+final class ZilSyntaxTests: QuelboTests {
+    let parser = ZilSyntax().parser
 
     // MARK: - Atoms
 
@@ -62,11 +62,19 @@ final class SyntaxTests: QuelboTests {
         )
     }
 
-    func testAtomThatLooksLikeNumber() {
+    func testAtomIsZero() {
         let input = "0?"
         XCTAssertNoDifference(
             try parser.parse(input),
-            .atom("isZero")
+            .atom("0?")
+        )
+    }
+
+    func testAtomIsOne() {
+        let input = "1?"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .atom("1?")
         )
     }
 
@@ -85,6 +93,26 @@ final class SyntaxTests: QuelboTests {
         XCTAssertNoDifference(
             try parser.parse(input),
             .bool(false)
+        )
+    }
+
+    // MARK: - ChangeType
+
+    func testChangeType() {
+        let input = "#FIX"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .type("FIX")
+        )
+    }
+
+    // MARK: - Character
+
+    func testCharacter() {
+        let input = #"!\A"#
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .character("A")
         )
     }
 
@@ -140,7 +168,7 @@ final class SyntaxTests: QuelboTests {
                                 ]
                             ),
                             .atom("AND"),
-                            .atom("#OTHER"),
+                            .type("OTHER"),
                             .atom("STUFF")
                         ]
                     )
@@ -185,7 +213,7 @@ final class SyntaxTests: QuelboTests {
             try parser.parse(input),
             .form([
                 .atom("FIND-WEAPON"),
-                .atom(".VILLAIN"),
+                .local("VILLAIN"),
             ])
         )
     }
@@ -206,7 +234,7 @@ final class SyntaxTests: QuelboTests {
                             .atom("LIST"),
                         ]),
                         .atom("AND"),
-                        .atom("#OTHER"),
+                        .type("OTHER"),
                         .atom("STUFF"),
                         .decimal(123)
                     ]
@@ -285,6 +313,16 @@ final class SyntaxTests: QuelboTests {
         )
     }
 
+    // MARK: - Global
+
+    func testGlobal() {
+        let input = ",FOO"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .global("FOO")
+        )
+    }
+
     // MARK: - Lists
 
     //(THIS IS A (NESTED LIST (WITH MORE (NESTING))))
@@ -295,6 +333,86 @@ final class SyntaxTests: QuelboTests {
             .list([
                 .atom("PURE")
             ])
+        )
+    }
+
+    // MARK: - Local
+
+    func testLocal() {
+        let input = ".FOO"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .local("FOO")
+        )
+    }
+
+    // MARK: - Property
+
+    func testProperty() {
+        let input = ",P?FOO"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .property("FOO")
+        )
+    }
+
+    // MARK: - Quote
+
+    func testQuote() {
+        let input = "'<INC X 2>"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .quote(
+                .form(
+                    [
+                        .atom("INC"),
+                        .atom("X"),
+                        .decimal(2)
+                    ]
+                )
+            )
+        )
+    }
+
+    // MARK: - Segment
+
+    func testSegmentLocal() {
+        let input = "!.FOO"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .segment(.local("FOO"))
+        )
+    }
+
+    func testSegmentForm() {
+        let input = "!<SUBSTRUC .L1 0 3>"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .segment(
+                .form(
+                    [
+                        .atom("SUBSTRUC"),
+                        .local("L1"),
+                        .decimal(0),
+                        .decimal(3)
+                    ]
+                )
+            )
+        )
+    }
+
+    func testSegmentFormWithClosingBang() {
+        let input = "!<LVAL L1!>"
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .segment(
+                .form(
+                    [
+                        .atom("LVAL"),
+                        .atom("L1!"), // Bang suffix removed in `String.scrubbed`
+                    ]
+                )
+            )
         )
     }
 
@@ -331,6 +449,21 @@ final class SyntaxTests: QuelboTests {
         XCTAssertNoDifference(
             try parser.parse(input),
             .string(#"This string has "nested" quotes."#)
+        )
+    }
+
+    // MARK: - Vectors
+
+    func testVector() {
+        let input = #"[1 2 "AB" !\C]"#
+        XCTAssertNoDifference(
+            try parser.parse(input),
+            .vector([
+                .decimal(1),
+                .decimal(2),
+                .string("AB"),
+                .character("C"),
+            ])
         )
     }
 }

@@ -34,7 +34,7 @@ final class TellTests: QuelboTests {
             .atom("N"),
             .decimal(42),
             .atom("C"),
-            .atom(#"!\z"#),
+            .character("z"),
             .atom("C"),
             .decimal(65),
         ]).process()
@@ -53,7 +53,7 @@ final class TellTests: QuelboTests {
                     "output(\"You are in a large cavernous room\")",
                     type: .void,
                     children: [
-                        Symbol("\"You are in a large cavernous room\"", type: .string, literal: true)
+                        Symbol("\"You are in a large cavernous room\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -67,21 +67,21 @@ final class TellTests: QuelboTests {
                     "output(42)",
                     type: .void,
                     children: [
-                        Symbol("42", type: .int, literal: true)
+                        Symbol("42", type: .int, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
                     "output(\"z\")",
                     type: .void,
                     children: [
-                        Symbol("\"z\"", type: .string, literal: true)
+                        Symbol("\"z\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
                     "output(utf8: 65)",
                     type: .void,
                     children: [
-                        Symbol("65", type: .int, literal: true)
+                        Symbol("65", type: .int, meta: [.isLiteral])
                     ]
                 )
             ]

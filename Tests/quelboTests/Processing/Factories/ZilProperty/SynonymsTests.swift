@@ -25,15 +25,12 @@ final class SynonymsTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "synonyms",
             code: """
-                synonyms: [
-                    "egg",
-                    "treasure"
-                ]
+                synonyms: ["egg", "treasure"]
                 """,
             type: .array(.string),
             children: [
-                Symbol("egg", type: .string, literal: true),
-                Symbol("treasure", type: .string, literal: true),
+                Symbol("egg", type: .string, meta: [.isLiteral]),
+                Symbol("treasure", type: .string, meta: [.isLiteral]),
             ]
         ))
     }

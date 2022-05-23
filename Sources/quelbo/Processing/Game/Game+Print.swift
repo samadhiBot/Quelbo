@@ -20,37 +20,37 @@ extension Game {
         if !Game.directions.isEmpty {
             output.append(display(
                 heading: "Directions",
-                code: Game.directions.codeValues(lineBreaks: 2)
+                code: Game.directions.codeValues(.doubleLineBreak)
             ))
         }
         if !Game.constants.isEmpty {
             output.append(display(
                 heading: "Constants",
-                code: Game.constants.codeValues(separator: ",")
+                code: Game.constants.codeValues(.singleLineBreak)
             ))
         }
         if !Game.globals.isEmpty {
             output.append(display(
                 heading: "Globals",
-                code: Game.globals.codeValues(separator: ",")
+                code: Game.globals.codeValues(.singleLineBreak)
             ))
         }
         if !Game.objects.isEmpty {
             output.append(display(
                 heading: "Objects",
-                code: Game.objects.codeValues(lineBreaks: 2, sorted: true)
+                code: Game.objects.sorted.codeValues(.doubleLineBreak)
             ))
         }
         if !Game.rooms.isEmpty {
             output.append(display(
                 heading: "Rooms",
-                code: Game.rooms.codeValues(lineBreaks: 2, sorted: true)
+                code: Game.rooms.sorted.codeValues(.doubleLineBreak)
             ))
         }
         if !Game.routines.isEmpty {
             output.append(display(
                 heading: "Routines",
-                code: Game.routines.codeValues(lineBreaks: 2, sorted: true)
+                code: Game.routines.sorted.codeValues(.doubleLineBreak)
             ))
         }
 

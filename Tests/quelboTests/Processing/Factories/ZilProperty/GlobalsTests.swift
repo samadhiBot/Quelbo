@@ -31,7 +31,7 @@ final class GlobalsTests: QuelboTests {
                     wellHouse,
                     stream,
                     road,
-                    forest
+                    forest,
                 ]
                 """,
             type: .array(.object),

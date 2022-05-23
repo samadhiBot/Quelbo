@@ -33,7 +33,7 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "sandwich.move(to: paperBag)",
+            "sandwich.move(to: paperBag)",
             type: .void,
             children: [
                 Symbol("sandwich", type: .object, category: .objects),
@@ -49,7 +49,7 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "paperBag.move(to: kitchen)",
+            "paperBag.move(to: kitchen)",
             type: .void,
             children: [
                 Symbol("paperBag", type: .object, category: .objects),

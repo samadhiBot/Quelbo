@@ -26,7 +26,7 @@ final class PrintDescriptionTests: QuelboTests {
 
     func testPrintDescription() throws {
         let symbol = try factory.init([
-            .atom(",TROLL")
+            .global("TROLL")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

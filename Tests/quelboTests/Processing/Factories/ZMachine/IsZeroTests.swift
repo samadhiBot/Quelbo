@@ -34,14 +34,14 @@ final class IsZeroTests: QuelboTests {
             "2.isZero",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true)
+                Symbol("2", type: .int, meta: [.isLiteral])
             ]
         ))
     }
 
     func testIsZeroGlobal() throws {
         let symbol = try factory.init([
-            .atom(",FOO")
+            .global("FOO")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -55,7 +55,7 @@ final class IsZeroTests: QuelboTests {
 
     func testIsZeroLocal() throws {
         let symbol = try factory.init([
-            .atom(".BAR")
+            .local("BAR")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

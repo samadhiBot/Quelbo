@@ -96,18 +96,21 @@ final class RoutineTests: QuelboTests {
         let expected = Symbol(
             id: "westHouse",
             code: """
+                @discardableResult
                 /// The `westHouse` (WEST-HOUSE) routine.
-                func westHouse(rarg: Int) {
-                    rarg.add(42)
+                func westHouse(rarg: Int) -> Int {
+                    var rarg = rarg
+                    return rarg.add(42)
                 }
                 """,
-            type: .void,
+            type: .int,
             category: .routines,
             children: [
                 Symbol(
                     id: "rarg",
                     code: "rarg: Int",
-                    type: .int
+                    type: .int,
+                    meta: [.mutating(true)]
                 )
             ]
         )
@@ -174,15 +177,16 @@ final class RoutineTests: QuelboTests {
         let expected = Symbol(
             id: "isDucking",
             code: """
+                @discardableResult
                 /// The `isDucking` (DUCKING?) routine.
-                func isDucking() {
+                func isDucking() -> String {
                     var vs: Int = 0
                     var ps: String = ""
                     vs.set(to: 10)
-                    ps.set(to: "Duck")
+                    return ps.set(to: "Duck")
                 }
                 """,
-            type: .void,
+            type: .string,
             category: .routines
         )
 
@@ -210,13 +214,14 @@ final class RoutineTests: QuelboTests {
         let expected = Symbol(
             id: "boomRoom",
             code: """
+                @discardableResult
                 /// The `boomRoom` (BOOM-ROOM) routine.
-                func boomRoom() {
+                func boomRoom() -> Bool {
                     var isDummy: Bool = false
-                    isDummy.set(to: true)
+                    return isDummy.set(to: true)
                 }
                 """,
-            type: .void,
+            type: .bool,
             category: .routines
         )
 
@@ -281,22 +286,27 @@ final class RoutineTests: QuelboTests {
         let expected = Symbol(
             id: "batBat",
             code: """
+                    @discardableResult
                     /// The `batBat` (BAT-BAT) routine.
-                    func batBat(foo: Int? = nil, bar: Int = 42) {
-                        foo.add(bar)
+                    func batBat(
+                        foo: Int? = nil,
+                        bar: Int = 42
+                    ) -> Int {
+                        var foo = foo
+                        return foo.add(bar)
                     }
                     """,
-            type: .void,
+            type: .int,
             category: .routines,
             children: [
-                Symbol(id: "foo", code: "foo: Int? = nil", type: .int),
+                Symbol(id: "foo", code: "foo: Int? = nil", type: .int, meta: [.mutating(true)]),
                 Symbol(
                     id: "<List>",
                     code: "bar: Int = 42",
                     type: .list,
                     children: [
                         Symbol("bar", type: .int),
-                        Symbol("42", type: .int, literal: true),
+                        Symbol("42", type: .int, meta: [.isLiteral]),
                     ]
                 )
             ]
@@ -325,7 +335,9 @@ final class RoutineTests: QuelboTests {
             id: "deadFunc",
             code: """
                 /// The `deadFunc` (DEAD-FUNCTION) routine.
-                func deadFunc(foo: String = "****  You have died  ****") {
+                func deadFunc(
+                    foo: String = "****  You have died  ****"
+                ) {
                     output(foo)
                 }
                 """,
@@ -338,7 +350,7 @@ final class RoutineTests: QuelboTests {
                     type: .list,
                     children: [
                         Symbol("foo", type: .string),
-                        Symbol("\"****  You have died  ****\"", type: .string, literal: true)
+                        Symbol("\"****  You have died  ****\"", type: .string, meta: [.isLiteral])
                     ]
                 )
             ]
@@ -358,7 +370,7 @@ final class RoutineTests: QuelboTests {
                     .atom("LEN"),
                     .form([
                         .atom("GET"),
-                        .atom(".REMARK"),
+                        .local("REMARK"),
                         .decimal(0)
                     ])
                 ]),
@@ -369,7 +381,7 @@ final class RoutineTests: QuelboTests {
             ]),
             .form([
                 .atom("PRINTN"),
-                .atom(".CNT")
+                .local("CNT")
             ])
         ]).process()
 
@@ -377,7 +389,10 @@ final class RoutineTests: QuelboTests {
             id: "remark",
             code: """
                 /// The `remark` (REMARK) routine.
-                func remark(len: TableElement = remark[0], cnt: Int = 0) {
+                func remark(
+                    len: ZilElement = remark[0],
+                    cnt: Int = 0
+                ) {
                     output(cnt)
                 }
                 """,
@@ -386,16 +401,16 @@ final class RoutineTests: QuelboTests {
             children: [
                 Symbol(
                     id: "<List>",
-                    code: "len: TableElement = remark[0]",
+                    code: "len: ZilElement = remark[0]",
                     type: .list,
                     children: [
-                        Symbol("len", type: .tableElement),
+                        Symbol("len", type: .zilElement),
                         Symbol(
                             "remark[0]",
-                            type: .tableElement,
+                            type: .zilElement,
                             children: [
-                                Symbol("remark", type: .array(.tableElement)),
-                                Symbol("0", type: .int, literal: true)
+                                Symbol("remark", type: .array(.zilElement)),
+                                Symbol("0", type: .int, meta: [.isLiteral])
                             ]
                         )
                     ]
@@ -406,7 +421,7 @@ final class RoutineTests: QuelboTests {
                     type: .list,
                     children: [
                         Symbol("cnt", type: .int),
-                        Symbol("0", type: .int, literal: true)
+                        Symbol("0", type: .int, meta: [.isLiteral])
                     ]
                 )
             ]
@@ -430,7 +445,7 @@ final class RoutineTests: QuelboTests {
             ]),
             .form([
                 .atom("PRINTN"),
-                .atom(".N")
+                .local("N")
             ]),
             .form([
                 .atom("PRINTI"),
@@ -441,12 +456,12 @@ final class RoutineTests: QuelboTests {
                 .list([
                     .form([
                         .atom("N==?"),
-                        .atom(".N"),
+                        .local("N"),
                         .decimal(1)
                     ]),
                     .form([
                         .atom("PRINTC"),
-                        .atom(#"!\s"#)
+                        .character("s")
                     ])
                 ])
             ]),
@@ -473,7 +488,7 @@ final class RoutineTests: QuelboTests {
                 ]),
                 .form([
                     .atom("BOTTLES"),
-                    .atom(".N")
+                    .local("N")
                 ]),
                 .form([
                     .atom("PRINTI"),
@@ -483,7 +498,7 @@ final class RoutineTests: QuelboTests {
                 ]),
                 .form([
                     .atom("BOTTLES"),
-                    .atom(".N")
+                    .local("N")
                 ]),
                 .form([
                     .atom("PRINTI"),
@@ -512,7 +527,7 @@ final class RoutineTests: QuelboTests {
                         .atom("ELSE"),
                         .form([
                             .atom("BOTTLES"),
-                            .atom(".N")
+                            .local("N")
                         ]),
                         .form([
                             .atom("PRINTI"),

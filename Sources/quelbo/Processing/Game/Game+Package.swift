@@ -34,7 +34,7 @@ extension Game {
                 named: "Constants.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.constants.codeValues(separator: ",")
+                with: Game.constants.codeValues(.commaSeparated)
             )
         }
 
@@ -43,7 +43,7 @@ extension Game {
                 named: "Globals.swift",
                 project: project,
                 in: sourcesFolder,
-                with: Game.globals.codeValues(separator: ",")
+                with: Game.globals.codeValues(.commaSeparated)
             )
         }
 

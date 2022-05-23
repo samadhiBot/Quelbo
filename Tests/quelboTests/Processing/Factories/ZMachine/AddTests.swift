@@ -16,10 +16,10 @@ final class AddTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("baseScore", type: .int, category: .globals),
-            Symbol("cyclowrath", type: .int, category: .globals),
-            Symbol("myBike", type: .string, category: .globals),
-            Symbol("otvalFrob", type: .int, category: .routines)
+            Symbol(id: "baseScore", type: .int, category: .globals),
+            Symbol(id: "cyclowrath", type: .int, category: .globals),
+            Symbol(id: "myBike", type: .string, category: .globals),
+            Symbol(id: "otvalFrob", type: .int, category: .routines)
         )
     }
 
@@ -38,8 +38,8 @@ final class AddTests: QuelboTests {
             ".add(2, 3)",
             type: .int,
             children: [
-                Symbol("2", type: .int, literal: true),
-                Symbol("3", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -55,9 +55,9 @@ final class AddTests: QuelboTests {
             ".add(2, 3, 4)",
             type: .int,
             children: [
-                Symbol("2", type: .int, literal: true),
-                Symbol("3", type: .int, literal: true),
-                Symbol("4", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
+                Symbol("4", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -72,7 +72,7 @@ final class AddTests: QuelboTests {
             "bigNumber.add(biggerNumber)",
             type: .int,
             children: [
-                Symbol("bigNumber", type: .int),
+                Symbol("bigNumber", type: .int, meta: [.mutating(true)]),
                 Symbol("biggerNumber", type: .int),
             ]
         ))
@@ -80,7 +80,7 @@ final class AddTests: QuelboTests {
 
     func testAddAtomAndDecimal() throws {
         let symbol = try factory.init([
-            .atom(",CYCLOWRATH"),
+            .global("CYCLOWRATH"),
             .decimal(1),
         ]).process()
 
@@ -88,15 +88,15 @@ final class AddTests: QuelboTests {
             "cyclowrath.add(1)",
             type: .int,
             children: [
-                Symbol("cyclowrath", type: .int, category: .globals),
-                Symbol("1", type: .int, literal: true),
+                Symbol("cyclowrath", type: .int, category: .globals, meta: [.mutating(true)]),
+                Symbol("1", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testAddAtomAndFunctionResult() throws {
         let symbol = try factory.init([
-            .atom(",BASE-SCORE"),
+            .global("BASE-SCORE"),
             .form([
                 .atom("OTVAL-FROB")
             ])
@@ -106,7 +106,7 @@ final class AddTests: QuelboTests {
             "baseScore.add(otvalFrob())",
             type: .int,
             children: [
-                Symbol("baseScore", type: .int, category: .globals),
+                Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
                 Symbol(id: "otvalFrob", code: "otvalFrob()", type: .int),
             ]
         ))
@@ -142,7 +142,7 @@ final class AddTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-                .atom(",MY-BIKE"),
+                .global("MY-BIKE"),
             ])
         )
     }

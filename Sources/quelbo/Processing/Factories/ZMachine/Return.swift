@@ -13,11 +13,11 @@ extension Factories {
     /// function.
     class Return: ZMachineFactory {
         override class var zilNames: [String] {
-            ["RETURN"]
+            ["RETURN", "RETURN!-"]
         }
 
         override class var parameters: Parameters {
-            .zeroOrOne(.unknown)
+            .zeroOrMore(.unknown)
         }
 
         override func process() throws -> Symbol {
@@ -30,7 +30,7 @@ extension Factories {
                 )
             }
 
-            switch block {
+            switch blockType {
             case .blockWithActivation,
                  .blockWithDefaultActivation,
                  .repeatingWithActivation,

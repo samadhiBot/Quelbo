@@ -58,10 +58,22 @@ struct Quelbo: ParsableCommand {
             print(
                 """
 
+                ⚠️  Incomplete processing results:
+                ============================================================
+
+                """
+            )
+
+            game.printSymbols()
+
+            print(
+                """
+
                 💀 Processing failed (\(game.gameTokens.count) of \(total) tokens unprocessed)
                 ============================================================
                 """
             )
+
             Pretty.prettyPrint(error)
         }
     }

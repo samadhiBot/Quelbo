@@ -18,9 +18,6 @@ struct Symbol: Equatable {
     /// The ``Symbol/DataType`` for the ``code``.
     let type: DataType
 
-    /// Whether the symbol represents a literal value.
-    let literal: Bool
-
     /// The symbol's ``Symbol/Category-swift.enum``.
     let category: Category?
 
@@ -28,21 +25,19 @@ struct Symbol: Equatable {
     let children: [Symbol]
 
     /// Any additional information required for symbol processing.
-    let meta: [String: String]
+    let meta: [MetaData]
 
     init(
         id: String,
-        code: String? = nil,
+        code: String = "",
         type: DataType = .unknown,
-        literal: Bool = false,
         category: Category? = nil,
         children: [Symbol] = [],
-        meta: [String: String] = [:]
+        meta: [MetaData] = []
     ) {
         self.id = id
-        self.code = code?.rightTrimmed ?? id
+        self.code = code.rightTrimmed
         self.type = type
-        self.literal = literal
         self.category = category
         self.children = children
         self.meta = meta
@@ -51,15 +46,13 @@ struct Symbol: Equatable {
     init(
         _ code: String,
         type: DataType = .unknown,
-        literal: Bool = false,
         category: Category? = nil,
         children: [Symbol] = [],
-        meta: [String: String] = [:]
+        meta: [MetaData] = []
     ) {
         self.id = code.rightTrimmed
         self.code = code.rightTrimmed
         self.type = type
-        self.literal = literal
         self.category = category
         self.children = children
         self.meta = meta
@@ -79,10 +72,30 @@ extension Symbol {
         self.id == "<Block>"
     }
 
-    /// Whether the symbol represents a variable that mutates somewhere in the specified symbols.
+    /// <#Description#>
+    var isFunctionClosure: Bool {
+        for metaData in meta {
+            if case .type = metaData {
+                return true
+            }
+        }
+        return false
+    }
+
+    /// <#Description#>
+    var isLiteral: Bool {
+        for metaData in meta {
+            if case .isLiteral = metaData {
+                return true
+            }
+        }
+        return false
+    }
+
+    /// Whether the symbol represents a mutating variable.
     func isMutating(in symbols: [Symbol]) -> Bool? {
         for symbol in symbols {
-            if symbol.id == id && symbol.meta["mutating"] == "true" {
+            if symbol.id == id && symbol.meta.contains(.mutating(true)) {
                 return true
             }
             if let foundInChildren = isMutating(in: symbol.children) {
@@ -97,18 +110,32 @@ extension Symbol {
         self.id == "<Return>"
     }
 
-    /// Returns the symbol with metadata to indicate that mutating occurs.
-    var mutating: Symbol {
-        withMeta(key: "mutating", value: "true")
+    /// <#Description#>
+    var dataType: String {
+        for metaData in meta {
+            if case .type(let type) = metaData {
+                return type
+            }
+        }
+        return type.description
     }
 
-    /// Returns the symbol with one or more specified properties updated.
+    /// <#Description#>
+    var unevaluated: Token? {
+        for metaData in meta {
+            if case .eval(let token) = metaData {
+                return token
+            }
+        }
+        return nil
+    }
+
+    /// Returns the symbol with one or more properties replaced with those specified.
     ///
     /// - Parameters:
     ///   - id: The symbol's unique identifier.
     ///   - code: The Swift translation of a piece of Zil code.
     ///   - type: The symbol data type for the code.
-    ///   - literal: Whether the symbol represents a literal value.
     ///   - category: The symbol's category.
     ///   - children: Any child symbols belonging to a complex symbol.
     ///   - meta: Any additional information required for symbol processing.
@@ -118,31 +145,18 @@ extension Symbol {
         id: String? = nil,
         code: String? = nil,
         type: DataType? = nil,
-        literal: Bool? = nil,
         category: Category? = nil,
         children: [Symbol]? = nil,
-        meta: [String: String]? = nil
+        meta: [MetaData] = []
     ) -> Symbol {
         Symbol(
             id: id ?? self.id,
             code: code ?? self.code,
             type: type ?? self.type,
-            literal: literal ?? self.literal,
             category: category ?? self.category,
             children: children ?? self.children,
-            meta: meta ?? self.meta
+            meta: meta.isEmpty ? self.meta : self.meta.assigning(meta)
         )
-    }
-
-    /// Returns the symbol with the specified metadata applied.
-    ///
-    /// - Parameters:
-    ///   - key: The metadata key to apply.
-    ///   - value: The value to assign to the specified metadata key.
-    func withMeta(key: String, value: String) -> Symbol {
-        var newMeta = meta
-        newMeta[key] = value
-        return with(meta: newMeta)
     }
 }
 
@@ -154,109 +168,39 @@ extension Symbol {
     /// Categories are used to distinguish different kinds of symbols, allowing them to be grouped
     /// together appropriately in the game translation.
     enum Category: String {
+        /// Symbols representing global constant game values.
         case constants
+
+        /// Symbols representing definitions that are evaluated to create other symbols.
+        case definitions
+
+        /// Symbols representing room exit directions.
         case directions
+
+        /// Symbols representing object flags.
+        case flags
+
+        /// Symbols representing global game variables.
         case globals
+
+        /// Symbols representing objects in the game.
         case objects
+
+        /// Symbols representing object properties.
         case properties
+
+        /// Symbols representing rooms (i.e. locations) in the game.
         case rooms
+
+        /// Symbols representing routines defined by the game.
         case routines
+
+        /// Symbols representing syntax declarations specified by the game.
+        case syntax
     }
 }
 
-// MARK: - Symbol.DataType
-
-extension Symbol {
-    /// The set of data types associated with symbols.
-    ///
-    enum DataType: Hashable {
-        indirect case array(DataType)
-        case bool
-        case comment
-        case direction
-        case int
-        case list
-        case object
-        case property
-        case routine
-        case string
-        case tableElement
-        case thing
-        case unknown
-        case void
-
-        /// Whether a literal value can represent the data type.
-        var acceptsLiteral: Bool {
-            switch self {
-            case .object, .property: return false
-            default: return true
-            }
-        }
-
-        /// Whether the data type has a known return value type.
-        var hasKnownReturnValue: Bool {
-            switch self {
-            case .comment, .list, .property, .unknown: return false
-            default: return true
-            }
-        }
-
-        /// Whether the data type has a return value.
-        var hasReturnValue: Bool {
-            switch self {
-            case .comment, .property, .unknown, .void: return false
-            default: return true
-            }
-        }
-
-        /// Whether the data type is a container.
-        var isContainer: Bool {
-            switch self {
-            case .comment, .list, .object: return true
-            default: return false
-            }
-        }
-
-        /// Whether the data type is known.
-        var isKnown: Bool {
-            switch self {
-            case .array(let dataType): return dataType.isKnown
-            case .object, .property, .unknown: return false
-            default: return true
-            }
-        }
-
-        /// Whether the data type is a literal value type.
-        var isLiteral: Bool {
-            switch self {
-            case .array(let dataType): return dataType.isLiteral
-            case .bool, .direction, .int, .string, .tableElement: return true
-            default: return false
-            }
-        }
-    }
-}
-
-extension Symbol.DataType: CustomStringConvertible {
-    var description: String {
-        switch self {
-        case .array(let type): return "[\(type)]"
-        case .bool:            return "Bool"
-        case .comment:         return "<Comment>"
-        case .direction:       return "Direction"
-        case .int:             return "Int"
-        case .list:            return "<List>"
-        case .object:          return "Object"
-        case .property:        return "<Property>"
-        case .routine:         return "Routine"
-        case .string:          return "String"
-        case .thing:           return "Thing"
-        case .tableElement:    return "TableElement"
-        case .unknown:         return "<Unknown>"
-        case .void:            return "Void"
-        }
-    }
-}
+// MARK: - Symbol.Error
 
 extension Symbol {
     enum Error: Swift.Error, Equatable {
@@ -282,55 +226,92 @@ extension Symbol: CustomStringConvertible {
 
 // MARK: - Array where Element == Symbol
 
+extension Symbol {
+    /// Display options for use with the `codeValues` method.
+    enum CodeValuesDisplayOption {
+        /// Values to be comma-separated with a line break after each value.
+        case commaLineBreakSeparated
+
+        /// Values to be comma-separated.
+        case commaSeparated
+
+        /// Values to be comma-separated.
+        case commaSeparatedNoTrailingComma
+
+        /// Values to be comma-separated with a double line break after each value.
+        case doubleLineBreak
+
+        /// The set of values to be indented.
+        case indented
+
+        /// Values to be separated by the specified string.
+        case separator(String)
+
+        /// Values to separated by a line break after each value.
+        case singleLineBreak
+    }
+}
+
 extension Array where Element == Symbol {
-    /// A
-    ///
-    /// - Parameter emptyLineAfter: Whether to leave an empty line after each code value.
-    ///
-    /// - Returns: A string containing the sorted code values for an array of symbols.
-
-
     /// Returns a formatted string containing the ``Symbol/code`` values for a ``Symbol`` array.
     ///
-    /// - Parameters:
-    ///   - separator: A string to place between each of the code elements.
-    ///   - lineBreaks: The number of line breaks to place between each of the code elements.
-    ///   - sorted: Whether to sort the code elements.
+    /// - Parameter displayOptions: One or more ``Symbol/CodeValuesDisplayOption`` values that
+    ///                             specify how to separate and display the code values.
     ///
     /// - Returns: A formatted string containing the code values contained in the symbol array.
-    func codeValues(
-        separator: String = "",
-        lineBreaks: Int = 0,
-        sorted: Bool = false
-    ) -> String {
-        var separator = separator.rightTrimmed
+    func codeValues(_ displayOptions: Symbol.CodeValuesDisplayOption...) -> String {
+        var addBlock = false
+        var indented = false
+        var lineBreaks = 0
+        var noTrailingComma = false
+        var separator = ""
+
+        displayOptions.forEach { option in
+            switch option {
+            case .commaLineBreakSeparated:
+                indented = true
+                lineBreaks = 1
+                separator = ","
+            case .commaSeparated:
+                separator = ","
+            case .commaSeparatedNoTrailingComma:
+                noTrailingComma = true
+                separator = ","
+            case .doubleLineBreak:
+                lineBreaks = 2
+            case .indented:
+                indented = true
+            case .separator(let string):
+                separator = string.rightTrimmed
+            case .singleLineBreak:
+                lineBreaks = 1
+            }
+        }
+        let codeValues = compactMap {
+            $0.code.isEmpty ? nil : $0.code
+        }
+        if lineBreaks == 0 && separator == "," {
+            let code = codeValues.joined(separator: separator)
+            if code.count > 20 || code.contains("\n") {
+                addBlock = true
+                lineBreaks = 1
+                indented = true
+            }
+        }
         if lineBreaks == 0 {
             separator.append(" ")
         }
         for _ in 0..<lineBreaks {
             separator.append("\n")
         }
-        if sorted {
-            return self.sorted { $0.id < $1.id }
-                .compactMap { $0.code.isEmpty ? nil : $0.code }
-                .joined(separator: separator)
-        } else {
-            return self.compactMap { $0.code.isEmpty ? nil : $0.code }
-                .joined(separator: separator)
+        var values = codeValues.joined(separator: separator)
+        if indented {
+            values = values.indented.rightTrimmed
         }
-    }
-
-    /// Returns a string representing an array of code values represented in the ``Symbol`` array.
-    var code: String {
-        guard !isEmpty else {
-            return "[]"
+        if addBlock {
+            values = "\n\(values)\(noTrailingComma ? "\n" : separator)"
         }
-        let code = codeValues(separator: ",", lineBreaks: 1)
-        if code.contains("\n") {
-            return "[\n\(code.indented)\n]"
-        } else {
-            return "[\(code)]"
-        }
+        return values
     }
 
     /// Finds the common type among the symbols in the array.
@@ -341,7 +322,7 @@ extension Array where Element == Symbol {
     ///
     /// - Throws: When a common type cannot be determined. This can either occur when all types are
     ///           unknown, or when there are multiple known types that do not match.
-    func commonType() throws -> Symbol.DataType {
+    func commonType(_ strict: Bool = true) throws -> Symbol.DataType {
         let types = map { $0.type }.unique
         switch types.count {
             case 0:  throw Symbol.Error.typeNotFound(self)
@@ -362,15 +343,21 @@ extension Array where Element == Symbol {
             default: break
         }
 
-        throw Symbol.Error.typeNotFound(self)
+        if strict {
+            throw Symbol.Error.typeNotFound(self)
+        } else {
+            return .unknown
+        }
     }
 
     /// Deep-searches a ``Symbol`` array for a `"paramDeclarations"` metadata declaration, and
     /// returns its value if one is found.
     var deepParamDeclarations: String? {
         for symbol in self {
-            if let paramDeclarations = symbol.meta["paramDeclarations"] {
-                return paramDeclarations
+            for metaData in symbol.meta {
+                if case .paramDeclarations(let params) = metaData {
+                    return params
+                }
             }
             if let paramDeclarations = symbol.children.deepParamDeclarations {
                 return paramDeclarations
@@ -383,7 +370,7 @@ extension Array where Element == Symbol {
     /// `"repeatingWithoutDefaultActivation"` value, and returns `true` if one is found.
     var deepRepeating: Bool? {
         for symbol in self {
-            if symbol.meta["block"] == "repeatingWithoutDefaultActivation" {
+            if symbol.meta.contains(.blockType(.repeatingWithoutDefaultActivation)) {
                 return true
             }
             if let deepRepeatingChild = symbol.children.deepRepeating {
@@ -393,8 +380,8 @@ extension Array where Element == Symbol {
         return nil
     }
 
-    /// Deep-searches a ``Symbol`` array for an explicit `return` statement with a return value, and
-    /// returns the type of the returned value if one is found.
+    /// Deep-searches a ``Symbol`` array for an explicit `return` statement with a return value,
+    /// and returns the type of the returned value if one is found.
     var deepReturnDataType: Symbol.DataType? {
         for symbol in self {
             if symbol.isReturnStatement {
@@ -436,16 +423,29 @@ extension Array where Element == Symbol {
             return symbol.with(code: symbol.code.quoted)
         }
     }
+
+    /// Returns the ``Symbol`` array sorted by element ``Symbol/id``.
+    var sorted: [Symbol] {
+        sorted {
+            if $0.category == .flags {
+                return $0.code < $1.code
+            } else {
+                return $0.id < $1.id
+            }
+        }
+    }
 }
 
 // MARK: - Common literal symbols
 
 extension Symbol {
+    /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
-        Symbol("false", type: .bool, literal: true)
+        Symbol("false", type: .bool, meta: [.isLiteral])
     }
 
+    /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
-        Symbol("true", type: .bool, literal: true)
+        Symbol("true", type: .bool, meta: [.isLiteral])
     }
 }

@@ -20,10 +20,6 @@ extension Factories {
             .two(.object, .property)
         }
 
-        override class var returnType: Symbol.DataType {
-            .unknown
-        }
-
         override func process() throws -> Symbol {
             Symbol(
                 "\(try symbol(0)).\(try symbol(1))",

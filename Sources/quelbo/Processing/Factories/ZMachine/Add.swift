@@ -28,20 +28,34 @@ extension Factories {
             "add"
         }
 
+        override func eval() throws -> Token {
+            let result = try tokens.reduce(into: 0) { sum, token in
+                switch token {
+                case .decimal(let value):
+                    sum += value
+                default:
+                    throw FactoryError.unimplemented(self)
+                }
+            }
+            return .decimal(result)
+        }
+
         override func process() throws -> Symbol {
-            let original = symbols
             guard let first = symbols.shift() else {
                 throw FactoryError.missingValue(tokens)
             }
 
             let code: String
-            if first.literal {
-                code = ".\(function)(\(original.codeValues(separator: ",")))"
+            let allSymbols: [Symbol]
+            if first.isLiteral {
+                allSymbols = [first] + symbols
+                code = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
             } else {
-                code = "\(first).\(function)(\(symbols.codeValues(separator: ",")))"
+                allSymbols = [first.with(meta: [.mutating(true)])] + symbols
+                code = "\(first).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
-            return Symbol(code, type: .int, children: original)
+            return Symbol(code, type: .int, children: allSymbols)
         }
     }
 }

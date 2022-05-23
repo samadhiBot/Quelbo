@@ -34,7 +34,7 @@ final class PrintCharacterTests: QuelboTests {
             #"output(utf8: 90)"#,
             type: .void,
             children: [
-                Symbol("90", type: .int, literal: true),
+                Symbol("90", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -50,21 +50,21 @@ final class PrintCharacterTests: QuelboTests {
 
     func testPrintCharacterBangEscaped() throws {
         let symbol = try factory.init([
-            .atom(#"!\s"#)
+            .character("s"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output("s")"#,
             type: .void,
             children: [
-                Symbol(#""s""#, type: .string, literal: true),
+                Symbol(#""s""#, type: .string, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testProcessAtom() throws {
         let symbol = try factory.init([
-            .atom(",LETTER-Z")
+            .global("LETTER-Z")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -93,8 +93,8 @@ final class PrintCharacterTests: QuelboTests {
                     ".add(2, 88)",
                     type: .int,
                     children: [
-                        Symbol("2", type: .int, literal: true),
-                        Symbol("88", type: .int, literal: true),
+                        Symbol("2", type: .int, meta: [.isLiteral]),
+                        Symbol("88", type: .int, meta: [.isLiteral]),
                     ]
                 ),
             ]

@@ -10,6 +10,35 @@ import XCTest
 @testable import quelbo
 
 final class GameTests: QuelboTests {
+    // https://foss.heptapod.net/zilf/zilf/-/blob/branch/default/sample/hello/hello.zil
+    func testHello() throws {
+        let zil = #"""
+            "Hello World sample for ZILF"
+
+            <ROUTINE GO ()
+                <PRINTI "Hello, world!">
+                <CRLF>>
+            """#
+
+        let game = Game.shared
+        try game.parse(zil)
+        try game.process()
+
+        XCTAssertNoDifference(
+            game.output,
+            #"""
+            // Routines
+            // ============================================================
+
+            /// The `go` (GO) routine.
+            func go() {
+                output("Hello, world!")
+                output("\n")
+            }
+            """#
+        )
+    }
+
     // https://foss.heptapod.net/zilf/zilf/-/blob/branch/default/sample/beer/beer.zil
     func testBeer() throws {
         let zil = #"""
@@ -57,9 +86,10 @@ final class GameTests: QuelboTests {
                 return true
             }
 
+            @discardableResult
             /// The `go` (GO) routine.
-            func go() {
-                sing(n: 3)
+            func go() -> Bool {
+                return sing(n: 3)
             }
 
             @discardableResult

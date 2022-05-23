@@ -35,17 +35,19 @@ extension Game {
         processingErrors = []
         try gameTokens.forEach { token in
             switch token {
-            case .atom, .commented, .string:
-                break // ignored
-            case .bool, .decimal, .list, .quoted:
+            case .bool, .character, .decimal, .global, .list, .local, .quote, .vector:
                 throw GameError.unexpectedAtRootLevel(token)
-            case .form(var tokens):
+            case .form(let formTokens):
                 do {
+                    var tokens = formTokens
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
-                    guard let factory = try Game.zilSymbolFactories.find(zil)?.init(tokens) else {
-                        throw FactoryError.unknownZilFunction(zil: zil)
+                    let factory: SymbolFactory
+                    if let zilSymbol = try Game.zilSymbolFactories.find(zil)?.init(tokens) {
+                        factory = zilSymbol
+                    } else {
+                        factory = try Factories.Evaluate(formTokens)
                     }
                     _ = try factory.process()
                 } catch {
@@ -53,6 +55,8 @@ extension Game {
                     processingErrors.append("\(error)")
                     unprocessedTokens.append(token)
                 }
+            default:
+                break // ignored
             }
         }
         self.gameTokens = unprocessedTokens
@@ -105,35 +109,35 @@ extension Game {
     static var constants: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .constants }
-            .sorted()
+            .sorted
     }
 
     /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/globals`` category.
     static var globals: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .globals }
-            .sorted()
+            .sorted
     }
 
     /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/objects`` category.
     static var objects: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .objects }
-            .sorted()
+            .sorted
     }
 
     /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/rooms`` category.
     static var rooms: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .rooms }
-            .sorted()
+            .sorted
     }
 
     /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/routines`` category.
     static var routines: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .routines }
-            .sorted()
+            .sorted
     }
 }
 

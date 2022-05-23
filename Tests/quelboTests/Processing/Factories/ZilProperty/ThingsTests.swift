@@ -45,7 +45,7 @@ final class ThingsTests: QuelboTests {
                             The message reads, "This is not the maze where the pirate \
                             leaves his treasure chest."
                             """
-                    )
+                    ),
                 ]
                 """#,
             type: .array(.thing),
@@ -86,7 +86,7 @@ final class ThingsTests: QuelboTests {
                         adjectives: [],
                         nouns: ["writing", "script"],
                         text: "The message reads..."
-                    )
+                    ),
                 ]
                 """#,
             type: .array(.thing),
@@ -127,7 +127,7 @@ final class ThingsTests: QuelboTests {
                         adjectives: ["flowery", "scrawled"],
                         nouns: ["writing", "script"],
                         action: pitCrackFunc
-                    )
+                    ),
                 ]
                 """#,
             type: .array(.thing),
@@ -162,7 +162,7 @@ final class ThingsTests: QuelboTests {
                         adjectives: ["flowery"],
                         nouns: ["message"],
                         text: "The message reads..."
-                    )
+                    ),
                 ]
                 """#,
             type: .array(.thing),

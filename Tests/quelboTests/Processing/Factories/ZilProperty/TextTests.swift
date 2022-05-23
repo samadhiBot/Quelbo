@@ -39,7 +39,7 @@ final class TextTests: QuelboTests {
                             """
                         """#,
                     type: .string,
-                    literal: true
+                    meta: [.isLiteral]
                 )
             ]
         ))

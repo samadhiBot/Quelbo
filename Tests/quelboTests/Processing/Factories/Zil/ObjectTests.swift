@@ -56,10 +56,10 @@ final class ObjectTests: QuelboTests {
                     adjectives: [
                         "white",
                         "beauti",
-                        "coloni"
+                        "coloni",
                     ],
                     description: "white house",
-                    flags: [ndescBit],
+                    flags: [omitDescription],
                     location: localGlobals,
                     synonyms: ["house"]
                 )
@@ -80,7 +80,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"house\"]",
                     type: .array(.string),
                     children: [
-                        Symbol("house", type: .string, literal: true)
+                        Symbol("house", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -89,14 +89,14 @@ final class ObjectTests: QuelboTests {
                          adjectives: [
                              "white",
                              "beauti",
-                             "coloni"
+                             "coloni",
                          ]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("white", type: .string, literal: true),
-                        Symbol("beauti", type: .string, literal: true),
-                        Symbol("coloni", type: .string, literal: true)
+                        Symbol("white", type: .string, meta: [.isLiteral]),
+                        Symbol("beauti", type: .string, meta: [.isLiteral]),
+                        Symbol("coloni", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -104,15 +104,15 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"white house\"",
                     type: .string,
                     children: [
-                        Symbol("\"white house\"", type: .string, literal: true)
+                        Symbol("\"white house\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
                     id: "flags",
-                    code: "flags: [ndescBit]",
+                    code: "flags: [omitDescription]",
                     type: .array(.bool),
                     children: [
-                        Symbol("ndescBit", type: .bool)
+                        Symbol(id: "ndescBit", code: "omitDescription", type: .bool, category: .flags)
                     ]
                 ),
                 Symbol(
@@ -178,20 +178,17 @@ final class ObjectTests: QuelboTests {
                         "broken",
                         "birds",
                         "encrusted",
-                        "jewel"
+                        "jewel",
                     ],
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
                     flags: [
-                        takeBit,
-                        contBit,
-                        openBit
+                        isContainer,
+                        isOpen,
+                        isTakable,
                     ],
                     longDescription: "There is a somewhat ruined egg here.",
-                    synonyms: [
-                        "egg",
-                        "treasure"
-                    ],
+                    synonyms: ["egg", "treasure"],
                     takeValue: 2
                 )
                 """,
@@ -201,15 +198,12 @@ final class ObjectTests: QuelboTests {
                 Symbol(
                     id: "synonyms",
                     code: """
-                         synonyms: [
-                             "egg",
-                             "treasure"
-                         ]
+                         synonyms: ["egg", "treasure"]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("egg", type: .string, literal: true),
-                        Symbol("treasure", type: .string, literal: true)
+                        Symbol("egg", type: .string, meta: [.isLiteral]),
+                        Symbol("treasure", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -219,15 +213,15 @@ final class ObjectTests: QuelboTests {
                              "broken",
                              "birds",
                              "encrusted",
-                             "jewel"
+                             "jewel",
                          ]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("broken", type: .string, literal: true),
-                        Symbol("birds", type: .string, literal: true),
-                        Symbol("encrusted", type: .string, literal: true),
-                        Symbol("jewel", type: .string, literal: true),
+                        Symbol("broken", type: .string, meta: [.isLiteral]),
+                        Symbol("birds", type: .string, meta: [.isLiteral]),
+                        Symbol("encrusted", type: .string, meta: [.isLiteral]),
+                        Symbol("jewel", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -235,23 +229,23 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"broken jewel-encrusted egg\"",
                     type: .string,
                     children: [
-                        Symbol("\"broken jewel-encrusted egg\"", type: .string, literal: true)
+                        Symbol("\"broken jewel-encrusted egg\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
                     id: "flags",
                     code: """
                          flags: [
-                             takeBit,
-                             contBit,
-                             openBit
+                             isContainer,
+                             isOpen,
+                             isTakable,
                          ]
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol("takeBit", type: .bool),
-                        Symbol("contBit", type: .bool),
-                        Symbol("openBit", type: .bool),
+                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags),
+                        Symbol(id: "contBit", code: "isContainer", type: .bool, category: .flags),
+                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
                     ]
                 ),
                 Symbol(
@@ -259,7 +253,7 @@ final class ObjectTests: QuelboTests {
                     code: "capacity: 6",
                     type: .int,
                     children: [
-                        Symbol("6", type: .int, literal: true)
+                        Symbol("6", type: .int, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -267,7 +261,7 @@ final class ObjectTests: QuelboTests {
                     code: "takeValue: 2",
                     type: .int,
                     children: [
-                        Symbol("2", type: .int, literal: true)
+                        Symbol("2", type: .int, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -278,11 +272,10 @@ final class ObjectTests: QuelboTests {
                         Symbol(
                             "\"There is a somewhat ruined egg here.\"",
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 )
-
             ]
         )
 
@@ -332,21 +325,15 @@ final class ObjectTests: QuelboTests {
                 /// The `bat` (BAT) object.
                 var bat = Object(
                     action: batFunc,
-                    adjectives: [
-                        "vampire",
-                        "deranged"
-                    ],
+                    adjectives: ["vampire", "deranged"],
                     description: "bat",
                     descriptionFunction: batD,
                     flags: [
-                        actorBit,
-                        trytakeBit
+                        isActor,
+                        noImplicitTake,
                     ],
                     location: batRoom,
-                    synonyms: [
-                        "bat",
-                        "vampire"
-                    ]
+                    synonyms: ["bat", "vampire"]
                 )
                 """,
             type: .object,
@@ -367,29 +354,23 @@ final class ObjectTests: QuelboTests {
                 Symbol(
                     id: "synonyms",
                     code: """
-                         synonyms: [
-                             "bat",
-                             "vampire"
-                         ]
+                         synonyms: ["bat", "vampire"]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("bat", type: .string, literal: true),
-                        Symbol("vampire", type: .string, literal: true),
+                        Symbol("bat", type: .string, meta: [.isLiteral]),
+                        Symbol("vampire", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
                     id: "adjectives",
                     code: """
-                         adjectives: [
-                             "vampire",
-                             "deranged"
-                         ]
+                         adjectives: ["vampire", "deranged"]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("vampire", type: .string, literal: true),
-                        Symbol("deranged", type: .string, literal: true),
+                        Symbol("vampire", type: .string, meta: [.isLiteral]),
+                        Symbol("deranged", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -397,21 +378,21 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"bat\"",
                     type: .string,
                     children: [
-                        Symbol("\"bat\"", type: .string, literal: true),
+                        Symbol("\"bat\"", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
                     id: "flags",
                     code: """
                          flags: [
-                             actorBit,
-                             trytakeBit
+                             isActor,
+                             noImplicitTake,
                          ]
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol("actorBit", type: .bool),
-                        Symbol("trytakeBit", type: .bool),
+                        Symbol(id: "actorBit", code: "isActor", type: .bool, category: .flags),
+                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
                     ]
                 ),
                 Symbol(
@@ -491,12 +472,12 @@ final class ObjectTests: QuelboTests {
                         crystal skull. It appears to be grinning at you rather \
                         nastily.
                         """,
-                    flags: [takeBit],
+                    flags: [isTakable],
                     location: landOfLivingDead,
                     synonyms: [
                         "skull",
                         "head",
-                        "treasure"
+                        "treasure",
                     ],
                     takeValue: 10,
                     value: 10
@@ -523,7 +504,7 @@ final class ObjectTests: QuelboTests {
                     synonyms: [
                         "skull",
                         "head",
-                        "treasure"
+                        "treasure",
                     ]
                     """,
                     type: .array(.string),
@@ -532,19 +513,19 @@ final class ObjectTests: QuelboTests {
                             id: "skull",
                             code: "skull",
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         ),
                         Symbol(
                             id: "head",
                             code: "head",
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         ),
                         Symbol(
                             id: "treasure",
                             code: "treasure",
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 ),
@@ -557,7 +538,7 @@ final class ObjectTests: QuelboTests {
                             id: "crystal",
                             code: "crystal",
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 ),
@@ -566,7 +547,7 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"crystal skull\"",
                     type: .string,
                     children: [
-                        Symbol("\"crystal skull\"", type: .string, literal: true)
+                        Symbol("\"crystal skull\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -589,16 +570,16 @@ final class ObjectTests: QuelboTests {
                                 """
                             """#,
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 ),
                 Symbol(
                     id: "flags",
-                    code: "flags: [takeBit]",
+                    code: "flags: [isTakable]",
                     type: .array(.bool),
                     children: [
-                        Symbol("takeBit", type: .bool)
+                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags)
                     ]
                 ),
                 Symbol(
@@ -606,7 +587,7 @@ final class ObjectTests: QuelboTests {
                     code: "value: 10",
                     type: .int,
                     children: [
-                        Symbol("10", type: .int, literal: true)
+                        Symbol("10", type: .int, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -614,7 +595,7 @@ final class ObjectTests: QuelboTests {
                     code: "takeValue: 10",
                     type: .int,
                     children: [
-                        Symbol("10", type: .int, literal: true)
+                        Symbol("10", type: .int, meta: [.isLiteral])
                     ]
                 )
             ]
@@ -666,9 +647,9 @@ final class ObjectTests: QuelboTests {
                     action: waterFunc,
                     description: "quantity of water",
                     flags: [
-                        trytakeBit,
-                        takeBit,
-                        drinkBit
+                        isDrinkable,
+                        isTakable,
+                        noImplicitTake,
                     ],
                     location: bottle,
                     size: 4,
@@ -676,7 +657,7 @@ final class ObjectTests: QuelboTests {
                         "water",
                         "quantity",
                         "liquid",
-                        "h2o"
+                        "h2o",
                     ]
                 )
                 """,
@@ -702,15 +683,15 @@ final class ObjectTests: QuelboTests {
                              "water",
                              "quantity",
                              "liquid",
-                             "h2o"
+                             "h2o",
                          ]
                          """,
                     type: .array(.string),
                     children: [
-                        Symbol("water", type: .string, literal: true),
-                        Symbol("quantity", type: .string, literal: true),
-                        Symbol("liquid", type: .string, literal: true),
-                        Symbol("h2o", type: .string, literal: true),
+                        Symbol("water", type: .string, meta: [.isLiteral]),
+                        Symbol("quantity", type: .string, meta: [.isLiteral]),
+                        Symbol("liquid", type: .string, meta: [.isLiteral]),
+                        Symbol("h2o", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -718,35 +699,23 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"quantity of water\"",
                     type: .string,
                     children: [
-                        Symbol("\"quantity of water\"", type: .string, literal: true),
+                        Symbol("\"quantity of water\"", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
                     id: "flags",
                     code: """
                          flags: [
-                             trytakeBit,
-                             takeBit,
-                             drinkBit
+                             isDrinkable,
+                             isTakable,
+                             noImplicitTake,
                          ]
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "trytakeBit",
-                            code: "trytakeBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "takeBit",
-                            code: "takeBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "drinkBit",
-                            code: "drinkBit",
-                            type: .bool
-                        )
+                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
+                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags),
+                        Symbol(id: "drinkBit", code: "isDrinkable", type: .bool, category: .flags),
                     ]
                 ),
                 Symbol(
@@ -766,7 +735,7 @@ final class ObjectTests: QuelboTests {
                     code: "size: 4",
                     type: .int,
                     children: [
-                        Symbol("4", type: .int, literal: true),
+                        Symbol("4", type: .int, meta: [.isLiteral]),
                     ]
                 )
             ]
@@ -827,9 +796,9 @@ final class ObjectTests: QuelboTests {
                     adjectives: ["nasty"],
                     description: "troll",
                     flags: [
-                        actorBit,
-                        openBit,
-                        trytakeBit
+                        isActor,
+                        isOpen,
+                        noImplicitTake,
                     ],
                     location: trollRoom,
                     longDescription: """
@@ -860,7 +829,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"troll\"]",
                     type: .array(.string),
                     children: [
-                        Symbol("troll", type: .string, literal: true),
+                        Symbol("troll", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -868,7 +837,7 @@ final class ObjectTests: QuelboTests {
                     code: "adjectives: [\"nasty\"]",
                     type: .array(.string),
                     children: [
-                        Symbol("nasty", type: .string, literal: true)
+                        Symbol("nasty", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -876,35 +845,23 @@ final class ObjectTests: QuelboTests {
                     code: "description: \"troll\"",
                     type: .string,
                     children: [
-                        Symbol("\"troll\"", type: .string, literal: true),
+                        Symbol("\"troll\"", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
                     id: "flags",
                     code: """
                          flags: [
-                             actorBit,
-                             openBit,
-                             trytakeBit
+                             isActor,
+                             isOpen,
+                             noImplicitTake,
                          ]
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol(
-                            id: "actorBit",
-                            code: "actorBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "openBit",
-                            code: "openBit",
-                            type: .bool
-                        ),
-                        Symbol(
-                            id: "trytakeBit",
-                            code: "trytakeBit",
-                            type: .bool
-                        )
+                        Symbol(id: "actorBit", code: "isActor", type: .bool, category: .flags),
+                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
+                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
                     ]
                 ),
                 Symbol(
@@ -943,7 +900,7 @@ final class ObjectTests: QuelboTests {
                                  """
                              """#,
                             type: .string,
-                            literal: true
+                            meta: [.isLiteral]
                         )
                     ]
                 ),
@@ -952,7 +909,7 @@ final class ObjectTests: QuelboTests {
                     code: "strength: 2",
                     type: .int,
                     children: [
-                        Symbol("2", type: .int, literal: true),
+                        Symbol("2", type: .int, meta: [.isLiteral]),
                     ]
                 )
             ]
@@ -1018,9 +975,9 @@ final class ObjectTests: QuelboTests {
                     adjectives: ["small"],
                     description: "leaflet",
                     flags: [
-                        readBit,
-                        takeBit,
-                        burnBit
+                        isBurnable,
+                        isReadable,
+                        isTakable,
                     ],
                     location: mailbox,
                     longDescription: "A small leaflet is on the ground.",
@@ -1029,7 +986,7 @@ final class ObjectTests: QuelboTests {
                         "advertisement",
                         "leaflet",
                         "booklet",
-                        "mail"
+                        "mail",
                     ],
                     text: """
                         "WELCOME TO ZORK!
@@ -1039,7 +996,7 @@ final class ObjectTests: QuelboTests {
                         seen by mortals. No computer should be without one!"
                         """
                 )
-                """#.rightTrimmed,
+                """#,
             type: .object,
             category: .objects
         ))
@@ -1093,11 +1050,11 @@ final class ObjectTests: QuelboTests {
                     capacity: 10000,
                     description: "trophy case",
                     flags: [
-                        transBit,
-                        contBit,
-                        ndescBit,
-                        trytakeBit,
-                        searchBit
+                        isContainer,
+                        isSearchable,
+                        isTransparent,
+                        noImplicitTake,
+                        omitDescription,
                     ],
                     location: livingRoom,
                     synonyms: ["case"]
@@ -1135,19 +1092,19 @@ final class ObjectTests: QuelboTests {
                 /// The `globalObjects` (GLOBAL-OBJECTS) object.
                 var globalObjects = Object(
                     flags: [
-                        rmungBit,
-                        invisible,
-                        touchBit,
-                        surfaceBit,
-                        trytakeBit,
-                        openBit,
-                        searchBit,
-                        transBit,
-                        onBit,
-                        rlandBit,
-                        fightBit,
-                        staggered,
-                        wearBit
+                        hasBeenTouched,
+                        isDestroyed,
+                        isDryLand,
+                        isFightable,
+                        isInvisible,
+                        isOn,
+                        isOpen,
+                        isSearchable,
+                        isStaggered,
+                        isSurface,
+                        isTransparent,
+                        isWearable,
+                        noImplicitTake,
                     ]
                 )
                 """,
@@ -1158,36 +1115,36 @@ final class ObjectTests: QuelboTests {
                     id: "flags",
                     code: """
                          flags: [
-                             rmungBit,
-                             invisible,
-                             touchBit,
-                             surfaceBit,
-                             trytakeBit,
-                             openBit,
-                             searchBit,
-                             transBit,
-                             onBit,
-                             rlandBit,
-                             fightBit,
-                             staggered,
-                             wearBit
+                             hasBeenTouched,
+                             isDestroyed,
+                             isDryLand,
+                             isFightable,
+                             isInvisible,
+                             isOn,
+                             isOpen,
+                             isSearchable,
+                             isStaggered,
+                             isSurface,
+                             isTransparent,
+                             isWearable,
+                             noImplicitTake,
                          ]
                          """,
                     type: .array(.bool),
                     children: [
-                        Symbol("rmungBit", type: .bool),
-                        Symbol("invisible", type: .bool),
-                        Symbol("touchBit", type: .bool),
-                        Symbol("surfaceBit", type: .bool),
-                        Symbol("trytakeBit", type: .bool),
-                        Symbol("openBit", type: .bool),
-                        Symbol("searchBit", type: .bool),
-                        Symbol("transBit", type: .bool),
-                        Symbol("onBit", type: .bool),
-                        Symbol("rlandBit", type: .bool),
-                        Symbol("fightBit", type: .bool),
-                        Symbol("staggered", type: .bool),
-                        Symbol("wearBit", type: .bool)
+                        Symbol(id: "rmungBit", code: "isDestroyed", type: .bool, category: .flags),
+                        Symbol(id: "invisible", code: "isInvisible", type: .bool, category: .flags),
+                        Symbol(id: "touchBit", code: "hasBeenTouched", type: .bool, category: .flags),
+                        Symbol(id: "surfaceBit", code: "isSurface", type: .bool, category: .flags),
+                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
+                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
+                        Symbol(id: "searchBit", code: "isSearchable", type: .bool, category: .flags),
+                        Symbol(id: "transBit", code: "isTransparent", type: .bool, category: .flags),
+                        Symbol(id: "onBit", code: "isOn", type: .bool, category: .flags),
+                        Symbol(id: "rlandBit", code: "isDryLand", type: .bool, category: .flags),
+                        Symbol(id: "fightBit", code: "isFightable", type: .bool, category: .flags),
+                        Symbol(id: "staggered", code: "isStaggered", type: .bool, category: .flags),
+                        Symbol(id: "wearBit", code: "isWearable", type: .bool, category: .flags)
                     ]
                 )
             ]
@@ -1271,7 +1228,7 @@ final class ObjectTests: QuelboTests {
                             adjectives: [],
                             nouns: ["foobar"],
                             action: vWalk
-                        )
+                        ),
                     ],
                     vehicleType: true
                 )
@@ -1296,7 +1253,7 @@ final class ObjectTests: QuelboTests {
                     code: "synonyms: [\"zzmgck\"]",
                     type: .array(.string),
                     children: [
-                        Symbol("zzmgck", type: .string, literal: true),
+                        Symbol("zzmgck", type: .string, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -1328,7 +1285,7 @@ final class ObjectTests: QuelboTests {
                     code: "advfcn: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, literal: true),
+                        Symbol("0", type: .int, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -1336,7 +1293,7 @@ final class ObjectTests: QuelboTests {
                     code: "firstDescription: \"F\"",
                     type: .string,
                     children: [
-                        Symbol("\"F\"", type: .string, literal: true)
+                        Symbol("\"F\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -1344,7 +1301,7 @@ final class ObjectTests: QuelboTests {
                     code: "longDescription: \"F\"",
                     type: .string,
                     children: [
-                        Symbol("\"F\"", type: .string, literal: true)
+                        Symbol("\"F\"", type: .string, meta: [.isLiteral])
                     ]
                 ),
                 Symbol(
@@ -1355,7 +1312,7 @@ final class ObjectTests: QuelboTests {
                                  adjectives: [],
                                  nouns: ["foobar"],
                                  action: vWalk
-                             )
+                             ),
                          ]
                          """,
                     type: .array(.thing),
@@ -1378,7 +1335,7 @@ final class ObjectTests: QuelboTests {
                     code: "contfcn: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, literal: true),
+                        Symbol("0", type: .int, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -1392,7 +1349,7 @@ final class ObjectTests: QuelboTests {
                     code: "size: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, literal: true),
+                        Symbol("0", type: .int, meta: [.isLiteral]),
                     ]
                 ),
                 Symbol(
@@ -1400,7 +1357,7 @@ final class ObjectTests: QuelboTests {
                     code: "capacity: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, literal: true),
+                        Symbol("0", type: .int, meta: [.isLiteral]),
                     ]
                 )
             ]
@@ -1446,10 +1403,10 @@ final class ObjectTests: QuelboTests {
                     action: 0,
                     description: "cretin",
                     flags: [
-                        ndescBit,
-                        invisible,
-                        sacredBit,
-                        actorBit
+                        isActor,
+                        isInvisible,
+                        isSacred,
+                        omitDescription,
                     ],
                     strength: 0,
                     synonyms: ["adventurer"]

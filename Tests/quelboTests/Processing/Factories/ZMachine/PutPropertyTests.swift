@@ -27,7 +27,7 @@ final class PutPropertyTests: QuelboTests {
     func testPutProperty() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
-            .atom(",P?STRENGTH"),
+            .property("STRENGTH"),
             .decimal(10)
         ]).process()
 
@@ -37,7 +37,7 @@ final class PutPropertyTests: QuelboTests {
             children: [
                 Symbol("troll", type: .object, category: .objects),
                 Symbol("strength", type: .int, category: .properties),
-                Symbol("10", type: .int, literal: true),
+                Symbol("10", type: .int, meta: [.isLiteral]),
             ]
         ))
     }

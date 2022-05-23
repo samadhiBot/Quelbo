@@ -26,7 +26,7 @@ final class DescriptionTests: QuelboTests {
             code: "description: \"bat\"",
             type: .string,
             children: [
-                Symbol("\"bat\"", type: .string, literal: true)
+                Symbol("\"bat\"", type: .string, meta: [.isLiteral])
             ]
         ))
     }

@@ -36,8 +36,8 @@ final class IsNotEqualToTests: QuelboTests {
             "2.isNotEqualTo(3)",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true),
-                Symbol("3", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -53,9 +53,9 @@ final class IsNotEqualToTests: QuelboTests {
             "2.isNotEqualTo(3, 4)",
             type: .bool,
             children: [
-                Symbol("2", type: .int, literal: true),
-                Symbol("3", type: .int, literal: true),
-                Symbol("4", type: .int, literal: true),
+                Symbol("2", type: .int, meta: [.isLiteral]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
+                Symbol("4", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -67,19 +67,19 @@ final class IsNotEqualToTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: #""hello".isNotEqualTo("goodBye")"#,
+            #""hello".isNotEqualTo("goodBye")"#,
             type: .bool,
             children: [
-                Symbol(id: #""hello""#, type: .string, literal: true),
-                Symbol(id: #""goodBye""#, type: .string, literal: true),
+                Symbol(#""hello""#, type: .string, meta: [.isLiteral]),
+                Symbol(#""goodBye""#, type: .string, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testEqualTwoGlobalBools() throws {
         let symbol = try factory.init([
-            .atom(",PLAYER-ALIVE?"),
-            .atom(",WORLD-ALIVE?"),
+            .global("PLAYER-ALIVE?"),
+            .global("WORLD-ALIVE?"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

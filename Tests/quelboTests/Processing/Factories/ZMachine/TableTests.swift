@@ -52,11 +52,11 @@ final class TableTests: QuelboTests {
                     .room(forest3),
                 ]
                 """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
             ]
         ))
     }
@@ -80,13 +80,13 @@ final class TableTests: QuelboTests {
                     .bool(trollMelee),
                 ]
                 """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             children: [
-                Symbol(id: "troll", code: ".object(troll)", type: .tableElement, category: .objects),
-                Symbol(id: "sword", code: ".object(sword)", type: .tableElement, category: .objects),
-                Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
-                Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
-                Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .tableElement, category: .routines),
+                Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
+                Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
+                Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
+                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
             ]
         ))
     }
@@ -115,14 +115,14 @@ final class TableTests: QuelboTests {
                     .room(forest1),
                 ]
                 """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .tableElement, category: .rooms),
-                Symbol(id: "path", code: ".room(path)", type: .tableElement, category: .rooms),
-                Symbol(id: "clearing", code: ".room(clearing)", type: .tableElement, category: .rooms),
-                Symbol(id: "forest1", code: ".room(forest1)", type: .tableElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
+                Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
+                Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
+                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
             ]
         ))
     }
@@ -166,7 +166,7 @@ final class TableTests: QuelboTests {
                     ]),
                 ]
                 """,
-            type: .array(.tableElement),
+            type: .array(.zilElement),
             children: [
                 Symbol(
                     id: """
@@ -187,13 +187,13 @@ final class TableTests: QuelboTests {
                             .bool(trollMelee),
                         ])
                         """,
-                    type: .tableElement,
+                    type: .zilElement,
                     children: [
-                        Symbol(id: "troll", code: ".object(troll)", type: .tableElement, category: .objects),
-                        Symbol(id: "sword", code: ".object(sword)", type: .tableElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
-                        Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
-                        Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .tableElement, category: .routines),
+                        Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
+                        Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
+                        Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
                     ]
                 ),
                 Symbol(
@@ -215,13 +215,13 @@ final class TableTests: QuelboTests {
                             .bool(thiefMelee),
                         ])
                         """,
-                    type: .tableElement,
+                    type: .zilElement,
                     children: [
-                        Symbol(id: "thief", code: ".object(thief)", type: .tableElement, category: .objects),
-                        Symbol(id: "knife", code: ".object(knife)", type: .tableElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .tableElement, literal: true),
-                        Symbol(id: "0", code: ".int(0)", type: .tableElement, literal: true),
-                        Symbol(id: "thiefMelee", code: ".bool(thiefMelee)", type: .tableElement, category: .routines),
+                        Symbol(id: "thief", code: ".object(thief)", type: .zilElement, category: .objects),
+                        Symbol(id: "knife", code: ".object(knife)", type: .zilElement, category: .objects),
+                        Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "thiefMelee", code: ".bool(thiefMelee)", type: .zilElement, category: .routines),
                     ]
                 ),
             ]

@@ -44,7 +44,7 @@ final class FirstDescriptionTests: QuelboTests {
                             """
                         """#,
                     type: .string,
-                    literal: true
+                    meta: [.isLiteral]
                 )
             ]
         ))

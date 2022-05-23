@@ -51,7 +51,7 @@ extension Factories {
         override func process() throws -> Symbol {
             Symbol(
                 id: "things",
-                code: "things: \(symbols.code)",
+                code: "things: [\(symbols.codeValues(.commaSeparated))]",
                 type: Self.returnType,
                 children: symbols
             )

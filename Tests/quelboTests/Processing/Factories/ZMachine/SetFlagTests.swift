@@ -27,8 +27,8 @@ final class SetFlagTests: QuelboTests {
 
     func testSetFlag() throws {
         let symbol = try factory.init([
-            .atom(",TRAP-DOOR"),
-            .atom(",OPENBIT"),
+            .global("TRAP-DOOR"),
+            .global("OPENBIT"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -55,7 +55,7 @@ final class SetFlagTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("Trap Door"),
-                .atom(",OPENBIT"),
+                .global("OPENBIT"),
             ]).process()
         )
     }

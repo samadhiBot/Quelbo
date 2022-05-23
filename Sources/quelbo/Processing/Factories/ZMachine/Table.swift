@@ -17,21 +17,17 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .twoOrMore(.tableElement)
+            .twoOrMore(.zilElement)
         }
 
         override class var returnType: Symbol.DataType {
-            .array(.tableElement)
+            .array(.zilElement)
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                """
-                    [
-                    \(symbols.codeValues(separator: ",", lineBreaks: 1).indented),
-                    ]
-                    """,
-                type: .array(.tableElement),
+                "[\(symbols.codeValues(.commaSeparated, .indented))]",
+                type: .array(.zilElement),
                 children: symbols
             )
         }

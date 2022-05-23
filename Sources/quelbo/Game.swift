@@ -28,7 +28,7 @@ class Game {
     var zMachineVersion: Game.ZMachineVersion = .z3
 
     private init() {
-        let syntax = Syntax().parser
+        let syntax = ZilSyntax().parser
 
         let parser = Parse {
             Many {
@@ -91,11 +91,7 @@ extension Game {
                 return $0.id == id && $0.category == category
             })
         else {
-            if let category = category {
-                throw GameError.symbolNotFound(id, category: "\(category)")
-            } else {
-                throw GameError.symbolNotFound(id, category: "any")
-            }
+            throw GameError.symbolNotFound(id, category: category?.rawValue ?? "any")
         }
         return symbol
     }

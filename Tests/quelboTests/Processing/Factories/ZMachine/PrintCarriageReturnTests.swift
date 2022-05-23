@@ -36,14 +36,14 @@ final class PrintCarriageReturnTests: QuelboTests {
                 """#,
             type: .void,
             children: [
-                Symbol(#""Hello World""#, type: .string, literal: true),
+                Symbol(#""Hello World""#, type: .string, meta: [.isLiteral]),
             ]
         ))
     }
 
     func testPrintAtom() throws {
         let symbol = try factory.init([
-            .atom(",MESSAGE")
+            .global("MESSAGE")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

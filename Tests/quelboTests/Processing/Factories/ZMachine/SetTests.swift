@@ -43,8 +43,8 @@ final class SetTests: QuelboTests {
             "foo.set(to: 3)",
             type: .int,
             children: [
-                Symbol("foo", type: .int),
-                Symbol("3", type: .int, literal: true),
+                Symbol("foo", type: .int, meta: [.mutating(true)]),
+                Symbol("3", type: .int, meta: [.isLiteral]),
             ]
         ))
     }
@@ -59,8 +59,8 @@ final class SetTests: QuelboTests {
             #"foo.set(to: "Bar!")"#,
             type: .string,
             children: [
-                Symbol("foo", type: .string),
-                Symbol(#""Bar!""#, type: .string, literal: true),
+                Symbol("foo", type: .string, meta: [.mutating(true)]),
+                Symbol(#""Bar!""#, type: .string, meta: [.isLiteral]),
             ]
         ))
     }
@@ -75,7 +75,7 @@ final class SetTests: QuelboTests {
             "isRobbed.set(to: true)",
             type: .bool,
             children: [
-                Symbol("isRobbed", type: .bool),
+                Symbol("isRobbed", type: .bool, meta: [.mutating(true)]),
                 .trueSymbol
             ]
         ))
@@ -86,7 +86,7 @@ final class SetTests: QuelboTests {
             .atom("T"),
             .form([
                 .atom("ADD"),
-                .atom(",THIRTY"),
+                .global("THIRTY"),
                 .decimal(3),
             ])
         ]).process()
@@ -95,13 +95,13 @@ final class SetTests: QuelboTests {
             "t.set(to: thirty.add(3))",
             type: .int,
             children: [
-                Symbol("t", type: .int),
+                Symbol("t", type: .int, meta: [.mutating(true)]),
                 Symbol(
                     "thirty.add(3)",
                     type: .int,
                     children: [
-                        Symbol("thirty", type: .int, category: .globals),
-                        Symbol("3", type: .int, literal: true)
+                        Symbol("thirty", type: .int, category: .globals, meta: [.mutating(true)]),
+                        Symbol("3", type: .int, meta: [.isLiteral])
                     ]
                 )
             ]
@@ -112,7 +112,7 @@ final class SetTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("X"),
-                .atom(".N"),
+                .local("N"),
             ]).process()
         )
     }
@@ -122,7 +122,7 @@ final class SetTests: QuelboTests {
             .atom("N"),
             .form([
                 .atom("NEXT?"),
-                .atom(".X")
+                .local("X")
             ]),
         ]).process()
 
@@ -130,7 +130,7 @@ final class SetTests: QuelboTests {
             "n.set(to: isNext(number: x))",
             type: .int,
             children: [
-                Symbol("n", type: .int),
+                Symbol("n", type: .int, meta: [.mutating(true)]),
                 Symbol(
                     id: "isNext",
                     code: "isNext(number: x)",
@@ -148,7 +148,7 @@ final class SetTests: QuelboTests {
             .atom("N"),
             .form([
                 .atom("-"),
-                .atom(".N"),
+                .local("N"),
                 .decimal(1)
             ])
         ]).process()
@@ -157,13 +157,13 @@ final class SetTests: QuelboTests {
             "n.set(to: n.subtract(1))",
             type: .int,
             children: [
-                Symbol("n", type: .int),
+                Symbol("n", type: .int, meta: [.mutating(true)]),
                 Symbol(
                     "n.subtract(1)",
                     type: .int,
                     children: [
-                        Symbol("n", type: .int),
-                        Symbol("1", type: .int, literal: true),
+                        Symbol("n", type: .int, meta: [.mutating(true)]),
+                        Symbol("1", type: .int, meta: [.isLiteral]),
                     ]
                 )
             ]

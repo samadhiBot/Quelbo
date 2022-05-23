@@ -50,6 +50,32 @@ final class ProgramBlockSamplesTests: XCTestCase {
         XCTAssertNoDifference(outputFlush(), "START 1 START 2 START 3 ")
     }
 
+    // MARK: - DEFINE
+
+    func testIncForm() {
+        let result = samples.incForm(a: 1)
+
+        XCTAssertEqual(result, 2)
+    }
+
+    func testMyadd() {
+        let result = samples.myadd(x1: 4, x2: 5)
+
+        XCTAssertEqual(result, 9)
+    }
+
+    func testPowerTo() {
+        let result = samples.powerTo(x: 3, y: 3)
+
+        XCTAssertEqual(result, 27)
+    }
+
+    func testSquare() {
+        let result = samples.square(x: 5)
+
+        XCTAssertEqual(result, 25)
+    }
+
     // MARK: - PROG
 
     func testProg1() {
