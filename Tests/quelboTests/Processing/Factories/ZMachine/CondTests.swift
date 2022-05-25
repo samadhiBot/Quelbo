@@ -56,23 +56,27 @@ final class CondTests: QuelboTests {
             type: .void,
             children: [
                 Symbol(
-                    id: "<List>",
-                    type: .list,
+                    """
+                        [
+                            rarg.equals(mEnter),
+                            output("Rarg equals mEnter"),
+                        ]
+                        """,
+                    type: .array(.bool),
                     children: [
                         Symbol(
                             "rarg.equals(mEnter)",
                             type: .bool,
                             children: [
                                 Symbol("rarg", type: .int),
-                                Symbol("mEnter", type: .int, category: .globals)
+                                Symbol("mEnter", type: .int, category: .globals),
                             ]
                         ),
                         Symbol(
-                            id: "output(\"Rarg equals mEnter\")",
-                            code: "output(\"Rarg equals mEnter\")",
+                            "output(\"Rarg equals mEnter\")",
                             type: .void,
                             children: [
-                                Symbol("\"Rarg equals mEnter\"", type: .string, meta: [.isLiteral])
+                                Symbol("\"Rarg equals mEnter\"", type: .string, meta: [.isLiteral]),
                             ]
                         )
                     ]

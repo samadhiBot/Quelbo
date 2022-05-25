@@ -16,7 +16,6 @@ extension Symbol {
         case comment
         case direction
         case int
-        case list
         case object
         case property
         case routine
@@ -37,7 +36,7 @@ extension Symbol {
         /// Whether the data type has a known return value type.
         var hasKnownReturnValue: Bool {
             switch self {
-            case .comment, .list, .property, .unknown: return false
+            case .comment, .property, .unknown: return false
             default: return true
             }
         }
@@ -53,7 +52,7 @@ extension Symbol {
         /// Whether the data type is a container.
         var isContainer: Bool {
             switch self {
-            case .comment, .list, .object: return true
+            case .comment, .object: return true
             default: return false
             }
         }
@@ -62,7 +61,7 @@ extension Symbol {
         var isKnown: Bool {
             switch self {
             case .array(let dataType): return dataType.isKnown
-            case .list, .object, .property, .unknown: return false
+            case .object, .property, .unknown: return false
             default: return true
             }
         }
@@ -86,7 +85,6 @@ extension Symbol.DataType: CustomStringConvertible {
         case .comment:         return "<Comment>"
         case .direction:       return "Direction"
         case .int:             return "Int"
-        case .list:            return "<List>"
         case .object:          return "Object"
         case .property:        return "<Property>"
         case .routine:         return "Routine"

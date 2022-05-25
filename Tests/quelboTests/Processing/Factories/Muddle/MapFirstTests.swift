@@ -47,7 +47,7 @@ final class MapFirstTests: QuelboTests {
                 .add(3, 12),
             ]
             """,
-            type: .array(.zilElement),
+            type: .array(.int),
             children: [
                 Symbol(
                     ".add(1, 10)",
@@ -140,7 +140,7 @@ final class MapFirstTests: QuelboTests {
                 }(3),
             ]
             """,
-            type: .array(.zilElement)
+            type: .array(.int)
         ))
     }
 }

@@ -67,9 +67,9 @@ final class DefineMacroTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "<List>",
+                    id: "[n, 1]",
                     code: "n: Int = 1",
-                    type: .list,
+                    type: .array(.int),
                     children: [
                         Symbol("n", type: .int),
                         Symbol(

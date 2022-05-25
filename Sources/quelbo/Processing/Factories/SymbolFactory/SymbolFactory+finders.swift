@@ -60,7 +60,18 @@ extension SymbolFactory {
             guard case .list(let params) = tokens.shift() else {
                 continue
             }
-            return try symbolize(params)
+            return try params.map { token in
+                switch token {
+                case .string("ARGS"):
+                    return Symbol("<Arguments>")
+                case .string("AUX"), .string("EXTRA"):
+                    return Symbol("<Locals>")
+                case .string("OPT"), .string("OPTIONAL"):
+                    return Symbol("<Optionals>")
+                default:
+                    return try symbolize(token)
+                }
+            }
         }
         throw FactoryError.missingParameters(original)
     }

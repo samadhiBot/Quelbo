@@ -19,9 +19,18 @@ extension Factories {
         override func process() throws -> Symbol {
             Symbol(
                 "[\(symbols.codeValues(.commaSeparated))]",
-                type: .array(.zilElement),
+                type: elementsType,
                 children: symbols
             )
         }
+    }
+}
+
+extension Factories.List {
+    var elementsType: Symbol.DataType {
+        guard let type = try? symbols.commonType() else {
+            return .array(.zilElement)
+        }
+        return .array(type)
     }
 }

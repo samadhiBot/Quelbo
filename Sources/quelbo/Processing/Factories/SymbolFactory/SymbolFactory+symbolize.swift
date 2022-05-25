@@ -12,17 +12,11 @@ extension SymbolFactory {
     ///
     /// - Parameters:
     ///   - zilTokens: A ``Token`` array to translate into symbols.
-    ///   - validateParamCount: Whether to validate the parameter count. This should occur at the
-    ///                         root level of the symbolization process, but should not occur when
-    ///                         symbolizing and validating child tokens.
     ///
     /// - Returns: A ``Symbol`` array corresponding to the translated tokens.
     ///
     /// - Throws: When token translation fails.
-    func symbolize(
-        _ zilTokens: [Token],
-        validateParamCount: Bool = true
-    ) throws -> [Symbol] {
+    func symbolize(_ zilTokens: [Token]) throws -> [Symbol] {
         var symbols: [Symbol] = []
         var zilTokens = zilTokens
 
@@ -92,7 +86,7 @@ extension SymbolFactory {
                 )
             }
         }
-        symbols = try validate(symbols, validateParamCount: validateParamCount)
+        symbols = try validate(symbols)
 
         return symbols
     }
@@ -237,18 +231,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        guard !listTokens.isEmpty else {
-            return Symbol(id: "<EmptyList>", type: .list)
-        }
-        let listSymbols = try symbolize(
-            listTokens,
-            validateParamCount: false
-        )
-        return Symbol(
-            id: "<List>",
-            type: .list,
-            children: try validate(listSymbols, validateParamCount: false)
-        )
+        try Factories.List(listTokens, in: blockType).process()
     }
 
     /// Translates a Zil
@@ -353,21 +336,10 @@ extension SymbolFactory {
     /// [Vector](https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#722-vector-1)
     /// token into a ``Symbol``.
     ///
-    /// - Parameter listTokens: A `Token` array consisting of the Zil vector elements.
+    /// - Parameter vectorTokens: A `Token` array consisting of the Zil vector elements.
     ///
     /// - Returns: A ``Symbol`` representation of the Zil vector.
     func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
-        guard !vectorTokens.isEmpty else {
-            return Symbol(id: "<EmptyVector>", code: "[]", type: .zilElement)
-        }
-        let vectorSymbols = try symbolize(
-            vectorTokens,
-            validateParamCount: false
-        )
-        return Symbol(
-            id: "<Vector>",
-            type: .zilElement,
-            children: try validate(vectorSymbols, validateParamCount: false)
-        )
+        try Factories.Vector(vectorTokens).process()
     }
 }

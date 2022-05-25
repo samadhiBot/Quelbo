@@ -105,6 +105,10 @@ extension Symbol {
         return nil
     }
 
+    var isPureTable: Bool {
+        id == "[pure]"
+    }
+
     /// Whether the symbol represents a `RETURN` statement.
     var isReturnStatement: Bool {
         self.id == "<Return>"
@@ -322,7 +326,7 @@ extension Array where Element == Symbol {
     ///
     /// - Throws: When a common type cannot be determined. This can either occur when all types are
     ///           unknown, or when there are multiple known types that do not match.
-    func commonType(_ strict: Bool = true) throws -> Symbol.DataType {
+    func commonType() throws -> Symbol.DataType {
         let types = map { $0.type }.unique
         switch types.count {
             case 0:  throw Symbol.Error.typeNotFound(self)
@@ -343,11 +347,7 @@ extension Array where Element == Symbol {
             default: break
         }
 
-        if strict {
-            throw Symbol.Error.typeNotFound(self)
-        } else {
-            return .unknown
-        }
+        throw Symbol.Error.typeNotFound(self)
     }
 
     /// Deep-searches a ``Symbol`` array for a `"paramDeclarations"` metadata declaration, and

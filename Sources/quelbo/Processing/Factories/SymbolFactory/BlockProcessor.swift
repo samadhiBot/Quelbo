@@ -43,7 +43,7 @@ class BlockProcessor: SymbolFactory {
 extension BlockProcessor {
     enum Context {
         case normal
-        case auxiliary
+        case local
         case optional
 
         func defaultValue(for symbol: Symbol) -> String {
@@ -243,12 +243,13 @@ extension BlockProcessor {
 
         while let param = symbols.shift() {
             switch param.id {
-            case #""ARGS""#:
+            case "<Arguments>":
+                context = .normal
                 continue
-            case #""AUX""#, #""EXTRA""#:
-                context = .auxiliary
+            case "<Locals>":
+                context = .local
                 continue
-            case #""OPT""#, #""OPTIONAL""#:
+            case "<Optionals>":
                 context = .optional
                 continue
             default:
@@ -256,17 +257,13 @@ extension BlockProcessor {
             }
 
             var paramSymbol: Symbol
-            if param.type == .list {
+            if case .array(let type) = param.type {
                 guard
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
                     let valueSymbol = param.children.last
                 else {
                     throw FactoryError.invalidParameter(param.children)
-                }
-                var type = valueSymbol.type
-                if type == .unknown, let found = validatedCode.children.find(id: nameSymbol.id) {
-                    type = found.type
                 }
                 paramSymbol = param.with(
                     code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
@@ -289,7 +286,7 @@ extension BlockProcessor {
                         type: paramSymbol.type
                     ))
                 }
-            case .auxiliary:
+            case .local:
                 auxiliaries.append(paramSymbol)
             }
         }

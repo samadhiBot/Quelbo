@@ -18,8 +18,7 @@ extension Factories {
 
         required init(
             _ tokens: [Token],
-            in blockType: SymbolFactory.ProgramBlockType? = nil,
-            strict: Bool = true
+            in blockType: SymbolFactory.ProgramBlockType? = nil
         ) throws {
             try super.init(tokens)
             isMutable = false

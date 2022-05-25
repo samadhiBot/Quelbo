@@ -115,8 +115,8 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<List>",
-            type: .list,
+            "[isFloating, false]",
+            type: .array(.bool),
             children: [
                 Symbol("isFloating", type: .bool),
                 .falseSymbol

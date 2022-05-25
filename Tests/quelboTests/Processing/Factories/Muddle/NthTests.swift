@@ -41,7 +41,7 @@ final class NthTests: QuelboTests {
                 Symbol(
                     id: "[\"AB\", \"CD\", \"EF\"]",
                     code: "[\"AB\", \"CD\", \"EF\"]",
-                    type: .array(.zilElement),
+                    type: .array(.string),
                     children: [
                         Symbol("\"AB\"", type: .string, meta: [.isLiteral]),
                         Symbol("\"CD\"", type: .string, meta: [.isLiteral]),
@@ -78,7 +78,7 @@ final class NthTests: QuelboTests {
                     children: [
                         Symbol(
                             "[\"AB\", \"CD\", \"EF\"]",
-                            type: .array(.zilElement),
+                            type: .array(.string),
                             children: [
                                 Symbol("\"AB\"", type: .string, meta: [.isLiteral]),
                                 Symbol("\"CD\"", type: .string, meta: [.isLiteral]),

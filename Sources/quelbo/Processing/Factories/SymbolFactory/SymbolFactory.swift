@@ -34,8 +34,7 @@ class SymbolFactory {
 
     required init(
         _ tokens: [Token],
-        in blockType: ProgramBlockType? = nil,
-        strict: Bool = true
+        in blockType: ProgramBlockType? = nil
     ) throws {
         self.blockType = blockType
         self.tokens = tokens

@@ -301,9 +301,9 @@ final class RoutineTests: QuelboTests {
             children: [
                 Symbol(id: "foo", code: "foo: Int? = nil", type: .int, meta: [.mutating(true)]),
                 Symbol(
-                    id: "<List>",
+                    id: "[bar, 42]",
                     code: "bar: Int = 42",
-                    type: .list,
+                    type: .array(.int),
                     children: [
                         Symbol("bar", type: .int),
                         Symbol("42", type: .int, meta: [.isLiteral]),
@@ -345,9 +345,14 @@ final class RoutineTests: QuelboTests {
             category: .routines,
             children: [
                 Symbol(
-                    id: "<List>",
+                    id: """
+                        [
+                            foo,
+                            "****  You have died  ****",
+                        ]
+                        """,
                     code: "foo: String = \"****  You have died  ****\"",
-                    type: .list,
+                    type: .array(.string),
                     children: [
                         Symbol("foo", type: .string),
                         Symbol("\"****  You have died  ****\"", type: .string, meta: [.isLiteral])
@@ -400,9 +405,9 @@ final class RoutineTests: QuelboTests {
             category: .routines,
             children: [
                 Symbol(
-                    id: "<List>",
+                    id: "[len, remark[0]]",
                     code: "len: ZilElement = remark[0]",
-                    type: .list,
+                    type: .array(.zilElement),
                     children: [
                         Symbol("len", type: .zilElement),
                         Symbol(
@@ -416,9 +421,9 @@ final class RoutineTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "<List>",
+                    id: "[cnt, 0]",
                     code: "cnt: Int = 0",
-                    type: .list,
+                    type: .array(.int),
                     children: [
                         Symbol("cnt", type: .int),
                         Symbol("0", type: .int, meta: [.isLiteral])

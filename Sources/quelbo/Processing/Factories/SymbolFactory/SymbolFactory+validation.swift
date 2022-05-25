@@ -8,19 +8,14 @@
 import Foundation
 
 extension SymbolFactory {
-    func validate(
-        _ symbols: [Symbol],
-        validateParamCount: Bool = true
-    ) throws -> [Symbol] {
-        if validateParamCount {
-            let nonCommentParams = symbols.filter { $0.type != .comment }
-            guard Self.parameters.range.contains(nonCommentParams.count) else {
-                throw FactoryError.invalidParameterCount(
-                    nonCommentParams.count,
-                    expected: Self.parameters.range,
-                    in: nonCommentParams
-                )
-            }
+    func validate(_ symbols: [Symbol]) throws -> [Symbol] {
+        let nonCommentParams = symbols.filter { $0.type != .comment }
+        guard Self.parameters.range.contains(nonCommentParams.count) else {
+            throw FactoryError.invalidParameterCount(
+                nonCommentParams.count,
+                expected: Self.parameters.range,
+                in: nonCommentParams
+            )
         }
 
         var index = 0
@@ -52,7 +47,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        // print("// 🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
+        // print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
@@ -84,6 +79,10 @@ extension SymbolFactory {
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {
         switch symbol.type {
         case .array:
+            if symbol.isPureTable {
+                isMutable = false
+                return nil
+            }
             return symbol.with(
                 code: ".table([\(symbol.children.codeValues(.commaSeparated))])",
                 type: .zilElement
@@ -105,12 +104,6 @@ extension SymbolFactory {
                 type: .zilElement,
                 meta: symbol.meta
             )
-        case .list:
-            guard symbol.children.first?.id == "pure" else {
-                throw FactoryError.unexpectedZilElement(symbol)
-            }
-            isMutable = false
-            return nil
         case .object:
             if symbol.category == .rooms {
                 return symbol.with(

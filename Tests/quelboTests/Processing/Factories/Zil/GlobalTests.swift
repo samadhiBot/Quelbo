@@ -439,12 +439,29 @@ final class GlobalTests: QuelboTests {
     }
 
     func testList() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .list([.string("BAR")])
-            ]).process()
+        let symbol = try factory.init([
+            .atom("FOO"),
+            .list([.string("BAR")])
+        ]).process()
+
+        let expected = Symbol(
+            id: "foo",
+            code: """
+                var foo: [String] = ["BAR"]
+                """,
+            type: .array(.string),
+            category: .globals,
+            children: [
+                Symbol(
+                    "\"BAR\"",
+                    type: .string,
+                    meta: [.isLiteral]
+                )
+            ]
         )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("foo", category: .globals), expected)
     }
 
     func testQuoted() throws {

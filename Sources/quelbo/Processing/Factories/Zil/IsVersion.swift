@@ -22,7 +22,7 @@ extension Factories {
             while let list = symbols.shift() {
                 var condition = list.children
                 guard
-                    list.type == .list,
+                    case .array = list.type,
                     let predicate = condition.shift()
                 else {
                     throw FactoryError.invalidValue(list)

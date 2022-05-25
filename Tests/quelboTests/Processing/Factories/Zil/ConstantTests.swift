@@ -433,12 +433,29 @@ final class ConstantTests: QuelboTests {
     }
 
     func testList() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .list([.string("BAR")])
-            ]).process()
+        let symbol = try factory.init([
+            .atom("FOO"),
+            .list([.string("BAR")])
+        ]).process()
+
+        let expected = Symbol(
+            id: "foo",
+            code: """
+                let foo: [String] = ["BAR"]
+                """,
+            type: .array(.string),
+            category: .constants,
+            children: [
+                Symbol(
+                    "\"BAR\"",
+                    type: .string,
+                    meta: [.isLiteral]
+                )
+            ]
         )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("foo", category: .constants), expected)
     }
 
     func testQuoted() throws {
