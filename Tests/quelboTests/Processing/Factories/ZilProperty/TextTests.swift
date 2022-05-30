@@ -19,7 +19,7 @@ final class TextTests: QuelboTests {
     func testText() throws {
         let symbol = try factory.init([
             .string("The engravings translate to \"This space intentionally left blank.\"")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "text",
@@ -48,7 +48,7 @@ final class TextTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -57,7 +57,7 @@ final class TextTests: QuelboTests {
             try factory.init([
                 .string("Bat"),
                 .string("Mouse"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

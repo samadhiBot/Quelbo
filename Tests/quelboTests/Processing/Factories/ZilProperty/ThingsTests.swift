@@ -32,7 +32,7 @@ final class ThingsTests: QuelboTests {
                 The message reads, "This is not the maze where the pirate \
                 leaves his treasure chest."
                 """)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -76,7 +76,7 @@ final class ThingsTests: QuelboTests {
                 .atom("SCRIPT")
             ]),
             .string("The message reads...")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -117,7 +117,7 @@ final class ThingsTests: QuelboTests {
                 .atom("SCRIPT")
             ]),
             .atom("PIT-CRACK-F")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -152,7 +152,7 @@ final class ThingsTests: QuelboTests {
             .atom("FLOWERY"),
             .atom("MESSAGE"),
             .string("The message reads...")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -189,7 +189,7 @@ final class ThingsTests: QuelboTests {
                     .atom("FLOWERY"),
                     .atom("SCRAWLED")
                 ]),
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -199,7 +199,7 @@ final class ThingsTests: QuelboTests {
                 .string("42"),
                 .string("43"),
                 .string("44"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

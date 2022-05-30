@@ -32,7 +32,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3)",
@@ -49,7 +49,7 @@ final class AddTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3, 4)",
@@ -66,7 +66,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.add(biggerNumber)",
@@ -82,7 +82,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.add(1)",
@@ -100,7 +100,7 @@ final class AddTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.add(otvalFrob())",
@@ -116,7 +116,7 @@ final class AddTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: types)
         )
     }
 
@@ -125,7 +125,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .bool(true),
-            ])
+            ], with: types)
         )
     }
 
@@ -134,7 +134,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .string("💣"),
-            ])
+            ], with: types)
         )
     }
 
@@ -143,7 +143,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .global("MY-BIKE"),
-            ])
+            ], with: types)
         )
     }
 }

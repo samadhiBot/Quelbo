@@ -76,7 +76,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg1",
@@ -160,7 +160,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg2",
@@ -260,7 +260,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg3",

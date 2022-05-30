@@ -26,7 +26,7 @@ final class LocalValueTests: QuelboTests {
     func testAtom() throws {
         let symbol = try factory.init([
             .atom("foo")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol("foo"))
     }

@@ -8,18 +8,6 @@
 import Foundation
 
 extension SymbolFactory {
-    func findCodeSymbols(in tokens: inout [Token]) throws -> [Symbol] {
-        return try symbolize(tokens)
-//        let original = tokens
-//        while !tokens.isEmpty {
-//            guard case .list(let params) = tokens.shift() else {
-//                continue
-//            }
-//            return try symbolize(params)
-//        }
-//        throw FactoryError.missingParameters(original)
-    }
-
     /// Scans through a ``Token`` array until it finds an atom, then returns a special ``Symbol``
     /// representation, where `id` contains the original Zil name, and `code` contains its Swift
     /// translation.
@@ -38,7 +26,10 @@ extension SymbolFactory {
             guard case .atom(let name) = tokens.shift() else {
                 continue
             }
-            return Symbol(id: name, code: name.lowerCamelCase)
+            return Symbol(
+                id: .init(stringLiteral: name),
+                code: name.lowerCamelCase
+            )
         }
         throw FactoryError.missingName(original)
     }
@@ -58,7 +49,7 @@ extension SymbolFactory {
         let original = tokens
         while !tokens.isEmpty {
             guard case .list(let params) = tokens.shift() else {
-                continue
+                throw FactoryError.missingParameters(tokens)
             }
             return try params.map { token in
                 switch token {

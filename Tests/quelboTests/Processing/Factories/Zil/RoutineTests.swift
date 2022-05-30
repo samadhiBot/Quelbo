@@ -16,6 +16,8 @@ final class RoutineTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
+            Symbol("fDef", type: .int),
+            Symbol("fWep", type: .int),
             Symbol(
                 "sing",
                 type: .void,
@@ -36,7 +38,7 @@ final class RoutineTests: QuelboTests {
             .atom("BAG-OF-COINS-F"),
             .list([]),
             .commented(.atom("noop")),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "bagOfCoinsFunc",
@@ -62,7 +64,7 @@ final class RoutineTests: QuelboTests {
                 .atom("SING"),
                 .decimal(99),
             ]),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "go",
@@ -91,7 +93,7 @@ final class RoutineTests: QuelboTests {
                 .atom("RARG"),
                 .decimal(42)
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "westHouse",
@@ -129,7 +131,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("MESSAGE")
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "printMessage",
@@ -172,7 +174,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PS"),
                 .string("Duck")
             ]),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "isDucking",
@@ -209,7 +211,7 @@ final class RoutineTests: QuelboTests {
                 .atom("DUMMY?"),
                 .bool(true)
             ]),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "boomRoom",
@@ -240,7 +242,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "batD",
@@ -281,7 +283,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO"),
                 .atom("BAR")
             ]),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "batBat",
@@ -329,7 +331,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "deadFunc",
@@ -371,6 +373,10 @@ final class RoutineTests: QuelboTests {
         let symbol = try factory.init([
             .atom("REMARK"),
             .list([
+                .atom("REMARK"),
+                .atom("D"),
+                .atom("W"),
+                .string("AUX"),
                 .list([
                     .atom("LEN"),
                     .form([
@@ -383,57 +389,111 @@ final class RoutineTests: QuelboTests {
                     .atom("CNT"),
                     .decimal(0)
                 ]),
+                .atom("STR")
             ]),
             .form([
-                .atom("PRINTN"),
-                .local("CNT")
+                .atom("REPEAT"),
+                .list([
+                ]),
+                .form([
+                    .atom("COND"),
+                    .list([
+                        .form([
+                            .atom("G?"),
+                            .form([
+                                .atom("SET"),
+                                .atom("CNT"),
+                                .form([
+                                    .atom("+"),
+                                    .local("CNT"),
+                                    .decimal(1)
+                                ])
+                            ]),
+                            .local("LEN")
+                        ]),
+                        .form([
+                            .atom("RETURN")
+                        ])
+                    ])
+                ]),
+                .form([
+                    .atom("SET"),
+                    .atom("STR"),
+                    .form([
+                        .atom("GET"),
+                        .local("REMARK"),
+                        .local("CNT")
+                    ])
+                ]),
+                .form([
+                    .atom("COND"),
+                    .list([
+                        .form([
+                            .atom("EQUAL?"),
+                            .local("STR"),
+                            .global("F-WEP")
+                        ]),
+                        .form([
+                            .atom("PRINTD"),
+                            .local("W")
+                        ])
+                    ]),
+                    .list([
+                        .form([
+                            .atom("EQUAL?"),
+                            .local("STR"),
+                            .global("F-DEF")
+                        ]),
+                        .form([
+                            .atom("PRINTD"),
+                            .local("D")
+                        ])
+                    ]),
+                    .list([
+                        .atom("T"),
+                        .form([
+                            .atom("PRINT"),
+                            .local("STR")
+                        ])
+                    ])
+                ])
+            ]),
+            .form([
+                .atom("CRLF")
             ])
-        ]).process()
+        ], with: types).process()
 
-        let expected = Symbol(
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             id: "remark",
-            code: """
+            code: #"""
                 /// The `remark` (REMARK) routine.
                 func remark(
-                    len: ZilElement = remark[0],
-                    cnt: Int = 0
+                    remark: [ZilElement],
+                    d: Object,
+                    w: Object
                 ) {
-                    output(cnt)
+                    var str: ZilElement = .string("")
+                    var len: ZilElement = remark[0]
+                    var cnt: Int = 0
+                    while true {
+                        if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
+                            break
+                        }
+                        str.set(to: remark[cnt])
+                        if str.equals(fWep) {
+                            output(w.description)
+                        } else if str.equals(fDef) {
+                            output(d.description)
+                        } else {
+                            output(str)
+                        }
+                    }
+                    output("\n")
                 }
-                """,
+                """#,
             type: .void,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "[len, remark[0]]",
-                    code: "len: ZilElement = remark[0]",
-                    type: .array(.zilElement),
-                    children: [
-                        Symbol("len", type: .zilElement),
-                        Symbol(
-                            "remark[0]",
-                            type: .zilElement,
-                            children: [
-                                Symbol("remark", type: .array(.zilElement)),
-                                Symbol("0", type: .int, meta: [.isLiteral])
-                            ]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "[cnt, 0]",
-                    code: "cnt: Int = 0",
-                    type: .array(.int),
-                    children: [
-                        Symbol("cnt", type: .int),
-                        Symbol("0", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
-        )
-
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("remark", category: .routines), expected)
+            category: .routines
+        ))
     }
 
     // <ROUTINE THIEF-VS-ADVENTURER (HERE? "AUX" ROBBED? (WINNER-ROBBED? <>))
@@ -473,7 +533,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("RTRUE")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, bottlesRoutine)
         XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
@@ -546,7 +606,7 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "sing",

@@ -83,7 +83,7 @@ final class IsVersionTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """

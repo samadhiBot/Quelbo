@@ -37,7 +37,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.set(to: 3)",
@@ -53,7 +53,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Bar!"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"foo.set(to: "Bar!")"#,
@@ -69,7 +69,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ROBBED?"),
             .bool(true),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "isRobbed.set(to: true)",
@@ -89,7 +89,7 @@ final class SetTests: QuelboTests {
                 .global("THIRTY"),
                 .decimal(3),
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "t.set(to: thirty.add(3))",
@@ -113,7 +113,7 @@ final class SetTests: QuelboTests {
             try factory.init([
                 .atom("X"),
                 .local("N"),
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -124,7 +124,7 @@ final class SetTests: QuelboTests {
                 .atom("NEXT?"),
                 .local("X")
             ]),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: isNext(number: x))",
@@ -151,7 +151,7 @@ final class SetTests: QuelboTests {
                 .local("N"),
                 .decimal(1)
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: n.subtract(1))",
@@ -175,7 +175,7 @@ final class SetTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

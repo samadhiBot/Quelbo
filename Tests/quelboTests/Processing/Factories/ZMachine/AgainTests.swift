@@ -25,7 +25,7 @@ final class AgainTests: QuelboTests {
     }
 
     func testIsAgainStatement() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: types).process()
 
         XCTAssertTrue(symbol.isAgainStatement)
     }
@@ -69,7 +69,7 @@ final class AgainTests: QuelboTests {
                 .atom("AGAIN")
             ]),
             .commented(.string("Start routine again, X keeps value"))
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain1",
@@ -137,7 +137,7 @@ final class AgainTests: QuelboTests {
                 .atom("AGAIN")
             ]),
             .commented(.string("Start routine again, X reinitialize to 0"))
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain2",
@@ -211,7 +211,7 @@ final class AgainTests: QuelboTests {
                 ]),
                 .commented(.string("Start block again from ACT1,"))
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain3",
@@ -283,7 +283,7 @@ final class AgainTests: QuelboTests {
                 ]),
                 .commented(.string("Start block again from PROG,"))
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain4",

@@ -29,7 +29,7 @@ final class SetFlagTests: QuelboTests {
         let symbol = try factory.init([
             .global("TRAP-DOOR"),
             .global("OPENBIT"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "trapDoor.openBit = true",
@@ -56,7 +56,7 @@ final class SetFlagTests: QuelboTests {
             try factory.init([
                 .string("Trap Door"),
                 .global("OPENBIT"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

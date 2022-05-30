@@ -16,38 +16,6 @@ extension Factories {
             ["COND"]
         }
 
-        func conditionalSymbols() throws -> [Symbol] {
-            var conditions: [Symbol] = []
-            var symbols = symbols
-            while let list = symbols.shift() {
-                var condition = list.children
-                guard
-                    let predicate = condition.shift(),
-                    !condition.isEmpty
-                else {
-                    throw FactoryError.invalidValue(list)
-                }
-
-                let ifStatement: String
-                switch predicate.id {
-                    case "else", "t", "true":
-                        ifStatement = ""
-                    default:
-                        ifStatement = "if \(predicate) "
-                }
-
-                conditions.append(Symbol(
-                    """
-                    \(ifStatement){
-                    \(condition.codeValues(.singleLineBreak, .indented))
-                    }
-                    """,
-                    children: list.children
-                ))
-            }
-            return conditions
-        }
-
         override func process() throws -> Symbol {
             Symbol(
                 try conditionalSymbols().codeValues(.separator(" else ")),
@@ -55,5 +23,38 @@ extension Factories {
                 children: symbols
             )
         }
+    }
+}
+
+extension Factories.Cond {
+    func conditionalSymbols() throws -> [Symbol] {
+        var conditions: [Symbol] = []
+        var symbols = symbols
+        while let list = symbols.shift() {
+            var condition = list.children
+            guard
+                let predicate = condition.shift(),
+                !condition.isEmpty
+            else {
+                throw FactoryError.invalidValue(list)
+            }
+
+            var ifStatement: String {
+                switch predicate.id {
+                    case "else", "t", "true": return ""
+                    default: return "if \(predicate) "
+                }
+            }
+
+            conditions.append(Symbol(
+                """
+                \(ifStatement){
+                \(condition.codeValues(.singleLineBreak, .indented))
+                }
+                """,
+                children: list.children
+            ))
+        }
+        return conditions
     }
 }

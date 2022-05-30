@@ -29,7 +29,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("BEACH-DIG")
             ]),
             .atom("FIX")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<GlobalType>",
@@ -55,7 +55,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("RS")
             ]),
             .atom("FIX")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<GlobalType>",
@@ -98,7 +98,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("ATOM"),
                 .atom("FALSE")
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<GlobalType>",

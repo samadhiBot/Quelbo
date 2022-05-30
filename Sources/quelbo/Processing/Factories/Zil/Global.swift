@@ -18,7 +18,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .two(.property, .unknown)
+            .two(.variable(.unknown), .unknown)
         }
 
         var nameSymbol = Symbol("TBD")
@@ -47,7 +47,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: nameSymbol.code,
+                id: .init(stringLiteral: nameSymbol.code),
                 code: codeBlock,
                 type: valueSymbol.type,
                 category: isMutable ? .globals : .constants,

@@ -32,7 +32,7 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".divide(9, 3)",
@@ -49,7 +49,7 @@ final class DivideTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".divide(20, 5, 2)",
@@ -66,7 +66,7 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.divide(biggerNumber)",
@@ -82,7 +82,7 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.divide(1)",
@@ -100,7 +100,7 @@ final class DivideTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.divide(otvalFrob())",
@@ -117,7 +117,7 @@ final class DivideTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: types)
         )
     }
 }

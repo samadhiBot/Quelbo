@@ -39,7 +39,7 @@ final class DefineTests: QuelboTests {
 //                    ])
 //                ])
 //            ])
-//        ]).process()
+//        ], with: types).process()
 //
 //        let expected = Symbol(
 //            id: "incForm",
@@ -79,7 +79,7 @@ final class DefineTests: QuelboTests {
 //                .atom("INC-FORM"),
 //                .atom("FOO")
 //            ])
-//        ]).process()
+//        ], with: types).process()
 //
 //        XCTAssertNoDifference(caller, Symbol(
 //            id: """
@@ -125,7 +125,7 @@ final class DefineTests: QuelboTests {
                 .local("X"),
                 .local("X")
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "double",
@@ -163,7 +163,7 @@ final class DefineTests: QuelboTests {
                 .atom("DOUBLE"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(caller, Symbol(
             id: """
@@ -262,7 +262,7 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         let caller = try testFactory.init([
             .form([
@@ -270,7 +270,7 @@ final class DefineTests: QuelboTests {
                 .decimal(2),
                 .decimal(3),
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(caller.ignoringChildren, Symbol(
             id: """
@@ -353,7 +353,7 @@ final class DefineTests: QuelboTests {
 //                ]),
 //                .local("STRUC")
 //            ])
-//        ]).process()
+//        ], with: types).process()
 //
 //        let expected = Symbol(
 //            id: "firstThree",
@@ -576,7 +576,7 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         let symbol = try Factories.DefineMacro.init([
             .atom("VERB?"),
@@ -589,7 +589,7 @@ final class DefineTests: QuelboTests {
                 .atom("PRSA"),
                 .local("ATMS")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             id: "isVerb",

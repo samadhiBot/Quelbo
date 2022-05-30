@@ -42,7 +42,7 @@ final class TableTests: QuelboTests {
             .atom("FOREST-1"),
             .atom("FOREST-2"),
             .atom("FOREST-3"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -68,7 +68,7 @@ final class TableTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .atom("TROLL-MELEE")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -102,7 +102,7 @@ final class TableTests: QuelboTests {
             .atom("PATH"),
             .atom("CLEARING"),
             .atom("FOREST-1"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -145,7 +145,7 @@ final class TableTests: QuelboTests {
                 .decimal(0),
                 .atom("THIEF-MELEE")
             ]),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """

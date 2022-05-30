@@ -45,7 +45,7 @@ final class CondTests: QuelboTests {
                     .string("Rarg equals mEnter")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -109,7 +109,7 @@ final class CondTests: QuelboTests {
                     .global("TROLL")
                 ])
             ]),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
@@ -132,7 +132,7 @@ final class CondTests: QuelboTests {
                     .string(" A secret path leads southwest into the forest.")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
@@ -158,7 +158,7 @@ final class CondTests: QuelboTests {
                 .atom("T"),
                 .string("The grating opens to reveal trees above you.")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
@@ -198,7 +198,7 @@ final class CondTests: QuelboTests {
                         """)
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             #"""
@@ -225,7 +225,7 @@ final class CondTests: QuelboTests {
                     .atom("CR")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             #"""

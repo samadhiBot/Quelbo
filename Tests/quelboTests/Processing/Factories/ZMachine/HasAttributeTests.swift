@@ -29,7 +29,7 @@ final class HasAttributeTests: QuelboTests {
         let symbol = try factory.init([
             .global("KITCHEN-WINDOW"),
             .global("OPENBIT"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "kitchenWindow.hasAttribute(openBit)",
@@ -54,7 +54,7 @@ final class HasAttributeTests: QuelboTests {
             try factory.init([
                 .string("KITCHEN-WINDOW"),
                 .global("OPENBIT"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

@@ -31,7 +31,7 @@ final class SubtractTests: QuelboTests {
     func testSubtractOneDecimal() throws {
         let symbol = try factory.init([
             .decimal(42),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "-42",
@@ -45,7 +45,7 @@ final class SubtractTests: QuelboTests {
     func testSubtractOneAtom() throws {
         let symbol = try factory.init([
             .local("FOO"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "-foo",
@@ -60,7 +60,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".subtract(9, 3)",
@@ -77,7 +77,7 @@ final class SubtractTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".subtract(20, 5, 2)",
@@ -94,7 +94,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.subtract(biggerNumber)",
@@ -110,7 +110,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.subtract(1)",
@@ -128,7 +128,7 @@ final class SubtractTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.subtract(otvalFrob())",

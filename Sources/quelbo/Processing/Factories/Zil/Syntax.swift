@@ -56,7 +56,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: "<Syntax:\(verb)>",
+                id: .init(stringLiteral: "<Syntax:\(verb)>"),
                 code: """
                     Syntax(
                     \(definition.joined(separator: ",\n").indented)

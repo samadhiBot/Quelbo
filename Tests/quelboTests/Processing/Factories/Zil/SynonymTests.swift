@@ -31,7 +31,7 @@ final class SynonymTestsTests: QuelboTests {
         let symbol = try factory.init([
             .atom("NORTH"),
             .atom("FORE")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Synonyms:north>",
@@ -50,7 +50,7 @@ final class SynonymTestsTests: QuelboTests {
             .atom("SLIDE"),
             .atom("DIP"),
             .atom("SOAK"),
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Synonyms:put>",

@@ -27,7 +27,7 @@ final class GetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(2)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo[2]",
@@ -44,7 +44,7 @@ final class GetTests: QuelboTests {
             try factory.init([
                 .string("FOO"),
                 .decimal(2)
-            ]).process()
+            ], with: types).process()
         )
     }
 }

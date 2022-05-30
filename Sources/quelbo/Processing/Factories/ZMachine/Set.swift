@@ -18,7 +18,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .two(.property, .unknown)
+            .two(.variable(.unknown), .unknown)
         }
 
         override func process() throws -> Symbol {

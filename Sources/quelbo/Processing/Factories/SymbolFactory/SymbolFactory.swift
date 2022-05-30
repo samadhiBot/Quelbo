@@ -17,11 +17,15 @@ class SymbolFactory {
     /// The number and types of ``Parameters-swift.enum`` required by this symbol factory.
     class var parameters: Parameters { .any }
 
-    /// The return value ``Symbol/DataType`` for the symbol produced by this symbol factory.
+    /// The return value ``Symbol/DataType-swift.enum`` for the symbol produced by this symbol
+    /// factory.
     class var returnType: Symbol.DataType { .unknown }
 
     /// An array of ``Token`` values parsed from Zil source code.
     let tokens: [Token]
+
+    /// A dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
+    var types: TypeRegistry
 
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []
@@ -34,10 +38,12 @@ class SymbolFactory {
 
     required init(
         _ tokens: [Token],
-        in blockType: ProgramBlockType? = nil
+        in blockType: ProgramBlockType? = nil,
+        with types: TypeRegistry
     ) throws {
         self.blockType = blockType
         self.tokens = tokens
+        self.types = types
         try processTokens()
     }
 
@@ -90,15 +96,12 @@ extension Array where Element == SymbolFactory.Type {
     ///
     /// - Parameter zil: The Zil directive to search for in an array of symbol factories.
     ///
-    /// - Returns: A matching symbol factory.
+    /// - Returns: A matching symbol factory if one exists.
     ///
-    /// - Throws: When either zero or multiple symbol factories are found matching the specified
+    /// - Throws: When multiple symbol factories are found matching the specified
     ///           Zil directive.
     func find(_ zil: String) throws -> SymbolFactory.Type? {
-        var zil = zil
-        if zil.hasPrefix(",") { zil.removeFirst() }
         let matches = filter { $0.zilNames.contains(zil) }
-
         switch matches.count {
         case 0:
             return nil

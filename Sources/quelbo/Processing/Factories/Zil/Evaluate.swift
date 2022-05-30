@@ -23,10 +23,10 @@ extension Factories {
 
             var symbols = try symbolize(tokens)
 
-            if let routine = try? Game.find(name, category: .routines) {
+            if let routine = try? Game.find(.init(stringLiteral: name), category: .routines) {
                 self.routine = routine
             } else {
-                let definition = try Game.find(name, category: .definitions)
+                let definition = try Game.find(.init(stringLiteral: name), category: .definitions)
                 guard let unevaluated = definition.unevaluated else {
                     throw FactoryError.invalidValue(definition)
                 }

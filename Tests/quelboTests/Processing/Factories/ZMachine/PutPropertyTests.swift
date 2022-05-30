@@ -29,7 +29,7 @@ final class PutPropertyTests: QuelboTests {
             .atom("TROLL"),
             .property("STRENGTH"),
             .decimal(10)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.strength = 10",
@@ -48,7 +48,7 @@ final class PutPropertyTests: QuelboTests {
                 .string("TROLL"),
                 .atom("STRENGTH"),
                 .decimal(10)
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -58,7 +58,7 @@ final class PutPropertyTests: QuelboTests {
                 .atom("TROLL"),
                 .string("STRENGTH"),
                 .decimal(10)
-            ]).process()
+            ], with: types).process()
         )
     }
 }

@@ -29,7 +29,7 @@ extension Factories {
             print("  + Processing \(nameSymbol.code) definition")
 
             let symbol = Symbol(
-                id: nameSymbol.code,
+                id: .init(stringLiteral: nameSymbol.code),
                 category: .definitions,
                 meta: [
                     .eval(

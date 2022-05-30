@@ -19,7 +19,7 @@ extension Factories {
         var pro: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation)
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: types)
         }
 
         var codeBlock: String {

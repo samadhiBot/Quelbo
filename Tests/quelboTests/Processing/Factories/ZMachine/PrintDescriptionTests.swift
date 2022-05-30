@@ -27,7 +27,7 @@ final class PrintDescriptionTests: QuelboTests {
     func testPrintDescription() throws {
         let symbol = try factory.init([
             .global("TROLL")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(troll.description)",
@@ -42,7 +42,7 @@ final class PrintDescriptionTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("wat?")
-            ]).process()
+            ], with: types).process()
         )
     }
 }

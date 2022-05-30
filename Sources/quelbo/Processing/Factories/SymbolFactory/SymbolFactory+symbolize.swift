@@ -120,11 +120,11 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-        if let defined = try? Game.find(name) {
+        if let defined = try? Game.find(.init(stringLiteral: name)) {
             return defined.with(code: name)
         }
         let paramType = try Self.parameters.type(at: index)
-        if zil == "T" && paramType != .property {
+        if zil == "T" && paramType == .bool {
             return .trueSymbol
         }
         return Symbol(name, type: paramType)
@@ -195,11 +195,11 @@ extension SymbolFactory {
         let factory: SymbolFactory
         if let zMachine = try Game.zMachineSymbolFactories
             .find(zil)?
-            .init(tokens, in: blockType)
+            .init(tokens, in: blockType, with: types)
         {
             factory = zMachine
         } else {
-            factory = try Factories.Evaluate(formTokens)
+            factory = try Factories.Evaluate(formTokens, with: types)
         }
         let symbol = try factory.process()
         self.isMutable = factory.isMutable
@@ -220,7 +220,7 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-        return try Game.find(name).with(code: name)
+        return try Game.find(.init(stringLiteral: name)).with(code: name)
     }
 
     /// Translates a Zil
@@ -231,7 +231,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        try Factories.List(listTokens, in: blockType).process()
+        try Factories.List(listTokens, in: blockType, with: types).process()
     }
 
     /// Translates a Zil
@@ -324,7 +324,7 @@ extension SymbolFactory {
             guard case .list(let tokens) = siblings.shift() else {
                 throw FactoryError.missingValue(siblings)
             }
-            return try Factories.DeclareType.init(tokens).process()
+            return try Factories.DeclareType(tokens, with: types).process()
         case "SPLICE":
             return Symbol("SPLICE (not yet implemented)")
         default:
@@ -340,6 +340,6 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil vector.
     func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
-        try Factories.Vector(vectorTokens).process()
+        try Factories.Vector(vectorTokens, with: types).process()
     }
 }

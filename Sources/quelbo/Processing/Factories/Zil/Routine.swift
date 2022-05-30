@@ -22,7 +22,7 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             self.nameSymbol = try findNameSymbol(in: &tokens)
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation)
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: types)
         }
 
         var typeName: String {
@@ -33,7 +33,7 @@ extension Factories {
             print("  + Processing \(typeName) \(nameSymbol.code)")
 
             let symbol = Symbol(
-                id: nameSymbol.code,
+                id: .init(stringLiteral: nameSymbol.code),
                 code: """
                     \(pro.discardableResult)\
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).

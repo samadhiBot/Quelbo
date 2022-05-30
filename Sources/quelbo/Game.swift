@@ -80,7 +80,7 @@ extension Game {
     ///
     /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
     static func find(
-        _ id: String,
+        _ id: Symbol.Identifier,
         category: Symbol.Category? = nil
     ) throws -> Symbol {
         guard

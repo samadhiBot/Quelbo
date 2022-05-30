@@ -37,7 +37,7 @@ final class MapFirstTests: QuelboTests {
                 .decimal(11),
                 .decimal(12)
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -87,7 +87,7 @@ final class MapFirstTests: QuelboTests {
                 .string("lots of"),
                 .string("fun")
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
@@ -121,7 +121,7 @@ final class MapFirstTests: QuelboTests {
                 .decimal(2),
                 .decimal(3)
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """

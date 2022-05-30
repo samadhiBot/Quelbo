@@ -11,7 +11,6 @@ extension Symbol {
     /// The set of data types associated with symbols.
     ///
     enum DataType: Hashable {
-        indirect case array(DataType)
         case bool
         case comment
         case direction
@@ -20,15 +19,17 @@ extension Symbol {
         case property
         case routine
         case string
-        case zilElement
         case thing
         case unknown
         case void
+        case zilElement
+        indirect case array(DataType)
+        indirect case variable(DataType)
 
-        /// Whether a literal value can represent the data type.
+        /// Whether the data type can be a literal value.
         var acceptsLiteral: Bool {
             switch self {
-            case .object, .property: return false
+            case .object, .property, .variable: return false
             default: return true
             }
         }
@@ -36,7 +37,9 @@ extension Symbol {
         /// Whether the data type has a known return value type.
         var hasKnownReturnValue: Bool {
             switch self {
+            case .array(let type): return type.hasKnownReturnValue
             case .comment, .property, .unknown: return false
+            case .variable(let type): return type.hasKnownReturnValue
             default: return true
             }
         }
@@ -60,8 +63,9 @@ extension Symbol {
         /// Whether the data type is known.
         var isKnown: Bool {
             switch self {
-            case .array(let dataType): return dataType.isKnown
+            case .array(let type): return type.isKnown
             case .object, .property, .unknown: return false
+            case .variable(let type): return type.isKnown
             default: return true
             }
         }
@@ -69,7 +73,7 @@ extension Symbol {
         /// Whether the data type is a literal value type.
         var isLiteral: Bool {
             switch self {
-            case .array(let dataType): return dataType.isLiteral
+            case .array(let type): return type.isLiteral
             case .bool, .direction, .int, .string, .zilElement: return true
             default: return false
             }
@@ -80,19 +84,20 @@ extension Symbol {
 extension Symbol.DataType: CustomStringConvertible {
     var description: String {
         switch self {
-        case .array(let type): return "[\(type)]"
-        case .bool:            return "Bool"
-        case .comment:         return "<Comment>"
-        case .direction:       return "Direction"
-        case .int:             return "Int"
-        case .object:          return "Object"
-        case .property:        return "<Property>"
-        case .routine:         return "Routine"
-        case .string:          return "String"
-        case .thing:           return "Thing"
-        case .zilElement:      return "ZilElement"
-        case .unknown:         return "<Unknown>"
-        case .void:            return "Void"
+        case .array(let type):    return "[\(type)]"
+        case .bool:               return "Bool"
+        case .comment:            return "<Comment>"
+        case .direction:          return "Direction"
+        case .int:                return "Int"
+        case .object:             return "Object"
+        case .property:           return "<Property>"
+        case .routine:            return "Routine"
+        case .string:             return "String"
+        case .thing:              return "Thing"
+        case .unknown:            return "<Unknown>"
+        case .variable(let type): return "\(type)"
+        case .void:               return "Void"
+        case .zilElement:         return "ZilElement"
         }
     }
 }

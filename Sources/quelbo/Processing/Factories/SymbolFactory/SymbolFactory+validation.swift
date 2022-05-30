@@ -35,6 +35,8 @@ extension SymbolFactory {
             _ = try typedSymbols.commonType()
         default: break
         }
+
+        types.register(typedSymbols)
         return typedSymbols
     }
 }
@@ -47,7 +49,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        // print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
+        print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
@@ -132,4 +134,3 @@ extension SymbolFactory {
         }
     }
 }
-

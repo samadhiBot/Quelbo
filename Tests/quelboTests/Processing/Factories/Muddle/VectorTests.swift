@@ -29,7 +29,7 @@ final class VectorTests: QuelboTests {
             .decimal(2),
             .string("AB"),
             .character("C")
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"[1, 2, "AB", "C"]"#,

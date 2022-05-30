@@ -21,7 +21,14 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            if let value = symbols.first {
+            if var value = symbols.first {
+                if value.type == .unknown {
+                    if value.id == "t" {
+                        value = .trueSymbol
+                    } else if let saved = types[value.id] {
+                        value = value.with(type: saved)
+                    }
+                }
                 return Symbol(
                     id: "<Return>",
                     code: "return \(value)",

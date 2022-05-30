@@ -19,7 +19,7 @@ final class SizeTests: QuelboTests {
     func testSize() throws {
         let symbol = try factory.init([
             .decimal(4)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "size",
@@ -34,7 +34,7 @@ final class SizeTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -43,7 +43,7 @@ final class SizeTests: QuelboTests {
             try factory.init([
                 .decimal(4),
                 .decimal(5),
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -51,7 +51,7 @@ final class SizeTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("4")
-            ]).process()
+            ], with: types).process()
         )
     }
 }

@@ -16,7 +16,7 @@ final class OtherTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ADVFCN"),
             .decimal(0)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "advfcn",
@@ -31,7 +31,7 @@ final class OtherTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -40,7 +40,7 @@ final class OtherTests: QuelboTests {
             try factory.init([
                 .decimal(4),
                 .decimal(5),
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -48,7 +48,7 @@ final class OtherTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("4")
-            ]).process()
+            ], with: types).process()
         )
     }
 }

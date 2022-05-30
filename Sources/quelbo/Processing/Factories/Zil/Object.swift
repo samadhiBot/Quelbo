@@ -53,7 +53,7 @@ extension Factories {
             print("  + Processing object \(nameSymbol.code)")
 
             let symbol = Symbol(
-                id: nameSymbol.code,
+                id: .init(stringLiteral: nameSymbol.code),
                 code: """
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName.lowercased()).
                     var \(nameSymbol.code) = \(typeName)(
@@ -94,18 +94,18 @@ extension Factories.Object {
                 }
                 if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
                     do {
-                        let factory = try propertyFactory.init(tokens)
+                        let factory = try propertyFactory.init(tokens, with: types)
                         return try factory.process()
                     } catch {
                         guard zil == "IN" else { throw error }
                     }
                 }
                 if let moveFactory = Factories.MoveDirection.find(zil) {
-                    let factory = try moveFactory.init(listTokens)
+                    let factory = try moveFactory.init(listTokens, with: types)
                     directionSymbols.append(try factory.process())
                     return nil
                 }
-                let factory = try Factories.Other.init(listTokens)
+                let factory = try Factories.Other.init(listTokens, with: types)
                 return try factory.process()
             default:
                 throw FactoryError.invalidProperty(token)

@@ -28,7 +28,7 @@ final class FormTests: QuelboTests {
             .atom("+"),
             .decimal(1),
             .decimal(2),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(1, 2)",
@@ -44,7 +44,7 @@ final class FormTests: QuelboTests {
         let symbol = try factory.init([
             .atom("LVAL"),
             .local("A"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol("a"))
     }
@@ -63,7 +63,7 @@ final class FormTests: QuelboTests {
                     .local("A")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "a.set(to: .add(1, a))",

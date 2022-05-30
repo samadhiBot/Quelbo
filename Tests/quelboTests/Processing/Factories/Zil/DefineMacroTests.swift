@@ -43,7 +43,7 @@ final class DefineMacroTests: QuelboTests {
                     .local("N")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "inc",
@@ -115,15 +115,14 @@ final class DefineMacroTests: QuelboTests {
                     .local("X")
                 ]))
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "double",
             code: """
                 @discardableResult
                 /// The `double` (DOUBLE) macro.
-                func double() -> Int {
-                    // Parameter `any` was specified but unused
+                func double(any: Int) -> Int {
                     return do {
                         var x: Int = any
                         return x.add(x)
@@ -133,11 +132,12 @@ final class DefineMacroTests: QuelboTests {
             type: .int,
             category: .routines,
             children: [
+                Symbol(id: "any", code: "any: Int")
             ]
         )
 
         XCTAssertNoDifference(symbol, expected)
-//        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
+        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
     }
 
 //    func testBottlesMacro() throws {
@@ -179,7 +179,7 @@ final class DefineMacroTests: QuelboTests {
 //                    ])
 //                ])
 //            ])
-//        ]).process()
+//        ], with: types).process()
 //
 //        let expected = Symbol(
 //            id: "bottles",

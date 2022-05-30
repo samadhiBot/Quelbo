@@ -30,7 +30,7 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "sandwich.isIn(paperBag)",
@@ -46,7 +46,7 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "paperBag.isIn(kitchen)",
@@ -63,7 +63,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -72,7 +72,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

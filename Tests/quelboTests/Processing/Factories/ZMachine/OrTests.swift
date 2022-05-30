@@ -29,7 +29,7 @@ final class OrTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .bool(true)
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -37,7 +37,7 @@ final class OrTests: QuelboTests {
         let symbol = try factory.init([
             .bool(true),
             .bool(true)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".or(true, true)",
@@ -54,7 +54,7 @@ final class OrTests: QuelboTests {
             .bool(true),
             .bool(false),
             .bool(true)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".or(true, false, true)",
@@ -72,7 +72,7 @@ final class OrTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .decimal(2),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".or(1, 0, 2)",
@@ -96,7 +96,7 @@ final class OrTests: QuelboTests {
                 .atom("NOT"),
                 .global("FOUND-TREASURE-CHEST"),
             ]),
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """

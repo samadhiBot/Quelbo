@@ -33,7 +33,7 @@ extension Factories {
             let synonyms = symbols.quoted.sorted.codeValues(.commaSeparated)
 
             let symbol = Symbol(
-                id: "<Synonyms:\(word)>",
+                id: .init(stringLiteral: "<Synonyms:\(word)>"),
                 code: """
                 Syntax.set("\(word)", synonyms: \(synonyms))
                 """,

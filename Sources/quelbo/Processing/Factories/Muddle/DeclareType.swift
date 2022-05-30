@@ -20,7 +20,7 @@ extension Factories {
             .twoOrMore(.unknown)
         }
 
-        var idValue: String {
+        var idValue: Symbol.Identifier {
             "<DeclareType>"
         }
 
@@ -45,7 +45,7 @@ extension Factories {
                     }
                     let name = zil.lowerCamelCase
                     let symbol = Symbol(
-                        id: name,
+                        id: .init(stringLiteral: name),
                         code: "var \(name): \(dataType)",
                         type: dataType,
                         category: isGlobal ? .globals : nil

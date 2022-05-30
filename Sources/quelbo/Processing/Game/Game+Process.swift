@@ -40,14 +40,18 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
+                    let types = SymbolFactory.TypeRegistry()
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
                     let factory: SymbolFactory
-                    if let zilSymbol = try Game.zilSymbolFactories.find(zil)?.init(tokens) {
+                    if let zilSymbol = try Game.zilSymbolFactories
+                        .find(zil)?
+                        .init(tokens, with: types)
+                    {
                         factory = zilSymbol
                     } else {
-                        factory = try Factories.Evaluate(formTokens)
+                        factory = try Factories.Evaluate(formTokens, with: types)
                     }
                     _ = try factory.process()
                 } catch {
@@ -90,7 +94,7 @@ enum GameError: Swift.Error {
     case duplicateSymbolCommit(Symbol)
     case failedToProcessTokens([String])
     case invalidZMachineVersion([Token])
-    case symbolNotFound(String, category: String)
+    case symbolNotFound(Symbol.Identifier, category: String)
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)
@@ -145,7 +149,7 @@ extension Game {
 
 extension Game {
     /// The ZMachine version to emulate during processing.
-    /// 
+    ///
     enum ZMachineVersion: String {
         case z3
         case z3Time

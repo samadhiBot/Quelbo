@@ -41,7 +41,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .atom("unexpected")
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -49,7 +49,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .bool(true)
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "foo",
@@ -67,7 +67,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .commented(.string("BAR"))
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -75,7 +75,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(42)
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "foo",
@@ -97,7 +97,7 @@ final class ConstantTests: QuelboTests {
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "foo",
@@ -136,7 +136,7 @@ final class ConstantTests: QuelboTests {
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "foo",
@@ -196,7 +196,7 @@ final class ConstantTests: QuelboTests {
 //                    .atom("CYCLOPS-MELEE")
 //                ])
 //            ])
-//        ]).process()
+//        ], with: types).process()
 //
 //        let expected = Symbol(
 //            id: "villains",
@@ -404,7 +404,7 @@ final class ConstantTests: QuelboTests {
                     .decimal(4)
                 ]))
             ])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "def1Res",
@@ -436,7 +436,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .list([.string("BAR")])
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "foo",
@@ -463,7 +463,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .quote(.string("BAR"))
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -471,7 +471,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Forty Two!")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
 

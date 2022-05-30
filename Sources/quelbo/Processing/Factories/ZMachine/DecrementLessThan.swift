@@ -17,7 +17,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .two(.property, .int)
+            .two(.variable(.int), .int)
         }
 
         override class var returnType: Symbol.DataType {

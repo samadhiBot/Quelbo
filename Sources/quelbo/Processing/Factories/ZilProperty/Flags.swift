@@ -32,10 +32,10 @@ extension Factories {
                     return flag
                 } else {
                     let flagCode: String
-                    if let known = FlagLookup(rawValue: symbol.id) {
+                    if let known = FlagLookup(rawValue: symbol.id.rawValue) {
                         flagCode = known.rawValue
                     } else {
-                        flagCode = symbol.id
+                        flagCode = symbol.id.rawValue
                     }
                     let flag = symbol.with(code: flagCode, category: .flags)
                     try Game.commit(flag)

@@ -32,7 +32,7 @@ final class NthTests: QuelboTests {
                 .string("EF")
             ]),
             .decimal(2)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"["AB", "CD", "EF"].nthElement(2)"#,
@@ -65,7 +65,7 @@ final class NthTests: QuelboTests {
                     .string("EF")
                 ])
             ])
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,

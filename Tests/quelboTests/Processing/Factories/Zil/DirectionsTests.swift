@@ -31,7 +31,7 @@ final class DirectionsTests: QuelboTests {
             .atom("IN"),
             .atom("OUT"),
             .atom("LAND")
-        ]).process()
+        ], with: types).process()
 
         let expectedDirections = [
             Symbol(id: "north", code: "case north", type: .direction, category: .directions),
@@ -81,7 +81,7 @@ final class DirectionsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("NORTH"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

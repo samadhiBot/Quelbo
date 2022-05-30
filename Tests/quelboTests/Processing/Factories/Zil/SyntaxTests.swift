@@ -21,7 +21,7 @@ final class SyntaxTests: QuelboTests {
             .atom("QUIT"),
             .atom("="),
             .atom("V-QUIT")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:quit>",
@@ -44,7 +44,7 @@ final class SyntaxTests: QuelboTests {
             .atom("OBJECT"),
             .atom("="),
             .atom("V-THINK-ABOUT")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:contemplate>",
@@ -77,7 +77,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-TAKE")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:take>",
@@ -117,7 +117,7 @@ final class SyntaxTests: QuelboTests {
             .atom("="),
             .atom("V-PUT-IN"),
             .atom("PRE-PUT-IN")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:put>",
@@ -152,7 +152,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",
@@ -183,7 +183,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",
@@ -220,7 +220,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: types).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",

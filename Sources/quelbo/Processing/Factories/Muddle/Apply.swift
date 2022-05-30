@@ -31,7 +31,10 @@ extension Factories {
             let applicableName = try findNameSymbol(in: &tokens).code
 
             var symbols = try symbolize(tokens)
-            self.applicable = try Game.find(applicableName, category: .routines)
+            self.applicable = try Game.find(
+                .init(stringLiteral: applicableName),
+                category: .routines
+            )
 
             self.params = try applicable.children.map { (symbol: Symbol) -> Symbol in
                 guard let value = symbols.shift() else {

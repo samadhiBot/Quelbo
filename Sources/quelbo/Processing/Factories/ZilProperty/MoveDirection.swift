@@ -15,7 +15,7 @@ extension Factories {
         static func find(_ zil: String) -> MoveDirection.Type? {
             let name = zil.lowerCamelCase
             let direction = Factories.Directions.Improved(rawValue: name)?.name ?? name
-            guard Game.directions.find(id: direction) != nil else {
+            guard Game.directions.find(id: .init(stringLiteral: direction)) != nil else {
                 return nil
             }
             return Factories.MoveDirection.self
@@ -81,7 +81,7 @@ extension Factories {
                 if let condition = condition {
                     if let message = message {
                         return Symbol(
-                            id: name,
+                            id: .init(stringLiteral: name),
                             code: """
                                 .\(name): .conditionalElse(\(destination),
                                     if: \(condition),
@@ -92,27 +92,27 @@ extension Factories {
                         )
                     }
                     return Symbol(
-                        id: name,
+                        id: .init(stringLiteral: name),
                         code: ".\(name): .conditional(\(destination), if: \(condition))",
                         type: Self.returnType
                     )
                 }
                 return Symbol(
-                    id: name,
+                    id: .init(stringLiteral: name),
                     code: ".\(name): .to(\(destination))",
                     type: Self.returnType
                 )
             }
             if let message = message {
                 return Symbol(
-                    id: name,
+                    id: .init(stringLiteral: name),
                     code: ".\(name): .blocked(\(message.quoted))",
                     type: Self.returnType
                 )
             }
             if let perFunction = perFunction {
                 return Symbol(
-                    id: name,
+                    id: .init(stringLiteral: name),
                     code: ".\(name): .per(\(perFunction))",
                     type: Self.returnType
                 )

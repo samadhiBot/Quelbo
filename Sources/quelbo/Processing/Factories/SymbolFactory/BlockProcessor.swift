@@ -16,6 +16,10 @@ import Foundation
 /// [AGAIN](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1au1eum)
 /// functions for detailed information.
 class BlockProcessor: SymbolFactory {
+    override class var zilNames: [String] {
+        ["<BlockProcessor>"]
+    }
+
     var code = Symbol("TBD")
     var params = Symbol("TBD")
 
@@ -31,7 +35,7 @@ class BlockProcessor: SymbolFactory {
         }
 
         let paramSymbols = try findParameterSymbols(in: &tokens)
-        let codeSymbols = try findCodeSymbols(in: &tokens)
+        let codeSymbols = try symbolize(tokens)
 
         self.code = try validateCode(codeSymbols)
         self.params = try validateParameters(paramSymbols, against: code)
@@ -257,7 +261,7 @@ extension BlockProcessor {
             }
 
             var paramSymbol: Symbol
-            if case .array(let type) = param.type {
+            if case .array(var type) = param.type {
                 guard
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
@@ -265,12 +269,22 @@ extension BlockProcessor {
                 else {
                     throw FactoryError.invalidParameter(param.children)
                 }
+                if type == .unknown {
+                    type = types[nameSymbol.id] ?? types[valueSymbol.id] ?? .unknown
+                }
                 paramSymbol = param.with(
                     code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
                 )
+                types.register(id: nameSymbol.id, as: type)
+                types.register(id: valueSymbol.id, as: type)
+
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
                     code: "\(found.id): \(found.type)\(context.defaultValue(for: found))"
+                )
+            } else if let type = types[param.id] {
+                paramSymbol = param.with(
+                    code: "\(param.id): \(type)"
                 )
             } else {
                 warnings.append("// Parameter `\(param)` was specified but unused")
@@ -311,7 +325,7 @@ extension Symbol {
         // case .property: return "0"
         // case .routine: return "0"
         case .string: return "\"\""
-        // case .zilElement: return "0"
+        case .zilElement: return #".string("")"#
         // case .thing: return "0"
         // case .unknown: return "0"
         // case .void: return "0"

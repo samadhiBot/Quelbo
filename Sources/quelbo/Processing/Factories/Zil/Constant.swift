@@ -18,9 +18,10 @@ extension Factories {
 
         required init(
             _ tokens: [Token],
-            in blockType: SymbolFactory.ProgramBlockType? = nil
+            in blockType: SymbolFactory.ProgramBlockType? = nil,
+            with types: TypeRegistry
         ) throws {
-            try super.init(tokens)
+            try super.init(tokens, with: types)
             isMutable = false
         }
     }

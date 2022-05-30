@@ -16,7 +16,7 @@ extension Factories {
             ["GDECL"]
         }
 
-        override var idValue: String {
+        override var idValue: Symbol.Identifier {
             "<GlobalType>"
         }
 

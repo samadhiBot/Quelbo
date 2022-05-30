@@ -22,7 +22,7 @@ final class FirstDescriptionTests: QuelboTests {
                 Lying in one corner of the room is a beautifully carved crystal skull. \
                 It appears to be grinning at you rather nastily.
                 """)
-        ]).process()
+        ], with: types).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "firstDescription",
@@ -53,7 +53,7 @@ final class FirstDescriptionTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: types).process()
         )
     }
 
@@ -62,7 +62,7 @@ final class FirstDescriptionTests: QuelboTests {
             try factory.init([
                 .string("Bat"),
                 .string("Mouse"),
-            ]).process()
+            ], with: types).process()
         )
     }
 }

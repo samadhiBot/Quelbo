@@ -9,11 +9,14 @@ import XCTest
 @testable import quelbo
 
 class QuelboTests: XCTestCase {
+    var types: SymbolFactory.TypeRegistry!
+
     override func setUp() {
         super.setUp()
 
         Game.shared.gameSymbols = []
         Game.shared.zMachineVersion = .z3
+        self.types = SymbolFactory.TypeRegistry()
     }
 
     func AssertSameFactory(

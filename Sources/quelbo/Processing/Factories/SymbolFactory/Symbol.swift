@@ -8,14 +8,14 @@
 import Foundation
 
 /// A representation of a piece of Zil code and its Swift translation.
-struct Symbol: Equatable {
+struct Symbol: Equatable, Identifiable {
     /// The symbol's unique identifier.
-    let id: String
+    let id: Symbol.Identifier
 
     /// The Swift translation of a piece of Zil code.
     let code: String
 
-    /// The ``Symbol/DataType`` for the ``code``.
+    /// The ``Symbol/DataType-swift.enum`` for the ``code``.
     let type: DataType
 
     /// The symbol's ``Symbol/Category-swift.enum``.
@@ -28,7 +28,7 @@ struct Symbol: Equatable {
     let meta: [MetaData]
 
     init(
-        id: String,
+        id: Symbol.Identifier,
         code: String = "",
         type: DataType = .unknown,
         category: Category? = nil,
@@ -50,7 +50,7 @@ struct Symbol: Equatable {
         children: [Symbol] = [],
         meta: [MetaData] = []
     ) {
-        self.id = code.rightTrimmed
+        self.id = .init(stringLiteral: code.rightTrimmed)
         self.code = code.rightTrimmed
         self.type = type
         self.category = category
@@ -72,7 +72,7 @@ extension Symbol {
         self.id == "<Block>"
     }
 
-    /// <#Description#>
+    /// Whether the symbol represents a closure.
     var isFunctionClosure: Bool {
         for metaData in meta {
             if case .type = metaData {
@@ -82,7 +82,7 @@ extension Symbol {
         return false
     }
 
-    /// <#Description#>
+    /// Whether the symbol represents a literal value.
     var isLiteral: Bool {
         for metaData in meta {
             if case .isLiteral = metaData {
@@ -114,7 +114,7 @@ extension Symbol {
         self.id == "<Return>"
     }
 
-    /// <#Description#>
+    /// Returns a description of the symbol's data type.
     var dataType: String {
         for metaData in meta {
             if case .type(let type) = metaData {
@@ -124,7 +124,7 @@ extension Symbol {
         return type.description
     }
 
-    /// <#Description#>
+    /// Returns an unevaluated token stored by the symbol, if one exists.
     var unevaluated: Token? {
         for metaData in meta {
             if case .eval(let token) = metaData {
@@ -146,20 +146,20 @@ extension Symbol {
     ///
     /// - Returns: The symbol with any specified properties updated.
     func with(
-        id: String? = nil,
-        code: String? = nil,
-        type: DataType? = nil,
-        category: Category? = nil,
-        children: [Symbol]? = nil,
-        meta: [MetaData] = []
+        id newID: Symbol.Identifier? = nil,
+        code newCode: String? = nil,
+        type newType: DataType? = nil,
+        category newCategory: Category? = nil,
+        children newChildren: [Symbol]? = nil,
+        meta newMeta: [MetaData] = []
     ) -> Symbol {
         Symbol(
-            id: id ?? self.id,
-            code: code ?? self.code,
-            type: type ?? self.type,
-            category: category ?? self.category,
-            children: children ?? self.children,
-            meta: meta.isEmpty ? self.meta : self.meta.assigning(meta)
+            id: newID ?? id,
+            code: newCode ?? code,
+            type: newType ?? type,
+            category: newCategory ?? category,
+            children: newChildren ?? children,
+            meta: newMeta.isEmpty ? meta : meta.assigning(newMeta)
         )
     }
 }
@@ -327,23 +327,23 @@ extension Array where Element == Symbol {
     /// - Throws: When a common type cannot be determined. This can either occur when all types are
     ///           unknown, or when there are multiple known types that do not match.
     func commonType() throws -> Symbol.DataType {
-        let types = map { $0.type }.unique
-        switch types.count {
+        let uniqueTypes = map { $0.type }.unique
+        switch uniqueTypes.count {
             case 0:  throw Symbol.Error.typeNotFound(self)
-            case 1:  return types[0]
+            case 1:  return uniqueTypes[0]
             default: break
         }
 
-        let literals = types.filter { $0.isLiteral }
-        switch literals.count {
+        let literalTypes = uniqueTypes.filter { $0.isLiteral }
+        switch literalTypes.count {
             case 0:  break
-            case 1:  return literals[0]
+            case 1:  return literalTypes[0]
             default: throw Symbol.Error.typeNotFound(self)
         }
 
-        let knowns = types.filter { $0.isKnown }
-        switch knowns.count {
-            case 1:  return knowns[0]
+        let knownTypes = uniqueTypes.filter { $0.isKnown }
+        switch knownTypes.count {
+            case 1:  return knownTypes[0]
             default: break
         }
 
@@ -402,7 +402,7 @@ extension Array where Element == Symbol {
     /// - Parameter id: A unique `Symbol` identifier.
     ///
     /// - Returns: A `Symbol` with the specified `id`, if one exists within the array.
-    func find(id symbolID: String) -> Symbol? {
+    func find(id symbolID: Symbol.Identifier) -> Symbol? {
         for symbol in self {
             if symbolID == symbol.id {
                 return symbol

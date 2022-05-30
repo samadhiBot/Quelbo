@@ -47,8 +47,8 @@ extension Factories.Directions {
         symbols.map { symbol in
             var id = symbol.id
             var code = "case \(symbol.id)"
-            if let improved = Improved(rawValue: symbol.id) {
-                id = improved.name
+            if let improved = Improved(rawValue: symbol.id.rawValue) {
+                id = .init(stringLiteral: improved.name)
                 code = "case \(improved.name) = \"\(symbol.id)\""
             }
             return Symbol(
