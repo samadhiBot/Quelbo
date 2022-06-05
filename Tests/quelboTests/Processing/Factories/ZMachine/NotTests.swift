@@ -19,7 +19,7 @@ final class NotTests: QuelboTests {
     func testNot() throws {
         let symbol = try factory.init([
             .bool(true)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "!true",
@@ -32,7 +32,7 @@ final class NotTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("wat?")
-            ], with: types).process()
+            ]).process()
         )
     }
 }

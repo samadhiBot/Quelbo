@@ -19,7 +19,7 @@ final class VehicleTypeTests: QuelboTests {
     func testVehicleType() throws {
         let symbol = try factory.init([
             .bool(true)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "vehicleType",
@@ -32,33 +32,33 @@ final class VehicleTypeTests: QuelboTests {
     func testVehicleTypeDecimalNonZero() throws {
         let symbol = try factory.init([
             .decimal(1)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "vehicleType",
             code: "vehicleType: true",
             type: .bool,
-            children: [.trueSymbol]
+            children: [.trueSymbol.with(id: "1")]
         ))
     }
 
     func testVehicleTypeDecimalZero() throws {
         let symbol = try factory.init([
             .decimal(0)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "vehicleType",
             code: "vehicleType: false",
             type: .bool,
-            children: [.falseSymbol]
+            children: [.falseSymbol.with(id: "0")]
         ))
     }
 
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -67,7 +67,7 @@ final class VehicleTypeTests: QuelboTests {
             try factory.init([
                 .bool(true),
                 .bool(false),
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -75,7 +75,7 @@ final class VehicleTypeTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("10")
-            ], with: types).process()
+            ]).process()
         )
     }
 }

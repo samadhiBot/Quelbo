@@ -26,7 +26,7 @@ final class ReturnTests: QuelboTests {
     }
 
     func testReturnNoValueNoBlock() throws {
-        let symbol = try factory.init([], with: types).process()
+        let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -40,7 +40,7 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z3
 
         let symbol = try factory
-            .init([], in: .blockWithDefaultActivation, with: types)
+            .init([], in: .blockWithDefaultActivation)
             .process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -53,7 +53,7 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z5
 
         let symbol = try factory
-            .init([], in: .blockWithDefaultActivation, with: types)
+            .init([], in: .blockWithDefaultActivation)
             .process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -66,7 +66,7 @@ final class ReturnTests: QuelboTests {
 
     func testReturnNoValueBlockWithoutDefaultActivation() throws {
         let symbol = try factory
-            .init([], in: .blockWithoutDefaultActivation, with: types)
+            .init([], in: .blockWithoutDefaultActivation)
             .process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -78,7 +78,7 @@ final class ReturnTests: QuelboTests {
     func testReturnTrue() throws {
         let symbol = try factory.init([
             .bool(true)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -91,7 +91,7 @@ final class ReturnTests: QuelboTests {
     func testReturnAtomT() throws {
         let symbol = try factory.init([
             .atom("T")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -104,7 +104,7 @@ final class ReturnTests: QuelboTests {
     func testReturnFalse() throws {
         let symbol = try factory.init([
             .bool(false)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -117,7 +117,7 @@ final class ReturnTests: QuelboTests {
     func testReturnDecimal() throws {
         let symbol = try factory.init([
             .decimal(42)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -132,7 +132,7 @@ final class ReturnTests: QuelboTests {
     func testReturnString() throws {
         let symbol = try factory.init([
             .string("grue")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -147,7 +147,7 @@ final class ReturnTests: QuelboTests {
     func testReturnGlobal() throws {
         let symbol = try factory.init([
             .global("FOO")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
@@ -162,7 +162,7 @@ final class ReturnTests: QuelboTests {
     func testReturnRoom() throws {
         let symbol = try factory.init([
             .atom("FOREST-1")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",

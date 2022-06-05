@@ -17,7 +17,7 @@ final class CrlfTests: QuelboTests {
     }
 
     func testCrlf() throws {
-        let symbol = try factory.init([], with: types).process()
+        let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output("\n")"#,
@@ -29,7 +29,7 @@ final class CrlfTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42)
-            ], with: types).process()
+            ]).process()
         )
     }
 }

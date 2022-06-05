@@ -26,17 +26,19 @@ extension SymbolFactory {
 
             return try assignType(
                 of: symbol,
-                to: Self.parameters.type(at: index),
+                to: Self.parameters.expectedType(at: index),
                 siblings: symbols
             )
         }
         switch Self.parameters {
         case .one, .oneOrMore, .twoOrMore:
-            _ = try typedSymbols.commonType()
+            guard typedSymbols.commonType() != nil else {
+                throw Symbol.Error.typeNotFound(typedSymbols)
+            }
         default: break
         }
 
-        types.register(typedSymbols)
+        try types.register(typedSymbols)
         return typedSymbols
     }
 }
@@ -49,7 +51,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
+        // print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
@@ -57,7 +59,7 @@ extension SymbolFactory {
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
         case (true, true):
             if declaredType == .bool && symbol.type == .int {
-                return Symbol(symbol.id == "0" ? "false" : "true", type: .bool, meta: [.isLiteral])
+                return symbol.with(code: symbol.id == "0" ? "false" : "true", type: .bool)
             }
             if symbol.type == declaredType {
                 return symbol
@@ -72,7 +74,7 @@ extension SymbolFactory {
             if symbol.type.isContainer || symbol.type.hasKnownReturnValue {
                 return symbol
             }
-            return symbol.with(type: try siblings.commonType())
+            return symbol.with(type: siblings.commonType())
         }
 
         throw FactoryError.invalidType(symbol, expected: declaredType)
@@ -81,55 +83,32 @@ extension SymbolFactory {
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {
         switch symbol.type {
         case .array:
-            if symbol.isPureTable {
-                isMutable = false
-                return nil
+            if symbol.containsTableFlags {
+                return symbol.with(id: "<Flags>")
             }
             return symbol.with(
                 code: ".table([\(symbol.children.codeValues(.commaSeparated))])",
                 type: .zilElement
             )
         case .bool:
-            return symbol.with(
-                code: ".bool(\(symbol))",
-                type: .zilElement,
-                meta: symbol.meta
-            )
+            return symbol.with(code: ".bool(\(symbol))", type: .zilElement)
         case .comment:
-            return symbol.with(
-                code: "// \(symbol)",
-                type: .zilElement
-            )
+            return symbol.with(code: "// \(symbol)", type: .zilElement)
         case .int:
-            return symbol.with(
-                code: ".int(\(symbol))",
-                type: .zilElement,
-                meta: symbol.meta
-            )
+            return symbol.with(code: ".int(\(symbol))", type: .zilElement)
         case .object:
             if symbol.category == .rooms {
-                return symbol.with(
-                    code: ".room(\(symbol))",
-                    type: .zilElement
-                )
+                return symbol.with(code: ".room(\(symbol))", type: .zilElement)
             } else {
-                return symbol.with(
-                    code: ".object(\(symbol))",
-                    type: .zilElement
-                )
+                return symbol.with(code: ".object(\(symbol))", type: .zilElement)
             }
         case .string:
-            return symbol.with(
-                code: ".string(\(symbol))",
-                type: .zilElement,
-                meta: symbol.meta
-            )
+            return symbol.with(code: ".string(\(symbol))", type: .zilElement)
+        case .table:
+            return symbol.with(code: ".table(\(symbol))", type: .zilElement)
         case .zilElement:
-            return symbol.with(
-                code: ".table(\(symbol))",
-                type: .zilElement
-            )
-        default:
+            return symbol.with(code: ".table(\(symbol))", type: .zilElement)
+        case .direction, .property, .routine, .thing, .unknown, .void, .variable:
             throw FactoryError.unexpectedZilElement(symbol)
         }
     }

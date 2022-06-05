@@ -13,7 +13,7 @@ extension Factories {
     /// function.
     class Table: ZMachineFactory {
         override class var zilNames: [String] {
-            ["TABLE", "LTABLE"]
+            ["TABLE"]
         }
 
         override class var parameters: Parameters {
@@ -21,15 +21,51 @@ extension Factories {
         }
 
         override class var returnType: Symbol.DataType {
-            .array(.zilElement)
+            .table
+        }
+
+        var isPureTable: Bool {
+            false
+        }
+
+        var isLengthTable: Bool {
+            false
         }
 
         override func process() throws -> Symbol {
-            Symbol(
-                "[\(symbols.codeValues(.commaSeparated, .indented))]",
-                type: .array(.zilElement),
+            checkFlags()
+
+            return Symbol(
+                "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
+                type: .table,
                 children: symbols
             )
+        }
+    }
+}
+
+extension Factories.Table {
+    func checkFlags() {
+        var isPureTable = isPureTable
+        var isLengthTable = isLengthTable
+
+        if let flags = symbols.first, flags.id == "<Flags>" {
+            symbols.removeFirst()
+            if flags.children.contains(where: { $0.id == "pure" }) {
+                isPureTable = true
+            }
+            if flags.children.contains(where: { $0.id == "length" }) {
+                isLengthTable = true
+            }
+        }
+
+        if isPureTable {
+            self.isMutable = false
+            symbols.append(Symbol("isMutable: false"))
+        }
+
+        if isLengthTable {
+            symbols.append(Symbol("hasLengthFlag: true"))
         }
     }
 }

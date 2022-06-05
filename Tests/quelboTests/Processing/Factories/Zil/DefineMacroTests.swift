@@ -43,7 +43,7 @@ final class DefineMacroTests: QuelboTests {
                     .local("N")
                 ])
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "inc",
@@ -115,7 +115,7 @@ final class DefineMacroTests: QuelboTests {
                     .local("X")
                 ]))
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "double",
@@ -179,7 +179,7 @@ final class DefineMacroTests: QuelboTests {
 //                    ])
 //                ])
 //            ])
-//        ], with: types).process()
+//        ]).process()
 //
 //        let expected = Symbol(
 //            id: "bottles",

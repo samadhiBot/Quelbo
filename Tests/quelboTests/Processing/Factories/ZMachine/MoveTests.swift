@@ -30,7 +30,7 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "sandwich.move(to: paperBag)",
@@ -46,7 +46,7 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "paperBag.move(to: kitchen)",
@@ -58,12 +58,40 @@ final class MoveTests: QuelboTests {
         ))
     }
 
+    func testParsedDirectObjectToKitchen() throws {
+        _ = try Factories.Global([
+            .atom("PRSO"),
+            .bool(false)
+        ]).process()
+
+        let symbol = try factory.init([
+            .global("PRSO"),
+            .global("KITCHEN")
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "prso.move(to: kitchen)",
+            type: .void,
+            children: [
+                Symbol("prso", type: .object, category: .globals),
+                Symbol("kitchen", type: .object, category: .rooms),
+            ]
+        ))
+
+        XCTAssertNoDifference(try Game.find("prso"), Symbol(
+            id: "prso",
+            code: "var prso: Object = .nullObject",
+            type: .object,
+            category: .globals
+        ))
+    }
+
     func testSandwichMoveToDecimal() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -72,7 +100,7 @@ final class MoveTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

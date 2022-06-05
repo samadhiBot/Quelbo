@@ -29,7 +29,7 @@ final class ListTests: QuelboTests {
             .decimal(2),
             .string("AB"),
             .character("C"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "[1, 2, \"AB\", \"C\"]",

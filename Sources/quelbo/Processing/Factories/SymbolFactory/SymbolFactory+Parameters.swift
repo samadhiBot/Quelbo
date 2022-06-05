@@ -8,16 +8,33 @@
 import Foundation
 
 extension SymbolFactory {
-    /// <#Description#>
+    /// The set of parameter possibilities for a symbol factory.
     enum Parameters: Equatable {
+        /// The factory expects zero token parameters.
         case zero
+
+        /// The factory expects zero or one token parameters with the specified type.
         case zeroOrOne(Symbol.DataType)
+
+        /// The factory expects zero or more token parameters with the specified type.
         case zeroOrMore(Symbol.DataType)
+
+        /// The factory expects one token parameters with the specified type.
         case one(Symbol.DataType)
+
+        /// The factory expects one or more token parameters with the specified type.
         case oneOrMore(Symbol.DataType)
+
+        /// The factory expects two token parameters with the specified types.
         case two(Symbol.DataType, Symbol.DataType)
+
+        /// The factory expects two or more token parameters with the specified type.
         case twoOrMore(Symbol.DataType)
+
+        /// The factory expects three token parameters with the specified types.
         case three(Symbol.DataType, Symbol.DataType, Symbol.DataType)
+
+        /// The factory expects any number of token parameters with any type.
         case any
 
         var range: ClosedRange<Int> {
@@ -34,7 +51,15 @@ extension SymbolFactory {
             }
         }
 
-        func type(at index: Int) throws -> Symbol.DataType {
+        /// The data type at the specified `index` in a ``SymbolFactory/Parameters-swift.enum``
+        /// case.
+        ///
+        /// - Parameter index: The index to fetch the expected data type.
+        ///
+        /// - Returns: The data type at the specified `index`.
+        ///
+        /// - Throws: When called with an `index` that is not valid for a given `Parameters` case.
+        func expectedType(at index: Int) throws -> Symbol.DataType {
             switch self {
             case .zero:
                 throw FactoryError.invalidTypeLookup(at: index)

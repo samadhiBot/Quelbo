@@ -29,7 +29,7 @@ final class PrintTests: QuelboTests {
     func testPrintString() throws {
         let symbol = try factory.init([
             .string("Hello World")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output("Hello World")"#,
@@ -43,7 +43,7 @@ final class PrintTests: QuelboTests {
     func testPrintAtom() throws {
         let symbol = try factory.init([
             .global("MESSAGE")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(message)",

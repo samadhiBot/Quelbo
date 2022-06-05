@@ -8,50 +8,51 @@
 import Foundation
 
 extension Factories {
-    /// A symbol factory for calls to user-defined routines.
+    /// A symbol factory for calls to functions and routines defined in a game.
     ///
     class Evaluate: SymbolFactory {
-        /// The user-defined routine that is being called.
+        /// The functions or routine defined in a game.
         var routine = Symbol("TBD")
 
-        /// The user-defined routine parameters.
+        /// The function or routine parameters.
         var params: [Symbol] = []
 
         override func processTokens() throws {
             var tokens = tokens
             let name = try findNameSymbol(in: &tokens).code
+            self.routine = try Game.find(.init(stringLiteral: name), category: .routines)
 
             var symbols = try symbolize(tokens)
-
-            if let routine = try? Game.find(.init(stringLiteral: name), category: .routines) {
-                self.routine = routine
-            } else {
-                let definition = try Game.find(.init(stringLiteral: name), category: .definitions)
-                guard let unevaluated = definition.unevaluated else {
-                    throw FactoryError.invalidValue(definition)
-                }
-//                guard let evalSymbol = try symbolize([unevaluated]).first else {
-//                    throw FactoryError.evaluationFailed(unevaluated)
-//                }
-                self.routine = try symbolize(unevaluated)
-            }
 
             self.params = try routine.children.map { (symbol: Symbol) -> Symbol in
                 guard let value = symbols.shift() else {
                     throw FactoryError.missingParameter(symbol)
                 }
-                if routine.isFunctionClosure {
-                    return symbol.with(code: value.code)
-                } else {
-                    return symbol.with(code: "\(symbol.id): \(value)")
-                }
+                return symbol.with(code: "\(symbol.id): \(value)")
+//                if routine.isFunctionClosure {
+//                    return symbol.with(code: value.code)
+//                } else {
+//                    return symbol.with(code: "\(symbol.id): \(value)")
+//                }
             }
+
+//            {
+//                self.routine = routine
+//            } else {
+//                let definition = try Game.find(.init(stringLiteral: name), category: .routines)
+//                guard let unevaluated = definition.unevaluated else {
+//                    throw FactoryError.invalidValue(definition)
+//                }
+////                guard let evalSymbol = try symbolize([unevaluated]).first else {
+////                    throw FactoryError.evaluationFailed(unevaluated)
+////                }
+//                self.routine = try symbolize(unevaluated)
+//            }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                id: routine.id,
-                code: "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
+                "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: routine.type,
                 children: params
             )

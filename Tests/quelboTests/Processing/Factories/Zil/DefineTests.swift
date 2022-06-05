@@ -17,94 +17,78 @@ final class DefineTests: QuelboTests {
         AssertSameFactory(factory, try Game.zilSymbolFactories.find("DEFINE"))
     }
 
-//    // https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#755-form-and-iform
-//    func testSimpleDefine() throws {
-//        let symbol = try factory.init([
-//            .atom("INC-FORM"),
-//            .list([
-//                .atom("A")
-//            ]),
-//            .form([
-//                .atom("FORM"),
-//                .atom("SET"),
-//                .local("A"),
-//                .form([
-//                    .atom("FORM"),
-//                    .atom("+"),
-//                    .decimal(1),
-//                    .form([
-//                        .atom("FORM"),
-//                        .atom("LVAL"),
-//                        .local("A")
-//                    ])
-//                ])
-//            ])
-//        ], with: types).process()
-//
-//        let expected = Symbol(
-//            id: "incForm",
-//            category: .definitions,
-//            meta: [
-//                .eval(
-//                    .form([
-//                        .atom("FUNCTION"),
-//                        .list([
-//                            .atom("A")
-//                        ]),
-//                        .form([
-//                            .atom("FORM"),
-//                            .atom("SET"),
-//                            .local("A"),
-//                            .form([
-//                                .atom("FORM"),
-//                                .atom("+"),
-//                                .decimal(1),
-//                                .form([
-//                                    .atom("FORM"),
-//                                    .atom("LVAL"),
-//                                    .local("A")
-//                                ])
-//                            ])
-//                        ])
-//                    ])
-//                )
-//            ]
-//        )
-//
-//        XCTAssertNoDifference(symbol, expected)
-//        XCTAssertNoDifference(try Game.find("incForm", category: .definitions), expected)
-//
-//        let caller = try testFactory.init([
-//            .form([
-//                .atom("INC-FORM"),
-//                .atom("FOO")
-//            ])
-//        ], with: types).process()
-//
-//        XCTAssertNoDifference(caller, Symbol(
-//            id: """
-//                { (a: Int) -> Int in
-//                    var a = a
-//                    return a.set(to: .add(1, a))
-//                }
-//                """,
-//            code: """
-//                { (a: Int) -> Int in
-//                    var a = a
-//                    return a.set(to: .add(1, a))
-//                }(foo)
-//                """,
-//            type: .int,
-//            children: [
-//                Symbol(
-//                    id: "a",
-//                    code: "foo",
-//                    type: .int,
-//                    meta: [.mutating(true)]
-//                )
-//            ]
-//        ))
-//    }
+    // https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#755-form-and-iform
+    func testSimpleDefine() throws {
+        let symbol = try factory.init([
+            .atom("INC-FORM"),
+            .list([
+                .atom("A")
+            ]),
+            .form([
+                .atom("FORM"),
+                .atom("SET"),
+                .local("A"),
+                .form([
+                    .atom("FORM"),
+                    .atom("+"),
+                    .decimal(1),
+                    .form([
+                        .atom("FORM"),
+                        .atom("LVAL"),
+                        .local("A")
+                    ])
+                ])
+            ])
+        ]).process()
+
+        let expected = Symbol(
+            id: "incForm",
+            code: """
+                @discardableResult
+                /// The `incForm` (INC-FORM) function.
+                func incForm(a: Int) -> Int {
+                    var a = a
+                    return a.set(to: .add(1, a))
+                }
+                """,
+            type: .int,
+            category: .routines,
+            children: [
+                Symbol(
+                    id: "a",
+                    code: "a: Int",
+                    type: .int,
+                    children: [],
+                    meta: [
+                        Symbol.MetaData.mutating(true)
+                    ]
+                )
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("incForm", category: .routines), expected)
+
+        let caller = try testFactory.init([
+            .form([
+                .atom("INC-FORM"),
+                .atom("FOO")
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(caller, Symbol(
+            "incForm(a: foo)",
+            type: .int,
+            children: [
+                Symbol(
+                    id: "a",
+                    code: "a: foo",
+                    type: .int,
+                    meta: [.mutating(true)]
+                )
+            ]
+        ))
+    }
 
     // https://mdl-language.readthedocs.io/en/latest/17-macro-operations/#1722-example
     func testDefineWithDecl() throws {
@@ -125,64 +109,46 @@ final class DefineTests: QuelboTests {
                 .local("X"),
                 .local("X")
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "double",
-            category: .definitions,
-            meta: [
-                .eval(
-                    .form([
-                        .atom("FUNCTION"),
-                        .list([
-                            .atom("X")
-                        ]),
-                        .type("DECL"),
-                        .list([
-                            .list([
-                                .atom("X")
-                            ]),
-                            .atom("FIX")
-                        ]),
-                        .form([
-                            .atom("+"),
-                            .local("X"),
-                            .local("X")
-                        ])
-                    ])
+            code: """
+                @discardableResult
+                /// The `double` (DOUBLE) function.
+                func double(x: Int) -> Int {
+                    var x = x
+                    return x.add(x)
+                }
+                """,
+            type: .int,
+            category: .routines,
+            children: [
+                Symbol(
+                    id: "x",
+                    code: "x: Int",
+                    type: .int
                 )
             ]
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("double", category: .definitions), expected)
-        XCTAssertNil(try? Game.find("double", category: .routines))
+        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
 
         let caller = try testFactory.init([
             .form([
                 .atom("DOUBLE"),
                 .atom("FOO")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(caller, Symbol(
-            id: """
-                { (x: Int) -> Int in
-                    var x = x
-                    return x.add(x)
-                }
-                """,
-            code: """
-                { (x: Int) -> Int in
-                    var x = x
-                    return x.add(x)
-                }(foo)
-                """,
+            "double(x: foo)",
             type: .int,
             children: [
                 Symbol(
                     id: "x",
-                    code: "foo",
+                    code: "x: foo",
                     type: .int
                 )
             ]
@@ -191,7 +157,7 @@ final class DefineTests: QuelboTests {
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.440mph5j49mp
     func testPowerTo() throws {
-        _ = try factory.init([
+        let symbol = try factory.init([
             .atom("POWER-TO"),
             .atom("ACT"),
             .list([
@@ -262,19 +228,14 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ], with: types).process()
+        ]).process()
 
-        let caller = try testFactory.init([
-            .form([
-                .atom("POWER-TO"),
-                .decimal(2),
-                .decimal(3),
-            ])
-        ], with: types).process()
-
-        XCTAssertNoDifference(caller.ignoringChildren, Symbol(
-            id: """
-                { (x: Int, y: Int = 2) -> Int in
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "powerTo",
+            code: """
+                @discardableResult
+                /// The `powerTo` (POWER-TO) function.
+                func powerTo(x: Int, y: Int = 2) -> Int {
                     if y.equals(0) {
                         return 1
                     }
@@ -289,23 +250,9 @@ final class DefineTests: QuelboTests {
                     }
                 }
                 """,
-            code: """
-                { (x: Int, y: Int = 2) -> Int in
-                    if y.equals(0) {
-                        return 1
-                    }
-                    var z: Int = 1
-                    var i: Int = 0
-                    while true {
-                        z.set(to: z.multiply(x))
-                        i.set(to: i.add(1))
-                        if i.equals(y) {
-                            return z
-                        }
-                    }
-                }(2, 3)
-                """,
-            type: .int
+            type: .int,
+            category: .routines,
+            children: []
         ))
     }
 
@@ -353,27 +300,32 @@ final class DefineTests: QuelboTests {
 //                ]),
 //                .local("STRUC")
 //            ])
-//        ], with: types).process()
+//        ]).process()
 //
-//        let expected = Symbol(
+//        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
 //            id: "firstThree",
-//            category: .definitions,
-//            meta: [
-//                .eval(
-//                    .form([
-//                        .atom("FUNCTION"),
-//
-//                    ])
-//                )
-//            ]
-//        )
-//
-//        XCTAssertNoDifference(symbol, expected)
-//        XCTAssertNoDifference(try Game.find("firstThree", category: .definitions), expected)
+//            code: """
+//                @discardableResult
+//                /// The `firstThree` (FIRST-THREE) function.
+//                func firstThree(struc: Void) -> [Void] {
+//                    var i: Int = 3
+//                    return [
+//                        { (e: <Unknown>) in
+//                            if i.set(to: i.subtract(1)).isZero {
+//                                e.mapStop
+//                            }
+//                            e
+//                        }(struc),
+//                    ]
+//                }
+//                """,
+//            type: .array(.void),
+//            category: .routines
+//        ))
 //    }
 
     func testMultifrob() throws {
-        _ = try factory.init([
+        let multiFrob = try factory.init([
             .atom("MULTIFROB"),
             .list([
                 .atom("X"),
@@ -576,7 +528,61 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ], with: types).process()
+        ]).process()
+
+        XCTAssertNoDifference(multiFrob.ignoringChildren, Symbol(
+            id: "multifrob",
+            code: """
+                /// The `multifrob` (MULTIFROB) function.
+                func multifrob(
+                    x: <Unknown>,
+                    atms: <Unknown>
+                ) {
+                    var atm: Int = 0
+                    var atms = atms
+                    var oo: ZilElement = [or]
+                    var o: [Bool] = oo
+                    var l: [ZilElement] = []
+                    while true {
+                        if atms.isEmpty {
+                            return if oo.count == 1 {
+                                throw FizmoError.mdlError(x)
+                            } else if oo.count == 2 {
+                                oo.nthElement(2)
+                            } else {
+                                oo.changeType(form)
+                            }
+                        }
+                        while true {
+                            if atms.isEmpty {
+                                break
+                            }
+                            atm.set(to: atms.nthElement(1))
+                            l.set(to: [
+                                if atm.isType(atom) {
+                                    if x.equals(prsa) {
+                                        ["V?", atm.printedName].joined().printedName
+                                    } else {
+                                        atm
+                                    }
+                                } else {
+                                    atm
+                                },
+                                l,
+                            ])
+                            atms.set(to: atms.rest())
+                            if l.count.equals(3) {
+                                break
+                            }
+                        }
+                        o.set(to: o.putRest([x.equals(l)]).rest())
+                        l.set(to: [])
+                    }
+                }
+                """,
+            type: .void,
+            category: .routines
+        ))
 
         let symbol = try Factories.DefineMacro.init([
             .atom("VERB?"),
@@ -589,12 +595,18 @@ final class DefineTests: QuelboTests {
                 .atom("PRSA"),
                 .local("ATMS")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             id: "isVerb",
             code: """
-                """
+                /// The `isVerb` (VERB?) macro.
+                func isVerb(atms: <Unknown>) {
+                    multifrob(x: prsa, atms: atms)
+                }
+                """,
+            type: .void,
+            category: .routines
         ))
     }
 }

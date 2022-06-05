@@ -19,7 +19,7 @@ extension Factories {
         required init(
             _ tokens: [Token],
             in blockType: SymbolFactory.ProgramBlockType? = nil,
-            with types: TypeRegistry
+            with types: SymbolFactory.TypeRegistry? = nil
         ) throws {
             try super.init(tokens, with: types)
             isMutable = false

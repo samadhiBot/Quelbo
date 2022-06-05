@@ -17,7 +17,7 @@ final class InitStatusLineTests: QuelboTests {
     }
 
     func testInitStatusLine() throws {
-        let symbol = try factory.init([], with: types).process()
+        let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "initStatusLine()",

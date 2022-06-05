@@ -19,7 +19,7 @@ extension Factories {
         override func process() throws -> Symbol {
             Symbol(
                 id: "<Error>",
-                code: "throw FizmoError.mdlError(\(symbols.codeValues(.commaSeparated))",
+                code: "throw FizmoError.mdlError(\(symbols.codeValues(.commaSeparated)))",
                 children: symbols
             )
         }

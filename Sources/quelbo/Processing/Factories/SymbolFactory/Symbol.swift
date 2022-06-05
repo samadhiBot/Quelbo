@@ -62,6 +62,23 @@ struct Symbol: Equatable, Identifiable {
 // MARK: - Symbol helper methods
 
 extension Symbol {
+    /// Whether the symbol's children are ``Factories/Table`` definition flags.
+    var containsTableFlags: Bool {
+        children.allSatisfy {
+            ["byte", "length", "lexv", "pure", "string", "word"].contains($0.code)
+        }
+    }
+
+    /// Returns a description of the symbol's data type.
+    var dataType: String {
+        for metaData in meta {
+            if case .type(let type) = metaData {
+                return type
+            }
+        }
+        return type.description
+    }
+
     /// Whether the symbol represents an `AGAIN` statement.
     var isAgainStatement: Bool {
         self.id == "<Again>"
@@ -105,23 +122,20 @@ extension Symbol {
         return nil
     }
 
-    var isPureTable: Bool {
-        id == "[pure]"
+    /// Whether the symbol represents a global variable with a placeholder value of unknown type.
+    ///
+    /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`. When Quelbo establishes the
+    /// `type` through the variable's use in the code, it updates the global with the found `type`.
+    var isPlaceholderGlobal: Bool {
+        if category == .globals, let committed = try? Game.find(id), committed.type.isUnknown {
+            return true
+        }
+        return false
     }
 
     /// Whether the symbol represents a `RETURN` statement.
     var isReturnStatement: Bool {
         self.id == "<Return>"
-    }
-
-    /// Returns a description of the symbol's data type.
-    var dataType: String {
-        for metaData in meta {
-            if case .type(let type) = metaData {
-                return type
-            }
-        }
-        return type.description
     }
 
     /// Returns an unevaluated token stored by the symbol, if one exists.
@@ -174,9 +188,6 @@ extension Symbol {
     enum Category: String {
         /// Symbols representing global constant game values.
         case constants
-
-        /// Symbols representing definitions that are evaluated to create other symbols.
-        case definitions
 
         /// Symbols representing room exit directions.
         case directions
@@ -326,28 +337,23 @@ extension Array where Element == Symbol {
     ///
     /// - Throws: When a common type cannot be determined. This can either occur when all types are
     ///           unknown, or when there are multiple known types that do not match.
-    func commonType() throws -> Symbol.DataType {
+    func commonType() -> Symbol.DataType? {
         let uniqueTypes = map { $0.type }.unique
-        switch uniqueTypes.count {
-            case 0:  throw Symbol.Error.typeNotFound(self)
-            case 1:  return uniqueTypes[0]
-            default: break
+        if uniqueTypes.count == 1 {
+            return uniqueTypes[0]
         }
 
         let literalTypes = uniqueTypes.filter { $0.isLiteral }
-        switch literalTypes.count {
-            case 0:  break
-            case 1:  return literalTypes[0]
-            default: throw Symbol.Error.typeNotFound(self)
+        if literalTypes.count == 1 {
+            return literalTypes[0]
         }
 
-        let knownTypes = uniqueTypes.filter { $0.isKnown }
-        switch knownTypes.count {
-            case 1:  return knownTypes[0]
-            default: break
+        let knownTypes = uniqueTypes.filter { !$0.isUnknown }
+        if knownTypes.count == 1 {
+            return knownTypes[0]
         }
 
-        throw Symbol.Error.typeNotFound(self)
+        return nil
     }
 
     /// Deep-searches a ``Symbol`` array for a `"paramDeclarations"` metadata declaration, and
@@ -442,6 +448,11 @@ extension Symbol {
     /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
         Symbol("false", type: .bool, meta: [.isLiteral])
+    }
+
+    /// A placeholder symbol of unknown type.
+    static var nullSymbol: Symbol {
+        Symbol("<null>")
     }
 
     /// A literal boolean `true` symbol.

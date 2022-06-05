@@ -39,11 +39,11 @@ class SymbolFactory {
     required init(
         _ tokens: [Token],
         in blockType: ProgramBlockType? = nil,
-        with types: TypeRegistry
+        with types: TypeRegistry? = nil
     ) throws {
         self.blockType = blockType
         self.tokens = tokens
-        self.types = types
+        self.types = types ?? TypeRegistry()
         try processTokens()
     }
 

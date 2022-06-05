@@ -54,13 +54,13 @@ extension QuelboTests {
         Symbol(
             id: "foo",
             code: """
-                    let foo: [ZilElement] = [
+                    let foo: Table = Table(
                         .room(forest1),
                         .room(forest2),
-                        .room(forest3),
-                    ]
+                        .room(forest3)
+                    )
                     """,
-            type: .array(.zilElement),
+            type: .table,
             category: .globals,
             children: [
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),

@@ -26,7 +26,7 @@ extension Factories {
 
             return Symbol(
                 "\(values).nthElement(\(index))",
-                type: (try? values.children.commonType()) ?? values.type,
+                type: values.children.commonType() ?? values.type,
                 children: symbols
             )
         }

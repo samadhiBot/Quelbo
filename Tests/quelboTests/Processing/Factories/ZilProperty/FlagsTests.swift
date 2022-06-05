@@ -21,7 +21,7 @@ final class FlagsTests: QuelboTests {
             .atom("TAKEBIT"),
             .atom("CONTBIT"),
             .atom("OPENBIT")
-        ], with: types).process()
+        ]).process()
 
         let flagGlobals = [
             Symbol(
@@ -66,7 +66,7 @@ final class FlagsTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -74,7 +74,7 @@ final class FlagsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("42"),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

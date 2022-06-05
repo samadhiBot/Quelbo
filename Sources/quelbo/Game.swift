@@ -95,4 +95,17 @@ extension Game {
         }
         return symbol
     }
+
+    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
+    ///
+    /// - Parameter symbol: The symbol value to overwrite.
+    ///
+    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
+    static func overwrite(_ symbol: Symbol) throws {
+        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
+            throw GameError.symbolNotFound(symbol.id, category: symbol.category?.rawValue ?? "any")
+        }
+        shared.gameSymbols.remove(at: index)
+        shared.gameSymbols.append(symbol)
+    }
 }

@@ -21,14 +21,14 @@ final class SyntaxTests: QuelboTests {
             .atom("QUIT"),
             .atom("="),
             .atom("V-QUIT")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:quit>",
             code: """
                 Syntax(
                     verb: "quit",
-                    actionRoutineName: "vQuit"
+                    actionRoutine: vQuit
                 )
                 """,
             category: .syntax
@@ -44,7 +44,7 @@ final class SyntaxTests: QuelboTests {
             .atom("OBJECT"),
             .atom("="),
             .atom("V-THINK-ABOUT")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:contemplate>",
@@ -52,7 +52,7 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "contemplate",
                     directObject: Syntax.Object(),
-                    actionRoutineName: "vThinkAbout"
+                    actionRoutine: vThinkAbout
                 )
                 """,
             category: .syntax
@@ -77,7 +77,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-TAKE")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:take>",
@@ -85,10 +85,10 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "take",
                     directObject: Syntax.Object(
-                        where: .isTakable,
+                        where: isTakable,
                         search: [.inRoom, .many, .onGround]
                     ),
-                    actionRoutineName: "vTake"
+                    actionRoutine: vTake
                 )
                 """,
             category: .syntax
@@ -96,6 +96,39 @@ final class SyntaxTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(try Game.find("<Syntax:take>", category: .syntax), expected)
+    }
+
+    func testWaterSyntax() throws {
+        let symbol = try factory.init([
+            .atom("WATER"),
+            .atom("OBJECT"),
+            .list([
+                .atom("FIND"),
+                .atom("SPONGEBIT")
+            ]),
+            .atom("="),
+            .atom("V-POUR-LIQUID"),
+            .atom("PRE-WATER"),
+            .atom("WATER")
+        ]).process()
+
+        let expected = Symbol(
+            id: "<Syntax:water>",
+            code: """
+                Syntax(
+                    verb: "water",
+                    directObject: Syntax.Object(
+                        where: spongeBit
+                    ),
+                    actionRoutine: vPourLiquid,
+                    preActionRoutine: preWater
+                )
+                """,
+            category: .syntax
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("<Syntax:water>", category: .syntax), expected)
     }
 
     func testPutSyntax() throws {
@@ -117,7 +150,7 @@ final class SyntaxTests: QuelboTests {
             .atom("="),
             .atom("V-PUT-IN"),
             .atom("PRE-PUT-IN")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:put>",
@@ -129,10 +162,10 @@ final class SyntaxTests: QuelboTests {
                     ),
                     indirectObject: Syntax.Object(
                         preposition: "in",
-                        where: .isContainer
+                        where: isContainer
                     ),
-                    actionRoutineName: "vPutIn",
-                    preActionRoutineName: "prePutIn"
+                    actionRoutine: vPutIn,
+                    preActionRoutine: prePutIn
                 )
                 """,
             category: .syntax
@@ -152,7 +185,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",
@@ -160,9 +193,9 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
-                        where: .isPerson
+                        where: isPerson
                     ),
-                    actionRoutineName: "vWake"
+                    actionRoutine: vWake
                 )
                 """,
             category: .syntax
@@ -183,7 +216,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",
@@ -192,9 +225,9 @@ final class SyntaxTests: QuelboTests {
                     verb: "wake",
                     directObject: Syntax.Object(
                         preposition: "up",
-                        where: .isPerson
+                        where: isPerson
                     ),
-                    actionRoutineName: "vWake"
+                    actionRoutine: vWake
                 )
                 """,
             category: .syntax
@@ -220,7 +253,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "<Syntax:wake>",
@@ -228,13 +261,13 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
-                        where: .isPerson
+                        where: isPerson
                     ),
                     indirectObject: Syntax.Object(
                         preposition: "up",
-                        where: .shouldKludge
+                        where: shouldKludge
                     ),
-                    actionRoutineName: "vWake"
+                    actionRoutine: vWake
                 )
                 """,
             category: .syntax

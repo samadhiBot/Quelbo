@@ -43,14 +43,10 @@ extension Factories {
             guard case .atom(let actionRoutine) = tokens.shift() else {
                 throw FactoryError.missingValue(tokens)
             }
-            definition.append("actionRoutineName: \(actionRoutine.lowerCamelCase.quoted)")
+            definition.append("actionRoutine: \(actionRoutine.lowerCamelCase)")
 
             if case .atom(let preActionRoutine) = tokens.shift() {
-                definition.append("preActionRoutineName: \(preActionRoutine.lowerCamelCase.quoted)")
-            }
-
-            guard tokens.isEmpty else {
-                throw FactoryError.unconsumedTokens(tokens)
+                definition.append("preActionRoutine: \(preActionRoutine.lowerCamelCase)")
             }
         }
 
@@ -97,13 +93,11 @@ extension Factories.Syntax {
             tokens.removeFirst()
             if case .atom("FIND") = listTokens.first {
                 listTokens.removeFirst()
-                guard
-                    case .atom(let flag) = listTokens.shift(),
-                    let findFlag = try? Attribute(flag)
-                else {
+                guard case .atom(let zil) = listTokens.shift() else {
                     throw FactoryError.missingValue(listTokens)
                 }
-                definition.append("where: \(findFlag.case)")
+                let flag = Flag.find(id: zil.lowerCamelCase, zil: zil)
+                definition.append("where: \(flag.id)")
                 guard listTokens.isEmpty else {
                     throw FactoryError.unconsumedTokens(listTokens)
                 }

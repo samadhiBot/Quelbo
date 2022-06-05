@@ -28,15 +28,6 @@
       }
     },
     {
-      "identity" : "fizmo",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/samadhiBot/Fizmo",
-      "state" : {
-        "branch" : "main",
-        "revision" : "b74b47b3f38a2aa2fd3d508eea9af02aca607c32"
-      }
-    },
-    {
       "identity" : "flatten",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/YusukeHosonuma/Flatten.git",

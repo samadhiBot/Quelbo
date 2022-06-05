@@ -27,7 +27,7 @@ final class PrintCarriageReturnTests: QuelboTests {
     func testPrintString() throws {
         let symbol = try factory.init([
             .string("Hello World")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"""
@@ -44,7 +44,7 @@ final class PrintCarriageReturnTests: QuelboTests {
     func testPrintAtom() throws {
         let symbol = try factory.init([
             .global("MESSAGE")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"""
@@ -62,7 +62,7 @@ final class PrintCarriageReturnTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .bool(false)
-            ], with: types).process()
+            ]).process()
         )
     }
 }

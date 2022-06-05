@@ -29,7 +29,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let argType = try symbols.commonType()
+            let argType = symbols.commonType() ?? .unknown
             guard [.bool, .int].contains(where: { $0 == argType }) else {
                 throw FactoryError.invalidParameter(symbols)
             }

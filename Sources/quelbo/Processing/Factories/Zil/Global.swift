@@ -30,6 +30,11 @@ extension Factories {
             self.nameSymbol = try symbol(0)
             self.valueSymbol = try symbol(1)
 
+            // In cases like <GLOBAL PRSO <>>, <> represents an empty placeholder rather than false.
+            if isMutable && valueSymbol == .falseSymbol {
+                valueSymbol = .nullSymbol
+            }
+
             for metaData in valueSymbol.meta {
                 switch metaData {
                 case .mutating(true): self.isMutable = true

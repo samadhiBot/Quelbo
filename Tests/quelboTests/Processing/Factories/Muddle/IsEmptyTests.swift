@@ -26,7 +26,7 @@ final class IsEmptyTests: QuelboTests {
     func testIsEmpty() throws {
         let symbol = try factory.init([
             .local("ATMS")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "atms.isEmpty",

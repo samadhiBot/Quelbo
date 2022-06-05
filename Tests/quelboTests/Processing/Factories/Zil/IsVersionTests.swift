@@ -17,7 +17,7 @@ final class IsVersionTests: QuelboTests {
 
         try! Game.commit([
             Symbol("color", type: .bool, category: .routines),
-            Symbol("readbuf", type: .array(.zilElement)),
+            Symbol("readbuf", type: .table),
             Symbol("undo", type: .bool, category: .routines),
             Symbol("zipOptions", type: .bool, category: .routines),
         ])
@@ -83,17 +83,17 @@ final class IsVersionTests: QuelboTests {
                     ])
                 ])
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
                if zMachineVersion == zip {
-                   resp.set(to: readbuf[1])
+                   resp.set(to: try readbuf.get(at: 1))
                } else if zMachineVersion == ezip {
-                   resp.set(to: readbuf[1])
+                   resp.set(to: try readbuf.get(at: 1))
                } else {
-                   if readbuf[1] {
-                       resp.set(to: readbuf[2])
+                   if try readbuf.get(at: 1) {
+                       resp.set(to: try readbuf.get(at: 2))
                    } else {
                        resp.set(to: 0)
                    }

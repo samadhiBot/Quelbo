@@ -31,7 +31,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.equals(3)",
@@ -47,7 +47,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .local("N"),
             .decimal(3),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.equals(3)",
@@ -64,7 +64,7 @@ final class EqualsTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.equals(3, 4)",
@@ -81,7 +81,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .string("hello"),
             .string("goodBye"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #""hello".equals("goodBye")"#,
@@ -97,7 +97,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),
             .global("WORLD-ALIVE?"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "isPlayerAlive.equals(isWorldAlive)",
@@ -113,7 +113,7 @@ final class EqualsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ], with: types)
+            ])
         )
     }
 
@@ -122,7 +122,7 @@ final class EqualsTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .string("3"),
-            ], with: types)
+            ])
         )
     }
 }

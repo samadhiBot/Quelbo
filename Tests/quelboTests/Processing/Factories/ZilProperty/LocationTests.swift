@@ -20,7 +20,7 @@ final class LocationTests: QuelboTests {
     func testLocation() throws {
         let symbol = try factory.init([
             .atom("LOCAL-GLOBALS")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "location",
@@ -35,7 +35,7 @@ final class LocationTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -44,7 +44,7 @@ final class LocationTests: QuelboTests {
             try factory.init([
                 .atom("WHITE-HOUSE"),
                 .atom("RED-HOUSE"),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

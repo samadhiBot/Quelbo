@@ -313,31 +313,11 @@ extension BlockProcessor {
 }
 
 extension Symbol {
-    fileprivate var emptyValue: String {
-        switch type {
-        case .array: return "[]"
-        case .bool: return "false"
-        // case .comment: return "0"
-        // case .direction: return "0"
-        case .int: return "0"
-        // case .list: return "0"
-        // case .object: return "0"
-        // case .property: return "0"
-        // case .routine: return "0"
-        case .string: return "\"\""
-        case .zilElement: return #".string("")"#
-        // case .thing: return "0"
-        // case .unknown: return "0"
-        // case .void: return "0"
-        default: return "???"
-        }
-    }
-
     fileprivate var localVariable: String {
         if code.contains("=") {
             return "var \(code)"
         } else {
-            return "var \(code) = \(self.emptyValue)"
+            return "var \(code) = \(type.emptyValue)"
         }
     }
 }

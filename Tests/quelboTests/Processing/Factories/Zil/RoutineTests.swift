@@ -38,7 +38,7 @@ final class RoutineTests: QuelboTests {
             .atom("BAG-OF-COINS-F"),
             .list([]),
             .commented(.atom("noop")),
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "bagOfCoinsFunc",
@@ -64,7 +64,7 @@ final class RoutineTests: QuelboTests {
                 .atom("SING"),
                 .decimal(99),
             ]),
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "go",
@@ -93,7 +93,7 @@ final class RoutineTests: QuelboTests {
                 .atom("RARG"),
                 .decimal(42)
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "westHouse",
@@ -131,7 +131,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("MESSAGE")
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "printMessage",
@@ -174,7 +174,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PS"),
                 .string("Duck")
             ]),
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "isDucking",
@@ -211,7 +211,7 @@ final class RoutineTests: QuelboTests {
                 .atom("DUMMY?"),
                 .bool(true)
             ]),
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "boomRoom",
@@ -242,7 +242,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "batD",
@@ -283,7 +283,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO"),
                 .atom("BAR")
             ]),
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "batBat",
@@ -331,7 +331,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "deadFunc",
@@ -461,25 +461,25 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("CRLF")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             id: "remark",
             code: #"""
                 /// The `remark` (REMARK) routine.
                 func remark(
-                    remark: [ZilElement],
+                    remark: Table,
                     d: Object,
                     w: Object
                 ) {
                     var str: ZilElement = .string("")
-                    var len: ZilElement = remark[0]
+                    var len: ZilElement = try remark.get(at: 0)
                     var cnt: Int = 0
                     while true {
                         if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
                             break
                         }
-                        str.set(to: remark[cnt])
+                        str.set(to: try remark.get(at: cnt))
                         if str.equals(fWep) {
                             output(w.description)
                         } else if str.equals(fDef) {
@@ -533,7 +533,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("RTRUE")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, bottlesRoutine)
         XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
@@ -606,7 +606,7 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "sing",

@@ -28,7 +28,7 @@ final class DecrementLessThanTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.decrement().isLessThan(3)",
@@ -45,7 +45,7 @@ final class DecrementLessThanTests: QuelboTests {
 //            try factory.init([
 //                .decimal(2),
 //                .decimal(3),
-//            ], with: types).process()
+//            ]).process()
 //        )
 //    }
 }

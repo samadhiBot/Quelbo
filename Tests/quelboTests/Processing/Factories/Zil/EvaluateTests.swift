@@ -52,11 +52,10 @@ final class EvaluateTests: QuelboTests {
     func testProcessRoutineZeroParams() throws {
         let symbol = try Factories.Evaluate.init([
             .atom("BAG-OF-COINS-F")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "bagOfCoinsFunc",
-            code: "bagOfCoinsFunc()",
+            "bagOfCoinsFunc()",
             type: .void
         ))
     }
@@ -65,11 +64,10 @@ final class EvaluateTests: QuelboTests {
         let symbol = try Factories.Evaluate.init([
             .atom("ONE-FCN"),
             .decimal(42)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "oneFunc",
-            code: "oneFunc(number: 42)",
+            "oneFunc(number: 42)",
             type: .int,
             children: [
                 Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral])
@@ -82,11 +80,10 @@ final class EvaluateTests: QuelboTests {
             .atom("TWO-F"),
             .string("Answer"),
             .decimal(42),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "twoFunc",
-            code: """
+            """
                 twoFunc(
                     answer: \"Answer\",
                     number: 42
@@ -109,11 +106,10 @@ final class EvaluateTests: QuelboTests {
                 .atom("ONE-FCN"),
                 .decimal(42),
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "threeFunc",
-            code: """
+            """
                 threeFunc(
                     answer: \"Answer\",
                     isValid: true,

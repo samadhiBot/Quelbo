@@ -41,7 +41,7 @@ final class FunctionTests: QuelboTests {
                 .local("X"),
                 .local("Y")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -69,7 +69,7 @@ final class FunctionTests: QuelboTests {
                 .local("N"),
                 .local("N")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
@@ -105,7 +105,7 @@ final class FunctionTests: QuelboTests {
                 .local("A"),
                 .local("B")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """

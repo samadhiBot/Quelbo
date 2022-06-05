@@ -34,7 +34,6 @@ final class TableTests: QuelboTests {
 
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("TABLE"))
-        AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("LTABLE"))
     }
 
     func testTableOfRooms() throws {
@@ -42,17 +41,17 @@ final class TableTests: QuelboTests {
             .atom("FOREST-1"),
             .atom("FOREST-2"),
             .atom("FOREST-3"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
-                [
+                Table(
                     .room(forest1),
                     .room(forest2),
-                    .room(forest3),
-                ]
+                    .room(forest3)
+                )
                 """,
-            type: .array(.zilElement),
+            type: .table,
             children: [
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
@@ -68,19 +67,19 @@ final class TableTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .atom("TROLL-MELEE")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
-                [
+                Table(
                     .object(troll),
                     .object(sword),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee),
-                ]
+                    .bool(trollMelee)
+                )
                 """,
-            type: .array(.zilElement),
+            type: .table,
             children: [
                 Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
                 Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
@@ -91,7 +90,33 @@ final class TableTests: QuelboTests {
         ))
     }
 
-    func testFormPureLTable() throws {
+    func testByteLengthTable() throws {
+        let symbol = try factory.init([
+            .list([
+                .atom("BYTE"),
+                .atom("LENGTH")
+            ]),
+            .decimal(1),
+            .decimal(2),
+            .decimal(3),
+            .decimal(4)
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+            Table(
+                .int(1),
+                .int(2),
+                .int(3),
+                .int(4),
+                hasLengthFlag: true
+            )
+            """,
+            type: .table
+        ))
+    }
+
+    func testFormPureTable() throws {
         let symbol = try factory.init([
             .list([
                 .atom("PURE")
@@ -102,20 +127,21 @@ final class TableTests: QuelboTests {
             .atom("PATH"),
             .atom("CLEARING"),
             .atom("FOREST-1"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
-                [
+                Table(
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                ]
+                    isMutable: false
+                )
                 """,
-            type: .array(.zilElement),
+            type: .table,
             children: [
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
@@ -123,6 +149,7 @@ final class TableTests: QuelboTests {
                 Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
                 Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol("isMutable: false"),
             ]
         ))
     }
@@ -145,47 +172,47 @@ final class TableTests: QuelboTests {
                 .decimal(0),
                 .atom("THIEF-MELEE")
             ]),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             """
-                [
-                    .table([
+                Table(
+                    .table(Table(
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee),
-                    ]),
-                    .table([
+                        .bool(trollMelee)
+                    )),
+                    .table(Table(
                         .object(thief),
                         .object(knife),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee),
-                    ]),
-                ]
+                        .bool(thiefMelee)
+                    ))
+                )
                 """,
-            type: .array(.zilElement),
+            type: .table,
             children: [
                 Symbol(
                     id: """
-                        [
+                        Table(
                             .object(troll),
                             .object(sword),
                             .int(1),
                             .int(0),
-                            .bool(trollMelee),
-                        ]
+                            .bool(trollMelee)
+                        )
                         """,
                     code: """
-                        .table([
+                        .table(Table(
                             .object(troll),
                             .object(sword),
                             .int(1),
                             .int(0),
-                            .bool(trollMelee),
-                        ])
+                            .bool(trollMelee)
+                        ))
                         """,
                     type: .zilElement,
                     children: [
@@ -198,22 +225,22 @@ final class TableTests: QuelboTests {
                 ),
                 Symbol(
                     id: """
-                        [
+                        Table(
                             .object(thief),
                             .object(knife),
                             .int(1),
                             .int(0),
-                            .bool(thiefMelee),
-                        ]
+                            .bool(thiefMelee)
+                        )
                         """,
                     code: """
-                        .table([
+                        .table(Table(
                             .object(thief),
                             .object(knife),
                             .int(1),
                             .int(0),
-                            .bool(thiefMelee),
-                        ])
+                            .bool(thiefMelee)
+                        ))
                         """,
                     type: .zilElement,
                     children: [

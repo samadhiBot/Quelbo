@@ -13,7 +13,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.0"),
         .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.4.0"),
         .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.9.0"),
-        .package(url: "https://github.com/samadhiBot/Fizmo", branch: "main"),
+//        .package(url: "https://github.com/samadhiBot/Fizmo", branch: "table"),
+        .package(path: "/Users/sessions/Zork/Fizmo")
     ],
     targets: [
         .executableTarget(

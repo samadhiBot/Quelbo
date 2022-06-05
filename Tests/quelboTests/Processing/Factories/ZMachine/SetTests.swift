@@ -37,7 +37,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.set(to: 3)",
@@ -53,7 +53,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Bar!"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             #"foo.set(to: "Bar!")"#,
@@ -69,7 +69,7 @@ final class SetTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ROBBED?"),
             .bool(true),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "isRobbed.set(to: true)",
@@ -89,7 +89,7 @@ final class SetTests: QuelboTests {
                 .global("THIRTY"),
                 .decimal(3),
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "t.set(to: thirty.add(3))",
@@ -109,12 +109,19 @@ final class SetTests: QuelboTests {
     }
 
     func testSetToLocalVariable() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("X"),
-                .local("N"),
-            ], with: types).process()
-        )
+        let symbol = try factory.init([
+            .atom("X"),
+            .local("N"),
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "x.set(to: n)",
+            type: .unknown,
+            children: [
+                Symbol("x", type: .variable(.unknown), meta: [.mutating(true)]),
+                Symbol("n", type: .unknown),
+            ]
+        ))
     }
 
     func testSetToFunctionResult() throws {
@@ -124,7 +131,7 @@ final class SetTests: QuelboTests {
                 .atom("NEXT?"),
                 .local("X")
             ]),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: isNext(number: x))",
@@ -132,8 +139,7 @@ final class SetTests: QuelboTests {
             children: [
                 Symbol("n", type: .int, meta: [.mutating(true)]),
                 Symbol(
-                    id: "isNext",
-                    code: "isNext(number: x)",
+                    "isNext(number: x)",
                     type: .int,
                     children: [
                         Symbol(id: "number", code: "number: x", type: .int)
@@ -151,7 +157,7 @@ final class SetTests: QuelboTests {
                 .local("N"),
                 .decimal(1)
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: n.subtract(1))",
@@ -175,7 +181,7 @@ final class SetTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

@@ -19,7 +19,7 @@ final class ValueTests: QuelboTests {
     func testValue() throws {
         let symbol = try factory.init([
             .decimal(10)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "value",
@@ -34,7 +34,7 @@ final class ValueTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -43,7 +43,7 @@ final class ValueTests: QuelboTests {
             try factory.init([
                 .decimal(10),
                 .decimal(9),
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -51,7 +51,7 @@ final class ValueTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("10")
-            ], with: types).process()
+            ]).process()
         )
     }
 }

@@ -34,7 +34,7 @@ extension Factories {
             return Symbol(
                 id: .init(stringLiteral: name.code),
                 code: "\(name.code): \(code)",
-                type: try symbols.commonType(),
+                type: symbols.commonType() ?? .unknown,
                 children: symbols
             )
         }

@@ -20,7 +20,7 @@ final class SynonymsTests: QuelboTests {
         let symbol = try factory.init([
             .atom("EGG"),
             .atom("TREASURE")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "synonyms",
@@ -38,7 +38,7 @@ final class SynonymsTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -46,7 +46,7 @@ final class SynonymsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

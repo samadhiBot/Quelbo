@@ -32,7 +32,7 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".multiply(9, 3)",
@@ -49,7 +49,7 @@ final class MultiplyTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             ".multiply(20, 5, 2)",
@@ -66,7 +66,7 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.multiply(biggerNumber)",
@@ -82,7 +82,7 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.multiply(1)",
@@ -100,14 +100,14 @@ final class MultiplyTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.multiply(otvalFrob())",
             type: .int,
             children: [
                 Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol(id: "otvalFrob", code: "otvalFrob()", type: .int),
+                Symbol("otvalFrob()", type: .int),
             ]
         ))
     }
@@ -116,7 +116,7 @@ final class MultiplyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ], with: types)
+            ])
         )
     }
 }

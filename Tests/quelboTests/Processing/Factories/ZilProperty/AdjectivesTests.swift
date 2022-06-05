@@ -21,7 +21,7 @@ final class AdjectivesTests: QuelboTests {
             .atom("WHITE"),
             .atom("BEAUTI"),
             .atom("COLONI")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "adjectives",
@@ -44,7 +44,7 @@ final class AdjectivesTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -52,7 +52,7 @@ final class AdjectivesTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ], with: types).process()
+            ]).process()
         )
     }
 }

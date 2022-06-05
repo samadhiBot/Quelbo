@@ -44,11 +44,7 @@ extension SymbolFactory {
                 return .unknown
             }
             registry.merge([id: type]) { registered, new in
-                if new == registered {
-                    return registered
-                } else {
-                    return .zilElement
-                }
+                new == registered ? registered : .zilElement
             }
             return type
         }
@@ -56,11 +52,35 @@ extension SymbolFactory {
         /// Registers the ``Symbol/DataType-swift.enum`` for each of the specified symbols.
         ///
         /// - Parameter symbols: The symbols to be type-registered.
-        func register(_ symbols: [Symbol]) {
+        func register(_ symbols: [Symbol]) throws {
             for symbol in symbols {
                 register(id: symbol.id, as: symbol.type)
-                register(symbol.children)
+                try register(symbol.children)
+
+                if symbol.isPlaceholderGlobal {
+                    try Game.overwrite(symbol.with(
+                        code: "var \(symbol): \(symbol.type) = \(symbol.type.emptyValue)"
+                    ))
+                }
             }
         }
+    }
+}
+
+// MARK: - Conformances
+
+extension SymbolFactory.TypeRegistry: CustomStringConvertible {
+    var description: String {
+        guard !registry.isEmpty else {
+            return "No types registered"
+        }
+        let types = registry.map { key, value in
+            "\(key): \(value)"
+        }.joined(separator: "\n")
+        return """
+            [
+            \(types.indented)
+            ]
+            """
     }
 }

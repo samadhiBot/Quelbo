@@ -17,24 +17,34 @@ final class PropertyDefaultTests: QuelboTests {
     }
 
     func testAtom() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .atom("unexpected")
-            ], with: types).process()
+        let symbol = try factory.init([
+            .atom("FOO"),
+            .atom("unexpected")
+        ]).process()
+
+        let expected = Symbol(
+            id: "foo",
+            code: "setPropertyDefault(foo, unexpected)",
+            type: .unknown,
+            category: .constants
         )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("foo", category: .constants), expected)
     }
 
     func testBool() throws {
         let symbol = try factory.init([
             .atom("ADJECTIVE"),
             .bool(false)
-        ], with: types).process()
+        ]).process()
+
+        // FIXME: This needs special handling similar to global placeholder values.
 
         let expected = Symbol(
             id: "adjective",
-            code: "setPropertyDefault(adjective, false)",
-            type: .bool,
+            code: "setPropertyDefault(adjective, <null>)",
+            type: .unknown,
             category: .constants
         )
 
@@ -46,7 +56,7 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SIZE"),
             .decimal(5)
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "size",

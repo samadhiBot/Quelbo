@@ -123,7 +123,7 @@ extension SymbolFactory {
         if let defined = try? Game.find(.init(stringLiteral: name)) {
             return defined.with(code: name)
         }
-        let paramType = try Self.parameters.type(at: index)
+        let paramType = try Self.parameters.expectedType(at: index)
         if zil == "T" && paramType == .bool {
             return .trueSymbol
         }
@@ -249,7 +249,7 @@ extension SymbolFactory {
     ) throws -> Symbol {
         Symbol(
             zil.lowerCamelCase,
-            type: try Self.parameters.type(at: index)
+            type: try Self.parameters.expectedType(at: index)
         )
     }
 
@@ -298,13 +298,15 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil segment.
     func symbolizeSegment(_ token: Token) throws -> Symbol {
-        try symbolize(token)
+//        try symbolize(token)
 //        let evaluated = try evaluate(token)
 //        var symbols = try symbolize([evaluated])
 //        guard let symbol = symbols.shift(), symbols.isEmpty else {
 //            throw FactoryError.evaluationFailed(token)
 //        }
 //        return symbol
+
+        try Factories.Segment([token]).process()
     }
 
     /// Translates a Zil

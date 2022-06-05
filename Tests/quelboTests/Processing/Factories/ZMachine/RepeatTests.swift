@@ -78,7 +78,7 @@ final class RepeatTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testRepeat1",
@@ -183,7 +183,7 @@ final class RepeatTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testRepeat2",
@@ -220,7 +220,7 @@ final class RepeatTests: QuelboTests {
 //    func testThrows() throws {
 //        XCTAssertThrowsError(
 //            try factory.init([
-//            ], with: types).process()
+//            ]).process()
 //        )
 //    }
 }

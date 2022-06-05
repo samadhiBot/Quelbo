@@ -18,7 +18,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .two(.array(.zilElement), .int)
+            .two(.table, .int)
         }
 
         override class var returnType: Symbol.DataType {
@@ -26,8 +26,11 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            Symbol(
-                "\(try symbol(0))[\(try symbol(1))]",
+            let table = try symbol(0)
+            let offset = try symbol(1)
+
+            return Symbol(
+                "try \(table).get(at: \(offset))",
                 type: .zilElement,
                 children: symbols
             )

@@ -28,7 +28,7 @@ extension Factories {
 
 extension Factories.List {
     var elementsType: Symbol.DataType {
-        guard let type = try? symbols.commonType() else {
+        guard let type = symbols.commonType() else {
             return .array(.zilElement)
         }
         return .array(type)

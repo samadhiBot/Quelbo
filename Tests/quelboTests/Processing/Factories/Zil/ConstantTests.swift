@@ -37,19 +37,27 @@ final class ConstantTests: QuelboTests {
     }
 
     func testAtom() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .atom("unexpected")
-            ], with: types).process()
+        let symbol = try factory.init([
+            .atom("FOO"),
+            .atom("unexpected")
+        ]).process()
+
+        let expected = Symbol(
+            id: "foo",
+            code: "let foo: <Unknown> = unexpected",
+            type: .unknown,
+            category: .constants
         )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("foo", category: .constants), expected)
     }
 
     func testBool() throws {
         let symbol = try factory.init([
             .atom("FOO"),
             .bool(true)
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "foo",
@@ -67,7 +75,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .commented(.string("BAR"))
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -75,7 +83,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(42)
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "foo",
@@ -97,18 +105,18 @@ final class ConstantTests: QuelboTests {
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "foo",
             code: """
-                    let foo: [ZilElement] = [
+                    let foo: Table = Table(
                         .room(forest1),
                         .room(forest2),
-                        .room(forest3),
-                    ]
+                        .room(forest3)
+                    )
                     """,
-            type: .array(.zilElement),
+            type: .table,
             category: .constants,
             children: [
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
@@ -136,21 +144,23 @@ final class ConstantTests: QuelboTests {
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "foo",
             code: """
-                let foo: [ZilElement] = [
+                let foo: Table = Table(
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                ]
+                    isMutable: false,
+                    hasLengthFlag: true
+                )
                 """,
-            type: .array(.zilElement),
+            type: .table,
             category: .constants,
             children: [
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
@@ -159,6 +169,8 @@ final class ConstantTests: QuelboTests {
                 Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
                 Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
+                Symbol("isMutable: false"),
+                Symbol("hasLengthFlag: true"),
             ]
         )
 
@@ -166,224 +178,70 @@ final class ConstantTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("foo", category: .constants), expected)
     }
 
-//    func testFormNestedLTables() throws {
-//        let symbol = try factory.init([
-//            .atom("VILLAINS"),
-//            .form([
-//                .atom("LTABLE"),
-//                .form([
-//                    .atom("TABLE"),
-//                    .atom("TROLL"),
-//                    .atom("SWORD"),
-//                    .decimal(1),
-//                    .decimal(0),
-//                    .atom("TROLL-MELEE")
-//                ]),
-//                .form([
-//                    .atom("TABLE"),
-//                    .atom("THIEF"),
-//                    .atom("KNIFE"),
-//                    .decimal(1),
-//                    .decimal(0),
-//                    .atom("THIEF-MELEE")
-//                ]),
-//                .form([
-//                    .atom("TABLE"),
-//                    .atom("CYCLOPS"),
-//                    .bool(false),
-//                    .decimal(0),
-//                    .decimal(0),
-//                    .atom("CYCLOPS-MELEE")
-//                ])
-//            ])
-//        ], with: types).process()
-//
-//        let expected = Symbol(
-//            id: "villains",
-//            code: """
-//                let villains: [ZilElement] = [
-//                    .table([
-//                        .atom("troll"),
-//                        .atom("sword"),
-//                        .decimal(1),
-//                        .decimal(0),
-//                        .atom("trollMelee"),
-//                    ]),
-//                    .table([
-//                        .atom("thief"),
-//                        .atom("knife"),
-//                        .decimal(1),
-//                        .decimal(0),
-//                        .atom("thiefMelee"),
-//                    ]),
-//                    .table([
-//                        .atom("cyclops"),
-//                        .bool(false),
-//                        .decimal(0),
-//                        .decimal(0),
-//                        .atom("cyclopsMelee"),
-//                    ]),
-//                ]
-//                """,
-//            type: .array(.zilElement),
-//            category: .constants,
-//            children: [
-//                Symbol(
-//                    """
-//                    .table([
-//                        .atom("troll"),
-//                        .atom("sword"),
-//                        .decimal(1),
-//                        .decimal(0),
-//                        .atom("trollMelee"),
-//                    ])
-//                    """,
-//                    type: .array(.zilElement),
-//                    category: nil,
-//                    children: [
-//                        Symbol(
-//                            id: ".atom(\"troll\")",
-//                            code: ".atom(\"troll\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".atom(\"sword\")",
-//                            code: ".atom(\"sword\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(1)",
-//                            code: ".decimal(1)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(0)",
-//                            code: ".decimal(0)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".atom(\"trollMelee\")",
-//                            code: ".atom(\"trollMelee\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        )
-//                    ]
-//                ),
-//                Symbol(
-//                    """
-//                    .table([
-//                        .atom("thief"),
-//                        .atom("knife"),
-//                        .decimal(1),
-//                        .decimal(0),
-//                        .atom("thiefMelee"),
-//                    ])
-//                    """,
-//                    type: .array(.zilElement),
-//                    category: nil,
-//                    children: [
-//                        Symbol(
-//                            id: ".atom(\"thief\")",
-//                            code: ".atom(\"thief\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".atom(\"knife\")",
-//                            code: ".atom(\"knife\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(1)",
-//                            code: ".decimal(1)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(0)",
-//                            code: ".decimal(0)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".atom(\"thiefMelee\")",
-//                            code: ".atom(\"thiefMelee\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        )
-//                    ]
-//                ),
-//                Symbol(
-//                    """
-//                    .table([
-//                        .atom("cyclops"),
-//                        .bool(false),
-//                        .decimal(0),
-//                        .decimal(0),
-//                        .atom("cyclopsMelee"),
-//                    ])
-//                    """,
-//                    type: .array(.zilElement),
-//                    category: nil,
-//                    children: [
-//                        Symbol(
-//                            id: ".atom(\"cyclops\")",
-//                            code: ".atom(\"cyclops\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".bool(false)",
-//                            code: ".bool(false)",
-//                            type: .bool,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(0)",
-//                            code: ".decimal(0)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".decimal(0)",
-//                            code: ".decimal(0)",
-//                            type: .int,
-//                            category: nil,
-//                            children: []
-//                        ),
-//                        Symbol(
-//                            id: ".atom(\"cyclopsMelee\")",
-//                            code: ".atom(\"cyclopsMelee\")",
-//                            type: .string,
-//                            category: nil,
-//                            children: []
-//                        )
-//                    ]
-//                )
-//            ]
-//        )
-//
-//        XCTAssertNoDifference(symbol, expected)
-//        XCTAssertNoDifference(try Game.find("villains", category: .constants), expected)
-//    }
+    func testFormNestedLTables() throws {
+        let symbol = try factory.init([
+            .atom("VILLAINS"),
+            .form([
+                .atom("LTABLE"),
+                .form([
+                    .atom("TABLE"),
+                    .atom("TROLL"),
+                    .atom("SWORD"),
+                    .decimal(1),
+                    .decimal(0),
+                    .atom("TROLL-MELEE")
+                ]),
+                .form([
+                    .atom("TABLE"),
+                    .atom("THIEF"),
+                    .atom("KNIFE"),
+                    .decimal(1),
+                    .decimal(0),
+                    .atom("THIEF-MELEE")
+                ]),
+                .form([
+                    .atom("TABLE"),
+                    .atom("CYCLOPS"),
+                    .bool(false),
+                    .decimal(0),
+                    .decimal(0),
+                    .atom("CYCLOPS-MELEE")
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            id: "villains",
+            code: """
+                let villains: Table = Table(
+                    .table(Table(
+                        .object(troll),
+                        .object(sword),
+                        .int(1),
+                        .int(0),
+                        .bool(trollMelee)
+                    )),
+                    .table(Table(
+                        .object(thief),
+                        .object(knife),
+                        .int(1),
+                        .int(0),
+                        .bool(thiefMelee)
+                    )),
+                    .table(Table(
+                        .object(cyclops),
+                        .bool(false),
+                        .int(0),
+                        .int(0),
+                        .bool(cyclopsMelee)
+                    )),
+                    hasLengthFlag: true
+                )
+                """,
+            type: .table,
+            category: .constants
+        ))
+    }
 
     func testFormTableWithCommented() throws {
         let symbol = try factory.init([
@@ -404,20 +262,20 @@ final class ConstantTests: QuelboTests {
                     .decimal(4)
                 ]))
             ])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "def1Res",
             code: """
-                    let def1Res: [ZilElement] = [
+                    let def1Res: Table = Table(
                         .table(def1),
                         .int(0),
                         // /* ["REST", "DEF1", "2"] */,
                         .int(0),
-                        // /* ["REST", "DEF1", "4"] */,
-                    ]
+                        // /* ["REST", "DEF1", "4"] */
+                    )
                     """,
-            type: .array(.zilElement),
+            type: .table,
             category: .constants,
             children: [
                 Symbol(id: "def1", code: ".table(def1)", type: .zilElement),
@@ -436,7 +294,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .list([.string("BAR")])
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
             id: "foo",
@@ -463,7 +321,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .quote(.string("BAR"))
-            ], with: types).process()
+            ]).process()
         )
     }
 
@@ -471,7 +329,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Forty Two!")
-        ], with: types).process()
+        ]).process()
 
         let expected = Symbol(
 

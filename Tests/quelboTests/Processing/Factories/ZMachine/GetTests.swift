@@ -15,7 +15,7 @@ final class GetTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([fooTable])
+        try! Game.commit(fooTable)
     }
 
     func testFindFactory() throws {
@@ -25,12 +25,12 @@ final class GetTests: QuelboTests {
 
     func testGet() throws {
         let symbol = try factory.init([
-            .atom("FOO"),
+            .global("FOO"),
             .decimal(2)
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo[2]",
+            "try foo.get(at: 2)",
             type: .zilElement,
             children: [
                 fooTable.with(code: "foo"),
@@ -39,12 +39,21 @@ final class GetTests: QuelboTests {
         ))
     }
 
-    func testThrows() throws {
+    func testNonTableThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .string("FOO"),
                 .decimal(2)
-            ], with: types).process()
+            ]).process()
+        )
+    }
+
+    func testNonIndexThrows() throws {
+        XCTAssertThrowsError(
+            try factory.init([
+                .global("FOO"),
+                .string("2")
+            ]).process()
         )
     }
 }

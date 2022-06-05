@@ -19,7 +19,7 @@ final class InsertFileTests: QuelboTests {
     func testString() throws {
         let symbol = try factory.init([
             .string("parser")
-        ], with: types).process()
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "// Insert file \'\"parser\"\'",
