@@ -34,7 +34,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             .bool(true)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("true", type: .bool, meta: [.isLiteral]))
+        XCTAssertNoDifference(symbol, .trueSymbol)
     }
 
     func testSymbolizeBoolFalse() throws {
@@ -42,7 +42,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             .bool(false)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("false", type: .bool, meta: [.isLiteral]))
+        XCTAssertNoDifference(symbol, .falseSymbol)
     }
 
     func testSymbolizeCharacter() throws {

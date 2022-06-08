@@ -134,15 +134,15 @@ final class SetTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.set(to: isNext(number: x))",
-            type: .int,
+            "n.set(to: x.nextSibling)",
+            type: .object,
             children: [
-                Symbol("n", type: .int, meta: [.mutating(true)]),
+                Symbol("n", type: .object, meta: [.mutating(true)]),
                 Symbol(
-                    "isNext(number: x)",
-                    type: .int,
+                    "x.nextSibling",
+                    type: .object,
                     children: [
-                        Symbol(id: "number", code: "number: x", type: .int)
+                        Symbol("x", type: .object)
                     ]
                 )
             ]

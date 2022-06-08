@@ -24,7 +24,7 @@ enum FactoryError: Swift.Error {
     case invalidParameter([Symbol])
     case invalidParameterCount(Int, expected: ClosedRange<Int>, in: [Symbol])
     case invalidProperty(Token)
-    case invalidType(Symbol, expected: Symbol.DataType)
+    case invalidType(Symbol, expected: Symbol.DataType, found: Symbol.DataType)
     case invalidTypeLookup(at: Int)
     case invalidValue(Symbol)
     case invalidZilForm([Token])

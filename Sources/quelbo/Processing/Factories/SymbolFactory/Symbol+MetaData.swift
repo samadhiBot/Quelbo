@@ -25,6 +25,9 @@ extension Symbol {
         /// Specifies that the symbol represents a literal value.
         case isLiteral
 
+        /// Specifies that a literal `false` or `0` may indicate an empty value placeholder.
+        case maybeEmptyValue
+
         /// Specifies whether the symbol represents a mutating value.
         ///
         /// When left unspecified, this is assumed to be `true`.

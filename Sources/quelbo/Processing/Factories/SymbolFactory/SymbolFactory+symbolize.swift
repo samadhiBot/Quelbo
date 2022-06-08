@@ -28,7 +28,7 @@ extension SymbolFactory {
                 )
             case .bool(let bool):
                 symbols.append(
-                    Symbol("\(bool)", type: .bool, meta: [.isLiteral])
+                    symbolizeBoolean(bool)
                 )
             case .character(let character):
                 symbols.append(
@@ -38,7 +38,7 @@ extension SymbolFactory {
                 symbols.append(Symbol("/* \(token.value) */", type: .comment))
             case .decimal(let int):
                 symbols.append(
-                    Symbol("\(int)", type: .int, meta: [.isLiteral])
+                    symbolizeDecimal(int)
                 )
             case .eval(let token):
                 symbols.append(
@@ -124,10 +124,28 @@ extension SymbolFactory {
             return defined.with(code: name)
         }
         let paramType = try Self.parameters.expectedType(at: index)
-        if zil == "T" && paramType == .bool {
-            return .trueSymbol
+        if zil == "T" {
+            switch paramType {
+            case .variable: break
+            default: return .trueSymbol
+            }
         }
         return Symbol(name, type: paramType)
+    }
+
+    /// Translates a Zil
+    /// [Boolean](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.3znysh7)
+    /// token into a Quelbo ``Symbol``.
+    ///
+    /// - Parameter value: A boolean value.
+    ///
+    /// - Returns: A ``Symbol`` representation of a Zil boolean.
+    func symbolizeBoolean(_ value: Bool) -> Symbol {
+        var metaData: [Symbol.MetaData] = [.isLiteral]
+        if value == false {
+            metaData.append(.maybeEmptyValue)
+        }
+        return Symbol("\(value)", type: .bool, meta: metaData)
     }
 
     /// Translates a Zil
@@ -139,6 +157,21 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of a Zil character.
     func symbolizeCharacter(_ zil: String) throws -> Symbol {
         Symbol(zil.quoted, type: .string, meta: [.isLiteral])
+    }
+
+    /// Translates a Zil
+    /// [Boolean](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.3znysh7)
+    /// token into a Quelbo ``Symbol``.
+    ///
+    /// - Parameter value: A boolean value.
+    ///
+    /// - Returns: A ``Symbol`` representation of a Zil boolean.
+    func symbolizeDecimal(_ value: Int) -> Symbol {
+        var metaData: [Symbol.MetaData] = [.isLiteral]
+        if value == 0 {
+            metaData.append(.maybeEmptyValue)
+        }
+        return Symbol("\(value)", type: .int, meta: metaData)
     }
 
     /// Translates a Zil

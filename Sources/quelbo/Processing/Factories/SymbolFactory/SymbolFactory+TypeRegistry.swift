@@ -40,7 +40,7 @@ extension SymbolFactory {
             id: Symbol.Identifier,
             as type: Symbol.DataType
         ) -> Symbol.DataType {
-            guard type != .unknown else {
+            guard !type.isUnknown else {
                 return .unknown
             }
             registry.merge([id: type]) { registered, new in

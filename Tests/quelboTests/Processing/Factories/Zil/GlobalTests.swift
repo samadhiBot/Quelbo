@@ -46,8 +46,10 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: <Unknown> = unexpected",
-            type: .unknown,
-            category: .globals
+            category: .globals,
+            children: [
+                Symbol("unexpected")
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -64,7 +66,10 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: "var foo: Bool = true",
             type: .bool,
-            category: .globals
+            category: .globals,
+            children: [
+                .trueSymbol
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -79,9 +84,13 @@ final class GlobalTests: QuelboTests {
 
         let expected = Symbol(
             id: "prso",
-            code: "var prso: <Unknown> = <null>",
-            type: .unknown,
-            category: .globals
+            code: "var prso: Bool = false",
+            type: .bool,
+            category: .globals,
+            children: [
+                .falseSymbol
+            ],
+            meta: [.maybeEmptyValue]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -107,7 +116,10 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: "var foo: Int = 42",
             type: .int,
-            category: .globals
+            category: .globals,
+            children: [
+                Symbol("42", type: .int, meta: [.isLiteral])
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -137,9 +149,36 @@ final class GlobalTests: QuelboTests {
             type: .table,
             category: .globals,
             children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
+                Symbol(
+                    """
+                        Table(
+                            .room(forest1),
+                            .room(forest2),
+                            .room(forest3)
+                        )
+                        """,
+                    type: .table,
+                    children: [
+                        Symbol(
+                            id: "forest1",
+                            code: ".room(forest1)",
+                            type: .zilElement,
+                            category: .rooms
+                        ),
+                        Symbol(
+                            id: "forest2",
+                            code: ".room(forest2)",
+                            type: .zilElement,
+                            category: .rooms
+                        ),
+                        Symbol(
+                            id: "forest3",
+                            code: ".room(forest3)",
+                            type: .zilElement,
+                            category: .rooms
+                        )
+                    ]
+                )
             ]
         )
 
@@ -179,21 +218,14 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants,
-            children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
-                Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol("isMutable: false"),
-                Symbol("hasLengthFlag: true"),
-            ]
+            category: .constants
         )
 
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("foo", category: .constants), expected)
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("foo", category: .constants).ignoringChildren,
+            expected
+        )
     }
 
     func testFormNestedLTables() throws {
@@ -228,7 +260,7 @@ final class GlobalTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        let expected = Symbol(
             id: "villains",
             code: """
                 var villains: Table = Table(
@@ -258,7 +290,13 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .table,
             category: .globals
-        ))
+        )
+
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("villains", category: .globals).ignoringChildren,
+            expected
+        )
     }
 
     func testFormTableWithCommented() throws {
@@ -285,27 +323,23 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "def1Res",
             code: """
-                    var def1Res: Table = Table(
-                        .table(def1),
-                        .int(0),
-                        // /* ["REST", "DEF1", "2"] */,
-                        .int(0),
-                        // /* ["REST", "DEF1", "4"] */
-                    )
-                    """,
+                var def1Res: Table = Table(
+                    .table(def1),
+                    .int(0),
+                    // /* ["REST", "DEF1", "2"] */,
+                    .int(0),
+                    // /* ["REST", "DEF1", "4"] */
+                )
+                """,
             type: .table,
-            category: .globals,
-            children: [
-                Symbol(id: "def1", code: ".table(def1)", type: .zilElement),
-                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
-                Symbol(id: "/* [\"REST\", \"DEF1\", \"2\"] */", code: "// /* [\"REST\", \"DEF1\", \"2\"] */", type: .zilElement),
-                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
-                Symbol(id: "/* [\"REST\", \"DEF1\", \"4\"] */", code: "// /* [\"REST\", \"DEF1\", \"4\"] */", type: .zilElement),
-            ]
+            category: .globals
         )
 
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("def1Res"), expected)
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("def1Res", category: .globals).ignoringChildren,
+            expected
+        )
     }
 
     func testList() throws {
@@ -320,18 +354,14 @@ final class GlobalTests: QuelboTests {
                 var foo: [String] = ["BAR"]
                 """,
             type: .array(.string),
-            category: .globals,
-            children: [
-                Symbol(
-                    "\"BAR\"",
-                    type: .string,
-                    meta: [.isLiteral]
-                )
-            ]
+            category: .globals
         )
 
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("foo", category: .globals), expected)
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("foo", category: .globals).ignoringChildren,
+            expected
+        )
     }
 
     func testQuoted() throws {
@@ -358,8 +388,11 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("foo"), expected)
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("foo", category: .globals).ignoringChildren,
+            expected
+        )
     }
 
     func testFunction() throws {
@@ -387,18 +420,105 @@ final class GlobalTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .constants,
-            children: [
-                Symbol(
-                    id: "x",
-                    code: "x: Int",
-                    type: .int,
-                    meta: [.mutating(true)]
-                )
-            ]
+            category: .constants
         )
 
-        XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("square"), expected)
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("square").ignoringChildren,
+            expected
+        )
+    }
+
+    func testWhenBooleanFalseSignifiesObjectPlaceholder() throws {
+        _ = try factory.init([
+            .atom("PRSO"),
+            .bool(false)
+        ]).process()
+
+        // `prso` is recorded as a boolean, but it's understood that `<>` might have been a
+        // placeholder for another type (as noted in the meta property).
+        XCTAssertNoDifference(try Game.find("prso"), Symbol(
+            id: "prso",
+            code: "var prso: Bool = false",
+            type: .bool,
+            category: .globals,
+            children: [.falseSymbol],
+            meta: [.maybeEmptyValue]
+        ))
+
+        // Move expects `prso` to be an object, not a boolean. This triggers an overwrite of the
+        // `prso` game symbol's type from boolean to object.
+        let move = try Factories.Move.init([
+            .global("PRSO"),
+            .global("CLEARING")
+        ]).process()
+
+        XCTAssertNoDifference(move, Symbol(
+            "prso.move(to: clearing)",
+            type: .void,
+            children: [
+                Symbol(
+                    "prso",
+                    type: .object,
+                    category: .globals,
+                    children: [
+                        .falseSymbol
+                    ],
+                    meta: [.maybeEmptyValue]
+                ),
+                Symbol("clearing", type: .object, category: .rooms),
+            ]
+        ))
+
+        // Inspecting the `prso` game symbol confirms that the type overwrite took place.
+        XCTAssertNoDifference(try Game.find("prso"), Symbol(
+            id: "prso",
+            code: "var prso: Object = .nullObject",
+            type: .object,
+            category: .globals,
+            children: [.falseSymbol],
+            meta: [.maybeEmptyValue]
+        ))
+    }
+
+    func testWhenBooleanFalseSignifiesBooleanFalse() throws {
+        _ = try factory.init([
+            .atom("KITCHEN-WINDOW-FLAG"),
+            .bool(false)
+        ]).process()
+
+        // `kitchenWindowFlag` is recorded as a boolean, but it's understood that `<>` might have
+        // been a placeholder for another type (as noted in the meta property).
+        XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
+            id: "kitchenWindowFlag",
+            code: "var kitchenWindowFlag: Bool = false",
+            type: .bool,
+            category: .globals,
+            children: [.falseSymbol],
+            meta: [.maybeEmptyValue]
+        ))
+
+        // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
+        // there's no need to overwrite the `kitchenWindowFlag` type.
+        let set = try Factories.Set([
+            .atom("KITCHEN-WINDOW-FLAG"),
+            .atom("T")
+        ]).process()
+
+        XCTAssertNoDifference(set.ignoringChildren, Symbol(
+            "kitchenWindowFlag.set(to: true)",
+            type: .bool
+        ))
+
+        // Inspecting the `kitchenWindowFlag` game symbol confirms that the type remains boolean.
+        XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
+            id: "kitchenWindowFlag",
+            code: "var kitchenWindowFlag: Bool = false",
+            type: .bool,
+            category: .globals,
+            children: [.falseSymbol],
+            meta: [.maybeEmptyValue]
+        ))
     }
 }

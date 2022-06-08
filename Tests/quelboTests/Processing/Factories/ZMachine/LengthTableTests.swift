@@ -1,5 +1,5 @@
 //
-//  TablePureLengthTests.swift
+//  LengthTableTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 6/3/22.
@@ -11,8 +11,8 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class TablePureLengthTests: QuelboTests {
-    let factory = Factories.TablePureLength.self
+final class LengthTableTests: QuelboTests {
+    let factory = Factories.LengthTable.self
 
     override func setUp() {
         super.setUp()
@@ -33,10 +33,10 @@ final class TablePureLengthTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("PLTABLE"))
+        AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("LTABLE"))
     }
 
-    func testPureLengthTableOfRooms() throws {
+    func testLengthTableOfRooms() throws {
         let symbol = try factory.init([
             .atom("FOREST-1"),
             .atom("FOREST-2"),
@@ -49,7 +49,6 @@ final class TablePureLengthTests: QuelboTests {
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
-                    isMutable: false,
                     hasLengthFlag: true
                 )
                 """,
@@ -58,13 +57,12 @@ final class TablePureLengthTests: QuelboTests {
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol("isMutable: false"),
                 Symbol("hasLengthFlag: true"),
             ]
         ))
     }
 
-    func testPureLengthTableOfDifferentTypes() throws {
+    func testLengthTableOfDifferentTypes() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
             .atom("SWORD"),
@@ -81,7 +79,6 @@ final class TablePureLengthTests: QuelboTests {
                     .int(1),
                     .int(0),
                     .bool(trollMelee),
-                    isMutable: false,
                     hasLengthFlag: true
                 )
                 """,
@@ -89,7 +86,7 @@ final class TablePureLengthTests: QuelboTests {
         ))
     }
 
-    func testFormPureLTable() throws {
+    func testFormPureTable() throws {
         let symbol = try factory.init([
             .list([
                 .atom("PURE")
@@ -119,10 +116,10 @@ final class TablePureLengthTests: QuelboTests {
         ))
     }
 
-    func testNestedPureLengthTables() throws {
+    func testNestedLengthTables() throws {
         let symbol = try factory.init([
             .form([
-                .atom("PLTABLE"),
+                .atom("LTABLE"),
                 .atom("TROLL"),
                 .atom("SWORD"),
                 .decimal(1),
@@ -148,7 +145,6 @@ final class TablePureLengthTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(trollMelee),
-                        isMutable: false,
                         hasLengthFlag: true
                     )),
                     .table(Table(
@@ -158,7 +154,6 @@ final class TablePureLengthTests: QuelboTests {
                         .int(0),
                         .bool(thiefMelee)
                     )),
-                    isMutable: false,
                     hasLengthFlag: true
                 )
                 """,

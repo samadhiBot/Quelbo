@@ -32,10 +32,14 @@ extension Factories {
             false
         }
 
-        override func process() throws -> Symbol {
-            checkFlags()
+        override func processTokens() throws {
+            try super.processTokens()
 
-            return Symbol(
+            checkFlags()
+        }
+
+        override func process() throws -> Symbol {
+            Symbol(
                 "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .table,
                 children: symbols

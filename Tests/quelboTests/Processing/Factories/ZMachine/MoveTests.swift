@@ -58,34 +58,6 @@ final class MoveTests: QuelboTests {
         ))
     }
 
-    func testParsedDirectObjectToKitchen() throws {
-        _ = try Factories.Global([
-            .atom("PRSO"),
-            .bool(false)
-        ]).process()
-
-        let symbol = try factory.init([
-            .global("PRSO"),
-            .global("KITCHEN")
-        ]).process()
-
-        XCTAssertNoDifference(symbol, Symbol(
-            "prso.move(to: kitchen)",
-            type: .void,
-            children: [
-                Symbol("prso", type: .object, category: .globals),
-                Symbol("kitchen", type: .object, category: .rooms),
-            ]
-        ))
-
-        XCTAssertNoDifference(try Game.find("prso"), Symbol(
-            id: "prso",
-            code: "var prso: Object = .nullObject",
-            type: .object,
-            category: .globals
-        ))
-    }
-
     func testSandwichMoveToDecimal() throws {
         XCTAssertThrowsError(
             try factory.init([

@@ -62,8 +62,11 @@ extension Game {
     /// - Parameter symbols: An array of symbol values to commit.
     static func commit(_ symbols: [Symbol]) throws {
         try symbols.forEach { symbol in
-            guard !shared.gameSymbols.contains(symbol) else {
-                throw GameError.duplicateSymbolCommit(symbol)
+            if let existing = try? find(symbol.id) {
+                guard symbol == existing else {
+                    throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
+                }
+                return
             }
             shared.gameSymbols.append(symbol)
         }
@@ -102,6 +105,10 @@ extension Game {
     ///
     /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
     static func overwrite(_ symbol: Symbol) throws {
+        guard symbol.type.hasReturnValue && symbol.type != .bool else {
+            return
+        }
+        // print("// 🥔 overwrite \(symbol.id) to \(symbol.type)")
         guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
             throw GameError.symbolNotFound(symbol.id, category: symbol.category?.rawValue ?? "any")
         }

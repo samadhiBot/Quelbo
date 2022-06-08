@@ -11,6 +11,44 @@ import XCTest
 
 final class RoutineTests: QuelboTests {
     let factory = Factories.Routine.self
+    let singSymbol = Symbol(
+        id: "sing",
+        code: #"""
+        /// The `sing` (SING) routine.
+        func sing(n: Int) {
+            var n = n
+            while true {
+                bottles(n: n)
+                output(" of beer on the wall,")
+                bottles(n: n)
+                output("""
+                     of beer,
+                    Take one down, pass it around,
+                    """)
+                if n.decrement().isLessThan(1) {
+                    output("No more bottles of beer on the wall!")
+                    output("\n")
+                    break
+                } else {
+                    bottles(n: n)
+                    output("""
+                         of beer on the wall!
+
+                        """)
+                }
+            }
+        }
+        """#,
+        type: .void,
+        category: .routines,
+        children: [
+            Symbol(
+                id: "n",
+                code: "n: Int",
+                type: .int
+            )
+        ]
+    )
 
     override func setUp() {
         super.setUp()
@@ -18,14 +56,7 @@ final class RoutineTests: QuelboTests {
         try! Game.commit([
             Symbol("fDef", type: .int),
             Symbol("fWep", type: .int),
-            Symbol(
-                "sing",
-                type: .void,
-                category: .routines,
-                children: [
-                    Symbol(id: "n", code: "n: Int", type: .int)
-                ]
-            )
+            singSymbol
         ])
     }
 
@@ -608,44 +639,7 @@ final class RoutineTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol(
-            id: "sing",
-            code: #"""
-            /// The `sing` (SING) routine.
-            func sing(n: Int) {
-                var n = n
-                while true {
-                    bottles(n: n)
-                    output(" of beer on the wall,")
-                    bottles(n: n)
-                    output("""
-                         of beer,
-                        Take one down, pass it around,
-                        """)
-                    if n.decrement().isLessThan(1) {
-                        output("No more bottles of beer on the wall!")
-                        output("\n")
-                        break
-                    } else {
-                        bottles(n: n)
-                        output("""
-                             of beer on the wall!
-
-                            """)
-                    }
-                }
-            }
-            """#,
-            type: .void,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "n",
-                    code: "n: Int",
-                    type: .int
-                )
-            ]
-        ))
+        XCTAssertNoDifference(symbol, singSymbol)
     }
 }
 

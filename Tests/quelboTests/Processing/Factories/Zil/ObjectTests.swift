@@ -1285,7 +1285,7 @@ final class ObjectTests: QuelboTests {
                     code: "advfcn: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, meta: [.isLiteral]),
+                        .zeroSymbol,
                     ]
                 ),
                 Symbol(
@@ -1335,7 +1335,7 @@ final class ObjectTests: QuelboTests {
                     code: "contfcn: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, meta: [.isLiteral]),
+                        .zeroSymbol,
                     ]
                 ),
                 Symbol(
@@ -1343,7 +1343,7 @@ final class ObjectTests: QuelboTests {
                     code: "vehicleType: true",
                     type: .bool,
                     children: [
-                        .trueSymbol.with(id: "1")
+                        .trueSymbol.with(id: "1"),
                     ]
                 ),
                 Symbol(
@@ -1351,7 +1351,7 @@ final class ObjectTests: QuelboTests {
                     code: "size: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, meta: [.isLiteral]),
+                        .zeroSymbol,
                     ]
                 ),
                 Symbol(
@@ -1359,7 +1359,7 @@ final class ObjectTests: QuelboTests {
                     code: "capacity: 0",
                     type: .int,
                     children: [
-                        Symbol("0", type: .int, meta: [.isLiteral]),
+                        .zeroSymbol,
                     ]
                 )
             ]

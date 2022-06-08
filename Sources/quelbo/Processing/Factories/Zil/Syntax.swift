@@ -7,7 +7,6 @@
 
 import Fizmo
 import Foundation
-import SwiftUI
 
 extension Factories {
     /// A symbol factory for the Zil
@@ -52,8 +51,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .init(stringLiteral: "<Syntax:\(verb)>"),
-                code: """
+                """
                     Syntax(
                     \(definition.joined(separator: ",\n").indented)
                     )

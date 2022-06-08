@@ -106,6 +106,23 @@ extension Symbol.DataType {
         default: return false
         }
     }
+
+    /// Whether the data type should supersede the type in the specified symbol.
+    ///
+    /// 
+    ///
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    func supersedes(_ id: Symbol.Identifier) -> Bool {
+        guard
+            self == .object,
+            let committed = try? Game.find(id),
+            committed.meta.contains(.maybeEmptyValue)
+        else {
+            return false
+        }
+        return true
+    }
 }
 
 // MARK: - Conformances

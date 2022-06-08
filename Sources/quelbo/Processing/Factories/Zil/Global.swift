@@ -21,6 +21,7 @@ extension Factories {
             .two(.variable(.unknown), .unknown)
         }
 
+        var metaData: [Symbol.MetaData] = []
         var nameSymbol = Symbol("TBD")
         var valueSymbol = Symbol("TBD")
 
@@ -30,13 +31,9 @@ extension Factories {
             self.nameSymbol = try symbol(0)
             self.valueSymbol = try symbol(1)
 
-            // In cases like <GLOBAL PRSO <>>, <> represents an empty placeholder rather than false.
-            if isMutable && valueSymbol == .falseSymbol {
-                valueSymbol = .nullSymbol
-            }
-
             for metaData in valueSymbol.meta {
                 switch metaData {
+                case .maybeEmptyValue: self.metaData = [.maybeEmptyValue]
                 case .mutating(true): self.isMutable = true
                 case .mutating(false): self.isMutable = false
                 default: break
@@ -56,7 +53,8 @@ extension Factories {
                 code: codeBlock,
                 type: valueSymbol.type,
                 category: isMutable ? .globals : .constants,
-                children: valueSymbol.children
+                children: [valueSymbol],
+                meta: metaData
             )
             try Game.commit(symbol)
             return symbol

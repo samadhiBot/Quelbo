@@ -91,7 +91,7 @@ extension Game {
 // MARK: - GameError
 
 enum GameError: Swift.Error {
-    case duplicateSymbolCommit(Symbol)
+    case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
     case failedToProcessTokens([String])
     case invalidZMachineVersion([Token])
     case symbolNotFound(Symbol.Identifier, category: String)

@@ -269,7 +269,7 @@ extension BlockProcessor {
                 else {
                     throw FactoryError.invalidParameter(param.children)
                 }
-                if type == .unknown {
+                if type.isUnknown {
                     type = types[nameSymbol.id] ?? types[valueSymbol.id] ?? .unknown
                 }
                 paramSymbol = param.with(

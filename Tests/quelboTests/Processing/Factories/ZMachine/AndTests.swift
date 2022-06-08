@@ -79,7 +79,7 @@ final class AndTests: QuelboTests {
             type: .int,
             children: [
                 Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("0", type: .int, meta: [.isLiteral]),
+                .zeroSymbol,
                 Symbol("2", type: .int, meta: [.isLiteral]),
             ]
         ))

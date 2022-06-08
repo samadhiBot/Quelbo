@@ -51,9 +51,12 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        // print("🍅 \(symbol): (\(symbol.type.isLiteral), \(declaredType.isLiteral)) [\(declaredType)]")
+        // print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
+        }
+        if case .variable = declaredType, symbol.isLiteral {
+            throw FactoryError.unexpectedParameter(symbol)
         }
 
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
@@ -61,11 +64,17 @@ extension SymbolFactory {
             if declaredType == .bool && symbol.type == .int {
                 return symbol.with(code: symbol.id == "0" ? "false" : "true", type: .bool)
             }
-            if symbol.type == declaredType {
+            if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
         case (true, false):
             if declaredType.acceptsLiteral || symbol.category == .properties {
+                return symbol
+            }
+            if declaredType.supersedes(symbol.id) {
+                return symbol.with(type: declaredType)
+            }
+            if declaredType.isUnknown && !symbol.type.isUnknown {
                 return symbol
             }
         case (false, true):
@@ -77,7 +86,7 @@ extension SymbolFactory {
             return symbol.with(type: siblings.commonType())
         }
 
-        throw FactoryError.invalidType(symbol, expected: declaredType)
+        throw FactoryError.invalidType(symbol, expected: declaredType, found: symbol.type)
     }
 
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {

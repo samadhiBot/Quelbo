@@ -124,13 +124,17 @@ extension Symbol {
 
     /// Whether the symbol represents a global variable with a placeholder value of unknown type.
     ///
-    /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`. When Quelbo establishes the
-    /// `type` through the variable's use in the code, it updates the global with the found `type`.
+    /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`, where the `false` is
+    /// ambiguous. If Quelbo discovers a different `type` through the variable's use in the code,
+    /// it updates the global with the found `type`.
     var isPlaceholderGlobal: Bool {
-        if category == .globals, let committed = try? Game.find(id), committed.type.isUnknown {
-            return true
+        guard
+            [.constants, .globals].contains(category),
+            let committed = try? Game.find(id)
+        else {
+            return false
         }
-        return false
+        return committed.meta.contains(.maybeEmptyValue)
     }
 
     /// Whether the symbol represents a `RETURN` statement.
@@ -447,16 +451,16 @@ extension Array where Element == Symbol {
 extension Symbol {
     /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
-        Symbol("false", type: .bool, meta: [.isLiteral])
-    }
-
-    /// A placeholder symbol of unknown type.
-    static var nullSymbol: Symbol {
-        Symbol("<null>")
+        Symbol("false", type: .bool, meta: [.isLiteral, .maybeEmptyValue])
     }
 
     /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
         Symbol("true", type: .bool, meta: [.isLiteral])
+    }
+
+    /// A literal integer `0` symbol.
+    static var zeroSymbol: Symbol {
+        Symbol("0", type: .int, meta: [.isLiteral, .maybeEmptyValue])
     }
 }

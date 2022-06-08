@@ -22,7 +22,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             if var value = symbols.first {
-                if value.type == .unknown {
+                if value.type.isUnknown {
                     if value.id == "t" {
                         value = .trueSymbol
                     } else if let saved = types[value.id] {

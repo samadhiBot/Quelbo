@@ -25,7 +25,10 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            children: [
+                Symbol("z3".quoted, type: .string, meta: [.isLiteral])
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -42,7 +45,10 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3Time""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            children: [
+                Symbol("z3Time".quoted, type: .string, meta: [.isLiteral])
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -58,7 +64,10 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            children: [
+                Symbol("z3".quoted, type: .string, meta: [.isLiteral])
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)

@@ -26,7 +26,10 @@ final class PropertyDefaultTests: QuelboTests {
             id: "foo",
             code: "setPropertyDefault(foo, unexpected)",
             type: .unknown,
-            category: .constants
+            category: .constants,
+            children: [
+                Symbol("unexpected")
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -39,13 +42,15 @@ final class PropertyDefaultTests: QuelboTests {
             .bool(false)
         ]).process()
 
-        // FIXME: This needs special handling similar to global placeholder values.
-
         let expected = Symbol(
             id: "adjective",
-            code: "setPropertyDefault(adjective, <null>)",
-            type: .unknown,
-            category: .constants
+            code: "setPropertyDefault(adjective, false)",
+            type: .bool,
+            category: .constants,
+            children: [
+                .falseSymbol
+            ],
+            meta: [.maybeEmptyValue]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -62,7 +67,10 @@ final class PropertyDefaultTests: QuelboTests {
             id: "size",
             code: "setPropertyDefault(size, 5)",
             type: .int,
-            category: .constants
+            category: .constants,
+            children: [
+                Symbol("5", type: .int, meta: [.isLiteral])
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)

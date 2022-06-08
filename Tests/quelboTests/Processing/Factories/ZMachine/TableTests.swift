@@ -84,7 +84,7 @@ final class TableTests: QuelboTests {
                 Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
                 Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
                 Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
                 Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
             ]
         ))
@@ -219,7 +219,7 @@ final class TableTests: QuelboTests {
                         Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
                         Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
                         Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
                         Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
                     ]
                 ),
@@ -247,7 +247,7 @@ final class TableTests: QuelboTests {
                         Symbol(id: "thief", code: ".object(thief)", type: .zilElement, category: .objects),
                         Symbol(id: "knife", code: ".object(knife)", type: .zilElement, category: .objects),
                         Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral]),
+                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
                         Symbol(id: "thiefMelee", code: ".bool(thiefMelee)", type: .zilElement, category: .routines),
                     ]
                 ),

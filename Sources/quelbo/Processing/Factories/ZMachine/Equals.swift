@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 extension Factories {
     /// A symbol factory for the Zil
