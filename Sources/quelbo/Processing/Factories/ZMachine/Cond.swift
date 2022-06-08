@@ -36,7 +36,7 @@ extension Factories.Cond {
                 let predicate = condition.shift(),
                 !condition.isEmpty
             else {
-                throw FactoryError.invalidValue(list)
+                throw Error.invalidConditionalValue(list.children)
             }
 
             var ifStatement: String {
@@ -56,5 +56,13 @@ extension Factories.Cond {
             ))
         }
         return conditions
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Cond {
+    enum Error: Swift.Error {
+        case invalidConditionalValue([Symbol])
     }
 }

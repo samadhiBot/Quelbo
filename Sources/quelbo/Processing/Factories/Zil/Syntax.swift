@@ -23,7 +23,7 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             guard case .atom(let verbZil) = tokens.shift() else {
-                throw FactoryError.missingName(tokens)
+                throw Error.missingSyntaxVerb(tokens)
             }
             self.verb = verbZil.lowerCamelCase
             definition.append("verb: \(verb.quoted)")
@@ -36,11 +36,11 @@ extension Factories {
             }
 
             guard case .atom("=") = tokens.shift() else {
-                throw FactoryError.missingValue(tokens)
+                throw Error.missingSyntaxEqualsSign(tokens)
             }
 
             guard case .atom(let actionRoutine) = tokens.shift() else {
-                throw FactoryError.missingValue(tokens)
+                throw Error.missingSyntaxActionRoutine(tokens)
             }
             definition.append("actionRoutine: \(actionRoutine.lowerCamelCase)")
 
@@ -80,10 +80,10 @@ extension Factories.Syntax {
             definition.append("preposition: \(preposition.lowerCamelCase.quoted)")
             tokens.removeFirst()
             guard case .atom("OBJECT") = tokens.first else {
-                throw FactoryError.missingValue(tokens)
+                throw Error.missingSyntaxObjectAfterPreposition(tokens)
             }
         default:
-            throw FactoryError.missingValue(tokens)
+            throw Error.invalidSyntaxParameter(tokens)
         }
         tokens.removeFirst()
 
@@ -92,12 +92,12 @@ extension Factories.Syntax {
             if case .atom("FIND") = listTokens.first {
                 listTokens.removeFirst()
                 guard case .atom(let zil) = listTokens.shift() else {
-                    throw FactoryError.missingValue(listTokens)
+                    throw Error.missingSyntaxAtomAfterFind(listTokens)
                 }
                 let flag = Flag.find(id: zil.lowerCamelCase, zil: zil)
                 definition.append("where: \(flag.id)")
                 guard listTokens.isEmpty else {
-                    throw FactoryError.unconsumedTokens(listTokens)
+                    throw Error.unconsumedSyntaxTokensAfterFind(listTokens)
                 }
             } else {
                 let searchFlags = try listTokens
@@ -106,7 +106,7 @@ extension Factories.Syntax {
                             case .atom(let flag) = listTokens.shift(),
                             let searchFlag = Syntax.SearchFlag(rawValue: flag)
                         else {
-                            throw FactoryError.invalidProperty($0)
+                            throw Error.invalidSyntaxSearchFlag($0)
                         }
                         return searchFlag.case
                     }
@@ -125,5 +125,20 @@ extension Factories.Syntax {
             \(definition.joined(separator: ",\n").indented)
             )
             """
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Syntax {
+    enum Error: Swift.Error {
+        case invalidSyntaxParameter([Token])
+        case invalidSyntaxSearchFlag(Token)
+        case missingSyntaxActionRoutine([Token])
+        case missingSyntaxAtomAfterFind([Token])
+        case missingSyntaxEqualsSign([Token])
+        case missingSyntaxObjectAfterPreposition([Token])
+        case missingSyntaxVerb([Token])
+        case unconsumedSyntaxTokensAfterFind([Token])
     }
 }

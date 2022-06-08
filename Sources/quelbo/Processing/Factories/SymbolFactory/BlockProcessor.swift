@@ -267,7 +267,7 @@ extension BlockProcessor {
                     let nameSymbol = param.children.first,
                     let valueSymbol = param.children.last
                 else {
-                    throw FactoryError.invalidParameter(param.children)
+                    throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
                     type = types[nameSymbol.id] ?? types[valueSymbol.id] ?? .unknown
@@ -319,5 +319,13 @@ extension Symbol {
         } else {
             return "var \(code) = \(type.emptyValue)"
         }
+    }
+}
+
+// MARK: - Errors
+
+extension BlockProcessor {
+    enum Error: Swift.Error {
+        case invalidNameValueParameterPair([Symbol])
     }
 }

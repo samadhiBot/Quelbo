@@ -102,7 +102,7 @@ extension SymbolFactory {
     func symbolize(_ token: Token) throws -> Symbol {
         let symbols = try symbolize([token])
         guard symbols.count == 1 else {
-            throw FactoryError.invalidProperty(token)
+            throw SymbolizationError.singleTokenSymbolizationFailed(token)
         }
         return symbols[0]
     }
@@ -184,7 +184,7 @@ extension SymbolFactory {
     func symbolizeEval(_ evalToken: Token) throws -> Symbol {
         try symbolize(evalToken)
 //        guard let symbol = try symbolize([evalToken]).first else {
-//            throw FactoryError.invalidProperty(evalToken)
+//            throw SymbolizationError.invalidProperty(evalToken)
 //        }
 //        return symbol
     }
@@ -212,7 +212,7 @@ extension SymbolFactory {
                 let closure = nested.shift(),
                 closure.isFunctionClosure
             else {
-                throw FactoryError.invalidZilForm(formTokens)
+                throw SymbolizationError.invalidZilForm(formTokens)
             }
             return Symbol(
                 "\(closure)(\(nested.codeValues(.commaSeparated)))",
@@ -222,7 +222,7 @@ extension SymbolFactory {
         case .global(let name):
             zil = name
         default:
-            throw FactoryError.invalidZilForm(formTokens)
+            throw SymbolizationError.invalidZilForm(formTokens)
         }
 
         let factory: SymbolFactory
@@ -295,7 +295,7 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of a Zil object property.
     func symbolizeProperty(_ property: String) throws -> Symbol {
         guard let type = try Game.zilPropertyFactories.find(property)?.returnType else {
-            throw FactoryError.unknownProperty(property)
+            throw SymbolizationError.unknownZilProperty(property)
         }
         return Symbol(
             property.lowerCamelCase,
@@ -313,7 +313,7 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of a Zil quote.
     func symbolizeQuote(_ token: Token) throws -> Symbol {
 //        guard let symbol = try symbolize([token]).first else {
-//            throw FactoryError.evaluationFailed(token)
+//            throw SymbolizationError.evaluationFailed(token)
 //        }
 //        return symbol.with(meta: [.eval(token)])
 //        Symbol(
@@ -335,7 +335,7 @@ extension SymbolFactory {
 //        let evaluated = try evaluate(token)
 //        var symbols = try symbolize([evaluated])
 //        guard let symbol = symbols.shift(), symbols.isEmpty else {
-//            throw FactoryError.evaluationFailed(token)
+//            throw SymbolizationError.evaluationFailed(token)
 //        }
 //        return symbol
 
@@ -357,13 +357,13 @@ extension SymbolFactory {
             return Symbol("BYTE (not yet implemented)")
         case "DECL":
             guard case .list(let tokens) = siblings.shift() else {
-                throw FactoryError.missingValue(siblings)
+                throw SymbolizationError.missingDeclarationValue(siblings)
             }
             return try Factories.DeclareType(tokens, with: types).process()
         case "SPLICE":
             return Symbol("SPLICE (not yet implemented)")
         default:
-            throw FactoryError.unknownProperty(type)
+            throw SymbolizationError.unknownType(type)
         }
     }
 
@@ -376,5 +376,17 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of the Zil vector.
     func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
         try Factories.Vector(vectorTokens, with: types).process()
+    }
+}
+
+// MARK: - Errors
+
+extension SymbolFactory {
+    enum SymbolizationError: Swift.Error {
+        case invalidZilForm([Token])
+        case singleTokenSymbolizationFailed(Token)
+        case unknownZilProperty(String)
+        case unknownType(String)
+        case missingDeclarationValue([Token])
     }
 }

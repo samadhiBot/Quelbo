@@ -63,9 +63,7 @@ struct Quelbo: ParsableCommand {
 
                 """
             )
-
             game.printSymbols()
-
             print(
                 """
 
@@ -73,9 +71,7 @@ struct Quelbo: ParsableCommand {
                 ============================================================
                 """
             )
-
             Pretty.prettyPrint(error)
-
             print(
                 """
 

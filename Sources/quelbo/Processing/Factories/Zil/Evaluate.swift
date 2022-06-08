@@ -26,7 +26,7 @@ extension Factories {
 
             self.params = try routine.children.map { (symbol: Symbol) -> Symbol in
                 guard let value = symbols.shift() else {
-                    throw FactoryError.missingParameter(symbol)
+                    throw Error.missingEvalParameter(symbol)
                 }
                 return symbol.with(code: "\(symbol.id): \(value)")
 //                if routine.isFunctionClosure {
@@ -57,5 +57,13 @@ extension Factories {
                 children: params
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Evaluate {
+    enum Error: Swift.Error {
+        case missingEvalParameter(Symbol)
     }
 }

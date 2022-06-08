@@ -62,7 +62,7 @@ extension SymbolFactory {
         func expectedType(at index: Int) throws -> Symbol.DataType {
             switch self {
             case .zero:
-                throw FactoryError.invalidTypeLookup(at: index)
+                throw Error.invalidTypeLookup(at: index)
             case let .zeroOrOne(type):
                 return type
             case let .zeroOrMore(type):
@@ -70,7 +70,7 @@ extension SymbolFactory {
             case let .one(type):
                 switch index {
                 case 0:  return type
-                default: throw FactoryError.invalidTypeLookup(at: index)
+                default: throw Error.invalidTypeLookup(at: index)
                 }
             case let .oneOrMore(type):
                 return type
@@ -78,7 +78,7 @@ extension SymbolFactory {
                 switch index {
                 case 0:  return firstType
                 case 1:  return secondType
-                default: throw FactoryError.invalidTypeLookup(at: index)
+                default: throw Error.invalidTypeLookup(at: index)
                 }
             case let .twoOrMore(type):
                 return type
@@ -87,11 +87,19 @@ extension SymbolFactory {
                 case 0:  return firstType
                 case 1:  return secondType
                 case 2:  return thirdType
-                default: throw FactoryError.invalidTypeLookup(at: index)
+                default: throw Error.invalidTypeLookup(at: index)
                 }
             case .any:
                 return .unknown
             }
         }
+    }
+}
+
+// MARK: - Errors
+
+extension SymbolFactory.Parameters {
+    enum Error: Swift.Error {
+        case invalidTypeLookup(at: Int)
     }
 }

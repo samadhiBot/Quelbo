@@ -27,7 +27,7 @@ extension Factories {
                     case .string(let noun) = tokens.shift(),
                     case .atom(let action) = tokens.shift()
                 else {
-                    throw FactoryError.missingParameters(self.tokens)
+                    throw Error.invalidPseudoParameters(self.tokens)
                 }
 
                 let code = """
@@ -56,5 +56,13 @@ extension Factories {
                 children: symbols
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Pseudos {
+    enum Error: Swift.Error {
+        case invalidPseudoParameters([Token])
     }
 }

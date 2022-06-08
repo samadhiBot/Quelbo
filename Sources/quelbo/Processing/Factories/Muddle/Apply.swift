@@ -38,7 +38,7 @@ extension Factories {
 
             self.params = try applicable.children.map { (symbol: Symbol) -> Symbol in
                 guard let value = symbols.shift() else {
-                    throw FactoryError.missingParameter(symbol)
+                    throw Error.missingApplyParameter(symbol)
                 }
                 return symbol.with(code: "\(symbol.id): \(value)")
             }
@@ -52,5 +52,13 @@ extension Factories {
                 children: params
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Apply {
+    enum Error: Swift.Error {
+        case missingApplyParameter(Symbol)
     }
 }

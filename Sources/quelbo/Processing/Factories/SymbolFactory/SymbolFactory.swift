@@ -83,7 +83,7 @@ class SymbolFactory {
     /// - Throws: When the specified index is out of range.
     func symbol(_ index: Int) throws -> Symbol {
         guard symbols.count > index else {
-            throw FactoryError.outOfRangeSymbolIndex(index, symbols)
+            throw Error.outOfRangeSymbolIndex(index, symbols)
         }
         return symbols[index]
     }
@@ -108,7 +108,7 @@ extension Array where Element == SymbolFactory.Type {
         case 1:
             return matches[0]
         default:
-            throw FactoryError.foundMultipleMatchingFactories(zil: zil, matches: matches)
+            throw Error.foundMultipleMatchingFactories(zil: zil, matches: matches)
         }
     }
 }
@@ -118,5 +118,19 @@ extension Array where Element == SymbolFactory.Type {
 extension SymbolFactory: Equatable {
     static func == (lhs: SymbolFactory, rhs: SymbolFactory) -> Bool {
         type(of: lhs) == type(of: rhs)
+    }
+}
+
+// MARK: - Errors
+
+extension Array {
+    fileprivate enum Error: Swift.Error {
+        case foundMultipleMatchingFactories(zil: String, matches: [SymbolFactory.Type])
+    }
+}
+
+extension SymbolFactory {
+    enum Error: Swift.Error {
+        case outOfRangeSymbolIndex(Int, [Symbol])
     }
 }

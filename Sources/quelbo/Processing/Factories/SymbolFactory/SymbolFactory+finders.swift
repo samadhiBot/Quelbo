@@ -31,7 +31,7 @@ extension SymbolFactory {
                 code: name.lowerCamelCase
             )
         }
-        throw FactoryError.missingName(original)
+        throw FindError.nameSymbolNotFound(original)
     }
 
     /// Scans through a ``Token`` array until it finds a parameter list, then returns a translated
@@ -49,7 +49,7 @@ extension SymbolFactory {
         let original = tokens
         while !tokens.isEmpty {
             guard case .list(let params) = tokens.shift() else {
-                throw FactoryError.missingParameters(tokens)
+                throw FindError.parametersSymbolNotFound(tokens)
             }
             return try params.map { token in
                 switch token {
@@ -64,6 +64,15 @@ extension SymbolFactory {
                 }
             }
         }
-        throw FactoryError.missingParameters(original)
+        throw FindError.parametersSymbolNotFound(original)
+    }
+}
+
+// MARK: - Errors
+
+extension SymbolFactory {
+    enum FindError: Swift.Error {
+        case nameSymbolNotFound([Token])
+        case parametersSymbolNotFound([Token])
     }
 }

@@ -11,7 +11,7 @@ extension SymbolFactory {
     func validate(_ symbols: [Symbol]) throws -> [Symbol] {
         let nonCommentParams = symbols.filter { $0.type != .comment }
         guard Self.parameters.range.contains(nonCommentParams.count) else {
-            throw FactoryError.invalidParameterCount(
+            throw ValidationError.invalidParameterCount(
                 nonCommentParams.count,
                 expected: Self.parameters.range,
                 in: nonCommentParams
@@ -56,7 +56,7 @@ extension SymbolFactory {
             return try assignZilElementType(on: symbol)
         }
         if case .variable = declaredType, symbol.isLiteral {
-            throw FactoryError.unexpectedParameter(symbol)
+            throw ValidationError.expectedVariableFoundLiteral(symbol)
         }
 
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
@@ -86,7 +86,11 @@ extension SymbolFactory {
             return symbol.with(type: siblings.commonType())
         }
 
-        throw FactoryError.invalidType(symbol, expected: declaredType, found: symbol.type)
+        throw ValidationError.failedToDetermineType(
+            symbol,
+            expected: declaredType,
+            found: symbol.type
+        )
     }
 
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {
@@ -118,7 +122,18 @@ extension SymbolFactory {
         case .zilElement:
             return symbol.with(code: ".table(\(symbol))", type: .zilElement)
         case .direction, .property, .routine, .thing, .unknown, .void, .variable:
-            throw FactoryError.unexpectedZilElement(symbol)
+            throw ValidationError.unexpectedZilElement(symbol)
         }
+    }
+}
+
+// MARK: - Errors
+
+extension SymbolFactory {
+    enum ValidationError: Swift.Error {
+        case expectedVariableFoundLiteral(Symbol)
+        case failedToDetermineType(Symbol, expected: Symbol.DataType, found: Symbol.DataType)
+        case invalidParameterCount(Int, expected: ClosedRange<Int>, in: [Symbol])
+        case unexpectedZilElement(Symbol)
     }
 }

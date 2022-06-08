@@ -35,13 +35,13 @@ extension Factories {
                     case .list(let nameTokens) = typeTokens.shift(),
                     let typeToken = typeTokens.shift()
                 else {
-                    throw FactoryError.missingParameters(tokens)
+                    throw Error.missingDeclareTypeVariable(tokens)
                 }
                 let dataType = try dataType(for: typeToken)
 
                 try nameTokens.forEach { nameToken in
                     guard case .atom(let zil) = nameToken else {
-                        throw FactoryError.invalidProperty(nameToken)
+                        throw Error.invalidDeclareTypeVariable(nameToken)
                     }
                     let name = zil.lowerCamelCase
                     let symbol = Symbol(
@@ -84,6 +84,16 @@ extension Factories.DeclareType {
         default:
             break
         }
-        throw FactoryError.invalidProperty(typeToken)
+        throw Error.invalidDeclareTypeDeclaration(typeToken)
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.DeclareType {
+    enum Error: Swift.Error {
+        case invalidDeclareTypeDeclaration(Token)
+        case invalidDeclareTypeVariable(Token)
+        case missingDeclareTypeVariable([Token])
     }
 }

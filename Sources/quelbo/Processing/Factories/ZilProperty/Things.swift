@@ -28,7 +28,7 @@ extension Factories {
                     let nounToken = tokens.shift(),
                     let actionToken = tokens.shift()
                 else {
-                    throw FactoryError.missingParameters(self.tokens)
+                    throw Error.missingThingParameters(self.tokens)
                 }
 
                 var adjectives: [String] = []
@@ -40,12 +40,12 @@ extension Factories {
                     case .list(let values):
                         adjectives = try values.map {
                             guard case .atom(let value) = $0 else {
-                                throw FactoryError.invalidProperty(adjectiveToken)
+                                throw Error.invalidThingAdjective(adjectiveToken)
                             }
                             return value.lowerCamelCase
                         }
                     default:
-                        throw FactoryError.invalidProperty(adjectiveToken)
+                        throw Error.invalidThingAdjective(adjectiveToken)
                 }
 
                 var nouns: [String] = []
@@ -55,12 +55,12 @@ extension Factories {
                     case .list(let values):
                         nouns = try values.map {
                             guard case .atom(let value) = $0 else {
-                                throw FactoryError.invalidProperty(nounToken)
+                                throw Error.invalidThingNoun(nounToken)
                             }
                             return value.lowerCamelCase
                         }
                     default:
-                        throw FactoryError.invalidProperty(nounToken)
+                        throw Error.invalidThingNoun(nounToken)
                 }
 
                 var thingCode: String
@@ -78,7 +78,7 @@ extension Factories {
                             text: \(text.quoted)
                             """
                     default:
-                        throw FactoryError.invalidProperty(actionToken)
+                        throw Error.invalidThingAction(actionToken)
                 }
 
                 symbols.append(Symbol(
@@ -93,13 +93,6 @@ extension Factories {
             }
         }
 
-        // struct Thing: Equatable {
-        //     let adjectives: [String]
-        //     let nouns: [String]
-        //     let action: Routine?
-        //     let text: String?
-        // }
-
         override func process() throws -> Symbol {
             Symbol(
                 id: "things",
@@ -108,5 +101,16 @@ extension Factories {
                 children: symbols
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Things {
+    enum Error: Swift.Error {
+        case invalidThingAction(Token)
+        case invalidThingAdjective(Token)
+        case invalidThingNoun(Token)
+        case missingThingParameters([Token])
     }
 }

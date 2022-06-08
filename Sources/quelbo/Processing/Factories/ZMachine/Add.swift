@@ -42,7 +42,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             guard let first = symbols.shift() else {
-                throw FactoryError.missingValue(tokens)
+                throw Error.missingInitialArithmaticValue(tokens)
             }
 
             let code: String
@@ -57,5 +57,13 @@ extension Factories {
 
             return Symbol(code, type: .int, children: allSymbols)
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Add {
+    enum Error: Swift.Error {
+        case missingInitialArithmaticValue([Token])
     }
 }

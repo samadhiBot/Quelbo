@@ -16,38 +16,6 @@ extension Factories {
             ["VERSION?"]
         }
 
-        func conditionalSymbols() throws -> [Symbol] {
-            var conditions: [Symbol] = []
-            var symbols = symbols
-            while let list = symbols.shift() {
-                var condition = list.children
-                guard
-                    case .array = list.type,
-                    let predicate = condition.shift()
-                else {
-                    throw FactoryError.invalidValue(list)
-                }
-
-                let ifStatement: String
-                switch predicate.id {
-                    case "else", "t", "true":
-                        ifStatement = ""
-                    default:
-                        ifStatement = "if zMachineVersion == \(predicate) "
-                }
-
-                conditions.append(Symbol(
-                    """
-                    \(ifStatement){
-                    \(condition.codeValues(.singleLineBreak, .indented))
-                    }
-                    """,
-                    children: list.children
-                ))
-            }
-            return conditions
-        }
-
         override func process() throws -> Symbol {
             let symbol = Symbol(
                 try conditionalSymbols().codeValues(.separator(" else ")),
@@ -57,5 +25,47 @@ extension Factories {
             try Game.commit(symbol)
             return symbol
         }
+    }
+}
+
+extension Factories.IsVersion {
+    func conditionalSymbols() throws -> [Symbol] {
+        var conditions: [Symbol] = []
+        var symbols = symbols
+        while let list = symbols.shift() {
+            var condition = list.children
+            guard
+                case .array = list.type,
+                let predicate = condition.shift()
+            else {
+                throw Error.invalidConditionPredicate(list)
+            }
+
+            let ifStatement: String
+            switch predicate.id {
+                case "else", "t", "true":
+                    ifStatement = ""
+                default:
+                    ifStatement = "if zMachineVersion == \(predicate) "
+            }
+
+            conditions.append(Symbol(
+                """
+                \(ifStatement){
+                \(condition.codeValues(.singleLineBreak, .indented))
+                }
+                """,
+                children: list.children
+            ))
+        }
+        return conditions
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.IsVersion {
+    enum Error: Swift.Error {
+        case invalidConditionPredicate(Symbol)
     }
 }

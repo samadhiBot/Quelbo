@@ -24,7 +24,7 @@ extension Factories {
                 let finalFunc = tokens.shift(),
                 let applicable = tokens.shift()
             else {
-                throw FactoryError.missingParameters(self.tokens)
+                throw Error.missingMapFirstParameters(self.tokens)
             }
             self.mappedTokens.append(finalFunc)
 
@@ -70,5 +70,13 @@ extension Factories.MapFirst {
             index += 1
         }
         return args
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.MapFirst {
+    enum Error: Swift.Error {
+        case missingMapFirstParameters([Token])
     }
 }

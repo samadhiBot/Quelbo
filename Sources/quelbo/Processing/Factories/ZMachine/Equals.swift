@@ -31,7 +31,7 @@ extension Factories {
         override func process() throws -> Symbol {
             let original = symbols
             guard let first = symbols.shift() else {
-                throw FactoryError.missingValue(tokens)
+                throw Error.missingInitialEqualsValue
             }
 
             return Symbol(
@@ -40,5 +40,13 @@ extension Factories {
                 children: original
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Equals {
+    enum Error: Swift.Error {
+        case missingInitialEqualsValue
     }
 }

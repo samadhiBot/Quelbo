@@ -40,38 +40,38 @@ extension Factories {
                 switch token {
                     case .atom("TO"):
                         guard case .atom(let room) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidToDirectionParameter(token)
                         }
                         self.destination = room.lowerCamelCase
                     case .atom("PER"):
                         guard case .atom(let function) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidPerDirectionParameter(token)
                         }
                         self.perFunction = function.lowerCamelCase
                     case .atom("IF"):
                         guard case .atom(let cond) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidIfDirectionParameter(token)
                         }
                         self.condition = cond.lowerCamelCase
                     case .atom("IS"):
                         guard case .atom(let cond) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidIsDirectionParameter(token)
                         }
                         self.condition?.append(".is\(cond.upperCamelCase)")
                     case .atom("ELSE"):
                         guard case .string(let elseMessage) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidElseDirectionParameter(token)
                         }
                         self.message = elseMessage
                     case .atom("SORRY"):
                         guard case .string(let blockedMessage) = tokens.shift() else {
-                            throw FactoryError.invalidProperty(token)
+                            throw Error.invalidSorryDirectionParameter(token)
                         }
                         self.message = blockedMessage
                     case .string(let blockedMessage):
                         self.message = blockedMessage
                     default:
-                        throw FactoryError.invalidProperty(token)
+                        throw Error.invalidDirectionParameter(token)
                 }
             }
         }
@@ -117,7 +117,22 @@ extension Factories {
                     type: Self.returnType
                 )
             }
-            throw FactoryError.invalidDirection(tokens)
+            throw Error.invalidDirectionParameters(tokens)
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.MoveDirection {
+    enum Error: Swift.Error {
+        case invalidDirectionParameter(Token)
+        case invalidDirectionParameters([Token])
+        case invalidElseDirectionParameter(Token)
+        case invalidIfDirectionParameter(Token)
+        case invalidIsDirectionParameter(Token)
+        case invalidPerDirectionParameter(Token)
+        case invalidSorryDirectionParameter(Token)
+        case invalidToDirectionParameter(Token)
     }
 }

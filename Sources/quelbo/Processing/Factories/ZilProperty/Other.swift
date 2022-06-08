@@ -24,7 +24,7 @@ extension Factories {
             let code: String
             switch symbols.count {
                 case 0:
-                    throw FactoryError.missingParameters(tokens)
+                    throw Error.missingOtherParameters(tokens)
                 case 1:
                     code = try symbol(0).code
                 default:
@@ -38,5 +38,13 @@ extension Factories {
                 children: symbols
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Other {
+    enum Error: Swift.Error {
+        case missingOtherParameters([Token])
     }
 }

@@ -33,8 +33,16 @@ extension Factories {
             case .string:
                 return Symbol("output(\(value))", type: .void, children: symbols)
             default:
-                throw FactoryError.invalidValue(value)
+                throw Error.invalidPrintCharacterValue(value)
             }
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.PrintCharacter {
+    enum Error: Swift.Error {
+        case invalidPrintCharacterValue(Symbol)
     }
 }

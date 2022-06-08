@@ -82,7 +82,7 @@ extension SymbolFactory {
 //        case .global(let name):
 //            zil = name
         default:
-            throw FactoryError.invalidZilForm(formTokens)
+            throw EvaluationError.invalidZilForm(formTokens)
         }
 
         let factory: SymbolFactory
@@ -96,5 +96,13 @@ extension SymbolFactory {
         }
         let token = try factory.eval()
         return token
+    }
+}
+
+// MARK: - Errors
+
+extension SymbolFactory {
+    enum EvaluationError: Swift.Error {
+        case invalidZilForm([Token])
     }
 }

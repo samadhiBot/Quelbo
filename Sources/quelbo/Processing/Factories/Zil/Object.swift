@@ -90,7 +90,7 @@ extension Factories.Object {
             case .list(let listTokens):
                 var tokens = listTokens
                 guard case .atom(let zil) = tokens.shift() else {
-                    throw FactoryError.invalidProperty(token)
+                    throw Error.invalidObjectListProperty(token)
                 }
                 if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
                     do {
@@ -108,8 +108,18 @@ extension Factories.Object {
                 let factory = try Factories.Other.init(listTokens, with: types)
                 return try factory.process()
             default:
-                throw FactoryError.invalidProperty(token)
+                throw Error.invalidObjectProperty(token)
             }
         }
     }
 }
+
+// MARK: - Errors
+
+extension Factories.Object {
+    enum Error: Swift.Error {
+        case invalidObjectListProperty(Token)
+        case invalidObjectProperty(Token)
+    }
+}
+

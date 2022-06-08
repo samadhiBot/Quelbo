@@ -28,7 +28,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             guard let word = symbols.shift() else {
-                throw FactoryError.invalidParameter(symbols)
+                throw Error.missingInitialSynonymWord(symbols)
             }
             let synonyms = symbols.quoted.sorted.codeValues(.commaSeparated)
 
@@ -43,5 +43,13 @@ extension Factories {
             try Game.commit(symbol)
             return symbol
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Synonym {
+    enum Error: Swift.Error {
+        case missingInitialSynonymWord([Symbol])
     }
 }

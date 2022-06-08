@@ -29,16 +29,24 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let argType = symbols.commonType() ?? .unknown
-            guard [.bool, .int].contains(where: { $0 == argType }) else {
-                throw FactoryError.invalidParameter(symbols)
+            let type = symbols.commonType() ?? .unknown
+            guard [.bool, .int].contains(type) else {
+                throw Error.invalidAndArgumentType(symbols)
             }
 
             return Symbol(
                 ".\(function)(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
-                type: argType,
+                type: type,
                 children: symbols
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.And {
+    enum Error: Swift.Error {
+        case invalidAndArgumentType([Symbol])
     }
 }
