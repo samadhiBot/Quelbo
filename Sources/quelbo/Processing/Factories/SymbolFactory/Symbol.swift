@@ -239,7 +239,20 @@ extension Symbol: Comparable {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        code
+        var desc: [String] = ["id: \(id)"]
+        if code != id.rawValue {
+            desc.append("code: \(code)")
+        }
+        if type != .unknown {
+            desc.append("type: \(type)")
+        }
+        if let category {
+            desc.append("category: \(category)")
+        }
+        if !meta.isEmpty {
+            desc.append("meta: \(meta)")
+        }
+        return "{\n\(desc.joined(separator: "\n").indented)\n}"
     }
 }
 

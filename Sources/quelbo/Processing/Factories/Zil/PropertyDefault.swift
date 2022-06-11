@@ -17,7 +17,7 @@ extension Factories {
         }
 
         override var codeBlock: String {
-            "setPropertyDefault(\(nameSymbol), \(valueSymbol))"
+            "setPropertyDefault(\(nameSymbol.code), \(valueSymbol.code))"
         }
     }
 }

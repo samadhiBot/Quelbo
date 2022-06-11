@@ -26,7 +26,7 @@ extension Factories {
             let value = try symbol(1)
 
             return Symbol(
-                "\(variable).set(to: \(value))",
+                "\(variable.code).set(to: \(value.code))",
                 type: value.type,
                 children: [variable, value]
             )

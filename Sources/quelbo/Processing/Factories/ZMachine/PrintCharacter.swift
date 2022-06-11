@@ -29,9 +29,9 @@ extension Factories {
             let value = symbols[0]
             switch value.type {
             case .int:
-                return Symbol("output(utf8: \(value))", type: .void, children: symbols)
+                return Symbol("output(utf8: \(value.code))", type: .void, children: symbols)
             case .string:
-                return Symbol("output(\(value))", type: .void, children: symbols)
+                return Symbol("output(\(value.code))", type: .void, children: symbols)
             default:
                 throw Error.invalidPrintCharacterValue(value)
             }

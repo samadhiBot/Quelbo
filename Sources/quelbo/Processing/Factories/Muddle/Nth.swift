@@ -25,7 +25,7 @@ extension Factories {
             let index = try symbol(1)
 
             return Symbol(
-                "\(values).nthElement(\(index))",
+                "\(values.code).nthElement(\(index.code))",
                 type: values.children.commonType() ?? values.type,
                 children: symbols
             )

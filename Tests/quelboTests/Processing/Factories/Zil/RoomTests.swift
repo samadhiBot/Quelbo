@@ -16,19 +16,30 @@ final class RoomTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol(id: "north", code: "case north", type: .direction, category: .directions),
-            Symbol(id: "east", code: "case east", type: .direction, category: .directions),
-            Symbol(id: "west", code: "case west", type: .direction, category: .directions),
-            Symbol(id: "south", code: "case south", type: .direction, category: .directions),
-            Symbol(id: "northEast", code: #"case northEast = "ne""#, type: .direction, category: .directions),
-            Symbol(id: "northWest", code: #"case northWest = "nw""#, type: .direction, category: .directions),
-            Symbol(id: "southEast", code: #"case southEast = "se""#, type: .direction, category: .directions),
-            Symbol(id: "southWest", code: #"case southWest = "sw""#, type: .direction, category: .directions),
-            Symbol(id: "up", code: "case up", type: .direction, category: .directions),
-            Symbol(id: "down", code: "case down", type: .direction, category: .directions),
-            Symbol(id: "into", code: #"case into = "in""#, type: .direction, category: .directions),
-            Symbol(id: "out", code: "case out", type: .direction, category: .directions),
-            Symbol(id: "land", code: "case land", type: .direction, category: .directions),
+            Symbol(id: "north", type: .direction, category: .properties),
+            Symbol(id: "east", type: .direction, category: .properties),
+            Symbol(id: "west", type: .direction, category: .properties),
+            Symbol(id: "south", type: .direction, category: .properties),
+            Symbol(id: "northEast", type: .direction, category: .properties),
+            Symbol(id: "northWest", type: .direction, category: .properties),
+            Symbol(id: "southEast", type: .direction, category: .properties),
+            Symbol(id: "southWest", type: .direction, category: .properties),
+            Symbol(id: "up", type: .direction, category: .properties),
+            Symbol(id: "down", type: .direction, category: .properties),
+            Symbol(id: "in", type: .direction, category: .properties),
+            Symbol(id: "out", type: .direction, category: .properties),
+            Symbol(
+                id: "land",
+                code: """
+                    /// Represents an exit toward land.
+                    public static let land = Direction(
+                        id: "land",
+                        synonyms: ["LAND"]
+                    )
+                    """,
+                type: .direction,
+                category: .properties
+            ),
         ])
     }
 
@@ -123,7 +134,7 @@ final class RoomTests: QuelboTests {
                         .west: .to(forest1),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
                         .southWest: .conditional(stoneBarrow, if: wonFlag),
-                        .into: .conditional(stoneBarrow, if: wonFlag),
+                        .in: .conditional(stoneBarrow, if: wonFlag),
                     ],
                     flags: [
                         isDryLand,
@@ -208,7 +219,7 @@ final class RoomTests: QuelboTests {
                          .west: .to(forest1),
                          .east: .blocked("The door is boarded and you can't remove the boards."),
                          .southWest: .conditional(stoneBarrow, if: wonFlag),
-                         .into: .conditional(stoneBarrow, if: wonFlag),
+                         .in: .conditional(stoneBarrow, if: wonFlag),
                      ]
                      """,
                     type: .array(.direction),
@@ -249,8 +260,8 @@ final class RoomTests: QuelboTests {
                             type: .direction
                         ),
                         Symbol(
-                            id: "into",
-                            code: ".into: .conditional(stoneBarrow, if: wonFlag)",
+                            id: "in",
+                            code: ".in: .conditional(stoneBarrow, if: wonFlag)",
                             type: .direction
                         )
                     ]
@@ -448,7 +459,7 @@ final class RoomTests: QuelboTests {
                     .northWest: .to(northOfHouse),
                     .east: .to(clearing),
                     .west: .conditional(kitchen, if: kitchenWindow.isOpen),
-                    .into: .conditional(kitchen, if: kitchenWindow.isOpen),
+                    .in: .conditional(kitchen, if: kitchenWindow.isOpen),
                 ],
                 flags: [
                     isDryLand,

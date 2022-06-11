@@ -120,17 +120,17 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-        if let defined = try? Game.find(.init(stringLiteral: name)) {
+        let expectedType = try Self.parameters.expectedType(at: index)
+        if let defined = try? Game.find(.init(stringLiteral: name), type: expectedType) {
             return defined.with(code: name)
         }
-        let paramType = try Self.parameters.expectedType(at: index)
         if zil == "T" {
-            switch paramType {
+            switch expectedType {
             case .variable: break
             default: return .trueSymbol
             }
         }
-        return Symbol(name, type: paramType)
+        return Symbol(name, type: expectedType)
     }
 
     /// Translates a Zil
@@ -215,7 +215,7 @@ extension SymbolFactory {
                 throw SymbolizationError.invalidZilForm(formTokens)
             }
             return Symbol(
-                "\(closure)(\(nested.codeValues(.commaSeparated)))",
+                "\(closure.code)(\(nested.codeValues(.commaSeparated)))",
                 type: closure.type,
                 children: nested
             )
@@ -294,13 +294,24 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil object property.
     func symbolizeProperty(_ property: String) throws -> Symbol {
-        guard let type = try Game.zilPropertyFactories.find(property)?.returnType else {
+        var category: Symbol.Category
+        var type: Symbol.DataType
+        if let property = try? Game.zilPropertyFactories.find(property) {
+            category = .properties
+            type = property.returnType
+        } else if let _ = try? Game.find(
+            .init(rawValue: property.lowerCamelCase),
+            category: .properties
+        ) {
+            category = .directions
+            type = .direction
+        } else {
             throw SymbolizationError.unknownZilProperty(property)
         }
         return Symbol(
             property.lowerCamelCase,
             type: type,
-            category: .properties
+            category: category
         )
     }
 

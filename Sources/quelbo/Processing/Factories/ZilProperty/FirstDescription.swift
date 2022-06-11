@@ -27,7 +27,7 @@ extension Factories {
         override func process() throws -> Symbol {
             Symbol(
                 id: "firstDescription",
-                code: "firstDescription: \(try symbol(0))",
+                code: "firstDescription: \(try symbol(0).code)",
                 type: Self.returnType,
                 children: symbols
             )

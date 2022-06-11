@@ -25,7 +25,9 @@ extension Game {
             return print("\nProcessing complete!\n")
         }
         if gameTokens.count == remainingCount {
-            throw GameError.failedToProcessTokens(processingErrors)
+            throw GameError.failedToProcessTokens(
+                processingErrors.sorted().unique
+            )
         }
         try process(attempt + 1, remainingCount: gameTokens.count)
     }
@@ -94,7 +96,7 @@ enum GameError: Swift.Error {
     case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
     case failedToProcessTokens([String])
     case invalidZMachineVersion([Token])
-    case symbolNotFound(Symbol.Identifier, category: String)
+    case symbolNotFound(Symbol.Identifier, category: Symbol.Category?)
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)

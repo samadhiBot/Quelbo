@@ -15,10 +15,11 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        try! Game.commit([
             Symbol("inc", type: .int, category: .routines),
-            Symbol("boardedWindow", type: .object, category: .globals)
-        )
+            Symbol("boardedWindow", type: .object, category: .globals),
+            Symbol(id: "north", type: .direction, category: .properties),
+        ])
     }
 
     func testSymbolizeAtom() throws {
@@ -141,6 +142,18 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             "strength",
             type: .int,
             category: .properties
+        ))
+    }
+
+    func testSymbolizePropertyDirection() throws {
+        let symbol = try testFactory.init([
+            .property("NORTH")
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "north",
+            type: .direction,
+            category: .directions
         ))
     }
 

@@ -59,7 +59,7 @@ extension SymbolFactory {
 
                 if symbol.isPlaceholderGlobal {
                     try Game.overwrite(symbol.with(
-                        code: "var \(symbol): \(symbol.type) = \(symbol.type.emptyValue)"
+                        code: "var \(symbol.code): \(symbol.type) = \(symbol.type.emptyValue)"
                     ))
                 }
             }

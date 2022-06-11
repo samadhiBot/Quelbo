@@ -43,10 +43,10 @@ extension Factories.IsVersion {
 
             let ifStatement: String
             switch predicate.id {
-                case "else", "t", "true":
-                    ifStatement = ""
-                default:
-                    ifStatement = "if zMachineVersion == \(predicate) "
+            case "else", "t", "true":
+                ifStatement = ""
+            default:
+                ifStatement = "if zMachineVersion == \(predicate.code) "
             }
 
             conditions.append(Symbol(

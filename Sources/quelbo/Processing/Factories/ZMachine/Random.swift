@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                ".random(\(try symbol(0)))",
+                ".random(\(try symbol(0).code))",
                 type: .int,
                 children: symbols
             )

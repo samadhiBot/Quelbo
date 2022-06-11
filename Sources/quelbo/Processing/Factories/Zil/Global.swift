@@ -44,7 +44,7 @@ extension Factories {
         var codeBlock: String {
             let declare = isMutable ? "var" : "let"
 
-            return "\(declare) \(nameSymbol): \(valueSymbol.dataType) = \(valueSymbol)"
+            return "\(declare) \(nameSymbol.code): \(valueSymbol.dataType) = \(valueSymbol.code)"
         }
 
         override func process() throws -> Symbol {

@@ -97,6 +97,16 @@ extension Symbol.DataType {
         }
     }
 
+    /// Whether the data type is unambiguous, i.e. is known and homogeneous.
+    var isUnambiguous: Bool {
+        switch self {
+        case .array(let type): return type.isUnambiguous
+        case .unknown, .zilElement: return false
+        case .variable(let type): return type.isUnambiguous
+        default: return true
+        }
+    }
+
     /// Whether the data type is ``Symbol/DataType-swift.enum/unknown``.
     var isUnknown: Bool {
         switch self {
@@ -107,12 +117,12 @@ extension Symbol.DataType {
         }
     }
 
-    /// Whether the data type should supersede the type in the specified symbol.
+    /// Whether the data type should supersede the one in the specified symbol in the case of a
+    /// type conflict.
     ///
-    /// 
+    /// - Parameter symbol: A symbol with a conflicting type.
     ///
-    /// - Parameter symbol: <#symbol description#>
-    /// - Returns: <#description#>
+    /// - Returns: Whether the data type should supersede the one in the specified symbol.
     func supersedes(_ id: Symbol.Identifier) -> Bool {
         guard
             self == .object,

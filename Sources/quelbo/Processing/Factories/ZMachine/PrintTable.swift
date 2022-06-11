@@ -22,7 +22,7 @@ extension Factories {
 
         func tableContents() throws -> String {
             try symbol(0).children
-                .map { "\\(\($0))" }
+                .map { "\\(\($0.code))" }
                 .joined(separator: "\n")
                 .indented
         }

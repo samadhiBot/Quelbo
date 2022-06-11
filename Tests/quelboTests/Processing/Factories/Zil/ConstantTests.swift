@@ -15,7 +15,7 @@ final class ConstantTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        try! Game.commit([
             Symbol("clearing", type: .object, category: .rooms),
             Symbol("cyclops", type: .object, category: .objects),
             Symbol("cyclopsMelee", type: .bool, category: .routines),
@@ -28,8 +28,8 @@ final class ConstantTests: QuelboTests {
             Symbol("thief", type: .object, category: .objects),
             Symbol("thiefMelee", type: .bool, category: .routines),
             Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines)
-        )
+            Symbol("trollMelee", type: .bool, category: .routines),
+        ])
     }
 
     func testFindFactory() throws {

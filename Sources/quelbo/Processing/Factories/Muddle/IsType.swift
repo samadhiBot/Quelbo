@@ -25,7 +25,7 @@ extension Factories {
             let type = try symbol(1)
 
             return Symbol(
-                "\(value).isType(\(type))",
+                "\(value.code).isType(\(type.code))",
                 type: .bool,
                 children: symbols
             )

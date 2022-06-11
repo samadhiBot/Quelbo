@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 4/12/22.
 //
 
+import Fizmo
 import Foundation
 
 extension Factories {
@@ -100,8 +101,8 @@ extension Factories.Object {
                         guard zil == "IN" else { throw error }
                     }
                 }
-                if let moveFactory = Factories.MoveDirection.find(zil) {
-                    let factory = try moveFactory.init(listTokens, with: types)
+                if isDirection(zil) {
+                    let factory = try Factories.MoveDirection(listTokens, with: types)
                     directionSymbols.append(try factory.process())
                     return nil
                 }
@@ -111,6 +112,16 @@ extension Factories.Object {
                 throw Error.invalidObjectProperty(token)
             }
         }
+    }
+
+    func isDirection(_ zil: String) -> Bool {
+        if let _ = try? Game.find(
+            .init(stringLiteral: zil.lowerCamelCase),
+            category: .properties
+        ) {
+            return true
+        }
+        return Direction.find(zil) != nil
     }
 }
 

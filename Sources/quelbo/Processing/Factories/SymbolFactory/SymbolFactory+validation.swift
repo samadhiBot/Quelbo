@@ -62,7 +62,10 @@ extension SymbolFactory {
         switch (symbol.type.isLiteral, declaredType.isLiteral) {
         case (true, true):
             if declaredType == .bool && symbol.type == .int {
-                return symbol.with(code: symbol.id == "0" ? "false" : "true", type: .bool)
+                return symbol.with(
+                    code: symbol.id == "0" ? "false" : "true",
+                    type: .bool
+                )
             }
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
@@ -89,7 +92,8 @@ extension SymbolFactory {
         throw ValidationError.failedToDetermineType(
             symbol,
             expected: declaredType,
-            found: symbol.type
+            found: symbol.type,
+            siblings: siblings
         )
     }
 
@@ -104,23 +108,47 @@ extension SymbolFactory {
                 type: .zilElement
             )
         case .bool:
-            return symbol.with(code: ".bool(\(symbol))", type: .zilElement)
+            return symbol.with(
+                code: ".bool(\(symbol.code))",
+                type: .zilElement
+            )
         case .comment:
-            return symbol.with(code: "// \(symbol)", type: .zilElement)
+            return symbol.with(
+                code: "// \(symbol.code)",
+                type: .zilElement
+            )
         case .int:
-            return symbol.with(code: ".int(\(symbol))", type: .zilElement)
+            return symbol.with(
+                code: ".int(\(symbol.code))",
+                type: .zilElement
+            )
         case .object:
             if symbol.category == .rooms {
-                return symbol.with(code: ".room(\(symbol))", type: .zilElement)
+                return symbol.with(
+                    code: ".room(\(symbol.code))",
+                    type: .zilElement
+                )
             } else {
-                return symbol.with(code: ".object(\(symbol))", type: .zilElement)
+                return symbol.with(
+                    code: ".object(\(symbol.code))",
+                    type: .zilElement
+                )
             }
         case .string:
-            return symbol.with(code: ".string(\(symbol))", type: .zilElement)
+            return symbol.with(
+                code: ".string(\(symbol.code))",
+                type: .zilElement
+            )
         case .table:
-            return symbol.with(code: ".table(\(symbol))", type: .zilElement)
+            return symbol.with(
+                code: ".table(\(symbol.code))",
+                type: .zilElement
+            )
         case .zilElement:
-            return symbol.with(code: ".table(\(symbol))", type: .zilElement)
+            return symbol.with(
+                code: ".table(\(symbol.code))",
+                type: .zilElement
+            )
         case .direction, .property, .routine, .thing, .unknown, .void, .variable:
             throw ValidationError.unexpectedZilElement(symbol)
         }
@@ -132,7 +160,12 @@ extension SymbolFactory {
 extension SymbolFactory {
     enum ValidationError: Swift.Error {
         case expectedVariableFoundLiteral(Symbol)
-        case failedToDetermineType(Symbol, expected: Symbol.DataType, found: Symbol.DataType)
+        case failedToDetermineType(
+            Symbol,
+            expected: Symbol.DataType,
+            found: Symbol.DataType,
+            siblings: [Symbol]
+        )
         case invalidParameterCount(Int, expected: ClosedRange<Int>, in: [Symbol])
         case unexpectedZilElement(Symbol)
     }

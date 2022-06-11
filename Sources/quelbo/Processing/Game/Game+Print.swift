@@ -20,7 +20,7 @@ extension Game {
         if !Game.directions.isEmpty {
             output.append(display(
                 heading: "Directions",
-                code: Game.directions.codeValues(.doubleLineBreak)
+                code: Game.directions.codeValues(.singleLineBreak)
             ))
         }
         if !Game.constants.isEmpty {

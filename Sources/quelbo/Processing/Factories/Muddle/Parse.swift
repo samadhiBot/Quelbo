@@ -21,10 +21,8 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let element = try symbol(0)
-
-            return Symbol(
-                "\(element).printedName",
+            Symbol(
+                "\(try symbol(0).code).printedName",
                 type: .string,
                 children: symbols
             )

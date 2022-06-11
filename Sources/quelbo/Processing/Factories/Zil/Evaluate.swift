@@ -28,7 +28,7 @@ extension Factories {
                 guard let value = symbols.shift() else {
                     throw Error.missingEvalParameter(symbol)
                 }
-                return symbol.with(code: "\(symbol.id): \(value)")
+                return symbol.with(code: "\(symbol.id): \(value.code)")
 //                if routine.isFunctionClosure {
 //                    return symbol.with(code: value.code)
 //                } else {

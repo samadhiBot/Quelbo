@@ -24,7 +24,7 @@ extension Factories {
             let value = try symbol(0)
 
             return Symbol(
-                "\(value).ascii",
+                "\(value.code).ascii",
                 type: value.type == .int ? .string : .int,
                 children: symbols
             )

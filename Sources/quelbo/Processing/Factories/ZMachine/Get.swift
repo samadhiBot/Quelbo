@@ -30,7 +30,7 @@ extension Factories {
             let offset = try symbol(1)
 
             return Symbol(
-                "try \(table).get(at: \(offset))",
+                "try \(table.code).get(at: \(offset.code))",
                 type: .zilElement,
                 children: symbols
             )

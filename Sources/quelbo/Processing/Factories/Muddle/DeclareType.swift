@@ -37,7 +37,9 @@ extension Factories {
                 else {
                     throw Error.missingDeclareTypeVariable(tokens)
                 }
-                let dataType = try dataType(for: typeToken)
+                guard let dataType = dataType(for: typeToken) else {
+                    continue
+                }
 
                 try nameTokens.forEach { nameToken in
                     guard case .atom(let zil) = nameToken else {
@@ -46,7 +48,7 @@ extension Factories {
                     let name = zil.lowerCamelCase
                     let symbol = Symbol(
                         id: .init(stringLiteral: name),
-                        code: "var \(name): \(dataType)",
+                        code: "var \(name): \(dataType) = \(dataType.emptyValue)",
                         type: dataType,
                         category: isGlobal ? .globals : nil
                     )
@@ -69,22 +71,24 @@ extension Factories {
 }
 
 extension Factories.DeclareType {
-    func dataType(for typeToken: Token) throws -> Symbol.DataType {
+    func dataType(for typeToken: Token) -> Symbol.DataType? {
         switch typeToken {
         case .atom("FALSE"):
             return .bool
         case .atom("FIX"):
             return .int
+        case .atom("OBJECT"):
+            return .object
+        case .atom("TABLE"):
+            return .table
+        case .atom("VECTOR"):
+            return .array(.zilElement)
         case .form(let tokens):
-            for token in tokens {
-                if let dataType = try? dataType(for: token) {
-                    return dataType
-                }
-            }
+            let types = tokens.compactMap { dataType(for: $0) }
+            return types.count == 1 ? types.first : nil
         default:
-            break
+            return nil
         }
-        throw Error.invalidDeclareTypeDeclaration(typeToken)
     }
 }
 
@@ -92,7 +96,6 @@ extension Factories.DeclareType {
 
 extension Factories.DeclareType {
     enum Error: Swift.Error {
-        case invalidDeclareTypeDeclaration(Token)
         case invalidDeclareTypeVariable(Token)
         case missingDeclareTypeVariable([Token])
     }

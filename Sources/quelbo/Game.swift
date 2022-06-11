@@ -84,17 +84,24 @@ extension Game {
     /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
     static func find(
         _ id: Symbol.Identifier,
+        type: Symbol.DataType? = nil,
         category: Symbol.Category? = nil
     ) throws -> Symbol {
         guard
             let symbol = shared.gameSymbols.first(where: {
-                guard let category = category else {
-                    return $0.id == id
+                if $0.id != id {
+                    return false
                 }
-                return $0.id == id && $0.category == category
+                if let type, type.isUnambiguous, $0.type != type {
+                    return false
+                }
+                if let category, $0.category != category {
+                    return false
+                }
+                return true
             })
         else {
-            throw GameError.symbolNotFound(id, category: category?.rawValue ?? "any")
+            throw GameError.symbolNotFound(id, category: category)
         }
         return symbol
     }
@@ -108,9 +115,8 @@ extension Game {
         guard symbol.type.hasReturnValue && symbol.type != .bool else {
             return
         }
-        // print("// 🥔 overwrite \(symbol.id) to \(symbol.type)")
         guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-            throw GameError.symbolNotFound(symbol.id, category: symbol.category?.rawValue ?? "any")
+            throw GameError.symbolNotFound(symbol.id, category: symbol.category)
         }
         shared.gameSymbols.remove(at: index)
         shared.gameSymbols.append(symbol)

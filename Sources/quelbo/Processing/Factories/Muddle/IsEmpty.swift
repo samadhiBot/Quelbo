@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(try symbol(0)).isEmpty",
+                "\(try symbol(0).code).isEmpty",
                 type: .bool,
                 children: symbols
             )

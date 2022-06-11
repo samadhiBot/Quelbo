@@ -22,7 +22,7 @@ extension Factories {
 
         var codeBlock: String {
             if let activation = symbols.first {
-                return "continue \(activation)"
+                return "continue \(activation.code)"
             } else {
                 return "continue"
             }
@@ -32,7 +32,6 @@ extension Factories {
             Symbol(
                 id: "<Again>",
                 code: codeBlock,
-//                type: .void,
                 children: symbols
             )
         }

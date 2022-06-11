@@ -21,7 +21,7 @@ extension Factories {
             let count = (try? symbol(1)) ?? Symbol("")
 
             return Symbol(
-                "\(structure).rest(\(count))",
+                "\(structure.code).rest(\(count.code))",
                 type: structure.type,
                 children: symbols
             )

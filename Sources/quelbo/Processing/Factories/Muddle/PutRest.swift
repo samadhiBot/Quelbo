@@ -25,7 +25,7 @@ extension Factories {
             let arrayTwo = try symbol(1)
 
             return Symbol(
-                "\(arrayOne).putRest(\(arrayTwo))",
+                "\(arrayOne.code).putRest(\(arrayTwo.code))",
                 type: arrayOne.type,
                 children: symbols
             )

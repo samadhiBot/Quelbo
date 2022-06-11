@@ -21,7 +21,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            Symbol("// Insert file '\(try symbol(0))'", type: .comment)
+            Symbol("// Insert file '\(try symbol(0).code)'", type: .comment)
         }
     }
 }

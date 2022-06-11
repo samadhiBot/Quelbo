@@ -29,6 +29,7 @@ struct Quelbo: ParsableCommand {
 
     func run() throws {
         let game = Game.shared
+        Pretty.sharedOption = Pretty.Option(colored: true)
 
         try gameFiles().forEach { file in
             guard file.extension?.lowercased() == "zil" else {
@@ -55,30 +56,18 @@ struct Quelbo: ParsableCommand {
                 game.printSymbols()
             }
         } catch {
-            print(
+            let hr = "\n========================================================================\n"
+            let remaining = game.gameTokens.count
+            let percentage = Int(100 * Double(total - remaining) / Double(total))
+            let result = """
+                Processing failed with \(remaining) of \(total) tokens unprocessed \
+                (\(percentage)% complete)
                 """
-
-                ⚠️  Incomplete processing results:
-                ============================================================
-
-                """
-            )
+            print("\n⚠️  Incomplete processing results:\(hr)")
             game.printSymbols()
-            print(
-                """
-
-                ⚙️  Processing failed with \(game.gameTokens.count) of \(total) tokens unprocessed
-                ============================================================
-                """
-            )
+            print("\n⚙️  \(result)\(hr)")
             Pretty.prettyPrint(error)
-            print(
-                """
-
-                💀 Processing failed with \(game.gameTokens.count) of \(total) tokens unprocessed
-
-                """
-            )
+            print("\n💀 \(result)\(hr)")
         }
     }
 }

@@ -31,7 +31,7 @@ extension Factories {
                 }
                 return Symbol(
                     id: "<Return>",
-                    code: "return \(value)",
+                    code: "return \(value.code)",
                     type: value.type,
                     children: [value]
                 )

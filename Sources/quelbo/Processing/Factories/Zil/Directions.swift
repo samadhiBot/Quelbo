@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 4/1/22.
 //
 
+import Fizmo
 import Foundation
 
 extension Factories {
@@ -24,60 +25,62 @@ extension Factories {
             .void
         }
 
+        override func processTokens() throws {
+            var tokens = tokens
+            while let dir = try? findNameSymbol(in: &tokens) {
+                var code = ""
+                var name = dir.code
+                let zil = dir.id.rawValue
+                if let fizmoDirection = Direction.find(zil) {
+                    name = fizmoDirection.id.description
+                } else {
+                    code = """
+                        /// Represents an exit toward \(name).
+                        public static let \(name) = Direction(
+                            id: "\(name)",
+                            synonyms: ["\(zil)"]
+                        )
+                        """
+                }
+                symbols.append(Symbol(
+                    id: .init(rawValue: name),
+                    code: code,
+                    type: .direction,
+                    category: .properties
+                ))
+            }
+            guard tokens.isEmpty else {
+                throw Error.unconsumedDirectionTokens(self.tokens)
+            }
+            guard !symbols.isEmpty else {
+                throw Error.noDirectionsDefined(self.tokens)
+            }
+            try Game.commit(symbols)
+        }
+
         override func process() throws -> Symbol {
+            let customDirections = symbols.filter { !$0.code.isEmpty }
             let symbol = Symbol(
                 id: "<Directions>",
                 code: """
-                    /// The set of possible movement directions.
-                    public enum Direction: String {
-                    \(directions.codeValues(.singleLineBreak, .indented))
+                    extension Direction {
+                    \(customDirections.codeValues(.singleLineBreak, .indented))
                     }
                     """,
                 type: .void,
-                children: directions
+                category: .directions,
+                children: symbols
             )
-            try Game.commit(directions)
             return symbol
         }
     }
 }
 
-extension Factories.Directions {
-    var directions: [Symbol] {
-        symbols.map { symbol in
-            var id = symbol.id
-            var code = "case \(symbol.id)"
-            if let improved = Improved(rawValue: symbol.id.rawValue) {
-                id = .init(stringLiteral: improved.name)
-                code = "case \(improved.name) = \"\(symbol.id)\""
-            }
-            return Symbol(
-                id: id,
-                code: code,
-                type: .direction,
-                category: .directions,
-                children: symbol.children
-            )
-        }
-    }
-}
+// MARK: - Errors
 
 extension Factories.Directions {
-    enum Improved: String {
-        case northEast = "ne"
-        case northWest = "nw"
-        case southEast = "se"
-        case southWest = "sw"
-        case into      = "in"
-
-        var name: String {
-            switch self {
-            case .northEast: return "northEast"
-            case .northWest: return "northWest"
-            case .southEast: return "southEast"
-            case .southWest: return "southWest"
-            case .into:      return "into"
-            }
-        }
+    enum Error: Swift.Error {
+        case noDirectionsDefined([Token])
+        case unconsumedDirectionTokens([Token])
     }
 }

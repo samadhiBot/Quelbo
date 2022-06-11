@@ -33,9 +33,9 @@ extension Factories {
             let synonyms = symbols.quoted.sorted.codeValues(.commaSeparated)
 
             let symbol = Symbol(
-                id: .init(stringLiteral: "<Synonyms:\(word)>"),
+                id: .init(stringLiteral: "<Synonyms:\(word.code)>"),
                 code: """
-                Syntax.set("\(word)", synonyms: \(synonyms))
+                Syntax.set("\(word.code)", synonyms: \(synonyms))
                 """,
                 type: .string,
                 category: .syntax

@@ -179,7 +179,6 @@ extension BlockProcessor {
     }
 
     var type: Symbol.DataType {
-
         code.type
     }
 

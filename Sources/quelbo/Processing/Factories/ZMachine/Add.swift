@@ -52,7 +52,7 @@ extension Factories {
                 code = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
             } else {
                 allSymbols = [first.with(meta: [.mutating(true)])] + symbols
-                code = "\(first).\(function)(\(symbols.codeValues(.commaSeparated)))"
+                code = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
             return Symbol(code, type: .int, children: allSymbols)

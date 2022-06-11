@@ -29,7 +29,7 @@ extension Factories {
             let length = try symbol(1)
 
             return Symbol(
-                "\(container).count == \(length)",
+                "\(container.code).count == \(length.code)",
                 type: .bool,
                 children: symbols
             )

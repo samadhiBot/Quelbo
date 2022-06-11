@@ -25,7 +25,7 @@ extension Factories {
             let newType = try symbol(1)
 
             return Symbol(
-                "\(value).changeType(\(newType))",
+                "\(value.code).changeType(\(newType.code))",
                 children: symbols
             )
         }

@@ -41,8 +41,8 @@ extension Factories.Cond {
 
             var ifStatement: String {
                 switch predicate.id {
-                    case "else", "t", "true": return ""
-                    default: return "if \(predicate) "
+                case "else", "t", "true": return ""
+                default: return "if \(predicate.code) "
                 }
             }
 

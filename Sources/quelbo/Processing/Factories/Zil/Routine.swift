@@ -37,7 +37,7 @@ extension Factories {
                 code: """
                     \(pro.discardableResult)\
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).
-                    func \(nameSymbol.code)(\(pro.params))\(pro.returnValue) {
+                    func \(nameSymbol.code)(\(pro.params.code))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
                     \(pro.codeBlock.indented)

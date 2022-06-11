@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 4/17/22.
 //
 
+import Fizmo
 import Foundation
 
 extension Factories {
@@ -12,15 +13,6 @@ extension Factories {
     /// [ROOM](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.13qzunr)
     /// type.
     class MoveDirection: ZilPropertyFactory {
-        static func find(_ zil: String) -> MoveDirection.Type? {
-            let name = zil.lowerCamelCase
-            let direction = Factories.Directions.Improved(rawValue: name)?.name ?? name
-            guard Game.directions.find(id: .init(stringLiteral: direction)) != nil else {
-                return nil
-            }
-            return Factories.MoveDirection.self
-        }
-
         override class var returnType: Symbol.DataType {
             .direction
         }
@@ -33,8 +25,15 @@ extension Factories {
 
         override func processTokens() throws {
             var tokens = tokens
-            let name = try findNameSymbol(in: &tokens).code
-            self.name = Factories.Directions.Improved(rawValue: name)?.name ?? name
+            let dirSymbol = try findNameSymbol(in: &tokens)
+            var direction = dirSymbol.code
+            if let predefined = Direction.find(dirSymbol.id.rawValue) {
+                direction = predefined.id.description
+            }
+            self.name = try Game.find(
+                .init(stringLiteral: direction),
+                category: .properties
+            ).id.rawValue
 
             while let token = tokens.shift() {
                 switch token {
