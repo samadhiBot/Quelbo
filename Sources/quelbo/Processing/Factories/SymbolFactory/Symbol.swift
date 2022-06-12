@@ -370,6 +370,11 @@ extension Array where Element == Symbol {
             return knownTypes[0]
         }
 
+        let unambiguousTypes = uniqueTypes.filter { !$0.isUnambiguous }
+        if unambiguousTypes.count == 1 {
+            return unambiguousTypes[0]
+        }
+
         return nil
     }
 

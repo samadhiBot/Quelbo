@@ -16,9 +16,16 @@ final class IsInTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("sandwich", type: .object, category: .objects),
-            Symbol("paperBag", type: .object, category: .objects),
+            Symbol(
+                "here",
+                type: .object,
+                category: .globals,
+                meta: [.maybeEmptyValue, .mutating(true)]
+            ),
             Symbol("kitchen", type: .object, category: .rooms),
+            Symbol("paperBag", type: .object, category: .objects),
+            Symbol("sandwich", type: .object, category: .objects),
+            Symbol("vVillain", type: .int, category: .constants),
         ])
     }
 
@@ -55,6 +62,26 @@ final class IsInTests: QuelboTests {
                 Symbol("paperBag", type: .object, category: .objects),
                 Symbol("kitchen", type: .object, category: .rooms),
             ]
+        ))
+    }
+
+    func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
+        let symbol = try factory.init([
+            .form([
+                .atom("SET"),
+                .atom("O"),
+                .form([
+                    .atom("GET"),
+                    .local("OO"),
+                    .global("V-VILLAIN")
+                ])
+            ]),
+            .global("HERE")
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            "o.set(to: try oo.get(at: vVillain)).isIn(here)",
+            type: .bool
         ))
     }
 

@@ -1,5 +1,5 @@
 //
-//  HasAttributeTests.swift
+//  HasFlagTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 5/7/22.
@@ -9,8 +9,8 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class HasAttributeTests: QuelboTests {
-    let factory = Factories.HasAttribute.self
+final class HasFlagTests: QuelboTests {
+    let factory = Factories.HasFlag.self
 
     override func setUp() {
         super.setUp()
@@ -25,14 +25,14 @@ final class HasAttributeTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("FSET?"))
     }
 
-    func testHasAttribute() throws {
+    func testHasFlag() throws {
         let symbol = try factory.init([
             .global("KITCHEN-WINDOW"),
             .global("OPENBIT"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "kitchenWindow.hasAttribute(openBit)",
+            "kitchenWindow.hasFlag(openBit)",
             type: .bool,
             children: [
                 Symbol(

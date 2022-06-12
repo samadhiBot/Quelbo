@@ -17,7 +17,7 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .twoOrMore(.unknown)
+            .oneOrMore(.unknown)
         }
 
         override class var returnType: Symbol.DataType {
@@ -30,9 +30,9 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let type = symbols.commonType() ?? .unknown
-            guard [.bool, .int].contains(type) else {
-                throw Error.invalidAndArgumentType(symbols)
-            }
+//            guard [.bool, .int, .object].contains(type) else {
+//                throw Error.invalidAndArgumentType(symbols)
+//            }
 
             return Symbol(
                 ".\(function)(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",

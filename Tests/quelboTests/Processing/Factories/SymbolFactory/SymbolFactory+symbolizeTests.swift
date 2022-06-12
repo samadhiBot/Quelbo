@@ -206,4 +206,17 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             meta: [.isLiteral]
         ))
     }
+
+    func testSymbolizeTypeByte() throws {
+        let symbol = try testFactory.init([
+            .type("BYTE"),
+            .decimal(42),
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "42",
+            type: .int8,
+            meta: [.isLiteral]
+        ))
+    }
 }

@@ -11,7 +11,7 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [SET](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.27jua8u) and
     /// [SETG](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.mp4kgn)
-    /// functions.
+    /// (when called at routine level) functions.
     class Set: ZMachineFactory {
         override class var zilNames: [String] {
             ["SET", "SETG"]

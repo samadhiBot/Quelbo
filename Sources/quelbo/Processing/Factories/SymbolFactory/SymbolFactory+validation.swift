@@ -14,7 +14,8 @@ extension SymbolFactory {
             throw ValidationError.invalidParameterCount(
                 nonCommentParams.count,
                 expected: Self.parameters.range,
-                in: nonCommentParams
+                in: nonCommentParams,
+                factory: self
             )
         }
 
@@ -70,11 +71,14 @@ extension SymbolFactory {
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
+            if declaredType.shouldReplaceType(in: symbol) {
+                return symbol.with(type: declaredType)
+            }
         case (true, false):
             if declaredType.acceptsLiteral || symbol.category == .properties {
                 return symbol
             }
-            if declaredType.supersedes(symbol.id) {
+            if declaredType.shouldReplaceType(in: symbol) {
                 return symbol.with(type: declaredType)
             }
             if declaredType.isUnknown && !symbol.type.isUnknown {
@@ -122,6 +126,21 @@ extension SymbolFactory {
                 code: ".int(\(symbol.code))",
                 type: .zilElement
             )
+        case .int8:
+            return symbol.with(
+                code: ".int8(\(symbol.code))",
+                type: .zilElement
+            )
+        case .int16:
+            return symbol.with(
+                code: ".int16(\(symbol.code))",
+                type: .zilElement
+            )
+        case .int32:
+            return symbol.with(
+                code: ".int32(\(symbol.code))",
+                type: .zilElement
+            )
         case .object:
             if symbol.category == .rooms {
                 return symbol.with(
@@ -166,7 +185,12 @@ extension SymbolFactory {
             found: Symbol.DataType,
             siblings: [Symbol]
         )
-        case invalidParameterCount(Int, expected: ClosedRange<Int>, in: [Symbol])
+        case invalidParameterCount(
+            Int,
+            expected: ClosedRange<Int>,
+            in: [Symbol],
+            factory: SymbolFactory
+        )
         case unexpectedZilElement(Symbol)
     }
 }

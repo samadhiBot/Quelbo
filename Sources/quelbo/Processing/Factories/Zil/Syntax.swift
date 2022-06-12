@@ -94,7 +94,7 @@ extension Factories.Syntax {
                 guard case .atom(let zil) = listTokens.shift() else {
                     throw Error.missingSyntaxAtomAfterFind(listTokens)
                 }
-                let flag = Flag.find(id: zil.lowerCamelCase, zil: zil)
+                let flag = Flag.find(zil.lowerCamelCase)
                 definition.append("where: \(flag.id)")
                 guard listTokens.isEmpty else {
                     throw Error.unconsumedSyntaxTokensAfterFind(listTokens)

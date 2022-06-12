@@ -63,10 +63,20 @@ extension Game {
     static func commit(_ symbols: [Symbol]) throws {
         try symbols.forEach { symbol in
             if let existing = try? find(symbol.id) {
-                guard symbol == existing else {
-                    throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
+                if symbol == existing {
+                    return
                 }
-                return
+                switch (symbol.category, existing.category) {
+                case (.constants, .globals): return
+                case (.globals, .constants): return try overwrite(symbol)
+                default: break
+                }
+                if symbol.type.shouldReplaceType(in: existing) {
+                    try overwrite(symbol)
+                } else if existing.type.shouldReplaceType(in: symbol) {
+                    return
+                }
+                throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
             }
             shared.gameSymbols.append(symbol)
         }

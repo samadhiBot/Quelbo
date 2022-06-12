@@ -221,6 +221,8 @@ extension SymbolFactory {
             )
         case .global(let name):
             zil = name
+        case .local(let name):
+            zil = name
         default:
             throw SymbolizationError.invalidZilForm(formTokens)
         }
@@ -323,15 +325,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil quote.
     func symbolizeQuote(_ token: Token) throws -> Symbol {
-//        guard let symbol = try symbolize([token]).first else {
-//            throw SymbolizationError.evaluationFailed(token)
-//        }
-//        return symbol.with(meta: [.eval(token)])
-//        Symbol(
-//            id: "<Quote>",
-//            meta: [.eval(token)]
-//        )
-        try symbolize(token)
+        try Factories.Quote([token]).process()
     }
 
     /// Translates a Zil
@@ -342,14 +336,6 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil segment.
     func symbolizeSegment(_ token: Token) throws -> Symbol {
-//        try symbolize(token)
-//        let evaluated = try evaluate(token)
-//        var symbols = try symbolize([evaluated])
-//        guard let symbol = symbols.shift(), symbols.isEmpty else {
-//            throw SymbolizationError.evaluationFailed(token)
-//        }
-//        return symbol
-
         try Factories.Segment([token]).process()
     }
 
@@ -365,7 +351,10 @@ extension SymbolFactory {
     func symbolizeType(_ type: String, siblings: inout [Token]) throws -> Symbol {
         switch type {
         case "BYTE":
-            return Symbol("BYTE (not yet implemented)")
+            guard case .decimal(let value) = siblings.shift() else {
+                throw SymbolizationError.missingDeclarationValue(siblings)
+            }
+            return Symbol("\(value)", type: .int8, meta: [.isLiteral])
         case "DECL":
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)

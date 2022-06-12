@@ -25,6 +25,10 @@ final class CondTests: QuelboTests {
             Symbol("thisIsIt", type: .bool, category: .routines),
             Symbol("troll", type: .object, category: .objects),
             Symbol("wonFlag", type: .bool, category: .globals),
+            Symbol("prsi", type: .object, category: .globals),
+            Symbol("openBit", type: .bool, category: .flags),
+            Symbol("vehBit", type: .bool, category: .flags),
+            Symbol("isOpenable", type: .bool, category: .routines),
         ])
     }
 
@@ -112,14 +116,14 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
-            """
+                """
                 if rarg.equals(mEnter) {
                     output("Rarg equals mEnter")
                 } else if troll.isIn(here) {
                     thisIsIt()
                 }
                 """,
-            type: .void
+                type: .void
         ))
     }
 
@@ -135,12 +139,12 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
-            """
+                """
                 if wonFlag {
                     output(" A secret path leads southwest into the forest.")
                 }
                 """,
-            type: .void
+                type: .void
         ))
     }
 
@@ -233,6 +237,55 @@ final class CondTests: QuelboTests {
                     output("RETURN EXIT ROUTINE")
                 }
                 """#,
+                type: .void
+        ))
+    }
+
+    func testASD() throws {
+        let symbol = try factory.init([
+            .list([
+                .form([
+                    .atom("OR"),
+                    .form([
+                        .atom("FSET?"),
+                        .global("PRSI"),
+                        .global("OPENBIT")
+                    ]),
+                    .form([
+                        .atom("OPENABLE?"),
+                        .global("PRSI")
+                    ]),
+                    .form([
+                        .atom("FSET?"),
+                        .global("PRSI"),
+                        .global("VEHBIT")
+                    ])
+                ])
+            ]),
+            .list([
+                .atom("T"),
+                .form([
+                    .atom("TELL"),
+                    .string("You can't do that."),
+                    .atom("CR")
+                ]),
+                .form([
+                    .atom("RTRUE")
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+                if .or(
+                    prsi.hasFlag(openBit),
+                    isOpenable(),
+                    prsi.hasFlag(vehBit)
+                ) { } else {
+                    output("You can't do that.")
+                    return true
+                }
+                """,
             type: .void
         ))
     }

@@ -32,13 +32,16 @@ extension Factories.Cond {
         var symbols = symbols
         while let list = symbols.shift() {
             var condition = list.children
-            guard
-                let predicate = condition.shift(),
-                !condition.isEmpty
-            else {
+            guard let predicate = condition.shift() else {
                 throw Error.invalidConditionalValue(list.children)
             }
-
+            var expressions: String {
+                if condition.isEmpty {
+                    return " "
+                } else {
+                    return "\n\(condition.codeValues(.singleLineBreak, .indented))\n"
+                }
+            }
             var ifStatement: String {
                 switch predicate.id {
                 case "else", "t", "true": return ""
@@ -48,9 +51,7 @@ extension Factories.Cond {
 
             conditions.append(Symbol(
                 """
-                \(ifStatement){
-                \(condition.codeValues(.singleLineBreak, .indented))
-                }
+                \(ifStatement){\(expressions)}
                 """,
                 children: list.children
             ))

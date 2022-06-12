@@ -26,11 +26,17 @@ final class OrTests: QuelboTests {
     }
 
     func testOrOneValue() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .bool(true)
-            ]).process()
-        )
+        let symbol = try factory.init([
+            .bool(true),
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            ".or(true)",
+            type: .bool,
+            children: [
+                .trueSymbol,
+            ]
+        ))
     }
 
     func testOrTwoBooleans() throws {

@@ -112,6 +112,62 @@ final class AddTests: QuelboTests {
         ))
     }
 
+    func testAddOneToTableElement() throws {
+        let symbol = try factory.init([
+            .form([
+                .atom("GETB"),
+                .local("SRC"),
+                .decimal(0)
+            ]),
+            .decimal(1)
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "try src.get(at: 0).add(1)",
+            type: .int,
+            children: [
+                Symbol(
+                    "try src.get(at: 0)",
+                    type: .zilElement,
+                    children: [
+                        Symbol(
+                            "src",
+                            type: .table
+                        ),
+                        Symbol(
+                            "0",
+                            type: .int,
+                            meta: [.isLiteral, .maybeEmptyValue]
+                        )
+                    ],
+                    meta: [.mutating(true)]
+                ),
+                Symbol(
+                    "1",
+                    type: .int,
+                    meta: [.isLiteral]
+                )
+            ]
+        ))
+    }
+
+    func testAddOneToGlobalDefinedAsFalse() throws {
+        let _ = try Factories.Global([
+            .atom("P-ACLAUSE"),
+            .bool(false)
+        ]).process()
+
+        let symbol = try factory.init([
+            .global("P-ACLAUSE"),
+            .decimal(1)
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            "pAclause.add(1)",
+            type: .int
+        ))
+    }
+
     func testAddOneDecimalThrows() throws {
         XCTAssertThrowsError(
             try factory.init([

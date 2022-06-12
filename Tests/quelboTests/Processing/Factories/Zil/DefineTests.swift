@@ -609,4 +609,157 @@ final class DefineTests: QuelboTests {
             category: .routines
         ))
     }
+
+//    func testDefineMultiBits() throws {
+//        let symbol = try factory.init([
+//            .atom("MULTIBITS"),
+//            .list([
+//                .atom("X"),
+//                .atom("OBJ"),
+//                .atom("ATMS"),
+//                .string("AUX"),
+//                .list([
+//                    .atom("O"),
+//                    .list([
+//                    ])
+//                ]),
+//                .atom("ATM")
+//            ]),
+//            .form([
+//                .atom("REPEAT"),
+//                .list([
+//                ]),
+//                .form([
+//                    .atom("COND"),
+//                    .list([
+//                        .form([
+//                            .atom("EMPTY?"),
+//                            .local("ATMS")
+//                        ]),
+//                        .form([
+//                            .atom("RETURN!-"),
+//                            .form([
+//                                .atom("COND"),
+//                                .list([
+//                                    .form([
+//                                        .atom("LENGTH?"),
+//                                        .local("O"),
+//                                        .decimal(1)
+//                                    ]),
+//                                    .form([
+//                                        .atom("NTH"),
+//                                        .local("O"),
+//                                        .decimal(1)
+//                                    ])
+//                                ]),
+//                                .list([
+//                                    .form([
+//                                        .atom("==?"),
+//                                        .local("X"),
+//                                        .atom("FSET?")
+//                                    ]),
+//                                    .form([
+//                                        .atom("FORM"),
+//                                        .atom("OR"),
+//                                        .segment(.local("O"))
+//                                    ])
+//                                ]),
+//                                .list([
+//                                    .atom("ELSE"),
+//                                    .form([
+//                                        .atom("FORM"),
+//                                        .atom("PROG"),
+//                                        .list([
+//                                        ]),
+//                                        .segment(.local("O"))
+//                                    ])
+//                                ])
+//                            ])
+//                        ])
+//                    ])
+//                ]),
+//                .form([
+//                    .atom("SET"),
+//                    .atom("ATM"),
+//                    .form([
+//                        .atom("NTH"),
+//                        .local("ATMS"),
+//                        .decimal(1)
+//                    ])
+//                ]),
+//                .form([
+//                    .atom("SET"),
+//                    .atom("ATMS"),
+//                    .form([
+//                        .atom("REST"),
+//                        .local("ATMS")
+//                    ])
+//                ]),
+//                .form([
+//                    .atom("SET"),
+//                    .atom("O"),
+//                    .list([
+//                        .form([
+//                            .atom("FORM"),
+//                            .local("X"),
+//                            .local("OBJ"),
+//                            .form([
+//                                .atom("COND"),
+//                                .list([
+//                                    .form([
+//                                        .atom("TYPE?"),
+//                                        .local("ATM"),
+//                                        .atom("FORM")
+//                                    ]),
+//                                    .local("ATM")
+//                                ]),
+//                                .list([
+//                                    .atom("ELSE"),
+//                                    .form([
+//                                        .atom("FORM"),
+//                                        .atom("GVAL"),
+//                                        .local("ATM")
+//                                    ])
+//                                ])
+//                            ])
+//                        ]),
+//                        .segment(.local("O"))
+//                    ])
+//                ])
+//            ])
+//        ]).process()
+//
+//        let expected = Symbol(
+//            id: "multiBits",
+//            code: """
+//                """,
+//            type: .int,
+//            category: .routines
+//        )
+//
+//        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+////        XCTAssertNoDifference(
+////            try Game.find("multiBits", category: .routines).ignoringChildren,
+////            expected
+////        )
+//
+////        let caller = try testFactory.init([
+////            .form([
+////                .atom("DOUBLE"),
+////                .atom("FOO")
+////            ])
+////        ]).process()
+////
+////        XCTAssertNoDifference(caller, Symbol(
+////            "double(x: foo)",
+////            type: .int,
+////            children: [
+////                Symbol(
+////                    id: "x",
+////                    code: "x: foo",
+////                    type: .int
+////                )
+////            ]
+////        ))
+//    }
 }

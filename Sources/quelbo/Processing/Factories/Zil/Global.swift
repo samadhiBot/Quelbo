@@ -11,7 +11,7 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [GLOBAL](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2nusc19) and
     /// [SETG](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.415t9al)
-    /// functions.
+    /// (when called at root level) functions.
     class Global: ZilFactory {
         override class var zilNames: [String] {
             ["GLOBAL", "SETG"]

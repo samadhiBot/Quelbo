@@ -365,11 +365,24 @@ final class GlobalTests: QuelboTests {
     }
 
     func testQuoted() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .quote(.string("BAR"))
-            ]).process()
+        let symbol = try factory.init([
+            .atom("FOO"),
+            .quote(.string("BAR"))
+        ]).process()
+
+        let expected = Symbol(
+            id: "foo",
+            code: """
+                var foo: String = "BAR"
+                """,
+            type: .string,
+            category: .globals
+        )
+
+        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(
+            try Game.find("foo", category: .globals).ignoringChildren,
+            expected
         )
     }
 

@@ -26,17 +26,23 @@ final class AndTests: QuelboTests {
     }
 
     func testAndOneValue() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .bool(true)
-            ]).process()
-        )
+        let symbol = try factory.init([
+            .bool(true),
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            ".and(true)",
+            type: .bool,
+            children: [
+                .trueSymbol,
+            ]
+        ))
     }
 
     func testAndTwoLiterals() throws {
         let symbol = try factory.init([
             .bool(true),
-            .bool(true)
+            .bool(true),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

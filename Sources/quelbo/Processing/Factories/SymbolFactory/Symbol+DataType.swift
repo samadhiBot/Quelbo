@@ -15,6 +15,9 @@ extension Symbol {
         case comment
         case direction
         case int
+        case int8
+        case int16
+        case int32
         case object
         case property
         case routine
@@ -47,6 +50,9 @@ extension Symbol.DataType {
         case .comment: break
         case .direction: break
         case .int: return "0"
+        case .int8: return "0"
+        case .int16: return "0"
+        case .int32: return "0"
         case .object: return ".nullObject"
         case .property: break
         case .routine: break
@@ -92,7 +98,7 @@ extension Symbol.DataType {
     var isLiteral: Bool {
         switch self {
         case .array(let type): return type.isLiteral
-        case .bool, .direction, .int, .string, .zilElement: return true
+        case .bool, .direction, .int, .int8, .int16, .int32, .string, .zilElement: return true
         default: return false
         }
     }
@@ -117,21 +123,24 @@ extension Symbol.DataType {
         }
     }
 
-    /// Whether the data type should supersede the one in the specified symbol in the case of a
-    /// type conflict.
+    /// Whether the data type should replace that in the specified symbol when a type conflict
+    /// occurs.
     ///
     /// - Parameter symbol: A symbol with a conflicting type.
     ///
     /// - Returns: Whether the data type should supersede the one in the specified symbol.
-    func supersedes(_ id: Symbol.Identifier) -> Bool {
-        guard
-            self == .object,
-            let committed = try? Game.find(id),
-            committed.meta.contains(.maybeEmptyValue)
-        else {
+    func shouldReplaceType(in symbol: Symbol) -> Bool {
+        if symbol.type == .zilElement {
+            return true
+        }
+        switch self {
+        case .bool:
+            return symbol.type == .int
+        case .int, .object, .string, .table:
+            return symbol.meta.contains(.maybeEmptyValue)
+        default:
             return false
         }
-        return true
     }
 }
 
@@ -145,6 +154,9 @@ extension Symbol.DataType: CustomStringConvertible {
         case .comment:            return "<Comment>"
         case .direction:          return "Direction"
         case .int:                return "Int"
+        case .int8:               return "Int8"
+        case .int16:              return "Int16"
+        case .int32:              return "Int32"
         case .object:             return "Object"
         case .property:           return "<Property>"
         case .routine:            return "Routine"
