@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 4/7/22.
 //
 
+import Fizmo
 import Foundation
 
 extension Factories {
@@ -24,22 +25,23 @@ extension Factories {
             .table
         }
 
-        var isPureTable: Bool {
-            false
+        var presetFlags: [Fizmo.Table.Flag] {
+            []
         }
 
-        var isLengthTable: Bool {
-            false
-        }
+        var flags: Swift.Set<Fizmo.Table.Flag> = []
 
         override func processTokens() throws {
             try super.processTokens()
 
+            presetFlags.forEach { flags.insert($0) }
             checkFlags()
         }
 
         override func process() throws -> Symbol {
-            Symbol(
+            processFlags()
+
+            return Symbol(
                 "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .table,
                 children: symbols
@@ -50,26 +52,33 @@ extension Factories {
 
 extension Factories.Table {
     func checkFlags() {
-        var isPureTable = isPureTable
-        var isLengthTable = isLengthTable
-
-        if let flags = symbols.first, flags.id == "<Flags>" {
-            symbols.removeFirst()
-            if flags.children.contains(where: { $0.id == "pure" }) {
-                isPureTable = true
-            }
-            if flags.children.contains(where: { $0.id == "length" }) {
-                isLengthTable = true
-            }
+        guard
+            let symbol = symbols.first,
+            symbol.containsTableFlags
+        else {
+            return
         }
+        symbols.removeFirst()
 
-        if isPureTable {
-            self.isMutable = false
-            symbols.append(Symbol("isMutable: false"))
+        let fizmoFlags = symbol.children.compactMap {
+            Fizmo.Table.Flag(rawValue: $0.code)
         }
+        fizmoFlags.forEach { flags.insert($0) }
+    }
 
-        if isLengthTable {
-            symbols.append(Symbol("hasLengthFlag: true"))
+    func processFlags() {
+        guard !flags.isEmpty else {
+            return
+        }
+        let flagValues = flags
+            .map({ ".\($0)" })
+            .sorted()
+            .joined(separator: ", ")
+        symbols.append(Symbol(
+            "flags: [\(flagValues)]"
+        ))
+        if flags.contains(.pure) {
+            isMutable = false
         }
     }
 }

@@ -32,20 +32,20 @@ extension Factories {
                 if let flag = try? Game.find(symbol.id, category: .flags) {
                     return flag
                 } else {
-                    var flagCode = symbol.code
-                    if let predefined = Flag.find(symbol.code) {
-                        flagCode = predefined.id.description
-                    }
-                    let flag = symbol.with(code: flagCode, category: .flags)
-                    try Game.commit(flag)
-                    return flag
+                    let flag = Flag.find(symbol.code)
+                    let flagSymbol = symbol.with(
+                        code: flag.id.description,
+                        category: .flags
+                    )
+                    try Game.commit(flagSymbol)
+                    return flagSymbol
                 }
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                id: "flags",
+                id: .id("flags"),
                 code: "flags: [\(symbols.sorted.codeValues(.commaSeparated))]",
                 type: Self.returnType,
                 children: symbols

@@ -81,3 +81,39 @@ extension Token {
         }
     }
 }
+
+extension Array where Element == Token {
+    enum ReplacementError: Error {
+        case invalidReplacementTokens(original: Token, replacement: Token)
+    }
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - originalToken: <#originalToken description#>
+    ///   - replacementToken: <#replacementToken description#>
+    /// - Returns: <#description#>
+    func deepReplacing(_ originalToken: Token, with replacementToken: Token) throws -> [Token] {
+        let original = originalToken.value
+        let replacement = replacementToken.value
+
+        return try map { (token: Token) -> Token in
+            switch token {
+            case .atom(let string):
+                return .atom(string == original ? replacement : string)
+            case .form(let tokens):
+                return try .form(tokens.deepReplacing(originalToken, with: replacementToken))
+            case .global(let string):
+                return .global(string == original ? replacement : string)
+            case .list(let tokens):
+                return try .list(tokens.deepReplacing(originalToken, with: replacementToken))
+            case .local(let string):
+                return .local(string == original ? replacement : string)
+            case .property(let string):
+                return .property(string == original ? replacement : string)
+            case .vector(let tokens):
+                return try  .vector(tokens.deepReplacing(originalToken, with: replacementToken))
+            default: return token
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 6/2/22.
 //
 
+import Fizmo
 import Foundation
 
 extension Factories {
@@ -16,12 +17,8 @@ extension Factories {
             ["PLTABLE"]
         }
 
-        override var isLengthTable: Bool {
-            true
-        }
-
-        override var isPureTable: Bool {
-            true
+        override var presetFlags: [Fizmo.Table.Flag] {
+            [.length, .pure]
         }
     }
 }

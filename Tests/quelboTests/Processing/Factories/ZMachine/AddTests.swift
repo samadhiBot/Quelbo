@@ -128,7 +128,7 @@ final class AddTests: QuelboTests {
             children: [
                 Symbol(
                     "try src.get(at: 0)",
-                    type: .zilElement,
+                    type: .int,
                     children: [
                         Symbol(
                             "src",

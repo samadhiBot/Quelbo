@@ -32,7 +32,7 @@ extension Factories {
 
             var symbols = try symbolize(tokens)
             self.applicable = try Game.find(
-                .init(stringLiteral: applicableName),
+                .id(applicableName),
                 category: .routines
             )
 

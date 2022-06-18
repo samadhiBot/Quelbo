@@ -32,9 +32,9 @@ extension Factories {
             }
 
             return Symbol(
-                id: .init(stringLiteral: name.code),
+                id: .id(name.code),
                 code: "\(name.code): \(code)",
-                type: symbols.commonType() ?? .unknown,
+                type: symbols.map(\.type).common ?? .unknown,
                 children: symbols
             )
         }

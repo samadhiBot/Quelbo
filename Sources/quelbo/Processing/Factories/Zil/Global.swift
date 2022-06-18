@@ -49,7 +49,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .init(stringLiteral: nameSymbol.code),
+                id: .id(nameSymbol.code),
                 code: codeBlock,
                 type: valueSymbol.type,
                 category: isMutable ? .globals : .constants,

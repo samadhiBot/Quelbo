@@ -49,8 +49,7 @@ final class PureLengthTableTests: QuelboTests {
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
-                    isMutable: false,
-                    hasLengthFlag: true
+                    flags: [.length, .pure]
                 )
                 """,
             type: .table,
@@ -58,8 +57,7 @@ final class PureLengthTableTests: QuelboTests {
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol("isMutable: false"),
-                Symbol("hasLengthFlag: true"),
+                Symbol("flags: [.length, .pure]"),
             ]
         ))
     }
@@ -81,8 +79,7 @@ final class PureLengthTableTests: QuelboTests {
                     .int(1),
                     .int(0),
                     .bool(trollMelee),
-                    isMutable: false,
-                    hasLengthFlag: true
+                    flags: [.length, .pure]
                 )
                 """,
             type: .table
@@ -111,8 +108,7 @@ final class PureLengthTableTests: QuelboTests {
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                    isMutable: false,
-                    hasLengthFlag: true
+                    flags: [.length, .pure]
                 )
                 """,
             type: .table
@@ -148,8 +144,7 @@ final class PureLengthTableTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(trollMelee),
-                        isMutable: false,
-                        hasLengthFlag: true
+                        flags: [.length, .pure]
                     )),
                     .table(Table(
                         .object(thief),
@@ -158,8 +153,7 @@ final class PureLengthTableTests: QuelboTests {
                         .int(0),
                         .bool(thiefMelee)
                     )),
-                    isMutable: false,
-                    hasLengthFlag: true
+                    flags: [.length, .pure]
                 )
                 """,
             type: .table

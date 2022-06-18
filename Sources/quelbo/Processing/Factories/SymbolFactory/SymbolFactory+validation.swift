@@ -33,7 +33,7 @@ extension SymbolFactory {
         }
         switch Self.parameters {
         case .one, .oneOrMore, .twoOrMore:
-            guard typedSymbols.commonType() != nil else {
+            guard typedSymbols.map(\.type).common != nil else {
                 throw Symbol.Error.typeNotFound(typedSymbols)
             }
         default: break
@@ -90,7 +90,7 @@ extension SymbolFactory {
             if symbol.type.isContainer || symbol.type.hasKnownReturnValue {
                 return symbol
             }
-            return symbol.with(type: siblings.commonType())
+            return symbol.with(type: siblings.map(\.type).common)
         }
 
         throw ValidationError.failedToDetermineType(
@@ -105,7 +105,7 @@ extension SymbolFactory {
         switch symbol.type {
         case .array:
             if symbol.containsTableFlags {
-                return symbol.with(id: "<Flags>")
+                return symbol //.with(id: "<Flags>")
             }
             return symbol.with(
                 code: ".table([\(symbol.children.codeValues(.commaSeparated))])",
@@ -168,7 +168,7 @@ extension SymbolFactory {
                 code: ".table(\(symbol.code))",
                 type: .zilElement
             )
-        case .direction, .property, .routine, .thing, .unknown, .void, .variable:
+        case .direction, .optional, .property, .routine, .thing, .unknown, .void, .variable:
             throw ValidationError.unexpectedZilElement(symbol)
         }
     }

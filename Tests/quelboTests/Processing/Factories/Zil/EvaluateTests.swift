@@ -1,5 +1,5 @@
 //
-//  EvaluateTests.swift
+//  RoutineCallTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/30/22.
@@ -9,7 +9,7 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class EvaluateTests: QuelboTests {
+final class RoutineCallTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
@@ -50,7 +50,7 @@ final class EvaluateTests: QuelboTests {
     }
 
     func testProcessRoutineZeroParams() throws {
-        let symbol = try Factories.Evaluate.init([
+        let symbol = try Factories.RoutineCall.init([
             .atom("BAG-OF-COINS-F")
         ]).process()
 
@@ -61,7 +61,7 @@ final class EvaluateTests: QuelboTests {
     }
 
     func testProcessRoutineOneParam() throws {
-        let symbol = try Factories.Evaluate.init([
+        let symbol = try Factories.RoutineCall.init([
             .atom("ONE-FCN"),
             .decimal(42)
         ]).process()
@@ -76,7 +76,7 @@ final class EvaluateTests: QuelboTests {
     }
 
     func testProcessRoutineTwoParams() throws {
-        let symbol = try Factories.Evaluate.init([
+        let symbol = try Factories.RoutineCall.init([
             .atom("TWO-F"),
             .string("Answer"),
             .decimal(42),
@@ -98,7 +98,7 @@ final class EvaluateTests: QuelboTests {
     }
 
     func testProcessRoutineThreeParams() throws {
-        let symbol = try Factories.Evaluate.init([
+        let symbol = try Factories.RoutineCall.init([
             .atom("THREE-FUNCTION"),
             .string("Answer"),
             .bool(true),

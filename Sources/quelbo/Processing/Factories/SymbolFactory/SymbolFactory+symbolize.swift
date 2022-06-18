@@ -121,7 +121,7 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
-        if let defined = try? Game.find(.init(stringLiteral: name), type: expectedType) {
+        if let defined = try? Game.find(.id(name), type: expectedType) {
             return defined.with(code: name)
         }
         if zil == "T" {
@@ -227,15 +227,26 @@ extension SymbolFactory {
             throw SymbolizationError.invalidZilForm(formTokens)
         }
 
-        let factory: SymbolFactory
-        if let zMachine = try Game.zMachineSymbolFactories
-            .find(zil)?
-            .init(tokens, in: blockType, with: types)
-        {
-            factory = zMachine
-        } else {
-            factory = try Factories.Evaluate(formTokens, with: types)
+        func findFactory() throws -> SymbolFactory {
+            if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
+                tokens,
+                in: blockType,
+                with: types
+            ) {
+                return zMachine
+            }
+            let id = Symbol.Identifier.id(zil.lowerCamelCase)
+            if let _ = try? Game.find(id, category: .routines) {
+                return try Factories.RoutineCall(formTokens, with: types)
+            }
+            if let _ = try? Game.find(id, category: .definitions) {
+                let _ = try Factories.DefinitionEval(formTokens, with: types).process()
+                return try Factories.RoutineCall(formTokens, with: types)
+            }
+            throw SymbolizationError.noRoutineOrDefinition(formTokens)
         }
+
+        let factory = try findFactory()
         let symbol = try factory.process()
         self.isMutable = factory.isMutable
         return symbol
@@ -255,7 +266,7 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-        return try Game.find(.init(stringLiteral: name)).with(code: name)
+        return try Game.find(.id(name)).with(code: name)
     }
 
     /// Translates a Zil
@@ -282,10 +293,9 @@ extension SymbolFactory {
         _ zil: String,
         at index: Int
     ) throws -> Symbol {
-        Symbol(
-            zil.lowerCamelCase,
-            type: try Self.parameters.expectedType(at: index)
-        )
+        let name = zil.lowerCamelCase
+        let localType = try findType(of: .id(name), at: index)
+        return Symbol(name, type: localType)
     }
 
     /// Translates a Zil Object
@@ -302,7 +312,7 @@ extension SymbolFactory {
             category = .properties
             type = property.returnType
         } else if let _ = try? Game.find(
-            .init(rawValue: property.lowerCamelCase),
+            .id(property.lowerCamelCase),
             category: .properties
         ) {
             category = .directions
@@ -384,6 +394,7 @@ extension SymbolFactory {
 extension SymbolFactory {
     enum SymbolizationError: Swift.Error {
         case invalidZilForm([Token])
+        case noRoutineOrDefinition([Token])
         case singleTokenSymbolizationFailed(Token)
         case unknownZilProperty(String)
         case unknownType(String)

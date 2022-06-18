@@ -192,8 +192,7 @@ final class ConstantTests: QuelboTests {
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                    isMutable: false,
-                    hasLengthFlag: true
+                    flags: [.length, .pure]
                 )
                 """,
             type: .table,
@@ -264,7 +263,7 @@ final class ConstantTests: QuelboTests {
                         .int(0),
                         .bool(cyclopsMelee)
                     )),
-                    hasLengthFlag: true
+                    flags: [.length]
                 )
                 """,
             type: .table,

@@ -17,10 +17,8 @@ extension Symbol {
         /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
         case blockType(SymbolFactory.ProgramBlockType)
 
-        /// Represents a ``Token`` that has not yet been evaluated.
-        ///
-        /// Applies when a token was defined or quoted in the Zil source code.
-        case eval(Token)
+        /// Specifies an unevaluated ``Token`` array.
+        case zil([Token])
 
         /// Specifies that the symbol represents a literal value.
         case isLiteral
@@ -54,11 +52,11 @@ extension Array where Element == Symbol.MetaData {
                 switch (element, newMeta) {
                 case (.activation, .activation),
                      (.blockType, .blockType),
-                     (.eval, .eval),
                      (.isLiteral, .isLiteral),
                      (.mutating, .mutating),
                      (.paramDeclarations, .paramDeclarations),
-                     (.type, .type):
+                     (.type, .type),
+                     (.zil, .zil):
                     meta.remove(at: index)
                 default: break
                 }

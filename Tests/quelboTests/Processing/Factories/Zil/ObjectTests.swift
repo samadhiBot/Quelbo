@@ -116,8 +116,7 @@ final class ObjectTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "action",
-                    code: "action: whiteHouseFunc",
+                    "action: whiteHouseFunc",
                     type: .routine,
                     children: [
                         Symbol("whiteHouseFunc", type: .routine)
@@ -404,8 +403,7 @@ final class ObjectTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "action",
-                    code: "action: batFunc",
+                    "action: batFunc",
                     type: .routine,
                     children: [
                         Symbol("batFunc", type: .routine),
@@ -719,8 +717,7 @@ final class ObjectTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "action",
-                    code: "action: waterFunc",
+                    "action: waterFunc",
                     type: .routine,
                     children: [
                         Symbol(
@@ -865,8 +862,7 @@ final class ObjectTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "action",
-                    code: "action: trollFunc",
+                    "action: trollFunc",
                     type: .routine,
                     children: [
                         Symbol(

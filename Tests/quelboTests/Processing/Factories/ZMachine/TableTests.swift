@@ -104,12 +104,33 @@ final class TableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
             """
+                Table(
+                    .int(1),
+                    .int(2),
+                    .int(3),
+                    .int(4),
+                    flags: [.byte, .length]
+                )
+                """,
+            type: .table
+        ))
+    }
+
+    func testWithByteElementsTable() throws {
+        let symbol = try factory.init([
+            .decimal(0),
+            .type("BYTE"),
+            .decimal(0),
+            .type("BYTE"),
+            .decimal(0)
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
             Table(
-                .int(1),
-                .int(2),
-                .int(3),
-                .int(4),
-                hasLengthFlag: true
+                .int(0),
+                .int8(0),
+                .int8(0)
             )
             """,
             type: .table
@@ -138,7 +159,7 @@ final class TableTests: QuelboTests {
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                    isMutable: false
+                    flags: [.pure]
                 )
                 """,
             type: .table,
@@ -149,8 +170,43 @@ final class TableTests: QuelboTests {
                 Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
                 Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol("isMutable: false"),
+                Symbol("flags: [.pure]"),
             ]
+        ))
+    }
+
+    func testFormPureTableWithStrings() throws {
+        let symbol = try factory.init([
+            .list([
+                .atom("PURE")
+            ]),
+            .string("up to your ankles."),
+            .string("up to your shin."),
+            .string("up to your knees."),
+            .string("up to your hips."),
+            .string("up to your waist."),
+            .string("up to your chest."),
+            .string("up to your neck."),
+            .string("over your head."),
+            .string("high in your lungs.")
+        ]).process()
+
+        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+            """
+                Table(
+                    .string("up to your ankles."),
+                    .string("up to your shin."),
+                    .string("up to your knees."),
+                    .string("up to your hips."),
+                    .string("up to your waist."),
+                    .string("up to your chest."),
+                    .string("up to your neck."),
+                    .string("over your head."),
+                    .string("high in your lungs."),
+                    flags: [.pure]
+                )
+                """,
+            type: .table
         ))
     }
 

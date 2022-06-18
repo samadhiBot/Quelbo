@@ -62,7 +62,7 @@ extension Game {
     /// - Parameter symbols: An array of symbol values to commit.
     static func commit(_ symbols: [Symbol]) throws {
         try symbols.forEach { symbol in
-            if let existing = try? find(symbol.id) {
+            if let existing = try? find(symbol.id, category: symbol.category) {
                 if symbol == existing {
                     return
                 }
@@ -102,10 +102,10 @@ extension Game {
                 if $0.id != id {
                     return false
                 }
-                if let type, type.isUnambiguous, $0.type != type {
+                if let type = type, type.isUnambiguous, $0.type != type {
                     return false
                 }
-                if let category, $0.category != category {
+                if let category = category, $0.category != category {
                     return false
                 }
                 return true

@@ -53,6 +53,15 @@ class SymbolFactory {
         throw FactoryError.unimplemented(self)
     }
 
+    func evalID(_ tokens: [Token]) throws -> Symbol.Identifier {
+        var tokens = tokens
+        guard let name = tokens.shift()?.value.lowerCamelCase else {
+            throw Error.missingNameToken
+        }
+        let params = tokens.map(\.value.lowerCamelCase).joined(separator: ":")
+        return Symbol.Identifier(stringLiteral: "\(name)(\(params))")
+    }
+
     /// Processes the ``tokens`` array into a ``Symbol`` array.
     ///
     /// `processTokens()` is called during initialization. Factories with special symbol processing
@@ -131,6 +140,7 @@ extension Array {
 
 extension SymbolFactory {
     enum Error: Swift.Error {
+        case missingNameToken
         case outOfRangeSymbolIndex(Int, [Symbol])
     }
 }

@@ -47,7 +47,7 @@ extension Factories {
                     }
                     let name = zil.lowerCamelCase
                     let symbol = Symbol(
-                        id: .init(stringLiteral: name),
+                        id: .id(name),
                         code: "var \(name): \(dataType) = \(dataType.emptyValue)",
                         type: dataType,
                         category: isGlobal ? .globals : nil

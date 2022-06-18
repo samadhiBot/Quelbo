@@ -92,7 +92,7 @@ extension SymbolFactory {
         {
             factory = zMachine
         } else {
-            factory = try Factories.Evaluate(formTokens)
+            factory = try Factories.RoutineCall(formTokens)
         }
         let token = try factory.eval()
         return token

@@ -54,12 +54,12 @@ extension QuelboTests {
         Symbol(
             id: "foo",
             code: """
-                    let foo: Table = Table(
-                        .room(forest1),
-                        .room(forest2),
-                        .room(forest3)
-                    )
-                    """,
+                let foo: Table = Table(
+                    .room(forest1),
+                    .room(forest2),
+                    .room(forest3)
+                )
+                """,
             type: .table,
             category: .globals,
             children: [

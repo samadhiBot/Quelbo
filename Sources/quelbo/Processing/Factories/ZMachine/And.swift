@@ -29,7 +29,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let type = symbols.commonType() ?? .unknown
+            let type = symbols.map(\.type).common ?? .unknown
 //            guard [.bool, .int, .object].contains(type) else {
 //                throw Error.invalidAndArgumentType(symbols)
 //            }

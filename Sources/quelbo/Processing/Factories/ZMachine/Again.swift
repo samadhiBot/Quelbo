@@ -30,7 +30,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                id: "<Again>",
+                id: .id("<Again>"),
                 code: codeBlock,
                 children: symbols
             )

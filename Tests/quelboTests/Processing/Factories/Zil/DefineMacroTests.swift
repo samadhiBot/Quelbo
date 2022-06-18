@@ -265,4 +265,5 @@ final class DefineMacroTests: QuelboTests {
 //        XCTAssertNoDifference(symbol, expected)
 //        XCTAssertNoDifference(try Game.find("bottles", category: .routines), expected)
 //    }
+    
 }

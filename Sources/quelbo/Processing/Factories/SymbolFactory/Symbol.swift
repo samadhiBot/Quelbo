@@ -50,7 +50,7 @@ struct Symbol: Equatable, Identifiable {
         children: [Symbol] = [],
         meta: [MetaData] = []
     ) {
-        self.id = .init(stringLiteral: code.rightTrimmed)
+        self.id = .id(code.rightTrimmed)
         self.code = code.rightTrimmed
         self.type = type
         self.category = category
@@ -64,7 +64,7 @@ struct Symbol: Equatable, Identifiable {
 extension Symbol {
     /// Whether the symbol's children are ``Factories/Table`` definition flags.
     var containsTableFlags: Bool {
-        children.allSatisfy {
+        !children.isEmpty && children.allSatisfy {
             ["byte", "length", "lexv", "pure", "string", "word"].contains($0.code)
         }
     }
@@ -81,12 +81,12 @@ extension Symbol {
 
     /// Whether the symbol represents an `AGAIN` statement.
     var isAgainStatement: Bool {
-        self.id == "<Again>"
+        self.id == .id("<Again>")
     }
 
     /// Whether the symbol represents a code block.
     var isCodeBlock: Bool {
-        self.id == "<Block>"
+        self.id == .id("<Block>")
     }
 
     /// Whether the symbol represents a closure.
@@ -139,17 +139,17 @@ extension Symbol {
 
     /// Whether the symbol represents a `RETURN` statement.
     var isReturnStatement: Bool {
-        self.id == "<Return>"
+        self.id == .id("<Return>")
     }
 
     /// Returns an unevaluated token stored by the symbol, if one exists.
-    var unevaluated: Token? {
+    var definition: [Token] {
         for metaData in meta {
-            if case .eval(let token) = metaData {
-                return token
+            if case .zil(let tokens) = metaData {
+                return tokens
             }
         }
-        return nil
+        return []
     }
 
     /// Returns the symbol with one or more properties replaced with those specified.
@@ -193,11 +193,17 @@ extension Symbol {
         /// Symbols representing global constant game values.
         case constants
 
+        /// Symbols representing definitions that are evaluated to create other symbols.
+        case definitions
+
         /// Symbols representing room exit directions.
         case directions
 
         /// Symbols representing object flags.
         case flags
+
+        /// Symbols representing evaluated functions defined by the game.
+        case functions
 
         /// Symbols representing global game variables.
         case globals
@@ -239,20 +245,21 @@ extension Symbol: Comparable {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        var desc: [String] = ["id: \(id)"]
-        if code != id.rawValue {
-            desc.append("code: \(code)")
-        }
-        if type != .unknown {
-            desc.append("type: \(type)")
-        }
-        if let category {
-            desc.append("category: \(category)")
-        }
-        if !meta.isEmpty {
-            desc.append("meta: \(meta)")
-        }
-        return "{\n\(desc.joined(separator: "\n").indented)\n}"
+        id.description
+//        var desc: [String] = ["id: \(id)"]
+//        if code != id.stringLiteral {
+//            desc.append("code: \(code)")
+//        }
+//        if type != .unknown {
+//            desc.append("type: \(type)")
+//        }
+//        if let category = category {
+//            desc.append("category: \(category)")
+//        }
+//        if !meta.isEmpty {
+//            desc.append("meta: \(meta)")
+//        }
+//        return "{\n\(desc.joined(separator: "\n").indented)\n}"
     }
 }
 
@@ -344,38 +351,6 @@ extension Array where Element == Symbol {
             values = "\n\(values)\(noTrailingComma ? "\n" : separator)"
         }
         return values
-    }
-
-    /// Finds the common type among the symbols in the array.
-    ///
-    /// Ignores atoms with ``Symbol/DataType/unknown`` type.
-    ///
-    /// - Returns: The common type among the symbols in the array.
-    ///
-    /// - Throws: When a common type cannot be determined. This can either occur when all types are
-    ///           unknown, or when there are multiple known types that do not match.
-    func commonType() -> Symbol.DataType? {
-        let uniqueTypes = map { $0.type }.unique
-        if uniqueTypes.count == 1 {
-            return uniqueTypes[0]
-        }
-
-        let literalTypes = uniqueTypes.filter { $0.isLiteral }
-        if literalTypes.count == 1 {
-            return literalTypes[0]
-        }
-
-        let knownTypes = uniqueTypes.filter { !$0.isUnknown }
-        if knownTypes.count == 1 {
-            return knownTypes[0]
-        }
-
-        let unambiguousTypes = uniqueTypes.filter { !$0.isUnambiguous }
-        if unambiguousTypes.count == 1 {
-            return unambiguousTypes[0]
-        }
-
-        return nil
     }
 
     /// Deep-searches a ``Symbol`` array for a `"paramDeclarations"` metadata declaration, and

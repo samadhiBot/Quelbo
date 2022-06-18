@@ -28,6 +28,7 @@ extension Symbol {
         case void
         case zilElement
         indirect case array(DataType)
+        indirect case optional(DataType)
         indirect case variable(DataType)
     }
 }
@@ -54,6 +55,7 @@ extension Symbol.DataType {
         case .int16: return "0"
         case .int32: return "0"
         case .object: return ".nullObject"
+        case .optional: return "nil"
         case .property: break
         case .routine: break
         case .string: return #""""#
@@ -98,7 +100,7 @@ extension Symbol.DataType {
     var isLiteral: Bool {
         switch self {
         case .array(let type): return type.isLiteral
-        case .bool, .direction, .int, .int8, .int16, .int32, .string, .zilElement: return true
+        case .bool, .direction, .int, .int8, .int16, .int32, .string: return true
         default: return false
         }
     }
@@ -158,6 +160,7 @@ extension Symbol.DataType: CustomStringConvertible {
         case .int16:              return "Int16"
         case .int32:              return "Int32"
         case .object:             return "Object"
+        case .optional(let type): return "\(type)?"
         case .property:           return "<Property>"
         case .routine:            return "Routine"
         case .string:             return "String"
@@ -168,5 +171,33 @@ extension Symbol.DataType: CustomStringConvertible {
         case .void:               return "Void"
         case .zilElement:         return "ZilElement"
         }
+    }
+}
+
+extension Array where Element == Symbol.DataType {
+    /// Returns the common type among the types in the array.
+    var common: Symbol.DataType? {
+        let uniqueTypes = unique
+
+        if uniqueTypes.count == 1 {
+            return uniqueTypes[0]
+        }
+
+        let literalTypes = uniqueTypes.filter { $0.isLiteral }
+        if literalTypes.count == 1 {
+            return literalTypes[0]
+        }
+
+        let knownTypes = uniqueTypes.filter { !$0.isUnknown }
+        if knownTypes.count == 1 {
+            return knownTypes[0]
+        }
+
+        let unambiguousTypes = uniqueTypes.filter { !$0.isUnambiguous }
+        if unambiguousTypes.count == 1 {
+            return unambiguousTypes[0]
+        }
+
+        return nil
     }
 }

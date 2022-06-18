@@ -169,8 +169,7 @@ final class RoomTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    id: "action",
-                    code: "action: westHouse",
+                    "action: westHouse",
                     type: .routine,
                     children: [
                         Symbol("westHouse", type: .routine)

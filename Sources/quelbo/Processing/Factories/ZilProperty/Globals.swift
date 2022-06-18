@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                id: "globals",
+                id: .id("globals"),
                 code: "globals: [\(symbols.codeValues(.commaSeparated))]",
                 type: Self.returnType,
                 children: symbols

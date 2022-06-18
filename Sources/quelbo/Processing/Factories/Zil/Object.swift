@@ -40,7 +40,7 @@ extension Factories {
             self.propertySymbols = try findPropertySymbols(in: &tokens)
             if !directionSymbols.isEmpty {
                 self.propertySymbols.append(Symbol(
-                    id: "directions",
+                    id: .id("directions"),
                     code: """
                         directions: [\(directionSymbols.codeValues(.commaSeparated))]
                         """,
@@ -54,7 +54,7 @@ extension Factories {
             print("  + Processing object \(nameSymbol.code)")
 
             let symbol = Symbol(
-                id: .init(stringLiteral: nameSymbol.code),
+                id: .id(nameSymbol.code),
                 code: """
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName.lowercased()).
                     var \(nameSymbol.code) = \(typeName)(
@@ -116,7 +116,7 @@ extension Factories.Object {
 
     func isDirection(_ zil: String) -> Bool {
         if let _ = try? Game.find(
-            .init(stringLiteral: zil.lowerCamelCase),
+            .id(zil.lowerCamelCase),
             category: .properties
         ) {
             return true

@@ -53,7 +53,7 @@ extension Game {
                     {
                         factory = zilSymbol
                     } else {
-                        factory = try Factories.Evaluate(formTokens, with: types)
+                        factory = try Factories.RoutineCall(formTokens, with: types)
                     }
                     _ = try factory.process()
                 } catch {

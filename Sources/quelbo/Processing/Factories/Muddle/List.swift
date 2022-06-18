@@ -16,6 +16,10 @@ extension Factories {
             ["LIST"]
         }
 
+//        override class var parameters: SymbolFactory.Parameters {
+//            .oneOrMore(.zilElement)
+//        }
+
         override func process() throws -> Symbol {
             Symbol(
                 "[\(symbols.codeValues(.commaSeparated))]",
@@ -28,7 +32,7 @@ extension Factories {
 
 extension Factories.List {
     var elementsType: Symbol.DataType {
-        guard let type = symbols.commonType() else {
+        guard let type = symbols.map(\.type).common else {
             return .array(.zilElement)
         }
         return .array(type)

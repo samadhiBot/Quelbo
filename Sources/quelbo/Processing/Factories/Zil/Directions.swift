@@ -30,7 +30,7 @@ extension Factories {
             while let dir = try? findNameSymbol(in: &tokens) {
                 var code = ""
                 var name = dir.code
-                let zil = dir.id.rawValue
+                let zil = dir.id.stringLiteral
                 if let fizmoDirection = Direction.find(zil) {
                     name = fizmoDirection.id.description
                 } else {
@@ -43,7 +43,7 @@ extension Factories {
                         """
                 }
                 symbols.append(Symbol(
-                    id: .init(rawValue: name),
+                    id: .id(name),
                     code: code,
                     type: .direction,
                     category: .properties

@@ -33,7 +33,7 @@ extension Factories {
             print("  + Processing \(typeName) \(nameSymbol.code)")
 
             let symbol = Symbol(
-                id: .init(stringLiteral: nameSymbol.code),
+                id: .id(nameSymbol.code),
                 code: """
                     \(pro.discardableResult)\
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).

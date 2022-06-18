@@ -49,7 +49,7 @@ final class PureTableTests: QuelboTests {
                     .room(forest1),
                     .room(forest2),
                     .room(forest3),
-                    isMutable: false
+                    flags: [.pure]
                 )
                 """,
             type: .table,
@@ -57,7 +57,7 @@ final class PureTableTests: QuelboTests {
                 Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
                 Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol("isMutable: false"),
+Symbol("flags: [.pure]"),
             ]
         ))
     }
@@ -79,7 +79,7 @@ final class PureTableTests: QuelboTests {
                     .int(1),
                     .int(0),
                     .bool(trollMelee),
-                    isMutable: false
+                    flags: [.pure]
                 )
                 """,
             type: .table
@@ -108,7 +108,7 @@ final class PureTableTests: QuelboTests {
                     .room(path),
                     .room(clearing),
                     .room(forest1),
-                    isMutable: false
+                    flags: [.pure]
                 )
                 """,
             type: .table
@@ -144,8 +144,7 @@ final class PureTableTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(trollMelee),
-                        isMutable: false,
-                        hasLengthFlag: true
+                        flags: [.length, .pure]
                     )),
                     .table(Table(
                         .object(thief),
@@ -154,7 +153,7 @@ final class PureTableTests: QuelboTests {
                         .int(0),
                         .bool(thiefMelee)
                     )),
-                    isMutable: false
+                    flags: [.pure]
                 )
                 """,
             type: .table

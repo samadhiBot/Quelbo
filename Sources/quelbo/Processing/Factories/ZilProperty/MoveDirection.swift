@@ -27,13 +27,13 @@ extension Factories {
             var tokens = tokens
             let dirSymbol = try findNameSymbol(in: &tokens)
             var direction = dirSymbol.code
-            if let predefined = Direction.find(dirSymbol.id.rawValue) {
+            if let predefined = Direction.find(dirSymbol.id.stringLiteral) {
                 direction = predefined.id.description
             }
             self.name = try Game.find(
-                .init(stringLiteral: direction),
+                .id(direction),
                 category: .properties
-            ).id.rawValue
+            ).id.stringLiteral
 
             while let token = tokens.shift() {
                 switch token {
@@ -80,7 +80,7 @@ extension Factories {
                 if let condition = condition {
                     if let message = message {
                         return Symbol(
-                            id: .init(stringLiteral: name),
+                            id: .id(name),
                             code: """
                                 .\(name): .conditionalElse(\(destination),
                                     if: \(condition),
@@ -91,27 +91,27 @@ extension Factories {
                         )
                     }
                     return Symbol(
-                        id: .init(stringLiteral: name),
+                        id: .id(name),
                         code: ".\(name): .conditional(\(destination), if: \(condition))",
                         type: Self.returnType
                     )
                 }
                 return Symbol(
-                    id: .init(stringLiteral: name),
+                    id: .id(name),
                     code: ".\(name): .to(\(destination))",
                     type: Self.returnType
                 )
             }
             if let message = message {
                 return Symbol(
-                    id: .init(stringLiteral: name),
+                    id: .id(name),
                     code: ".\(name): .blocked(\(message.quoted))",
                     type: Self.returnType
                 )
             }
             if let perFunction = perFunction {
                 return Symbol(
-                    id: .init(stringLiteral: name),
+                    id: .id(name),
                     code: ".\(name): .per(\(perFunction))",
                     type: Self.returnType
                 )

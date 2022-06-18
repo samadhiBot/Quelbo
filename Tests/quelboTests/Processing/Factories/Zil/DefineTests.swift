@@ -19,8 +19,7 @@ final class DefineTests: QuelboTests {
 
     // https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#755-form-and-iform
     func testSimpleDefine() throws {
-        let symbol = try factory.init([
-            .atom("INC-FORM"),
+        let definition: [Token] = [
             .list([
                 .atom("A")
             ]),
@@ -39,61 +38,100 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ]
+        let symbol = try factory.init([.atom("INC-FORM")] + definition).process()
 
         let expected = Symbol(
             id: "incForm",
-            code: """
-                @discardableResult
-                /// The `incForm` (INC-FORM) function.
-                func incForm(a: Int) -> Int {
-                    var a = a
-                    return a.set(to: .add(1, a))
-                }
-                """,
-            type: .int,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "a",
-                    code: "a: Int",
-                    type: .int,
-                    children: [],
-                    meta: [
-                        Symbol.MetaData.mutating(true)
-                    ]
-                )
-            ]
+            category: .definitions,
+            meta: [.zil(definition)]
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("incForm", category: .routines), expected)
+        XCTAssertNoDifference(try Game.find("incForm", category: .definitions), expected)
 
-        let caller = try testFactory.init([
+        XCTAssertThrowsError(try Game.find("incForm(foo)", category: .functions))
+
+        let fooCaller = try testFactory.init([
             .form([
                 .atom("INC-FORM"),
                 .atom("FOO")
             ])
         ]).process()
 
-        XCTAssertNoDifference(caller, Symbol(
-            "incForm(a: foo)",
-            type: .int,
-            children: [
-                Symbol(
-                    id: "a",
-                    code: "a: foo",
-                    type: .int,
-                    meta: [.mutating(true)]
-                )
-            ]
-        ))
+        XCTAssertNoDifference(
+            try Game.find("incForm(foo)", category: .functions),
+            Symbol(
+                id: "incForm(foo)",
+                code: """
+                @discardableResult
+                /// The `incForm` (INC-FORM) function.
+                func incForm(foo: Int) -> Int {
+                    var foo = foo
+                    return foo.set(to: .add(1, foo))
+                }
+                """,
+                type: .int,
+                category: .functions,
+                children: [
+                    Symbol(
+                        id: "foo",
+                        code: "foo: Int",
+                        type: .int,
+                        meta: [.mutating(true)]
+                    )
+                ]
+            )
+        )
+
+        XCTAssertNoDifference(
+            fooCaller.ignoringChildren,
+            Symbol("incForm(foo: foo)", type: .int)
+        )
+
+        XCTAssertThrowsError(try Game.find("incForm(bar)", category: .functions))
+
+        let barCaller = try testFactory.init([
+            .form([
+                .atom("INC-FORM"),
+                .atom("BAR")
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(
+            try Game.find("incForm(bar)", category: .functions),
+            Symbol(
+                id: "incForm(bar)",
+                code: """
+                @discardableResult
+                /// The `incForm` (INC-FORM) function.
+                func incForm(bar: Int) -> Int {
+                    var bar = bar
+                    return bar.set(to: .add(1, bar))
+                }
+                """,
+                type: .int,
+                category: .functions,
+                children: [
+                    Symbol(
+                        id: "bar",
+                        code: "bar: Int",
+                        type: .int,
+                        meta: [.mutating(true)]
+                    )
+                ]
+            )
+        )
+
+        XCTAssertNoDifference(
+            barCaller.ignoringChildren,
+            Symbol("incForm(bar: bar)", type: .int)
+        )
     }
 
     // https://mdl-language.readthedocs.io/en/latest/17-macro-operations/#1722-example
     func testDefineWithDecl() throws {
-        let symbol = try factory.init([
-            .atom("DOUBLE"),
+        let definition: [Token] = [
             .list([
                 .atom("X")
             ]),
@@ -109,56 +147,84 @@ final class DefineTests: QuelboTests {
                 .local("X"),
                 .local("X")
             ])
-        ]).process()
+        ]
+        let symbol = try factory.init([.atom("DOUBLE")] + definition).process()
 
         let expected = Symbol(
             id: "double",
-            code: """
-                @discardableResult
-                /// The `double` (DOUBLE) function.
-                func double(x: Int) -> Int {
-                    var x = x
-                    return x.add(x)
-                }
-                """,
-            type: .int,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "x",
-                    code: "x: Int",
-                    type: .int
-                )
-            ]
+            category: .definitions,
+            meta: [.zil(definition)]
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
+        XCTAssertNoDifference(try Game.find("double", category: .definitions), expected)
 
-        let caller = try testFactory.init([
+        XCTAssertThrowsError(try Game.find("double(foo)", category: .functions))
+
+        let fooCaller = try testFactory.init([
             .form([
                 .atom("DOUBLE"),
                 .atom("FOO")
             ])
         ]).process()
 
-        XCTAssertNoDifference(caller, Symbol(
-            "double(x: foo)",
-            type: .int,
-            children: [
-                Symbol(
-                    id: "x",
-                    code: "x: foo",
-                    type: .int
-                )
-            ]
-        ))
+        XCTAssertNoDifference(
+            fooCaller.ignoringChildren,
+            Symbol("double(foo: foo)", type: .int)
+        )
+
+        XCTAssertNoDifference(
+            try Game.find("double(foo)", category: .functions).ignoringChildren,
+            Symbol(
+                id: "double(foo)",
+                code: """
+                    @discardableResult
+                    /// The `double` (DOUBLE) function.
+                    func double(foo: Int) -> Int {
+                        var foo = foo
+                        return foo.add(foo)
+                    }
+                    """,
+                type: .int,
+                category: .functions
+            )
+        )
+
+        XCTAssertThrowsError(try Game.find("double(bar)", category: .functions))
+
+        let barCaller = try testFactory.init([
+            .form([
+                .atom("DOUBLE"),
+                .atom("BAR")
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(
+            barCaller.ignoringChildren,
+            Symbol("double(bar: bar)", type: .int)
+        )
+
+        XCTAssertNoDifference(
+            try Game.find("double(bar)", category: .functions).ignoringChildren,
+            Symbol(
+                id: "double(bar)",
+                code: """
+                    @discardableResult
+                    /// The `double` (DOUBLE) function.
+                    func double(bar: Int) -> Int {
+                        var bar = bar
+                        return bar.add(bar)
+                    }
+                    """,
+                type: .int,
+                category: .functions
+            )
+        )
     }
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.440mph5j49mp
     func testPowerTo() throws {
-        let symbol = try factory.init([
-            .atom("POWER-TO"),
+        let definition: [Token] = [
             .atom("ACT"),
             .list([
                 .atom("X"),
@@ -228,31 +294,141 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
+        ]
+        let symbol = try factory.init([.atom("POWER-TO")] + definition).process()
+
+        let expected = Symbol(
+            id: "powerTo",
+            category: .definitions,
+            meta: [.zil(definition)]
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("powerTo", category: .definitions), expected)
+
+        XCTAssertThrowsError(try Game.find("double(powerTo)", category: .functions))
+
+        let fooCaller = try testFactory.init([
+            .form([
+                .atom("POWER-TO"),
+                .atom("FOO")
+            ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
-            id: "powerTo",
-            code: """
-                @discardableResult
-                /// The `powerTo` (POWER-TO) function.
-                func powerTo(x: Int, y: Int = 2) -> Int {
-                    if y.equals(0) {
-                        return 1
-                    }
-                    var z: Int = 1
-                    var i: Int = 0
-                    while true {
-                        z.set(to: z.multiply(x))
-                        i.set(to: i.add(1))
-                        if i.equals(y) {
-                            return z
+        XCTAssertNoDifference(
+            fooCaller.ignoringChildren,
+            Symbol("powerTo(foo: foo)", type: .int)
+        )
+
+        XCTAssertNoDifference(
+            try Game.find("powerTo(foo)", category: .functions).ignoringChildren,
+            Symbol(
+                id: "powerTo(foo)",
+                code: """
+                    @discardableResult
+                    /// The `powerTo` (POWER-TO) function.
+                    func powerTo(foo: Int, y: Int = 2) -> Int {
+                        if y.equals(0) {
+                            return 1
+                        }
+                        var z: Int = 1
+                        var i: Int = 0
+                        while true {
+                            z.set(to: z.multiply(foo))
+                            i.set(to: i.add(1))
+                            if i.equals(y) {
+                                return z
+                            }
                         }
                     }
-                }
-                """,
-            type: .int,
-            category: .routines,
-            children: []
+                    """,
+                type: .int,
+                category: .functions,
+                children: []
+            )
+        )
+    }
+
+    func testMakeReadbufDefine() throws {
+        let types = SymbolFactory.TypeRegistry()
+
+        let _ = try Factories.Constant([
+            .atom("READBUF-SIZE"),
+            .decimal(100)
+        ], with: types).process()
+
+        let definition: [Token] = [
+            .list([
+            ]),
+            .form([
+                .atom("ITABLE"),
+                .atom("NONE"),
+                .global("READBUF-SIZE"),
+                .list([
+                    .atom("BYTE")
+                ])
+            ])
+        ]
+        let symbol = try factory.init([.atom("MAKE-READBUF")] + definition, with: types).process()
+
+        let expected = Symbol(
+            id: "makeReadbuf",
+            category: .definitions,
+            meta: [.zil(definition)]
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("makeReadbuf", category: .definitions), expected)
+
+        XCTAssertThrowsError(
+            try Game.find("makeReadbuf()", category: .functions)
+        )
+
+        let kbdReadbuf = try Factories.Constant([
+            .atom("KBD-READBUF"),
+            .form([
+                .atom("MAKE-READBUF")
+            ])
+        ], with: types).process()
+
+        XCTAssertNoDifference(kbdReadbuf.ignoringChildren, Symbol(
+            id: "kbdReadbuf",
+            code: "let kbdReadbuf: Table = makeReadbuf()",
+            type: .table,
+            category: .constants
+        ))
+
+        XCTAssertNoDifference(
+            try Game.find("makeReadbuf()", category: .functions).ignoringChildren,
+            Symbol(
+                id: "makeReadbuf()",
+                code: """
+                    @discardableResult
+                    /// The `makeReadbuf` (MAKE-READBUF) function.
+                    func makeReadbuf() -> Table {
+                        return Table(
+                            count: readbufSize,
+                            flags: [.byte, .none]
+                        )
+                    }
+                    """,
+                type: .table,
+                category: .functions
+            )
+        )
+
+        let editReadbuf = try Factories.Constant([
+            .atom("EDIT-READBUF"),
+            .form([
+                .atom("MAKE-READBUF")
+            ])
+        ], with: types).process()
+
+        XCTAssertNoDifference(editReadbuf.ignoringChildren, Symbol(
+            id: "editReadbuf",
+            code: "let editReadbuf: Table = makeReadbuf()",
+            type: .table,
+            category: .constants
         ))
     }
 
@@ -320,13 +496,14 @@ final class DefineTests: QuelboTests {
 //                }
 //                """,
 //            type: .array(.void),
-//            category: .routines
+//            category: .functions
 //        ))
 //    }
 
     func testMultifrob() throws {
-        let multiFrob = try factory.init([
-            .atom("MULTIFROB"),
+        let types = SymbolFactory.TypeRegistry(["prsa": .object])
+
+        let definition: [Token] = [
             .list([
                 .atom("X"),
                 .atom("ATMS"),
@@ -528,63 +705,24 @@ final class DefineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ]
 
-        XCTAssertNoDifference(multiFrob.ignoringChildren, Symbol(
+        let symbol = try factory.init([.atom("MULTIFROB")] + definition, with: types).process()
+
+        let expected = Symbol(
             id: "multifrob",
-            code: """
-                /// The `multifrob` (MULTIFROB) function.
-                func multifrob(
-                    x: <Unknown>,
-                    atms: <Unknown>
-                ) {
-                    var atm: Int = 0
-                    var atms = atms
-                    var oo: ZilElement = [or]
-                    var o: [Bool] = oo
-                    var l: [ZilElement] = []
-                    while true {
-                        if atms.isEmpty {
-                            return if oo.count == 1 {
-                                throw FizmoError.mdlError(x)
-                            } else if oo.count == 2 {
-                                oo.nthElement(2)
-                            } else {
-                                oo.changeType(form)
-                            }
-                        }
-                        while true {
-                            if atms.isEmpty {
-                                break
-                            }
-                            atm.set(to: atms.nthElement(1))
-                            l.set(to: [
-                                if atm.isType(atom) {
-                                    if x.equals(prsa) {
-                                        ["V?", atm.printedName].joined().printedName
-                                    } else {
-                                        atm
-                                    }
-                                } else {
-                                    atm
-                                },
-                                l,
-                            ])
-                            atms.set(to: atms.rest())
-                            if l.count.equals(3) {
-                                break
-                            }
-                        }
-                        o.set(to: o.putRest([x.equals(l)]).rest())
-                        l.set(to: [])
-                    }
-                }
-                """,
-            type: .void,
-            category: .routines
-        ))
+            category: .definitions,
+            meta: [.zil(definition)]
+        )
 
-        let symbol = try Factories.DefineMacro.init([
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("multifrob", category: .definitions), expected)
+
+        XCTAssertThrowsError(
+            try Game.find("multifrob(prsa:atms)", category: .functions)
+        )
+
+        let isVerb = try Factories.DefineMacro([
             .atom("VERB?"),
             .list([
                 .string("ARGS"),
@@ -595,19 +733,79 @@ final class DefineTests: QuelboTests {
                 .atom("PRSA"),
                 .local("ATMS")
             ])
-        ]).process()
+        ], with: types).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(isVerb.ignoringChildren, Symbol(
             id: "isVerb",
             code: """
                 /// The `isVerb` (VERB?) macro.
                 func isVerb(atms: <Unknown>) {
-                    multifrob(x: prsa, atms: atms)
+                    multifrob(
+                        prsa: prsa,
+                        atms: atms
+                    )
                 }
                 """,
             type: .void,
             category: .routines
         ))
+
+        XCTAssertNoDifference(
+            try Game.find("multifrob(prsa:atms)", category: .functions).ignoringChildren,
+            Symbol(
+                id: "multifrob(prsa:atms)",
+                code: """
+                    /// The `multifrob` (MULTIFROB) function.
+                    func multifrob(
+                        prsa: Object,
+                        atms: <Unknown>
+                    ) {
+                        var atm: Int = 0
+                        var atms = atms
+                        var oo: ZilElement = [or]
+                        var o: [Bool] = oo
+                        var l: [ZilElement] = []
+                        while true {
+                            if atms.isEmpty {
+                                return if oo.count == 1 {
+                                    throw FizmoError.mdlError(prsa)
+                                } else if oo.count == 2 {
+                                    oo.nthElement(2)
+                                } else {
+                                    oo.changeType(form)
+                                }
+                            }
+                            while true {
+                                if atms.isEmpty {
+                                    break
+                                }
+                                atm.set(to: atms.nthElement(1))
+                                l.set(to: [
+                                    if atm.isType(atom) {
+                                        if prsa.equals(prsa) {
+                                            ["V?", atm.printedName].joined().printedName
+                                        } else {
+                                            atm
+                                        }
+                                    } else {
+                                        atm
+                                    },
+                                    l,
+                                ])
+                                atms.set(to: atms.rest())
+                                if l.count.equals(3) {
+                                    break
+                                }
+                            }
+                            o.set(to: o.putRest([prsa.equals(l)]).rest())
+                            l.set(to: [])
+                        }
+                    }
+                    """,
+                type: .void,
+                category: .functions
+            )
+        )
     }
 
 //    func testDefineMultiBits() throws {
@@ -734,12 +932,12 @@ final class DefineTests: QuelboTests {
 //            code: """
 //                """,
 //            type: .int,
-//            category: .routines
+//            category: .functions
 //        )
 //
 //        XCTAssertNoDifference(symbol.ignoringChildren, expected)
 ////        XCTAssertNoDifference(
-////            try Game.find("multiBits", category: .routines).ignoringChildren,
+////            try Game.find("multiBits", category: .functions).ignoringChildren,
 ////            expected
 ////        )
 //

@@ -21,8 +21,11 @@ extension SymbolFactory {
         /// A dictionary of symbol identifiers and their associated data types.
         var registry: [Symbol.Identifier: Symbol.DataType]
 
-        init() {
+        init(_ registry: [Symbol.Identifier: Symbol.DataType] = [:]) {
             self.registry = [:]
+            registry.forEach { (symbolID, type) in
+                register(id: symbolID, as: type)
+            }
         }
 
         subscript(id: Symbol.Identifier) -> Symbol.DataType? {
