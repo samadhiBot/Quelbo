@@ -6,35 +6,85 @@
 //
 
 import Foundation
+import Progress
+import SwiftPrettyPrint
+
+extension Game {
+    func processTokens(
+        to target: String? = nil,
+        with printSymbolsOnFail: Bool = false
+    ) throws {
+        let total: Int = gameTokens.count
+        var progressBar = ProgressBar(
+            count: total,
+            configuration: [
+                ProgressBarLine(barLength: 65),
+                ProgressPercent(),
+            ]
+        )
+
+        printHeading("⚙️  Processing Zil Tokens")
+        do {
+            try process(
+                bar: &progressBar,
+                total: total,
+                remaining: total
+            )
+
+            if let target = target {
+                try package(path: target)
+            } else {
+                printSymbols()
+            }
+        } catch {
+            if printSymbolsOnFail {
+                printHeading("\n🥈  Successfully processed symbols:")
+                printSymbols()
+            }
+            
+            Pretty.sharedOption = Pretty.Option(colored: true)
+
+            let percentage = Int(100 * Double(total - gameTokens.count) / Double(total))
+            let result = """
+
+                💀 Processing failed with \(gameTokens.count) of \(total) tokens unprocessed \
+                (\(percentage)% complete)
+                """
+            printHeading(result)
+            Pretty.prettyPrint(error)
+            print("\(result)\n")
+        }
+    }
+}
 
 extension Game {
     func process(
-        _ attempt: Int = 1,
-        remainingCount: Int = 0
+        bar progressBar: inout ProgressBar,
+        total: Int,
+        remaining: Int
     ) throws {
-        let count = remainingCount > 0 ? remainingCount : gameTokens.count
-        print(
-            """
+        try processZilTokens()
+        progressBar.setValue(total - gameTokens.count)
 
-            ⚙️  Processing attempt \(attempt), remaining tokens: \(count)
-            ============================================================
-            """
-        )
-        try processTokens()
         if gameTokens.isEmpty {
             return print("\nProcessing complete!\n")
         }
-        if gameTokens.count == remainingCount {
+        if gameTokens.count == remaining {
             throw GameError.failedToProcessTokens(
                 processingErrors.sorted().unique
             )
         }
-        try process(attempt + 1, remainingCount: gameTokens.count)
+        try process(
+            bar: &progressBar,
+            total: total,
+            remaining: gameTokens.count
+        )
     }
 
-    func processTokens() throws {
+    func processZilTokens() throws {
         var unprocessedTokens: [Token] = []
         processingErrors = []
+
         try gameTokens.forEach { token in
             switch token {
             case .bool, .character, .decimal, .global, .list, .local, .quote, .vector:
@@ -57,7 +107,6 @@ extension Game {
                     }
                     _ = try factory.process()
                 } catch {
-                    print("  - \(error)")
                     processingErrors.append("\(error)")
                     unprocessedTokens.append(token)
                 }
@@ -80,12 +129,12 @@ extension Game {
             break
         }
 
-        print(
+        printHeading(
             """
 
-            💾  Z-machine version \(zMachineVersion)
-            ============================================================
-            """
+            💾 Z-machine version
+            """,
+            zMachineVersion.rawValue
         )
     }
 }
@@ -122,6 +171,13 @@ extension Game {
     static var globals: [Symbol] {
         shared.gameSymbols
             .filter { $0.category == .globals }
+            .sorted
+    }
+
+    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/functions`` category.
+    static var functions: [Symbol] {
+        shared.gameSymbols
+            .filter { $0.category == .functions }
             .sorted
     }
 

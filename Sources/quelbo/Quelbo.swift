@@ -6,8 +6,7 @@
 //
 
 import ArgumentParser
-import Files
-import SwiftPrettyPrint
+import Progress
 
 /// Quelbo is a command line app that translates ZIL source code to Swift.
 @main
@@ -16,10 +15,16 @@ struct Quelbo: ParsableCommand {
     var path: String
 
     @Flag(
-        name: .shortAndLong,
+        name: .short,
         help: "Whether to print the ZIL tokens derived in the parsing phase."
     )
     var printTokens = false
+
+    @Flag(
+        name: .customShort("s"),
+        help: "Whether to print the processed game tokens when processing fails."
+    )
+    var printSymbolsOnFail = false
 
     @Option(
         name: .shortAndLong,
@@ -29,55 +34,15 @@ struct Quelbo: ParsableCommand {
 
     func run() throws {
         let game = Game.shared
-        Pretty.sharedOption = Pretty.Option(colored: true)
 
-        try gameFiles().forEach { file in
-            guard file.extension?.lowercased() == "zil" else {
-                return print("Skipping \(file.name)")
-            }
-            print("Parsing \(file.name)")
-            let zil = try file.readAsString()
-            try game.parse(zil)
-        }
+        try game.parseZilSource(at: path)
 
         if printTokens {
-            Pretty.prettyPrint(game.gameTokens)
+            game.printTokens()
         }
 
         try game.setZMachineVersion()
 
-        let total: Int = game.gameTokens.count
-        do {
-            try game.process()
-
-            if let target = target {
-                try game.package(path: target)
-            } else {
-                game.printSymbols()
-            }
-        } catch {
-            let hr = "\n========================================================================\n"
-            let remaining = game.gameTokens.count
-            let percentage = Int(100 * Double(total - remaining) / Double(total))
-            let result = """
-                Processing failed with \(remaining) of \(total) tokens unprocessed \
-                (\(percentage)% complete)
-                """
-            print("\n⚠️  Incomplete processing results:\(hr)")
-            game.printSymbols()
-            print("\n⚙️  \(result)\(hr)")
-            Pretty.prettyPrint(error)
-            print("\n💀 \(result)\(hr)")
-        }
-    }
-}
-
-private extension Quelbo {
-    func gameFiles() throws -> [File] {
-        guard let folder = try? Files.Folder(path: path) else {
-            let file = try Files.File(path: path)
-            return [file]
-        }
-        return folder.files.map { $0 }
+        try game.processTokens(to: target, with: printSymbolsOnFail)
     }
 }

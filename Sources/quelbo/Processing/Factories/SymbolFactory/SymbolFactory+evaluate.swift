@@ -10,8 +10,8 @@ import Foundation
 extension SymbolFactory {
     func evaluate(_ token: Token) throws -> Token {
         switch token {
-        case .atom(let string):
-            print("🍑 atom: \(string)")
+        case .atom: //(let string):
+            // print("🍑 atom: \(string)")
             throw FactoryError.unimplemented(self)
         case .bool:
             return token
@@ -21,37 +21,37 @@ extension SymbolFactory {
             return token
         case .decimal:
             return token
-        case .eval(let token):
-            print("🍑 eval: \(token)")
+        case .eval: //(let token):
+            // print("🍑 eval: \(token)")
             throw FactoryError.unimplemented(self)
         case .form(let formTokens):
             return try evaluateForm(formTokens)
-        case .global(let string):
-            print("🍑 global: \(string)")
+        case .global: //(let string):
+            // print("🍑 global: \(string)")
             throw FactoryError.unimplemented(self)
-        case .list(let array):
-            print("🍑 list: \(array)")
+        case .list: //(let array):
+            // print("🍑 list: \(array)")
             throw FactoryError.unimplemented(self)
         case .local:
             return token
-//            print("🍑 local: \(string)")
+//            // print("🍑 local: \(string)")
 //            throw FactoryError.unimplemented(self)
-        case .property(let string):
-            print("🍑 property: \(string)")
+        case .property: //(let string):
+            // print("🍑 property: \(string)")
             throw FactoryError.unimplemented(self)
-        case .quote(let token):
-            print("🍑 quote: \(token)")
+        case .quote: //(let token):
+            // print("🍑 quote: \(token)")
             throw FactoryError.unimplemented(self)
-        case .segment(let token):
-            print("🍑 segment: \(token)")
+        case .segment: //(let token):
+            // print("🍑 segment: \(token)")
             throw FactoryError.unimplemented(self)
         case .string:
             return token
-        case .type(let string):
-            print("🍑 type: \(string)")
+        case .type: //(let string):
+            // print("🍑 type: \(string)")
             throw FactoryError.unimplemented(self)
-        case .vector(let array):
-            print("🍑 vector: \(array)")
+        case .vector: //(let array):
+            // print("🍑 vector: \(array)")
             throw FactoryError.unimplemented(self)
         }
     }

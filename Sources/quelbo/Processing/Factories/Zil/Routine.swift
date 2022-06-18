@@ -30,8 +30,6 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            print("  + Processing \(typeName) \(nameSymbol.code)")
-
             let symbol = Symbol(
                 id: .id(nameSymbol.code),
                 code: """

@@ -22,7 +22,7 @@ final class GameTests: QuelboTests {
 
         let game = Game.shared
         try game.parse(zil)
-        try game.process()
+        try game.processTokens()
 
         XCTAssertNoDifference(
             game.output,
@@ -67,7 +67,7 @@ final class GameTests: QuelboTests {
 
         let game = Game.shared
         try game.parse(zil)
-        try game.process()
+        try game.processTokens()
 
         XCTAssertNoDifference(
             game.output,
