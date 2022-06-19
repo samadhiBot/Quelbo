@@ -37,17 +37,30 @@ extension SymbolFactory {
         /// The factory expects any number of token parameters with any type.
         case any
 
-        var range: ClosedRange<Int> {
+        /// Returns the number of required parameters.
+        var numberRequired: ClosedRange<Int> {
             switch self {
-            case .zero:       return 0...0
-            case .zeroOrOne:  return 0...1
-            case .zeroOrMore: return 0...Int.max
-            case .one:        return 1...1
-            case .oneOrMore:  return 1...Int.max
-            case .two:        return 2...2
-            case .twoOrMore:  return 2...Int.max
-            case .three:      return 3...3
-            case .any:        return 0...Int.max
+            case .zero:
+                return 0...0
+            case .zeroOrOne:
+                return 0...1
+            case .zeroOrMore:
+                return 0...99
+            case .one(let one):
+                let min = one.isOptional ? 0 : 1
+                return min...1
+            case .oneOrMore:
+                return 1...99
+            case .two(let one, let two):
+                let min = 2 - [one, two].filter(\.isOptional).count
+                return min...2
+            case .twoOrMore:
+                return 2...99
+            case .three(let one, let two, let three):
+                let min = 3 - [one, two, three].filter(\.isOptional).count
+                return min...3
+            case .any:
+                return 0...99
             }
         }
 

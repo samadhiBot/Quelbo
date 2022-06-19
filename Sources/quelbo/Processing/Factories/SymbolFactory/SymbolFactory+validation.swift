@@ -10,10 +10,11 @@ import Foundation
 extension SymbolFactory {
     func validate(_ symbols: [Symbol]) throws -> [Symbol] {
         let nonCommentParams = symbols.filter { $0.type != .comment }
-        guard Self.parameters.range.contains(nonCommentParams.count) else {
+        let numberRequired = Self.parameters.numberRequired
+        guard numberRequired.contains(nonCommentParams.count) else {
             throw ValidationError.invalidParameterCount(
                 nonCommentParams.count,
-                expected: Self.parameters.range,
+                expected: numberRequired,
                 in: nonCommentParams,
                 factory: self
             )
@@ -87,10 +88,16 @@ extension SymbolFactory {
         case (false, true):
             return symbol.with(type: declaredType)
         case (false, false):
-            if symbol.type.isContainer || symbol.type.hasKnownReturnValue {
-                return symbol
+            guard symbol.type.isContainer || symbol.type.hasKnownReturnValue else {
+                return symbol.with(type: siblings.map(\.type).common)
             }
-            return symbol.with(type: siblings.map(\.type).common)
+            guard declaredType.isUnknown || symbol.type == declaredType else {
+                if declaredType.shouldReplaceType(in: symbol) {
+                    return symbol.with(type: declaredType)
+                }
+                break
+            }
+            return symbol
         }
 
         throw ValidationError.failedToDetermineType(
@@ -105,7 +112,7 @@ extension SymbolFactory {
         switch symbol.type {
         case .array:
             if symbol.containsTableFlags {
-                return symbol //.with(id: "<Flags>")
+                return symbol
             }
             return symbol.with(
                 code: ".table([\(symbol.children.codeValues(.commaSeparated))])",

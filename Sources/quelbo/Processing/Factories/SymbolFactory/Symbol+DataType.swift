@@ -75,6 +75,7 @@ extension Symbol.DataType {
         switch self {
         case .array(let type): return type.hasKnownReturnValue
         case .comment, .property, .unknown: return false
+        case .optional(let type): return type.hasKnownReturnValue
         case .variable(let type): return type.hasKnownReturnValue
         default: return true
         }
@@ -101,7 +102,17 @@ extension Symbol.DataType {
         switch self {
         case .array(let type): return type.isLiteral
         case .bool, .direction, .int, .int8, .int16, .int32, .string: return true
+        case .optional(let type): return type.isLiteral
         default: return false
+        }
+    }
+
+    /// Whether the data type is an optional value type.
+    var isOptional: Bool {
+        if case .optional = self {
+            return true
+        } else {
+            return false
         }
     }
 
@@ -109,6 +120,7 @@ extension Symbol.DataType {
     var isUnambiguous: Bool {
         switch self {
         case .array(let type): return type.isUnambiguous
+        case .optional(let type): return type.isUnambiguous
         case .unknown, .zilElement: return false
         case .variable(let type): return type.isUnambiguous
         default: return true
@@ -119,6 +131,7 @@ extension Symbol.DataType {
     var isUnknown: Bool {
         switch self {
         case .array(let type): return type.isUnknown
+        case .optional(let type): return type.isUnknown
         case .unknown: return true
         case .variable(let type): return type.isUnknown
         default: return false
