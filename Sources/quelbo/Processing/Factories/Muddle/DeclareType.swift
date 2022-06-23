@@ -48,9 +48,10 @@ extension Factories {
                     let name = zil.lowerCamelCase
                     let symbol = Symbol(
                         id: .id(name),
-                        code: "var \(name): \(dataType) = \(dataType.emptyValue)",
-                        type: dataType,
-                        category: isGlobal ? .globals : nil
+                        code: "var \(name): \(dataType)\(dataType.emptyValueAssignment)",
+                        type: dataType.emptyValueType,
+                        category: isGlobal ? .globals : nil,
+                        meta: dataType.emptyMeta
                     )
                     symbols.append(symbol)
 

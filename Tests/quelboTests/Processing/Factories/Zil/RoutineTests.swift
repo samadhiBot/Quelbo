@@ -11,51 +11,20 @@ import XCTest
 
 final class RoutineTests: QuelboTests {
     let factory = Factories.Routine.self
-    let singSymbol = Symbol(
-        id: "sing",
-        code: #"""
-        /// The `sing` (SING) routine.
-        func sing(n: Int) {
-            var n = n
-            while true {
-                bottles(n: n)
-                output(" of beer on the wall,")
-                bottles(n: n)
-                output("""
-                     of beer,
-                    Take one down, pass it around,
-                    """)
-                if n.decrement().isLessThan(1) {
-                    output("No more bottles of beer on the wall!")
-                    output("\n")
-                    break
-                } else {
-                    bottles(n: n)
-                    output("""
-                         of beer on the wall!
-
-                        """)
-                }
-            }
-        }
-        """#,
-        type: .void,
-        category: .routines,
-        children: [
-            Symbol(
-                id: "n",
-                code: "n: Int",
-                type: .int
-            )
-        ]
-    )
 
     override func setUp() {
         super.setUp()
 
         try! Game.commit([
+            Symbol("axe", type: .object, category: .objects),
             Symbol("fDef", type: .int),
             Symbol("fWep", type: .int),
+            Symbol("here", type: .object, category: .rooms),
+            Symbol("isLit", type: .bool, category: .routines),
+            Symbol("knife", type: .object, category: .objects),
+            Symbol("rustyKnife", type: .object, category: .objects),
+            Symbol("stiletto", type: .object, category: .objects),
+            Symbol("sword", type: .object, category: .objects),
             singSymbol
         ])
     }
@@ -503,7 +472,7 @@ final class RoutineTests: QuelboTests {
                     d: Object,
                     w: Object
                 ) {
-                    var str: ZilElement = .string("")
+                    var str: ZilElement = .none
                     var len: ZilElement = try remark.get(at: 0)
                     var cnt: Int = 0
                     while true {
@@ -568,6 +537,250 @@ final class RoutineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, bottlesRoutine)
         XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
+    }
+
+    func testFindWeapon() throws {
+        let symbol = try factory.init([
+            .atom("FIND-WEAPON"),
+            .list([
+                .atom("O"),
+                .string("AUX"),
+                .atom("W")
+            ]),
+            .form([
+                .atom("SET"),
+                .atom("W"),
+                .form([
+                    .atom("FIRST?"),
+                    .local("O")
+                ])
+            ]),
+            .form([
+                .atom("COND"),
+                .list([
+                    .form([
+                        .atom("NOT"),
+                        .local("W")
+                    ]),
+                    .form([
+                        .atom("RFALSE")
+                    ])
+                ])
+            ]),
+            .form([
+                .atom("REPEAT"),
+                .list([
+                ]),
+                .form([
+                    .atom("COND"),
+                    .list([
+                        .form([
+                            .atom("OR"),
+                            .form([
+                                .atom("EQUAL?"),
+                                .local("W"),
+                                .global("STILETTO"),
+                                .global("AXE"),
+                                .global("SWORD")
+                            ]),
+                            .form([
+                                .atom("EQUAL?"),
+                                .local("W"),
+                                .global("KNIFE"),
+                                .global("RUSTY-KNIFE")
+                            ])
+                        ]),
+                        .form([
+                            .atom("RETURN"),
+                            .local("W")
+                        ])
+                    ]),
+                    .list([
+                        .form([
+                            .atom("NOT"),
+                            .form([
+                                .atom("SET"),
+                                .atom("W"),
+                                .form([
+                                    .atom("NEXT?"),
+                                    .local("W")
+                                ])
+                            ])
+                        ]),
+                        .form([
+                            .atom("RFALSE")
+                        ])
+                    ])
+                ])
+            ])
+        ]).process()
+
+        XCTAssertNoDifference(symbol, findWeaponRoutine)
+        XCTAssertNoDifference(try Game.find("findWeapon", category: .routines), findWeaponRoutine)
+    }
+
+    func testDweaponMini() throws {
+        try! Game.commit(findWeaponRoutine)
+
+        let _ = try Factories.Global([
+            .atom("HERE"),
+            .decimal(0)
+        ]).process()
+
+        let _ = try Factories.Global([
+            .atom("WINNER"),
+            .decimal(0)
+        ]).process()
+
+        let symbol = try factory.init([
+            .atom("DWEAPON-MINI"),
+            .list([
+                .string("AUX"),
+                .atom("DWEAPON"),
+            ]),
+            .form([
+                .atom("SET"),
+                .atom("DWEAPON"),
+                .form([
+                    .atom("FIND-WEAPON"),
+                    .global("WINNER")
+                ])
+            ]),
+            .form([
+                .atom("MOVE"),
+                .local("DWEAPON"),
+                .global("HERE")
+            ]),
+        ]).process()
+
+        let expected = Symbol(
+            id: "dweaponMini",
+            code: """
+                /// The `dweaponMini` (DWEAPON-MINI) routine.
+                func dweaponMini() {
+                    var dweapon: Object? = nil
+                    dweapon.set(to: findWeapon(o: winner))
+                    dweapon.move(to: here)
+                }
+                """,
+            type: .void,
+            category: .routines
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+        XCTAssertNoDifference(try Game.find("dweaponMini", category: .routines), expected)
+    }
+
+    func testRemoveCarefully() throws {
+        try! Game.commit(findWeaponRoutine)
+
+        let _ = try Factories.Global([
+            .atom("LIT"),
+            .bool(false)
+        ]).process()
+
+        let _ = try Factories.Global([
+            .atom("P-IT-OBJECT"),
+            .bool(false)
+        ]).process()
+
+//        let _ = try Factories.Global([
+//            .atom("WINNER"),
+//            .decimal(0)
+//        ]).process()
+
+        let symbol = try factory.init([
+            .atom("REMOVE-CAREFULLY"),
+            .list([
+                .atom("OBJ"),
+                .string("AUX"),
+                .atom("OLIT")
+            ]),
+            .form([
+                .atom("COND"),
+                .list([
+                    .form([
+                        .atom("EQUAL?"),
+                        .local("OBJ"),
+                        .global("P-IT-OBJECT")
+                    ]),
+                    .form([
+                        .atom("SETG"),
+                        .atom("P-IT-OBJECT"),
+                        .bool(false)
+                    ])
+                ])
+            ]),
+            .form([
+                .atom("SET"),
+                .atom("OLIT"),
+                .global("LIT")
+            ]),
+            .form([
+                .atom("REMOVE"),
+                .local("OBJ")
+            ]),
+            .form([
+                .atom("SETG"),
+                .atom("LIT"),
+                .form([
+                    .atom("LIT?"),
+                    .global("HERE")
+                ])
+            ]),
+            .form([
+                .atom("COND"),
+                .list([
+                    .form([
+                        .atom("AND"),
+                        .local("OLIT"),
+                        .form([
+                            .atom("NOT"),
+                            .form([
+                                .atom("EQUAL?"),
+                                .local("OLIT"),
+                                .global("LIT")
+                            ])
+                        ])
+                    ]),
+                    .form([
+                        .atom("TELL"),
+                        .string("You are left in the dark..."),
+                        .atom("CR")
+                    ])
+                ])
+            ]),
+            .atom("T")
+        ]).process()
+
+        let expected = Symbol(
+            id: "removeCarefully",
+            code: """
+                @discardableResult
+                /// The `removeCarefully` (REMOVE-CAREFULLY) routine.
+                func removeCarefully(obj: Object) -> Bool {
+                    var olit: Bool = false
+                    if obj.equals(pItObject) {
+                        pItObject.set(to: nil)
+                    }
+                    olit.set(to: lit)
+                    obj.remove()
+                    lit.set(to: isLit())
+                    if .and(
+                        olit,
+                        .isNot(olit.equals(lit))
+                    ) {
+                        output("You are left in the dark...")
+                    }
+                    return true
+                }
+                """,
+            type: .bool,
+            category: .routines
+        )
+
+        XCTAssertNoDifference(symbol, expected)
+//        XCTAssertNoDifference(try Game.find("dweaponMini", category: .routines), expected)
     }
 
     func testSingRoutine() throws {
@@ -641,7 +854,12 @@ final class RoutineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, singSymbol)
     }
+
+
+    
 }
+
+// MARK: - Test helpers
 
 extension RoutineTests {
     var bottlesRoutine: Symbol {
@@ -663,6 +881,79 @@ extension RoutineTests {
             category: .routines,
             children: [
                 Symbol(id: "n", code: "n: Int", type: .int)
+            ]
+        )
+    }
+
+    var findWeaponRoutine: Symbol {
+        Symbol(
+            id: "findWeapon",
+            code: """
+                @discardableResult
+                /// The `findWeapon` (FIND-WEAPON) routine.
+                func findWeapon(o: Object) -> Object? {
+                    var w: Object? = nil
+                    w.set(to: o.firstChild)
+                    if .isNot(w) {
+                        return nil
+                    }
+                    while true {
+                        if .or(
+                            w.equals(stiletto, axe, sword),
+                            w.equals(knife, rustyKnife)
+                        ) {
+                            return w
+                        } else if .isNot(w.set(to: w.nextSibling)) {
+                            return nil
+                        }
+                    }
+                }
+                """,
+            type: .optional(.object),
+            category: .routines,
+            children: [
+                Symbol(id: "o", code: "o: Object", type: .object)
+            ]
+        )
+    }
+
+    var singSymbol: Symbol {
+        Symbol(
+            id: "sing",
+            code: #"""
+            /// The `sing` (SING) routine.
+            func sing(n: Int) {
+                var n = n
+                while true {
+                    bottles(n: n)
+                    output(" of beer on the wall,")
+                    bottles(n: n)
+                    output("""
+                         of beer,
+                        Take one down, pass it around,
+                        """)
+                    if n.decrement().isLessThan(1) {
+                        output("No more bottles of beer on the wall!")
+                        output("\n")
+                        break
+                    } else {
+                        bottles(n: n)
+                        output("""
+                             of beer on the wall!
+
+                            """)
+                    }
+                }
+            }
+            """#,
+            type: .void,
+            category: .routines,
+            children: [
+                Symbol(
+                    id: "n",
+                    code: "n: Int",
+                    type: .int
+                )
             ]
         )
     }

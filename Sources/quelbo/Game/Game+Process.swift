@@ -41,7 +41,7 @@ extension Game {
                 printHeading("\n🥈  Successfully processed symbols:")
                 printSymbols()
             }
-            
+
             Pretty.sharedOption = Pretty.Option(colored: true)
 
             let percentage = Int(100 * Double(total - gameTokens.count) / Double(total))
@@ -92,18 +92,18 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let types = SymbolFactory.TypeRegistry()
+                    let registry = SymbolRegistry()
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
                     let factory: SymbolFactory
                     if let zilSymbol = try Game.zilSymbolFactories
                         .find(zil)?
-                        .init(tokens, with: types)
+                        .init(tokens, with: registry)
                     {
                         factory = zilSymbol
                     } else {
-                        factory = try Factories.RoutineCall(formTokens, with: types)
+                        factory = try Factories.RoutineCall(formTokens, with: registry)
                     }
                     _ = try factory.process()
                 } catch {

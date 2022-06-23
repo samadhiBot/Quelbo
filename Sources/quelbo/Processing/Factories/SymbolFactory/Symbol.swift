@@ -69,6 +69,11 @@ extension Symbol {
         }
     }
 
+    /// Returns a copy of the symbol without any child symbols.
+    var ignoringChildren: Symbol {
+        self.with(children: [])
+    }
+
     /// Returns a description of the symbol's data type.
     var dataType: String {
         for metaData in meta {
@@ -245,7 +250,7 @@ extension Symbol: Comparable {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        id.description
+        "\(id): \(type)"
 //        var desc: [String] = ["id: \(id)"]
 //        if code != id.stringLiteral {
 //            desc.append("code: \(code)")
@@ -383,18 +388,29 @@ extension Array where Element == Symbol {
         return nil
     }
 
+    var deepReplaceEmptyReturnValues: [Symbol] {
+        map {
+            $0.with(
+                code: $0.code.replacingOccurrences(of: "return false", with: "return nil"),
+                children: $0.children.deepReplaceEmptyReturnValues
+            )
+        }
+    }
+
     /// Deep-searches a ``Symbol`` array for an explicit `return` statement with a return value,
     /// and returns the type of the returned value if one is found.
-    var deepReturnDataType: Symbol.DataType? {
-        for symbol in self {
-            if symbol.isReturnStatement {
-                return symbol.children.first?.type
+    var deepReturnDataTypes: [Symbol.ReturnType] {
+        reduce(into: [Symbol.ReturnType]()) { partial, symbol in
+            if symbol.isReturnStatement, let foundtype = symbol.children.first?.type {
+                partial.append(
+                    Symbol.ReturnType(
+                        type: foundtype,
+                        maybeEmptyValue: symbol.meta.contains(.maybeEmptyValue)
+                    )
+                )
             }
-            if let type = symbol.children.deepReturnDataType {
-                return type
-            }
+            partial.append(contentsOf: symbol.children.deepReturnDataTypes)
         }
-        return nil
     }
 
     /// Searches the array to find a ``Symbol`` with the specified `id`.
@@ -447,6 +463,19 @@ extension Symbol {
         Symbol("false", type: .bool, meta: [.isLiteral, .maybeEmptyValue])
     }
 
+    /// A literal integer `0` symbol.
+    static func intSymbol(_ integer: Int) -> Symbol {
+        var metadata: [Symbol.MetaData] = [.isLiteral]
+        if(integer == 0) {
+            metadata.append(.maybeEmptyValue)
+        }
+        return Symbol(
+            "\(integer)",
+            type: .int,
+            meta: metadata
+        )
+    }
+
     /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
         Symbol("true", type: .bool, meta: [.isLiteral])
@@ -454,6 +483,13 @@ extension Symbol {
 
     /// A literal integer `0` symbol.
     static var zeroSymbol: Symbol {
-        Symbol("0", type: .int, meta: [.isLiteral, .maybeEmptyValue])
+        .intSymbol(0)
+    }
+}
+
+extension Symbol {
+    struct ReturnType {
+        let type: DataType
+        let maybeEmptyValue: Bool
     }
 }

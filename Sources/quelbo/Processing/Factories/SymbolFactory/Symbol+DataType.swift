@@ -15,11 +15,10 @@ extension Symbol {
         case comment
         case direction
         case int
-        case int8
         case int16
         case int32
+        case int8
         case object
-        case property
         case routine
         case string
         case table
@@ -29,6 +28,7 @@ extension Symbol {
         case zilElement
         indirect case array(DataType)
         indirect case optional(DataType)
+        indirect case property(DataType)
         indirect case variable(DataType)
     }
 }
@@ -44,38 +44,49 @@ extension Symbol.DataType {
         }
     }
 
-    /// An empty, placeholder value for the data type.
-    var emptyValue: String {
+    /// <#Description#>
+    var emptyMeta: [Symbol.MetaData] {
         switch self {
-        case .bool: return "false"
+        case .bool, .int: return [.isLiteral, .maybeEmptyValue]
+        default: return []
+        }
+    }
+
+    /// An empty placeholder value for the data type.
+    var emptyValueAssignment: String {
+        switch self {
+        case .bool: return " = false"
         case .comment: break
-        case .direction: break
-        case .int: return "0"
-        case .int8: return "0"
-        case .int16: return "0"
-        case .int32: return "0"
-        case .object: return ".nullObject"
-        case .optional: return "nil"
-        case .property: break
-        case .routine: break
-        case .string: return #""""#
-        case .table: break
-        case .thing: break
+        case .direction, .object, .routine, .table, .thing: return "? = nil"
+        case .int, .int8, .int16, .int32: return " = 0"
+        case .optional, .property: return " = nil"
+        case .string: return " = \"\""
         case .unknown: break
         case .void: break
-        case .zilElement: return #".string("")"#
-        case .array: return "[]"
-        case .variable: break
+        case .array: return " = []"
+        case .variable(let type): return type.emptyValueAssignment
+        case .zilElement: return " = .none"
         }
-        return "???"
+        return " = <\(self)>"
+    }
+
+    /// An empty placeholder type for the data type.
+    var emptyValueType: Self {
+        switch self {
+        case .direction, .object, .routine, .table, .thing: return .optional(self)
+        case .property(let type): return type.emptyValueType
+        case .variable(let type): return type.emptyValueType
+        default: return self
+        }
     }
 
     /// Whether the data type has a known return value type.
     var hasKnownReturnValue: Bool {
         switch self {
         case .array(let type): return type.hasKnownReturnValue
-        case .comment, .property, .unknown: return false
         case .optional(let type): return type.hasKnownReturnValue
+        case .property(let type): return type.hasKnownReturnValue
+        case .unknown: return false
         case .variable(let type): return type.hasKnownReturnValue
         default: return true
         }
@@ -84,16 +95,8 @@ extension Symbol.DataType {
     /// Whether the data type has a return value.
     var hasReturnValue: Bool {
         switch self {
-        case .comment, .property, .unknown, .void: return false
+        case .comment, .unknown, .void: return false
         default: return true
-        }
-    }
-
-    /// Whether the data type is a container.
-    var isContainer: Bool {
-        switch self {
-        case .comment, .object: return true // FIXME: is a comment really a container?
-        default: return false
         }
     }
 
@@ -111,9 +114,16 @@ extension Symbol.DataType {
     var isOptional: Bool {
         if case .optional = self {
             return true
-        } else {
-            return false
         }
+        return false
+    }
+
+    /// Whether the data type is a property value type.
+    var isProperty: Bool {
+        if case .property = self {
+            return true
+        }
+        return false
     }
 
     /// Whether the data type is unambiguous, i.e. is known and homogeneous.
@@ -121,6 +131,7 @@ extension Symbol.DataType {
         switch self {
         case .array(let type): return type.isUnambiguous
         case .optional(let type): return type.isUnambiguous
+        case .property(let type): return type.isUnambiguous
         case .unknown, .zilElement: return false
         case .variable(let type): return type.isUnambiguous
         default: return true
@@ -132,6 +143,7 @@ extension Symbol.DataType {
         switch self {
         case .array(let type): return type.isUnknown
         case .optional(let type): return type.isUnknown
+        case .property(let type): return type.isUnknown
         case .unknown: return true
         case .variable(let type): return type.isUnknown
         default: return false
@@ -145,13 +157,14 @@ extension Symbol.DataType {
     ///
     /// - Returns: Whether the data type should supersede the one in the specified symbol.
     func shouldReplaceType(in symbol: Symbol) -> Bool {
-        if symbol.type == .zilElement {
+        switch (self, symbol.type) {
+        case (.unknown, _):
+            return false
+        case (_, .zilElement):
             return true
-        }
-        switch self {
-        case .bool:
-            return symbol.type == .int
-        case .int, .object, .string, .table:
+        case (.bool, .int):
+            return true
+        case (.int, _), (.object, _), (.string, _), (.table, _):
             return symbol.meta.contains(.maybeEmptyValue)
         default:
             return false
@@ -174,7 +187,7 @@ extension Symbol.DataType: CustomStringConvertible {
         case .int32:              return "Int32"
         case .object:             return "Object"
         case .optional(let type): return "\(type)?"
-        case .property:           return "<Property>"
+        case .property(let type): return "<Property<\(type)>>"
         case .routine:            return "Routine"
         case .string:             return "String"
         case .table:              return "Table"

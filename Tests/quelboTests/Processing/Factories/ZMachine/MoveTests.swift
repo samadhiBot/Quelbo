@@ -16,9 +16,10 @@ final class MoveTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("sandwich", type: .object, category: .objects),
-            Symbol("paperBag", type: .object, category: .objects),
+            Symbol("here", type: .object, category: .rooms),
             Symbol("kitchen", type: .object, category: .rooms),
+            Symbol("paperBag", type: .object, category: .objects),
+            Symbol("sandwich", type: .object, category: .objects),
         ])
     }
 
@@ -26,7 +27,7 @@ final class MoveTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("MOVE"))
     }
 
-    func testSandwichMoveToPaperBag() throws {
+    func testMoveSandwichToPaperBag() throws {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
@@ -42,7 +43,7 @@ final class MoveTests: QuelboTests {
         ))
     }
 
-    func testPaperBagMoveToKitchen() throws {
+    func testMovePaperBagToKitchen() throws {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
@@ -58,7 +59,27 @@ final class MoveTests: QuelboTests {
         ))
     }
 
-    func testSandwichMoveToDecimal() throws {
+    func testMoveLocalWeaponToHere() throws {
+        let registry = SymbolRegistry([
+            Symbol("dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
+        ])
+
+        let symbol = try factory.init([
+            .local("DWEAPON"),
+            .global("HERE"),
+        ], with: registry).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "dweapon.move(to: here)",
+            type: .void,
+            children: [
+                Symbol("dweapon", type: .object, meta: [.isLiteral, .maybeEmptyValue]),
+                Symbol("here", type: .object, category: .rooms),
+            ]
+        ))
+    }
+
+    func testMoveSandwichToDecimal() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("SANDWICH"),
@@ -67,7 +88,7 @@ final class MoveTests: QuelboTests {
         )
     }
 
-    func testStringMoveToPaperBag() throws {
+    func testMoveStringToPaperBag() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .string("SANDWICH"),

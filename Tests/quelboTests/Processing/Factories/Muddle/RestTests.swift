@@ -24,7 +24,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfIntegerList() throws {
-        let types = SymbolFactory.TypeRegistry()
+        let registry = SymbolRegistry()
 
         _ = try Factories.Global([
             .atom("STRUCT1"),
@@ -34,7 +34,7 @@ final class RestTests: QuelboTests {
                 .decimal(3),
                 .decimal(4)
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT1"),
@@ -67,7 +67,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedList() throws {
-        let types = SymbolFactory.TypeRegistry()
+        let registry = SymbolRegistry()
 
         _ = try Factories.Global([
             .atom("STRUCT2"),
@@ -77,7 +77,7 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT2"),
@@ -90,7 +90,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedListAfterFirstTwo() throws {
-        let types = SymbolFactory.TypeRegistry()
+        let registry = SymbolRegistry()
 
         _ = try Factories.Global([
             .atom("STRUCT3"),
@@ -100,7 +100,7 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT3"),

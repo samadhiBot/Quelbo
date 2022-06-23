@@ -40,7 +40,7 @@ extension SymbolFactory {
         default: break
         }
 
-        try types.register(typedSymbols)
+        try registry.register(typedSymbols)
         return typedSymbols
     }
 }
@@ -57,7 +57,7 @@ extension SymbolFactory {
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
-        if case .variable = declaredType, symbol.isLiteral {
+        if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
             throw ValidationError.expectedVariableFoundLiteral(symbol)
         }
 
@@ -76,35 +76,36 @@ extension SymbolFactory {
                 return symbol.with(type: declaredType)
             }
         case (true, false):
-            if declaredType.acceptsLiteral || symbol.category == .properties {
-                return symbol
-            }
-            if declaredType.shouldReplaceType(in: symbol) {
+            if declaredType.shouldReplaceType(in: registry[symbol.id] ?? symbol) {
                 return symbol.with(type: declaredType)
             }
-            if declaredType.isUnknown && !symbol.type.isUnknown {
+            if declaredType.acceptsLiteral ||
+                symbol.category == .properties ||
+                declaredType.isUnknown && !symbol.type.isUnknown {
                 return symbol
             }
         case (false, true):
             return symbol.with(type: declaredType)
         case (false, false):
-            guard symbol.type.isContainer || symbol.type.hasKnownReturnValue else {
+            guard symbol.type.isProperty || symbol.type.hasKnownReturnValue else {
                 return symbol.with(type: siblings.map(\.type).common)
             }
-            guard declaredType.isUnknown || symbol.type == declaredType else {
-                if declaredType.shouldReplaceType(in: symbol) {
-                    return symbol.with(type: declaredType)
-                }
-                break
+            if declaredType.isUnknown ||
+                symbol.type == declaredType ||
+                symbol.type == .optional(declaredType) {
+                return symbol
             }
-            return symbol
+            if declaredType.shouldReplaceType(in: symbol) {
+                return symbol.with(type: declaredType)
+            }
         }
 
         throw ValidationError.failedToDetermineType(
             symbol,
             expected: declaredType,
             found: symbol.type,
-            siblings: siblings
+            siblings: siblings,
+            in: self
         )
     }
 
@@ -190,7 +191,8 @@ extension SymbolFactory {
             Symbol,
             expected: Symbol.DataType,
             found: Symbol.DataType,
-            siblings: [Symbol]
+            siblings: [Symbol],
+            in: SymbolFactory
         )
         case invalidParameterCount(
             Int,

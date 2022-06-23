@@ -93,18 +93,18 @@ extension Factories.Object {
                 }
                 if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
                     do {
-                        let factory = try propertyFactory.init(tokens, with: types)
+                        let factory = try propertyFactory.init(tokens, with: registry)
                         return try factory.process()
                     } catch {
                         guard zil == "IN" else { throw error }
                     }
                 }
                 if isDirection(zil) {
-                    let factory = try Factories.MoveDirection(listTokens, with: types)
+                    let factory = try Factories.MoveDirection(listTokens, with: registry)
                     directionSymbols.append(try factory.process())
                     return nil
                 }
-                let factory = try Factories.Other.init(listTokens, with: types)
+                let factory = try Factories.Other.init(listTokens, with: registry)
                 return try factory.process()
             default:
                 throw Error.invalidObjectProperty(token)

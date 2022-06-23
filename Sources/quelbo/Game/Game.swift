@@ -69,14 +69,17 @@ extension Game {
                 switch (symbol.category, existing.category) {
                 case (.constants, .globals): return
                 case (.globals, .constants): return try overwrite(symbol)
-                default: break
+                default:
+                    break
                 }
                 if symbol.type.shouldReplaceType(in: existing) {
                     try overwrite(symbol)
-                } else if existing.type.shouldReplaceType(in: symbol) {
-                    return
                 }
-                throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
+                return
+//                else if existing.type.shouldReplaceType(in: symbol) {
+//                    return
+//                }
+//                throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
             }
             shared.gameSymbols.append(symbol)
         }

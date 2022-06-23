@@ -17,7 +17,11 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .two(.object, .property)
+            .two(.object, .property(.unknown))
+        }
+
+        override class var returnType: Symbol.DataType {
+            .int
         }
 
         override func process() throws -> Symbol {

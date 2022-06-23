@@ -48,13 +48,4 @@ final class GetPropertyTests: QuelboTests {
             ]).process()
         )
     }
-
-    func testNonPropertyThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("TROLL"),
-                .string(",P?STRENGTH")
-            ]).process()
-        )
-    }
 }

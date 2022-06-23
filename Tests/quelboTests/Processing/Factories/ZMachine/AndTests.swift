@@ -108,7 +108,7 @@ final class AndTests: QuelboTests {
             """
             .and(
                 rarg.equals(mEnter),
-                !foundTreasureChest
+                .isNot(foundTreasureChest)
             )
             """,
             type: .bool,
@@ -122,7 +122,7 @@ final class AndTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    "!foundTreasureChest",
+                    ".isNot(foundTreasureChest)",
                     type: .bool,
                     children: [
                         Symbol("foundTreasureChest", type: .bool, category: .globals)

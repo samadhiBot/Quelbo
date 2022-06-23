@@ -80,20 +80,6 @@ extension SymbolFactory {
         }
         throw FindError.parametersSymbolNotFound(original)
     }
-
-    /// Attempts to find a known ``Symbol/DataType-swift.enum`` given a symbol identifier and
-    /// factory parameters index.
-    ///
-    /// - Parameters:
-    ///   - id: A symbol identifier.
-    ///   - index: A factory parameters index.
-    ///
-    /// - Returns: A symbol data type if known, or `.unknown`.
-    func findType(of id: Symbol.Identifier, at index: Int) throws -> Symbol.DataType {
-        let expected = try Self.parameters.expectedType(at: index)
-        let registered = types[id] ?? .unknown
-        return [expected, registered].common ?? .unknown
-    }
 }
 
 // MARK: - Errors

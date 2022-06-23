@@ -16,7 +16,8 @@ final class PutPropertyTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol("troll", type: .object, category: .objects),
+            Symbol("winner", type: .object, category: .globals),
         ])
     }
 
@@ -24,11 +25,11 @@ final class PutPropertyTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("PUTP"))
     }
 
-    func testPutProperty() throws {
+    func testPutPropertyOnObjectFromObjects() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
             .property("STRENGTH"),
-            .decimal(10)
+            .decimal(10),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -42,21 +43,29 @@ final class PutPropertyTests: QuelboTests {
         ))
     }
 
+    func testPutPropertyOnObjectFromGlobals() throws {
+        let symbol = try factory.init([
+            .global("WINNER"),
+            .property("ACTION"),
+            .decimal(0),
+        ]).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "winner.action = 0",
+            type: .int,
+            children: [
+                Symbol("winner", type: .object, category: .globals),
+                Symbol("action", type: .routine, category: .properties),
+                .zeroSymbol
+            ]
+        ))
+    }
+
     func testNonObjectThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
                 .atom("STRENGTH"),
-                .decimal(10)
-            ]).process()
-        )
-    }
-
-    func testNonPropertyThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("TROLL"),
-                .string("STRENGTH"),
                 .decimal(10)
             ]).process()
         )

@@ -31,7 +31,11 @@ final class ReturnFalseTests: QuelboTests {
             id: "<Return>",
             code: "return false",
             type: .bool,
-            children: [.falseSymbol]
+            children: [.falseSymbol],
+            meta: [
+                .isLiteral,
+                .maybeEmptyValue
+            ]
         ))
     }
 

@@ -20,8 +20,8 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
-    var code = Symbol("TBD")
-    var params = Symbol("TBD")
+    var codeSymbol = Symbol("TBD")
+    var paramsSymbol = Symbol("TBD")
 
     private var auxiliaries: [Symbol] = []
     private var warnings: [String] = []
@@ -37,8 +37,8 @@ class BlockProcessor: SymbolFactory {
         let paramSymbols = try findParameterSymbols(in: &tokens)
         let codeSymbols = try symbolize(tokens)
 
-        self.code = try validateCode(codeSymbols)
-        self.params = try validateParameters(paramSymbols, against: code)
+        self.codeSymbol = try validateCode(codeSymbols)
+        self.paramsSymbol = try validateParameters(paramSymbols, against: codeSymbol)
     }
 }
 
@@ -57,6 +57,7 @@ extension BlockProcessor {
             switch symbol.type {
             case .array: return "? = []"
             case .bool:  return " = false"
+            case .optional: return " = nil"
             default:     return "? = nil"
             }
         }
@@ -103,7 +104,7 @@ extension BlockProcessor {
     }
 
     var children: [Symbol] {
-        code.children
+        codeSymbol.children
     }
 
     var codeBlock: String {
@@ -113,26 +114,26 @@ extension BlockProcessor {
                 \(activation)\
                 while true {
                 \(auxiliaryDefsWithDefaultValues(indented: true))\
-                \(code.code.indented)
+                \(codeSymbol.code.indented)
                 }
                 """
         } else {
             return """
                 \(auxiliaryDefsWithDefaultValues())\
-                \(code.code)
+                \(codeSymbol.code)
                 """
         }
     }
 
     var deepParameters: String {
-        guard let deepParams = code.children.deepParamDeclarations else {
+        guard let deepParams = codeSymbol.children.deepParamDeclarations else {
             return ""
         }
         return deepParams.appending("\n")
     }
 
     var discardableResult: String {
-        code.type.hasReturnValue ? "@discardableResult\n" : ""
+        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
     }
 
     var isRepeating: Bool {
@@ -152,7 +153,7 @@ extension BlockProcessor {
         }
         switch type {
         case .repeatingWithoutDefaultActivation:
-            let params = params.children
+            let params = paramsSymbol.children
                 .map { $0.localVariable }
                 .joined(separator: "\n")
             return [
@@ -169,17 +170,17 @@ extension BlockProcessor {
             return ""
         }
         return emit(
-            params.children.map { $0.localVariable },
+            paramsSymbol.children.map { $0.localVariable },
             shouldIndent: indented
         )
     }
 
     var returnValue: String {
-        code.type.hasReturnValue ? " -> \(code.type)" : ""
+        codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
     }
 
     var type: Symbol.DataType {
-        code.type
+        codeSymbol.type
     }
 
     func warningComments(indented: Bool = false) -> String {
@@ -212,10 +213,25 @@ extension BlockProcessor {
 // MARK: - Validation
 
 extension BlockProcessor {
+    func findReturnType(in codeSymbols: [Symbol]) throws -> Symbol.DataType? {
+        let allTypes = codeSymbols.deepReturnDataTypes
+        if allTypes.isEmpty { return nil }
+        if allTypes.count == 1 { return allTypes[0].type }
+        let isOptional = allTypes.contains(where: \.maybeEmptyValue)
+        if let definite = allTypes.filter({ !$0.maybeEmptyValue }).map(\.type).common {
+            return isOptional ? .optional(definite) : definite
+        }
+        return allTypes.map(\.type).common
+    }
+
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
         var codeLines: [String] = []
+        var codeSymbols = codeSymbols
+        var returnType = try findReturnType(in: codeSymbols)
+        if case .optional = returnType {
+            codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
+        }
         var symbols = codeSymbols
-        var returnType: Symbol.DataType? = codeSymbols.deepReturnDataType
 
         while let symbol = symbols.shift() {
             if symbol.isAgainStatement {
@@ -269,19 +285,21 @@ extension BlockProcessor {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
-                    type = types[nameSymbol.id] ?? types[valueSymbol.id] ?? .unknown
+                    type = registry[nameSymbol.id]?.type ??
+                           registry[valueSymbol.id]?.type ??
+                           .unknown
                 }
                 paramSymbol = param.with(
                     code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
                 )
-                types.register(id: nameSymbol.id, as: type)
-                types.register(id: valueSymbol.id, as: type)
+                registry.register(nameSymbol.with(type: type))
+                registry.register(valueSymbol.with(type: type))
 
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
                     code: "\(found.id): \(found.type)\(context.defaultValue(for: found))"
                 )
-            } else if let type = types[param.id] {
+            } else if let type = registry[param.id]?.type {
                 paramSymbol = param.with(
                     code: "\(param.id): \(type)"
                 )
@@ -316,7 +334,7 @@ extension Symbol {
         if code.contains("=") {
             return "var \(code)"
         } else {
-            return "var \(code) = \(type.emptyValue)"
+            return "var \(code)\(type.emptyValueAssignment)"
         }
     }
 }

@@ -16,7 +16,8 @@ final class PropertyIndexTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol("here", type: .object, category: .rooms),
+            Symbol("troll", type: .object, category: .objects),
         ])
     }
 
@@ -24,7 +25,7 @@ final class PropertyIndexTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("GETPT"))
     }
 
-    func testPropertyIndex() throws {
+    func testPropertyIndexOfObjectInObjects() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
             .property("STRENGTH")
@@ -40,20 +41,31 @@ final class PropertyIndexTests: QuelboTests {
         ))
     }
 
+    func testPropertyIndexOfObjectInLocal() throws {
+        let registry = SymbolRegistry([
+            Symbol("dir", type: .direction),
+        ])
+
+        let symbol = try factory.init([
+            .global("HERE"),
+            .local("DIR")
+        ], with: registry).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            "here.propertyIndex(of: .dir)",
+            type: .int,
+            children: [
+                Symbol("here", type: .object, category: .rooms),
+                Symbol("dir", type: .direction),
+            ]
+        ))
+    }
+
     func testNonObjectThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
-        )
-    }
-
-    func testNonPropertyThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("TROLL"),
-                .string(",P?STRENGTH")
             ]).process()
         )
     }

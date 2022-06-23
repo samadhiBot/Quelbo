@@ -25,8 +25,8 @@ extension Factories {
                 if value.type.isUnknown {
                     if value.id == "t" {
                         value = .trueSymbol
-                    } else if let saved = types[value.id] {
-                        value = value.with(type: saved)
+                    } else if let registered = registry[value.id] {
+                        value = value.with(type: registered.type)
                     }
                 }
                 return Symbol(

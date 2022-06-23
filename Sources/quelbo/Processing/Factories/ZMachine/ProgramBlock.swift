@@ -19,7 +19,7 @@ extension Factories {
         var pro: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: types)
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
         }
 
         var codeBlock: String {
@@ -28,14 +28,14 @@ extension Factories {
                     \(pro.paramDeclarations())\
                     \(pro.activation)\
                     while true {
-                    \(pro.code.code.indented)
+                    \(pro.codeSymbol.code.indented)
                     }
                     """
             } else {
                 return """
                     do {
                     \(pro.paramDeclarations(indented: true))\
-                    \(pro.code.code.indented)
+                    \(pro.codeSymbol.code.indented)
                     }
                     """
             }

@@ -109,12 +109,14 @@ final class SetTests: QuelboTests {
     }
 
     func testSetToLocalVariable() throws {
-        let types = SymbolFactory.TypeRegistry(["n": .string])
+        let registry = SymbolRegistry([
+            Symbol("n", type: .string),
+        ])
 
         let symbol = try factory.init([
             .atom("X"),
             .local("N"),
-        ], with: types).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "x.set(to: n)",

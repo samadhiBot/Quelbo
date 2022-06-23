@@ -22,7 +22,7 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             self.nameSymbol = try findNameSymbol(in: &tokens)
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: types)
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
         }
 
         var typeName: String {
@@ -35,7 +35,7 @@ extension Factories {
                 code: """
                     \(pro.discardableResult)\
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).
-                    func \(nameSymbol.code)(\(pro.params.code))\(pro.returnValue) {
+                    func \(nameSymbol.code)(\(pro.paramsSymbol.code))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
                     \(pro.codeBlock.indented)
@@ -43,7 +43,7 @@ extension Factories {
                     """,
                 type: pro.type,
                 category: .routines,
-                children: pro.params.children
+                children: pro.paramsSymbol.children
             )
             try Game.commit(symbol)
             return symbol

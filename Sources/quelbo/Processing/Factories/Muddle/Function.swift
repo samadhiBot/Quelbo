@@ -19,12 +19,12 @@ extension Factories {
         var pro: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: types)
+            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
         }
 
         override func process() throws -> Symbol {
-            let argNames = pro.params.children.codeValues(.commaSeparated)
-            let argTypes = pro.params.children
+            let argNames = pro.paramsSymbol.children.codeValues(.commaSeparated)
+            let argTypes = pro.paramsSymbol.children
                 .map { $0.type.description }
                 .joined(separator: ", ")
 
@@ -37,7 +37,7 @@ extension Factories {
                     }
                     """,
                 type: pro.type,
-                children: pro.params.children,
+                children: pro.paramsSymbol.children,
                 meta: [
                     .mutating(false),
                     .type("(\(argTypes))\(pro.returnValue)"),

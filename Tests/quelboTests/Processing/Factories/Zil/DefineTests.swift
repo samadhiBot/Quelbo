@@ -350,12 +350,12 @@ final class DefineTests: QuelboTests {
     }
 
     func testMakeReadbufDefine() throws {
-        let types = SymbolFactory.TypeRegistry()
+        let registry = SymbolRegistry()
 
         let _ = try Factories.Constant([
             .atom("READBUF-SIZE"),
             .decimal(100)
-        ], with: types).process()
+        ], with: registry).process()
 
         let definition: [Token] = [
             .list([
@@ -369,7 +369,7 @@ final class DefineTests: QuelboTests {
                 ])
             ])
         ]
-        let symbol = try factory.init([.atom("MAKE-READBUF")] + definition, with: types).process()
+        let symbol = try factory.init([.atom("MAKE-READBUF")] + definition, with: registry).process()
 
         let expected = Symbol(
             id: "makeReadbuf",
@@ -389,7 +389,7 @@ final class DefineTests: QuelboTests {
             .form([
                 .atom("MAKE-READBUF")
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(kbdReadbuf.ignoringChildren, Symbol(
             id: "kbdReadbuf",
@@ -422,7 +422,7 @@ final class DefineTests: QuelboTests {
             .form([
                 .atom("MAKE-READBUF")
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(editReadbuf.ignoringChildren, Symbol(
             id: "editReadbuf",
@@ -501,7 +501,9 @@ final class DefineTests: QuelboTests {
 //    }
 
     func testMultifrob() throws {
-        let types = SymbolFactory.TypeRegistry(["prsa": .object])
+        let registry = SymbolRegistry([
+            Symbol("prsa", type: .object),
+        ])
 
         let definition: [Token] = [
             .list([
@@ -707,7 +709,7 @@ final class DefineTests: QuelboTests {
             ])
         ]
 
-        let symbol = try factory.init([.atom("MULTIFROB")] + definition, with: types).process()
+        let symbol = try factory.init([.atom("MULTIFROB")] + definition, with: registry).process()
 
         let expected = Symbol(
             id: "multifrob",
@@ -733,7 +735,7 @@ final class DefineTests: QuelboTests {
                 .atom("PRSA"),
                 .local("ATMS")
             ])
-        ], with: types).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(isVerb.ignoringChildren, Symbol(
             id: "isVerb",

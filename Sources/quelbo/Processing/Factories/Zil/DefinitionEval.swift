@@ -40,7 +40,7 @@ extension Factories {
                 definition.insert(.atom(activation), at: 0)
             }
 
-            self.pro = try BlockProcessor(definition, with: types)
+            self.pro = try BlockProcessor(definition, with: registry)
         }
 
         override func process() throws -> Symbol {
@@ -49,7 +49,7 @@ extension Factories {
                 code: """
                     \(pro.discardableResult)\
                     /// The `\(nameSymbol.code)` (\(nameSymbol.id)) function.
-                    func \(nameSymbol.code)(\(pro.params.code))\(pro.returnValue) {
+                    func \(nameSymbol.code)(\(pro.paramsSymbol.code))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
                     \(pro.codeBlock.indented)
@@ -57,7 +57,7 @@ extension Factories {
                     """,
                 type: pro.type,
                 category: .functions,
-                children: pro.params.children
+                children: pro.paramsSymbol.children
             )
             try Game.commit(symbol)
             return symbol

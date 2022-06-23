@@ -108,7 +108,7 @@ final class OrTests: QuelboTests {
             """
             .or(
                 rarg.equals(mEnter),
-                !foundTreasureChest
+                .isNot(foundTreasureChest)
             )
             """,
             type: .bool,
@@ -122,7 +122,7 @@ final class OrTests: QuelboTests {
                     ]
                 ),
                 Symbol(
-                    "!foundTreasureChest",
+                    ".isNot(foundTreasureChest)",
                     type: .bool,
                     children: [
                         Symbol("foundTreasureChest", type: .bool, category: .globals)

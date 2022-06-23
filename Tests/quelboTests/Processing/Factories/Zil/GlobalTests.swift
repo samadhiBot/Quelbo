@@ -486,8 +486,8 @@ final class GlobalTests: QuelboTests {
         // Inspecting the `prso` game symbol confirms that the type overwrite took place.
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
-            code: "var prso: Object = .nullObject",
-            type: .object,
+            code: "var prso: Object? = nil",
+            type: .optional(.object),
             category: .globals,
             children: [.falseSymbol],
             meta: [.maybeEmptyValue]

@@ -9,14 +9,14 @@ import XCTest
 @testable import quelbo
 
 class QuelboTests: XCTestCase {
-    var types: SymbolFactory.TypeRegistry!
+    var registry: SymbolRegistry!
 
     override func setUp() {
         super.setUp()
 
         Game.shared.gameSymbols = []
         Game.shared.zMachineVersion = .z3
-        self.types = SymbolFactory.TypeRegistry()
+        self.registry = SymbolRegistry()
     }
 
     func AssertSameFactory(
@@ -68,11 +68,5 @@ extension QuelboTests {
                 Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
             ]
         )
-    }
-}
-
-extension Symbol {
-    var ignoringChildren: Symbol {
-        self.with(children: [])
     }
 }
