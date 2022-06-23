@@ -85,7 +85,7 @@ final class IsVersionTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                if zMachineVersion == zip {
                    resp.set(to: try readbuf.get(at: 1))

@@ -963,7 +963,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "advertisement",
             code: #"""
                 /// The `advertisement` (ADVERTISEMENT) object.
@@ -1036,7 +1036,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "trophyCase",
             code: """
                 /// The `trophyCase` (TROPHY-CASE) object.
@@ -1393,7 +1393,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "adventurer",
             code: """
                 /// The `adventurer` (ADVENTURER) object.

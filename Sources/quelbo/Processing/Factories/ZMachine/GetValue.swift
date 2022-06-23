@@ -21,7 +21,9 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            try symbol(0)
+            let variable = try symbol(0)
+
+            return variable.with(code: variable.id.stringLiteral)
         }
     }
 }

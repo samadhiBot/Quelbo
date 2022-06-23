@@ -27,7 +27,7 @@ extension Factories {
                 throw Error.missingOutputStream(tokens)
             }
 
-            switch stream.id {
+            switch stream.code {
             case "-1": symbols.insert(Symbol(".screenOff"), at: 0)
             case "-2": symbols.insert(Symbol(".transcriptFileOff"), at: 0)
             case "-3": symbols.insert(Symbol(".tableOff"), at: 0)

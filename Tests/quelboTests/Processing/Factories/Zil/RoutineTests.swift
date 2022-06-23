@@ -463,7 +463,7 @@ final class RoutineTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "remark",
             code: #"""
                 /// The `remark` (REMARK) routine.
@@ -856,7 +856,7 @@ final class RoutineTests: QuelboTests {
     }
 
 
-    
+
 }
 
 // MARK: - Test helpers

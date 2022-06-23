@@ -16,7 +16,7 @@ final class PrintCarriageReturnTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("message", type: .string, category: .globals)
+            Symbol(id: "message", type: .string, category: .globals)
         ])
     }
 
@@ -34,10 +34,7 @@ final class PrintCarriageReturnTests: QuelboTests {
                 output("Hello World")
                 output("\n")
                 """#,
-            type: .void,
-            children: [
-                Symbol(#""Hello World""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .void
         ))
     }
 
@@ -51,10 +48,7 @@ final class PrintCarriageReturnTests: QuelboTests {
                 output(message)
                 output("\n")
                 """#,
-            type: .void,
-            children: [
-                Symbol("message", type: .string, category: .globals),
-            ]
+            type: .void
         ))
     }
 

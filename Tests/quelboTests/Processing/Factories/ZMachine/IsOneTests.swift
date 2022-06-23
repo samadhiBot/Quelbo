@@ -16,7 +16,7 @@ final class IsOneTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("foo", type: .int, category: .globals)
+            Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
 
@@ -31,10 +31,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isOne",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral])
-            ]
+            type: .bool
         ))
     }
 
@@ -45,10 +42,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.isOne",
-            type: .bool,
-            children: [
-                Symbol("foo", type: .int, category: .globals)
-            ]
+            type: .bool
         ))
     }
 
@@ -59,10 +53,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "bar.isOne",
-            type: .bool,
-            children: [
-                Symbol("bar", type: .int)
-            ]
+            type: .bool
         ))
     }
 

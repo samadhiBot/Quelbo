@@ -84,7 +84,7 @@ final class RestTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            symbol.ignoringChildren,
+            symbol,
             Symbol("struct2.rest()", type: .array(.zilElement))
         )
     }
@@ -108,7 +108,7 @@ final class RestTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            symbol.ignoringChildren,
+            symbol,
             Symbol("struct3.rest(2)", type: .array(.zilElement))
         )
     }

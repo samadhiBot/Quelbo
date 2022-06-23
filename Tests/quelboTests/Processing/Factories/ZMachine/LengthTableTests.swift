@@ -18,17 +18,17 @@ final class LengthTableTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("forest1", type: .object, category: .rooms),
-            Symbol("forest2", type: .object, category: .rooms),
-            Symbol("forest3", type: .object, category: .rooms),
-            Symbol("knife", type: .object, category: .objects),
-            Symbol("path", type: .object, category: .rooms),
-            Symbol("sword", type: .object, category: .objects),
-            Symbol("thief", type: .object, category: .objects),
-            Symbol("thiefMelee", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines)
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "forest1", type: .object, category: .rooms),
+            Symbol(id: "forest2", type: .object, category: .rooms),
+            Symbol(id: "forest3", type: .object, category: .rooms),
+            Symbol(id: "knife", type: .object, category: .objects),
+            Symbol(id: "path", type: .object, category: .rooms),
+            Symbol(id: "sword", type: .object, category: .objects),
+            Symbol(id: "thief", type: .object, category: .objects),
+            Symbol(id: "thiefMelee", type: .bool, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "trollMelee", type: .bool, category: .routines)
         )
     }
 
@@ -52,13 +52,7 @@ final class LengthTableTests: QuelboTests {
                     flags: [.length]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol("flags: [.length]"),
-            ]
+            type: .table
         ))
     }
 
@@ -71,7 +65,7 @@ final class LengthTableTests: QuelboTests {
             .atom("TROLL-MELEE")
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     .object(troll),
@@ -99,7 +93,7 @@ final class LengthTableTests: QuelboTests {
             .atom("FOREST-1"),
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     .room(forest1),
@@ -135,7 +129,7 @@ final class LengthTableTests: QuelboTests {
             ]),
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     .table(Table(

@@ -135,9 +135,9 @@ final class DefineMacroTests: QuelboTests {
             category: .routines
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("isOpenable", category: .routines).ignoringChildren,
+            try Game.find("isOpenable", category: .routines),
             expected
         )
     }
@@ -265,5 +265,5 @@ final class DefineMacroTests: QuelboTests {
 //        XCTAssertNoDifference(symbol, expected)
 //        XCTAssertNoDifference(try Game.find("bottles", category: .routines), expected)
 //    }
-    
+
 }

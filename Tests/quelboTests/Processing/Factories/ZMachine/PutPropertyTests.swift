@@ -16,8 +16,8 @@ final class PutPropertyTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("winner", type: .object, category: .globals),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "winner", type: .object, category: .globals),
         ])
     }
 
@@ -34,12 +34,7 @@ final class PutPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.strength = 10",
-            type: .int,
-            children: [
-                Symbol("troll", type: .object, category: .objects),
-                Symbol("strength", type: .int, category: .properties),
-                Symbol("10", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -52,12 +47,7 @@ final class PutPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "winner.action = 0",
-            type: .int,
-            children: [
-                Symbol("winner", type: .object, category: .globals),
-                Symbol("action", type: .routine, category: .properties),
-                .zeroSymbol
-            ]
+            type: .int
         ))
     }
 

@@ -16,7 +16,7 @@ final class RemoveTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("sandwich", type: .object, category: .objects),
+            Symbol(id: "sandwich", type: .object, category: .objects),
         ])
     }
 
@@ -26,15 +26,12 @@ final class RemoveTests: QuelboTests {
 
     func testRemoveSandwich() throws {
         let symbol = try factory.init([
-            .atom("SANDWICH"),
+            .global("SANDWICH"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "sandwich.remove()",
-            type: .void,
-            children: [
-                Symbol("sandwich", type: .object, category: .objects),
-            ]
+            type: .void
         ))
     }
 

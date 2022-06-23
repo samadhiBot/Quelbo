@@ -12,14 +12,6 @@ import XCTest
 final class PrintNumberTests: QuelboTests {
     let factory = Factories.PrintNumber.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-            Symbol("message", type: .string, category: .globals)
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("PRINTN"))
     }
@@ -31,10 +23,7 @@ final class PrintNumberTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(2)",
-            type: .void,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .void
         ))
     }
 
@@ -54,10 +43,7 @@ final class PrintNumberTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(infinity)",
-            type: .void,
-            children: [
-                Symbol("infinity", type: .int),
-            ]
+            type: .void
         ))
     }
 
@@ -72,17 +58,7 @@ final class PrintNumberTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(.add(2, 3))",
-            type: .void,
-            children: [
-                Symbol(
-                    ".add(2, 3)",
-                    type: .int,
-                    children: [
-                        Symbol("2", type: .int, meta: [.isLiteral]),
-                        Symbol("3", type: .int, meta: [.isLiteral]),
-                    ]
-                ),
-            ]
+            type: .void
         ))
     }
 }

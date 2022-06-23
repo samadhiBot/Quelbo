@@ -333,7 +333,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "reservoirSouth",
             code: """
             /// The `reservoirSouth` (RESERVOIR-SOUTH) room.
@@ -444,7 +444,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "eastOfHouse",
             code: """
             /// The `eastOfHouse` (EAST-OF-HOUSE) room.
@@ -527,7 +527,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "studio",
             code: #"""
             /// The `studio` (STUDIO) room.
@@ -604,7 +604,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "foyer",
             code: #"""
             /// The `foyer` (FOYER) room.

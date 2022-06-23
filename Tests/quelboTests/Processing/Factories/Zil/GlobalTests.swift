@@ -220,9 +220,9 @@ final class GlobalTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -291,9 +291,9 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("villains", category: .globals).ignoringChildren,
+            try Game.find("villains", category: .globals),
             expected
         )
     }
@@ -334,9 +334,9 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("def1Res", category: .globals).ignoringChildren,
+            try Game.find("def1Res", category: .globals),
             expected
         )
     }
@@ -356,9 +356,9 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .globals).ignoringChildren,
+            try Game.find("foo", category: .globals),
             expected
         )
     }
@@ -378,9 +378,9 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .globals).ignoringChildren,
+            try Game.find("foo", category: .globals),
             expected
         )
     }
@@ -400,9 +400,9 @@ final class GlobalTests: QuelboTests {
             category: .globals
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .globals).ignoringChildren,
+            try Game.find("foo", category: .globals),
             expected
         )
     }
@@ -435,9 +435,9 @@ final class GlobalTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("square").ignoringChildren,
+            try Game.find("square"),
             expected
         )
     }
@@ -518,7 +518,7 @@ final class GlobalTests: QuelboTests {
             .atom("T")
         ]).process()
 
-        XCTAssertNoDifference(set.ignoringChildren, Symbol(
+        XCTAssertNoDifference(set, Symbol(
             "kitchenWindowFlag.set(to: true)",
             type: .bool
         ))

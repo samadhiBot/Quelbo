@@ -16,7 +16,7 @@ final class IsLessThanTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("foo", type: .int, category: .globals)
+            Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
 
@@ -33,11 +33,7 @@ final class IsLessThanTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isLessThan(3)",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .bool
         ))
     }
 
@@ -49,11 +45,7 @@ final class IsLessThanTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isLessThan(foo)",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("foo", type: .int, category: .globals),
-            ]
+            type: .bool
         ))
     }
 
@@ -65,11 +57,7 @@ final class IsLessThanTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isLessThan(bar)",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("bar", type: .int),
-            ]
+            type: .bool
         ))
     }
 

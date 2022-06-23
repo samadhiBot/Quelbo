@@ -18,17 +18,17 @@ final class TableTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("forest1", type: .object, category: .rooms),
-            Symbol("forest2", type: .object, category: .rooms),
-            Symbol("forest3", type: .object, category: .rooms),
-            Symbol("knife", type: .object, category: .objects),
-            Symbol("path", type: .object, category: .rooms),
-            Symbol("sword", type: .object, category: .objects),
-            Symbol("thief", type: .object, category: .objects),
-            Symbol("thiefMelee", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines)
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "forest1", type: .object, category: .rooms),
+            Symbol(id: "forest2", type: .object, category: .rooms),
+            Symbol(id: "forest3", type: .object, category: .rooms),
+            Symbol(id: "knife", type: .object, category: .objects),
+            Symbol(id: "path", type: .object, category: .rooms),
+            Symbol(id: "sword", type: .object, category: .objects),
+            Symbol(id: "thief", type: .object, category: .objects),
+            Symbol(id: "thiefMelee", type: .bool, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "trollMelee", type: .bool, category: .routines)
         )
     }
 
@@ -51,12 +51,7 @@ final class TableTests: QuelboTests {
                     .room(forest3)
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-            ]
+            type: .table
         ))
     }
 
@@ -79,14 +74,7 @@ final class TableTests: QuelboTests {
                     .bool(trollMelee)
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
-                Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
-                Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
-                Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
-            ]
+            type: .table
         ))
     }
 
@@ -102,7 +90,7 @@ final class TableTests: QuelboTests {
             .decimal(4)
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     .int(1),
@@ -125,7 +113,7 @@ final class TableTests: QuelboTests {
             .decimal(0)
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
             Table(
                 .int(0),
@@ -162,16 +150,7 @@ final class TableTests: QuelboTests {
                     flags: [.pure]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-                Symbol(id: "path", code: ".room(path)", type: .zilElement, category: .rooms),
-                Symbol(id: "clearing", code: ".room(clearing)", type: .zilElement, category: .rooms),
-                Symbol(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-                Symbol("flags: [.pure]"),
-            ]
+            type: .table
         ))
     }
 
@@ -191,7 +170,7 @@ final class TableTests: QuelboTests {
             .string("high in your lungs.")
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     .string("up to your ankles."),
@@ -249,65 +228,7 @@ final class TableTests: QuelboTests {
                     ))
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol(
-                    id: """
-                        Table(
-                            .object(troll),
-                            .object(sword),
-                            .int(1),
-                            .int(0),
-                            .bool(trollMelee)
-                        )
-                        """,
-                    code: """
-                        .table(Table(
-                            .object(troll),
-                            .object(sword),
-                            .int(1),
-                            .int(0),
-                            .bool(trollMelee)
-                        ))
-                        """,
-                    type: .zilElement,
-                    children: [
-                        Symbol(id: "troll", code: ".object(troll)", type: .zilElement, category: .objects),
-                        Symbol(id: "sword", code: ".object(sword)", type: .zilElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
-                        Symbol(id: "trollMelee", code: ".bool(trollMelee)", type: .zilElement, category: .routines),
-                    ]
-                ),
-                Symbol(
-                    id: """
-                        Table(
-                            .object(thief),
-                            .object(knife),
-                            .int(1),
-                            .int(0),
-                            .bool(thiefMelee)
-                        )
-                        """,
-                    code: """
-                        .table(Table(
-                            .object(thief),
-                            .object(knife),
-                            .int(1),
-                            .int(0),
-                            .bool(thiefMelee)
-                        ))
-                        """,
-                    type: .zilElement,
-                    children: [
-                        Symbol(id: "thief", code: ".object(thief)", type: .zilElement, category: .objects),
-                        Symbol(id: "knife", code: ".object(knife)", type: .zilElement, category: .objects),
-                        Symbol(id: "1", code: ".int(1)", type: .zilElement, meta: [.isLiteral]),
-                        Symbol(id: "0", code: ".int(0)", type: .zilElement, meta: [.isLiteral, .maybeEmptyValue]),
-                        Symbol(id: "thiefMelee", code: ".bool(thiefMelee)", type: .zilElement, category: .routines),
-                    ]
-                ),
-            ]
+            type: .table
         ))
     }
 }

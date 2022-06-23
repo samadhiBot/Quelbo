@@ -27,7 +27,7 @@ extension Factories {
                 throw Error.missingInputStream(tokens)
             }
 
-            switch stream.id {
+            switch stream.code {
             case "0": symbols.insert(Symbol(".keyboard"), at: 0)
             case "1": symbols.insert(Symbol(".file"), at: 0)
             default: throw Error.invalidInputStream(stream.code)

@@ -16,8 +16,8 @@ final class IsNotEqualToTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("isPlayerAlive", type: .bool, category: .globals),
-            Symbol("isWorldAlive", type: .bool, category: .globals)
+            Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
+            Symbol(id: "isWorldAlive", type: .bool, category: .globals)
         )
     }
 
@@ -34,11 +34,7 @@ final class IsNotEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isNotEqualTo(3)",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .bool
         ))
     }
 
@@ -51,12 +47,7 @@ final class IsNotEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isNotEqualTo(3, 4)",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-                Symbol("4", type: .int, meta: [.isLiteral]),
-            ]
+            type: .bool
         ))
     }
 
@@ -68,11 +59,7 @@ final class IsNotEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #""hello".isNotEqualTo("goodBye")"#,
-            type: .bool,
-            children: [
-                Symbol(#""hello""#, type: .string, meta: [.isLiteral]),
-                Symbol(#""goodBye""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .bool
         ))
     }
 
@@ -84,11 +71,7 @@ final class IsNotEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "isPlayerAlive.isNotEqualTo(isWorldAlive)",
-            type: .bool,
-            children: [
-                Symbol("isPlayerAlive", type: .bool, category: .globals),
-                Symbol("isWorldAlive", type: .bool, category: .globals),
-            ]
+            type: .bool
         ))
     }
 

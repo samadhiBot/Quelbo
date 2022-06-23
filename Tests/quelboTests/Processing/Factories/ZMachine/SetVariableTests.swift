@@ -17,14 +17,14 @@ final class SetVariableTests: QuelboTests {
 
         try! Game.commit(
             Symbol(
-                "isNext",
+                id: "isNext",
                 type: .int,
                 category: .routines,
                 children: [
                     Symbol("number", type: .int)
                 ]
             ),
-            Symbol("thirty", type: .int, category: .globals)
+            Symbol(id: "thirty", type: .int, category: .globals)
         )
     }
 
@@ -41,11 +41,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.set(to: 3)",
-            type: .int,
-            children: [
-                Symbol("foo", type: .int, meta: [.mutating(true)]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -57,11 +53,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"foo.set(to: "Bar!")"#,
-            type: .string,
-            children: [
-                Symbol("foo", type: .string, meta: [.mutating(true)]),
-                Symbol(#""Bar!""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
@@ -73,11 +65,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "isRobbed.set(to: true)",
-            type: .bool,
-            children: [
-                Symbol("isRobbed", type: .bool, meta: [.mutating(true)]),
-                .trueSymbol
-            ]
+            type: .bool
         ))
     }
 
@@ -93,24 +81,13 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "t.set(to: thirty.add(3))",
-            type: .int,
-            children: [
-                Symbol("t", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    "thirty.add(3)",
-                    type: .int,
-                    children: [
-                        Symbol("thirty", type: .int, category: .globals, meta: [.mutating(true)]),
-                        Symbol("3", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            type: .int
         ))
     }
 
     func testSetVariableToLocalVariable() throws {
         let registry = SymbolRegistry([
-            Symbol("n", type: .string),
+            Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string),
         ])
 
         let symbol = try factory.init([
@@ -120,11 +97,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "x.set(to: n)",
-            type: .string,
-            children: [
-                Symbol("x", type: .string, meta: [.mutating(true)]),
-                Symbol("n", type: .string),
-            ]
+            type: .string
         ))
     }
 
@@ -139,17 +112,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: x.nextSibling)",
-            type: .object,
-            children: [
-                Symbol("n", type: .object, meta: [.mutating(true)]),
-                Symbol(
-                    "x.nextSibling",
-                    type: .object,
-                    children: [
-                        Symbol("x", type: .object)
-                    ]
-                )
-            ]
+            type: .object
         ))
     }
 
@@ -165,18 +128,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: n.subtract(1))",
-            type: .int,
-            children: [
-                Symbol("n", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    "n.subtract(1)",
-                    type: .int,
-                    children: [
-                        Symbol("n", type: .int, meta: [.mutating(true)]),
-                        Symbol("1", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            type: .int
         ))
     }
 

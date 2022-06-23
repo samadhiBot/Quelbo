@@ -42,8 +42,16 @@ class SymbolRegistry {
     func register(_ symbol: Symbol) {
         guard !symbol.type.isUnknown else { return }
 
-        registry.merge([symbol.id: symbol.ignoringChildren]) { registered, new in
-            new.type == registered.type ? registered : new.with(type: .zilElement)
+        let newSymbol = Symbol(
+            id: symbol.id,
+            code: symbol.id.stringLiteral,
+            type: symbol.type,
+            category: symbol.category,
+            meta: symbol.meta
+        )
+
+        registry.merge([symbol.id: newSymbol]) { registered, new in
+            new.type == registered.type ? new : new.with(type: .zilElement)
         }
     }
 

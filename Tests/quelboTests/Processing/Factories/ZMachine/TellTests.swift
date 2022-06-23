@@ -16,7 +16,7 @@ final class TellTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
 
@@ -30,7 +30,7 @@ final class TellTests: QuelboTests {
             .atom("CR"),
             .atom("CRLF"),
             .atom("D"),
-            .atom("TROLL"),
+            .global("TROLL"),
             .atom("N"),
             .decimal(42),
             .atom("C"),
@@ -47,44 +47,7 @@ final class TellTests: QuelboTests {
             output("z")
             output(utf8: 65)
             """,
-            type: .void,
-            children: [
-                Symbol(
-                    "output(\"You are in a large cavernous room\")",
-                    type: .void,
-                    children: [
-                        Symbol("\"You are in a large cavernous room\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    "output(troll.description)",
-                    type: .void,
-                    children: [
-                        Symbol("troll", type: .object, category: .objects)
-                    ]
-                ),
-                Symbol(
-                    "output(42)",
-                    type: .void,
-                    children: [
-                        Symbol("42", type: .int, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    "output(\"z\")",
-                    type: .void,
-                    children: [
-                        Symbol("\"z\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    "output(utf8: 65)",
-                    type: .void,
-                    children: [
-                        Symbol("65", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            type: .void
         ))
     }
 

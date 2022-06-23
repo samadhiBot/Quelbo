@@ -89,7 +89,7 @@ final class MapFirstTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
             [
                 "Zil".nthElement(1),
@@ -123,7 +123,7 @@ final class MapFirstTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
             [
                 { (n: Int) -> Int in

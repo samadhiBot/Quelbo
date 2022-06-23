@@ -12,14 +12,6 @@ import XCTest
 final class ReturnFalseTests: QuelboTests {
     let factory = Factories.ReturnFalse.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-
-        ])
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("RFALSE"))
     }
@@ -31,11 +23,7 @@ final class ReturnFalseTests: QuelboTests {
             id: "<Return>",
             code: "return false",
             type: .bool,
-            children: [.falseSymbol],
-            meta: [
-                .isLiteral,
-                .maybeEmptyValue
-            ]
+            meta: [.isLiteral, .maybeEmptyValue]
         ))
     }
 

@@ -118,7 +118,7 @@ final class AddTests: QuelboTests {
             .decimal(1)
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             "pAclause.add(1)",
             type: .int
         ))

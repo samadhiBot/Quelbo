@@ -20,20 +20,12 @@ extension Factories {
             .zeroOrOne(.unknown)
         }
 
-        var codeBlock: String {
-            if let activation = symbols.first {
-                return "continue \(activation.code)"
-            } else {
-                return "continue"
-            }
-        }
-
         override func process() throws -> Symbol {
-            Symbol(
-                id: .id("<Again>"),
-                code: codeBlock,
-                children: symbols
-            )
+            if let activation = symbols.first?.code {
+                return Symbol("continue \(activation)", children: symbols)
+            } else {
+                return Symbol("continue", children: symbols)
+            }
         }
     }
 }

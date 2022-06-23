@@ -16,7 +16,7 @@ final class PrintCharacterTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("letterZ", type: .string, category: .globals)
+            Symbol(id: "letterZ", type: .string, category: .globals)
         )
     }
 
@@ -32,10 +32,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output(utf8: 90)"#,
-            type: .void,
-            children: [
-                Symbol("90", type: .int, meta: [.isLiteral]),
-            ]
+            type: .void
         ))
     }
 
@@ -55,10 +52,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output("s")"#,
-            type: .void,
-            children: [
-                Symbol(#""s""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .void
         ))
     }
 
@@ -69,10 +63,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(letterZ)",
-            type: .void,
-            children: [
-                Symbol("letterZ", type: .string, category: .globals),
-            ]
+            type: .void
         ))
     }
 
@@ -87,17 +78,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(utf8: .add(2, 88))",
-            type: .void,
-            children: [
-                Symbol(
-                    ".add(2, 88)",
-                    type: .int,
-                    children: [
-                        Symbol("2", type: .int, meta: [.isLiteral]),
-                        Symbol("88", type: .int, meta: [.isLiteral]),
-                    ]
-                ),
-            ]
+            type: .void
         ))
     }
 }

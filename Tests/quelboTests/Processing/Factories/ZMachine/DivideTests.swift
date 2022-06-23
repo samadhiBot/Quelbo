@@ -16,10 +16,10 @@ final class DivideTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("baseScore", type: .int, category: .globals),
-            Symbol("cyclowrath", type: .int, category: .globals),
-            Symbol("myBike", type: .string, category: .globals),
-            Symbol("otvalFrob", type: .int, category: .routines)
+            Symbol(id: "baseScore", type: .int, category: .globals),
+            Symbol(id: "cyclowrath", type: .int, category: .globals),
+            Symbol(id: "myBike", type: .string, category: .globals),
+            Symbol(id: "otvalFrob", type: .int, category: .routines)
         )
     }
 
@@ -36,11 +36,7 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".divide(9, 3)",
-            type: .int,
-            children: [
-                Symbol("9", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -53,12 +49,7 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".divide(20, 5, 2)",
-            type: .int,
-            children: [
-                Symbol("20", type: .int, meta: [.isLiteral]),
-                Symbol("5", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -70,11 +61,7 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.divide(biggerNumber)",
-            type: .int,
-            children: [
-                Symbol("bigNumber", type: .int, meta: [.mutating(true)]),
-                Symbol("biggerNumber", type: .int),
-            ]
+            type: .int
         ))
     }
 
@@ -86,11 +73,7 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.divide(1)",
-            type: .int,
-            children: [
-                Symbol("cyclowrath", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("1", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -104,14 +87,9 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.divide(otvalFrob())",
-            type: .int,
-            children: [
-                Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("otvalFrob()", type: .int),
-            ]
+            type: .int
         ))
     }
-
 
     func testDivideOneDecimalThrows() throws {
         XCTAssertThrowsError(

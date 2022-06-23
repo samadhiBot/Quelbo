@@ -199,9 +199,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -270,9 +270,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("villains", category: .constants).ignoringChildren,
+            try Game.find("villains", category: .constants),
             expected
         )
     }
@@ -313,9 +313,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("def1Res", category: .constants).ignoringChildren,
+            try Game.find("def1Res", category: .constants),
             expected
         )
     }
@@ -335,9 +335,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -357,9 +357,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -380,9 +380,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
