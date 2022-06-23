@@ -5,8 +5,8 @@
 //  Created by Chris Sessions on 3/25/22.
 //
 
+import CustomDump
 import Foundation
-import SwiftPrettyPrint
 
 extension Game {
     func comment(_ title: String, _ code: String) -> String {
@@ -67,7 +67,6 @@ extension Game {
             🎟  Zil tokens
             """
         )
-        Pretty.sharedOption = Pretty.Option(colored: true)
-        Pretty.prettyPrint(gameTokens)
+        customDump(gameTokens)
     }
 }
