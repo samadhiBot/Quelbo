@@ -513,7 +513,7 @@ final class GlobalTests: QuelboTests {
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
         // there's no need to overwrite the `kitchenWindowFlag` type.
-        let set = try Factories.Set([
+        let set = try Factories.SetVariable([
             .atom("KITCHEN-WINDOW-FLAG"),
             .atom("T")
         ]).process()

@@ -147,10 +147,9 @@ extension BlockProcessor {
         return false
     }
 
-    var metaData: [Symbol.MetaData] {
-        guard let type = blockType else {
-            return []
-        }
+    var metaData: Set<Symbol.MetaData> {
+        guard let type = blockType else { return [] }
+
         switch type {
         case .repeatingWithoutDefaultActivation:
             let params = paramsSymbol.children
@@ -166,9 +165,8 @@ extension BlockProcessor {
     }
 
     func paramDeclarations(indented: Bool = false) -> String {
-        guard blockType != .repeatingWithoutDefaultActivation else {
-            return ""
-        }
+        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
+
         return emit(
             paramsSymbol.children.map { $0.localVariable },
             shouldIndent: indented

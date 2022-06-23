@@ -21,7 +21,7 @@ extension Factories {
             .two(.variable(.unknown), .unknown)
         }
 
-        var metaData: [Symbol.MetaData] = []
+        var metaData: Set<Symbol.MetaData> = []
         var nameSymbol = Symbol("TBD")
         var valueSymbol = Symbol("TBD")
 

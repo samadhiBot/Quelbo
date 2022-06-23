@@ -47,6 +47,7 @@ extension Factories {
 
             let code: String
             let allSymbols: [Symbol]
+
             if first.isLiteral {
                 allSymbols = [first] + symbols
                 code = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"

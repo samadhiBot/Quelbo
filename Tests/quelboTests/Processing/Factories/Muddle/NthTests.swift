@@ -54,7 +54,7 @@ final class NthTests: QuelboTests {
     }
 
     func testShortHandCall() throws {
-        let symbol = try Factories.Set.init([
+        let symbol = try Factories.SetVariable.init([
             .atom("A"),
             .form([
                 .decimal(3),

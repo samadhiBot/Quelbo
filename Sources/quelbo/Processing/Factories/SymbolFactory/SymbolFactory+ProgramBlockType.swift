@@ -9,7 +9,7 @@ import Foundation
 
 extension SymbolFactory {
     /// The set of possible program block types.
-    enum ProgramBlockType: Equatable {
+    enum ProgramBlockType: Hashable {
         /// A program block with the specified activation.
         case blockWithActivation(String)
 

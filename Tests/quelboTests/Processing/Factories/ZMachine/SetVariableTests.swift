@@ -1,5 +1,5 @@
 //
-//  SetTests.swift
+//  SetVariableTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 4/4/22.
@@ -9,8 +9,8 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class SetTests: QuelboTests {
-    let factory = Factories.Set.self
+final class SetVariableTests: QuelboTests {
+    let factory = Factories.SetVariable.self
 
     override func setUp() {
         super.setUp()
@@ -33,7 +33,7 @@ final class SetTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("SETG"))
     }
 
-    func testSetToDecimal() throws {
+    func testSetVariableToDecimal() throws {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
@@ -49,7 +49,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetToString() throws {
+    func testSetVariableToString() throws {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Bar!"),
@@ -65,7 +65,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetToBool() throws {
+    func testSetVariableToBool() throws {
         let symbol = try factory.init([
             .atom("ROBBED?"),
             .bool(true),
@@ -108,7 +108,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetToLocalVariable() throws {
+    func testSetVariableToLocalVariable() throws {
         let registry = SymbolRegistry([
             Symbol("n", type: .string),
         ])
@@ -128,7 +128,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetToFunctionResult() throws {
+    func testSetVariableToFunctionResult() throws {
         let symbol = try factory.init([
             .atom("N"),
             .form([
@@ -153,7 +153,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetToModifiedSelf() throws {
+    func testSetVariableToModifiedSelf() throws {
         let symbol = try factory.init([
             .atom("N"),
             .form([
@@ -180,7 +180,7 @@ final class SetTests: QuelboTests {
         ))
     }
 
-    func testSetWithoutAName() throws {
+    func testSetVariableWithoutAName() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),

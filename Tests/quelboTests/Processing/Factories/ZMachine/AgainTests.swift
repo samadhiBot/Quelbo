@@ -13,13 +13,6 @@ final class AgainTests: QuelboTests {
     let factory = Factories.Again.self
     let routineFactory = Factories.Routine.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("AGAIN"))
     }
