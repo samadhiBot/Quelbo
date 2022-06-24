@@ -16,8 +16,8 @@ final class HasFlagTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("kitchenWindow", type: .object),
-            Symbol("openBit", type: .property(.bool)),
+            Symbol(id: "kitchenWindow", type: .object),
+            Symbol(id: "openBit", type: .property(.bool)),
         ])
     }
 
@@ -33,19 +33,7 @@ final class HasFlagTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "kitchenWindow.hasFlag(openBit)",
-            type: .bool,
-            children: [
-                Symbol(
-                    id: "kitchenWindow",
-                    code: "kitchenWindow",
-                    type: .object
-                ),
-                Symbol(
-                    id: "openBit",
-                    code: "openBit",
-                    type: .bool
-                )
-            ]
+            type: .bool
         ))
     }
 

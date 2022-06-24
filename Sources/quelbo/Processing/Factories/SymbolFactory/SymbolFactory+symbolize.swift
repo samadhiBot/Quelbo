@@ -130,7 +130,7 @@ extension SymbolFactory {
             default: return .trueSymbol
             }
         }
-        return Symbol(name, type: expectedType)
+        return Symbol(id: .id(name), code: name, type: expectedType)
     }
 
     /// Translates a Zil
@@ -141,9 +141,9 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeBoolean(_ value: Bool) -> Symbol {
-        var metaData: [Symbol.MetaData] = [.isLiteral]
+        var metaData: Set<Symbol.MetaData> = [.isLiteral]
         if value == false {
-            metaData.append(.maybeEmptyValue)
+            metaData.insert(.maybeEmptyValue)
         }
         return Symbol("\(value)", type: .bool, meta: metaData)
     }
@@ -167,11 +167,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeDecimal(_ value: Int) -> Symbol {
-        var metaData: [Symbol.MetaData] = [.isLiteral]
-        if value == 0 {
-            metaData.append(.maybeEmptyValue)
-        }
-        return Symbol("\(value)", type: .int, meta: metaData)
+        .intSymbol(value)
     }
 
     /// Translates a Zil
@@ -266,6 +262,7 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
+
         return try Game.find(.id(name)).with(code: name)
     }
 
@@ -294,10 +291,15 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-        guard let registered = registry[.id(name)] else {
-            return Symbol(name, type: try Self.parameters.expectedType(at: index))
-        }
-        return registered
+
+        if let registered = registry[.id(name)] { return registered }
+
+        return Symbol(
+            id: .id(name),
+            code: name,
+            type: try Self.parameters.expectedType(at: index),
+            meta: [.maybeEmptyValue]
+        )
     }
 
     /// Translates a Zil Object

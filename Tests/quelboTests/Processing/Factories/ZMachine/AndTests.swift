@@ -16,8 +16,8 @@ final class AndTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("foundTreasureChest", type: .bool, category: .globals),
-            Symbol("mEnter", type: .int, category: .globals),
+            Symbol(id: "foundTreasureChest", type: .bool, category: .globals),
+            Symbol(id: "mEnter", type: .int, category: .globals),
         ])
     }
 
@@ -32,10 +32,7 @@ final class AndTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".and(true)",
-            type: .bool,
-            children: [
-                .trueSymbol,
-            ]
+            type: .bool
         ))
     }
 
@@ -47,11 +44,7 @@ final class AndTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".and(true, true)",
-            type: .bool,
-            children: [
-                .trueSymbol,
-                .trueSymbol,
-            ]
+            type: .bool
         ))
     }
 
@@ -64,12 +57,7 @@ final class AndTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".and(true, false, true)",
-            type: .bool,
-            children: [
-                .trueSymbol,
-                .falseSymbol,
-                .trueSymbol,
-            ]
+            type: .bool
         ))
     }
 
@@ -82,12 +70,7 @@ final class AndTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".and(1, 0, 2)",
-            type: .int,
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                .zeroSymbol,
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -111,24 +94,7 @@ final class AndTests: QuelboTests {
                 .isNot(foundTreasureChest)
             )
             """,
-            type: .bool,
-            children: [
-                Symbol(
-                    "rarg.equals(mEnter)",
-                    type: .bool,
-                    children: [
-                        Symbol("rarg", type: .int),
-                        Symbol("mEnter", type: .int, category: .globals),
-                    ]
-                ),
-                Symbol(
-                    ".isNot(foundTreasureChest)",
-                    type: .bool,
-                    children: [
-                        Symbol("foundTreasureChest", type: .bool, category: .globals)
-                    ]
-                )
-            ]
+            type: .bool
         ))
     }
 }

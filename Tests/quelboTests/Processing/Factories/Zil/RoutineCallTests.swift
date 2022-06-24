@@ -15,12 +15,12 @@ final class RoutineCallTests: QuelboTests {
 
         try! Game.commit(
             Symbol(
-                "bagOfCoinsFunc",
+                id: "bagOfCoinsFunc",
                 type: .void,
                 category: .routines
             ),
             Symbol(
-                "oneFunc",
+                id: "oneFunc",
                 type: .int,
                 category: .routines,
                 children: [
@@ -28,29 +28,29 @@ final class RoutineCallTests: QuelboTests {
                 ]
             ),
             Symbol(
-                "twoFunc",
+                id: "twoFunc",
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol("answer", type: .string, meta: [.isLiteral]),
-                    Symbol("number", type: .int, meta: [.isLiteral]),
+                    Symbol(id: "answer", type: .string, meta: [.isLiteral]),
+                    Symbol(id: "number", type: .int, meta: [.isLiteral]),
                 ]
             ),
             Symbol(
-                "threeFunc",
+                id: "threeFunc",
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol("answer", type: .string, meta: [.isLiteral]),
-                    Symbol("isValid", type: .bool),
-                    Symbol("number", type: .int, meta: [.isLiteral]),
+                    Symbol(id: "answer", type: .string, meta: [.isLiteral]),
+                    Symbol(id: "isValid", type: .bool),
+                    Symbol(id: "number", type: .int, meta: [.isLiteral]),
                 ]
             )
         )
     }
 
     func testProcessRoutineZeroParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.RoutineCall([
             .atom("BAG-OF-COINS-F")
         ]).process()
 
@@ -61,22 +61,19 @@ final class RoutineCallTests: QuelboTests {
     }
 
     func testProcessRoutineOneParam() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.RoutineCall([
             .atom("ONE-FCN"),
             .decimal(42)
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "oneFunc(number: 42)",
-            type: .int,
-            children: [
-                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 
     func testProcessRoutineTwoParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.RoutineCall([
             .atom("TWO-F"),
             .string("Answer"),
             .decimal(42),
@@ -89,16 +86,12 @@ final class RoutineCallTests: QuelboTests {
                     number: 42
                 )
                 """,
-            type: .string,
-            children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
-                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
     func testProcessRoutineThreeParams() throws {
-        let symbol = try Factories.RoutineCall.init([
+        let symbol = try Factories.RoutineCall([
             .atom("THREE-FUNCTION"),
             .string("Answer"),
             .bool(true),
@@ -116,12 +109,7 @@ final class RoutineCallTests: QuelboTests {
                     number: oneFunc(number: 42)
                 )
                 """,
-            type: .string,
-            children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
-                Symbol(id: "isValid", code: "isValid: true", type: .bool),
-                Symbol(id: "number", code: "number: oneFunc(number: 42)", type: .int, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 }

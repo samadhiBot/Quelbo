@@ -16,19 +16,19 @@ final class CondTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("bottles", type: .int, category: .routines),
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("here", type: .object, category: .rooms),
-            Symbol("isFunnyReturn", type: .bool, category: .globals),
-            Symbol("isIn", type: .bool, category: .routines),
-            Symbol("mEnter", type: .int, category: .globals),
-            Symbol("thisIsIt", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("wonFlag", type: .bool, category: .globals),
-            Symbol("prsi", type: .object, category: .globals),
-            Symbol("openBit", type: .bool, category: .flags),
-            Symbol("vehBit", type: .bool, category: .flags),
-            Symbol("isOpenable", type: .bool, category: .routines),
+            Symbol(id: "bottles", type: .int, category: .routines),
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "here", type: .object, category: .rooms),
+            Symbol(id: "isFunnyReturn", type: .bool, category: .globals),
+            Symbol(id: "isIn", type: .bool, category: .routines),
+            Symbol(id: "mEnter", type: .int, category: .globals),
+            Symbol(id: "thisIsIt", type: .bool, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "wonFlag", type: .bool, category: .globals),
+            Symbol(id: "prsi", type: .object, category: .globals),
+            Symbol(id: "openBit", type: .bool, category: .flags),
+            Symbol(id: "vehBit", type: .bool, category: .flags),
+            Symbol(id: "isOpenable", type: .bool, category: .routines),
         ])
     }
 
@@ -57,35 +57,7 @@ final class CondTests: QuelboTests {
                 output("Rarg equals mEnter")
             }
             """,
-            type: .void,
-            children: [
-                Symbol(
-                    """
-                        [
-                            rarg.equals(mEnter),
-                            output("Rarg equals mEnter"),
-                        ]
-                        """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(
-                            "rarg.equals(mEnter)",
-                            type: .bool,
-                            children: [
-                                Symbol("rarg", type: .int),
-                                Symbol("mEnter", type: .int, category: .globals),
-                            ]
-                        ),
-                        Symbol(
-                            "output(\"Rarg equals mEnter\")",
-                            type: .void,
-                            children: [
-                                Symbol("\"Rarg equals mEnter\"", type: .string, meta: [.isLiteral]),
-                            ]
-                        )
-                    ]
-                )
-            ]
+            type: .void
         ))
     }
 
@@ -115,15 +87,15 @@ final class CondTests: QuelboTests {
             ]),
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
-                """
-                if rarg.equals(mEnter) {
-                    output("Rarg equals mEnter")
-                } else if troll.isIn(here) {
-                    thisIsIt()
-                }
-                """,
-                type: .void
+        XCTAssertNoDifference(symbol, Symbol(
+            """
+            if rarg.equals(mEnter) {
+                output("Rarg equals mEnter")
+            } else if troll.isIn(here) {
+                thisIsIt()
+            }
+            """,
+            type: .void
         ))
     }
 
@@ -138,13 +110,13 @@ final class CondTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
-                """
-                if wonFlag {
-                    output(" A secret path leads southwest into the forest.")
-                }
-                """,
-                type: .void
+        XCTAssertNoDifference(symbol, Symbol(
+            """
+            if wonFlag {
+                output(" A secret path leads southwest into the forest.")
+            }
+            """,
+            type: .void
         ))
     }
 
@@ -164,14 +136,14 @@ final class CondTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
-                if here.equals(clearing) {
-                    "The grating opens."
-                } else {
-                    "The grating opens to reveal trees above you."
-                }
-                """,
+            if here.equals(clearing) {
+                "The grating opens."
+            } else {
+                "The grating opens to reveal trees above you."
+            }
+            """,
             type: .void
         ))
     }
@@ -204,7 +176,7 @@ final class CondTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             #"""
                 if n.decrement().isLessThan(1) {
                     output("No more bottles of beer on the wall!")
@@ -231,7 +203,7 @@ final class CondTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             #"""
                 if isFunnyReturn {
                     output("RETURN EXIT ROUTINE")
@@ -275,7 +247,7 @@ final class CondTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 if .or(
                     prsi.hasFlag(openBit),

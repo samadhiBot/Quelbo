@@ -16,10 +16,10 @@ final class MoveTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("here", type: .object, category: .rooms),
-            Symbol("kitchen", type: .object, category: .rooms),
-            Symbol("paperBag", type: .object, category: .objects),
-            Symbol("sandwich", type: .object, category: .objects),
+            Symbol(id: "here", type: .object, category: .rooms),
+            Symbol(id: "kitchen", type: .object, category: .rooms),
+            Symbol(id: "paperBag", type: .object, category: .objects),
+            Symbol(id: "sandwich", type: .object, category: .objects),
         ])
     }
 
@@ -35,11 +35,7 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "sandwich.move(to: paperBag)",
-            type: .void,
-            children: [
-                Symbol("sandwich", type: .object, category: .objects),
-                Symbol("paperBag", type: .object, category: .objects),
-            ]
+            type: .void
         ))
     }
 
@@ -51,11 +47,7 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "paperBag.move(to: kitchen)",
-            type: .void,
-            children: [
-                Symbol("paperBag", type: .object, category: .objects),
-                Symbol("kitchen", type: .object, category: .rooms),
-            ]
+            type: .void
         ))
     }
 
@@ -71,11 +63,7 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "dweapon.move(to: here)",
-            type: .void,
-            children: [
-                Symbol("dweapon", type: .object, meta: [.isLiteral, .maybeEmptyValue]),
-                Symbol("here", type: .object, category: .rooms),
-            ]
+            type: .void
         ))
     }
 

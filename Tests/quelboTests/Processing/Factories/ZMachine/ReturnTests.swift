@@ -16,8 +16,8 @@ final class ReturnTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("foo", type: .int),
-            Symbol("forest1", type: .object, category: .rooms),
+            Symbol(id: "foo", type: .int),
+            Symbol(id: "forest1", type: .object, category: .rooms),
         ])
     }
 
@@ -31,8 +31,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return true",
-            type: .bool,
-            children: [.trueSymbol]
+            type: .bool
         ))
     }
 
@@ -59,8 +58,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return true",
-            type: .bool,
-            children: [.trueSymbol]
+            type: .bool
         ))
     }
 
@@ -83,8 +81,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return true",
-            type: .bool,
-            children: [.trueSymbol]
+            type: .bool
         ))
     }
 
@@ -96,8 +93,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return true",
-            type: .bool,
-            children: [.trueSymbol]
+            type: .bool
         ))
     }
 
@@ -109,8 +105,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return false",
-            type: .bool,
-            children: [.falseSymbol]
+            type: .bool
         ))
     }
 
@@ -122,10 +117,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return 42",
-            type: .int,
-            children: [
-                Symbol("42", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 
@@ -137,10 +129,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: #"return "grue""#,
-            type: .string,
-            children: [
-                Symbol(#""grue""#, type: .string, meta: [.isLiteral])
-            ]
+            type: .string
         ))
     }
 
@@ -152,10 +141,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return foo",
-            type: .int,
-            children: [
-                Symbol("foo", type: .int)
-            ]
+            type: .int
         ))
     }
 
@@ -167,10 +153,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Return>",
             code: "return forest1",
-            type: .object,
-            children: [
-                Symbol("forest1", type: .object, category: .rooms)
-            ]
+            type: .object
         ))
     }
 }

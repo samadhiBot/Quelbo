@@ -16,15 +16,15 @@ final class RoutineTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("axe", type: .object, category: .objects),
-            Symbol("fDef", type: .int),
-            Symbol("fWep", type: .int),
-            Symbol("here", type: .object, category: .rooms),
-            Symbol("isLit", type: .bool, category: .routines),
-            Symbol("knife", type: .object, category: .objects),
-            Symbol("rustyKnife", type: .object, category: .objects),
-            Symbol("stiletto", type: .object, category: .objects),
-            Symbol("sword", type: .object, category: .objects),
+            Symbol(id: "axe", type: .object, category: .objects),
+            Symbol(id: "fDef", type: .int),
+            Symbol(id: "fWep", type: .int),
+            Symbol(id: "here", type: .object, category: .rooms),
+            Symbol(id: "isLit", type: .bool, category: .routines),
+            Symbol(id: "knife", type: .object, category: .objects),
+            Symbol(id: "rustyKnife", type: .object, category: .objects),
+            Symbol(id: "stiletto", type: .object, category: .objects),
+            Symbol(id: "sword", type: .object, category: .objects),
             singSymbol
         ])
     }
@@ -106,15 +106,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "rarg",
-                    code: "rarg: Int",
-                    type: .int,
-                    meta: [.mutating(true)]
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -142,14 +134,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "message",
-                    code: "message: String",
-                    type: .string
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -253,14 +238,7 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .void,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "foo",
-                    code: "foo: String? = nil",
-                    type: .string
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -299,19 +277,7 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .int,
-            category: .routines,
-            children: [
-                Symbol(id: "foo", code: "foo: Int? = nil", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    id: "[bar, 42]",
-                    code: "bar: Int = 42",
-                    type: .array(.int),
-                    children: [
-                        Symbol("bar", type: .int),
-                        Symbol("42", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -344,23 +310,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: """
-                        [
-                            foo,
-                            "****  You have died  ****",
-                        ]
-                        """,
-                    code: "foo: String = \"****  You have died  ****\"",
-                    type: .array(.string),
-                    children: [
-                        Symbol("foo", type: .string),
-                        Symbol("\"****  You have died  ****\"", type: .string, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -463,7 +413,7 @@ final class RoutineTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "remark",
             code: #"""
                 /// The `remark` (REMARK) routine.
@@ -856,7 +806,7 @@ final class RoutineTests: QuelboTests {
     }
 
 
-    
+
 }
 
 // MARK: - Test helpers

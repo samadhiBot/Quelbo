@@ -24,10 +24,7 @@ final class DescriptionTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "description",
             code: "description: \"bat\"",
-            type: .string,
-            children: [
-                Symbol("\"bat\"", type: .string, meta: [.isLiteral])
-            ]
+            type: .string
         ))
     }
 

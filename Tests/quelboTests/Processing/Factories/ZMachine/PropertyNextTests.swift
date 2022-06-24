@@ -16,7 +16,7 @@ final class PropertyNextTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
 
@@ -32,11 +32,7 @@ final class PropertyNextTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.nextProperty(after: .strength)",
-            type: .int,
-            children: [
-                Symbol("troll", type: .object, category: .objects),
-                Symbol("strength", type: .int, category: .properties),
-            ]
+            type: .int
         ))
     }
 

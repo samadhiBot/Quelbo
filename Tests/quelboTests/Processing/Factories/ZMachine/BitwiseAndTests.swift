@@ -16,7 +16,7 @@ final class BitwiseAndTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("someInt", type: .int, category: .globals),
+            Symbol(id: "someInt", type: .int, category: .globals),
         ])
     }
 
@@ -35,13 +35,7 @@ final class BitwiseAndTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".bitwiseAnd(1, 0, 2, someInt)",
-            type: .int,
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                .zeroSymbol,
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("someInt", type: .int, category: .globals),
-            ]
+            type: .int
         ))
     }
 

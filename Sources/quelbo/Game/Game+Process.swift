@@ -5,9 +5,9 @@
 //  Created by Chris Sessions on 3/7/22.
 //
 
+import CustomDump
 import Foundation
 import Progress
-import SwiftPrettyPrint
 
 extension Game {
     func processTokens(
@@ -42,8 +42,6 @@ extension Game {
                 printSymbols()
             }
 
-            Pretty.sharedOption = Pretty.Option(colored: true)
-
             let percentage = Int(100 * Double(total - gameTokens.count) / Double(total))
             let result = """
 
@@ -51,7 +49,7 @@ extension Game {
                 (\(percentage)% complete)
                 """
             printHeading(result)
-            Pretty.prettyPrint(error)
+            customDump(error)
             print("\(result)\n")
         }
     }

@@ -12,27 +12,47 @@ import XCTest
 final class GetValueTests: QuelboTests {
     let factory = Factories.GetValue.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-            Symbol("sandwich", type: .object, category: .objects),
-        ])
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("VALUE"))
     }
 
-    func testGetValueSandwich() throws {
-        let symbol = try factory.init([
+    func testGetGlobalValue() throws {
+        _ = try Factories.Global([
             .atom("SANDWICH"),
+            .bool(true)
+        ]).process()
+
+        let symbol = try factory.init([
+            .global("SANDWICH"),
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich",
-            type: .object,
-            category: .objects
+            id: "sandwich",
+            code: "sandwich",
+            type: .bool,
+            category: .globals
+        ))
+    }
+
+    func testGetLocalValue() throws {
+        let registry = SymbolRegistry([
+            Symbol(
+                id: "sandwich",
+                code: "var sandwich: Bool = true",
+                type: .bool,
+                category: .globals
+            )
+        ])
+
+        let symbol = try factory.init([
+            .local("SANDWICH"),
+        ], with: registry).process()
+
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "sandwich",
+            code: "sandwich",
+            type: .bool,
+            category: .globals
         ))
     }
 

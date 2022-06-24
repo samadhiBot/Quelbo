@@ -31,11 +31,7 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "try foo.get(at: 2)",
-            type: .zilElement,
-            children: [
-                fooTable.with(code: "foo"),
-                Symbol("2", type: .int, meta: [.isLiteral])
-            ]
+            type: .zilElement
         ))
     }
 

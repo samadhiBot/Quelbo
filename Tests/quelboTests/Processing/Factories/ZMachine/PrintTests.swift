@@ -16,7 +16,7 @@ final class PrintTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("message", type: .string, category: .globals)
+            Symbol(id: "message", type: .string, category: .globals)
         )
     }
 
@@ -33,10 +33,7 @@ final class PrintTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"output("Hello World")"#,
-            type: .void,
-            children: [
-                Symbol(#""Hello World""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .void
         ))
     }
 
@@ -47,10 +44,7 @@ final class PrintTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(message)",
-            type: .void,
-            children: [
-                Symbol("message", type: .string, category: .globals),
-            ]
+            type: .void
         ))
     }
 }

@@ -32,11 +32,7 @@ final class FormTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(1, 2)",
-            type: .int,
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -46,7 +42,7 @@ final class FormTests: QuelboTests {
             .local("A"),
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("a"))
+        XCTAssertNoDifference(symbol, Symbol(id: "a", code: "a"))
     }
 
     func testNestedForms() throws {
@@ -67,18 +63,7 @@ final class FormTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "a.set(to: .add(1, a))",
-            type: .int,
-            children: [
-                Symbol("a", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    ".add(1, a)",
-                    type: .int,
-                    children: [
-                        Symbol("1", type: .int, meta: [.isLiteral]),
-                        Symbol("a", type: .int)
-                    ]
-                )
-            ]
+            type: .int
         ))
     }
 }

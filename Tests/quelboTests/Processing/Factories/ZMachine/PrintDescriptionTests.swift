@@ -16,7 +16,7 @@ final class PrintDescriptionTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
 
@@ -31,10 +31,7 @@ final class PrintDescriptionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "output(troll.description)",
-            type: .void,
-            children: [
-                Symbol("troll", type: .object, category: .objects)
-            ]
+            type: .void
         ))
     }
 

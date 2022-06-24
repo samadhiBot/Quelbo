@@ -16,7 +16,7 @@ final class PutTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("mytable", type: .table, category: .globals)
+            Symbol(id: "mytable", type: .table, category: .globals)
         ])
     }
 
@@ -34,12 +34,7 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "try mytable.put(element: 123, at: 1)",
-            type: .int,
-            children: [
-                Symbol("mytable", type: .table, category: .globals),
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("123", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -52,12 +47,7 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"try mytable.put(element: "hello", at: 1)"#,
-            type: .string,
-            children: [
-                Symbol("mytable", type: .table, category: .globals),
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("hello".quoted, type: .string, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
@@ -68,7 +58,7 @@ final class PutTests: QuelboTests {
             .local("MSG")
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             "try rfrob.put(element: msg, at: 1)",
             type: .int
         ))

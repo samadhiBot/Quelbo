@@ -16,8 +16,8 @@ final class ParentTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("thief", type: .object, category: .objects),
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "thief", type: .object, category: .objects),
         ])
     }
 
@@ -32,10 +32,7 @@ final class ParentTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "thief.parent",
-            type: .object,
-            children: [
-                Symbol("thief", type: .object, category: .objects)
-            ]
+            type: .object
         ))
     }
 

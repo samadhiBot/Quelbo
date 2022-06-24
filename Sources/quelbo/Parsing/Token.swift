@@ -8,7 +8,7 @@
 import Foundation
 
 /// The set of tokens that can be parsed from ZIL source code.
-indirect enum Token: Equatable {
+indirect enum Token: Hashable {
     /// Represents a Zil atom.
     case atom(String)
 

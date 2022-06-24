@@ -33,20 +33,7 @@ final class PseudosTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: [],
-                            nouns: ["chasm"],
-                            action: chasmPseudo
-                        )
-                        """#,
-                    type: .thing
-                )
-            ]
+            type: .array(.thing)
         ))
     }
 
@@ -74,31 +61,7 @@ final class PseudosTests: QuelboTests {
                     ),
                 ]
                 """,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: [],
-                            nouns: ["door"],
-                            action: doorPseudo
-                        )
-                        """#,
-                    type: .thing
-                ),
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: [],
-                            nouns: ["paint"],
-                            action: paintPseudo
-                        )
-                        """#,
-                    type: .thing
-                ),
-            ]
+            type: .array(.thing)
         ))
     }
 

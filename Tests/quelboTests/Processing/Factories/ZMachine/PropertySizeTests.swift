@@ -16,7 +16,7 @@ final class PropertySizeTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("troll", type: .object, category: .objects)
+            Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
 
@@ -26,17 +26,13 @@ final class PropertySizeTests: QuelboTests {
 
     func testPropertySize() throws {
         let symbol = try factory.init([
-            .atom("TROLL"),
+            .global("TROLL"),
             .property("STRENGTH")
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.propertySize(of: .strength)",
-            type: .int,
-            children: [
-                Symbol("troll", type: .object, category: .objects),
-                Symbol("strength", type: .int, category: .properties),
-            ]
+            type: .int
         ))
     }
 

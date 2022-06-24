@@ -1,5 +1,5 @@
 //
-//  Set.swift
+//  SetVariable.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 4/4/22.
@@ -12,7 +12,7 @@ extension Factories {
     /// [SET](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.27jua8u) and
     /// [SETG](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.mp4kgn)
     /// (when called at routine level) functions.
-    class Set: ZMachineFactory {
+    class SetVariable: ZMachineFactory {
         override class var zilNames: [String] {
             ["SET", "SETG"]
         }

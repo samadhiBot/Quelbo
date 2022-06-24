@@ -34,10 +34,7 @@ final class InitTableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "Table(count: 4)",
-            type: .table,
-            children: [
-                Symbol("count: 4"),
-            ]
+            type: .table
         ))
     }
 
@@ -54,11 +51,7 @@ final class InitTableTests: QuelboTests {
                     defaults: [.int(0)]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol("count: 4"),
-                Symbol("defaults: [.int(0)]"),
-            ]
+            type: .table
         ))
     }
 
@@ -80,12 +73,7 @@ final class InitTableTests: QuelboTests {
                     flags: [.byte, .length]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol("count: 4"),
-                Symbol("defaults: [.int(0)]"),
-                Symbol("flags: [.byte, .length]")
-            ]
+            type: .table
         ))
     }
 
@@ -104,12 +92,7 @@ final class InitTableTests: QuelboTests {
                     flags: [.byte, .length]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol("count: 4"),
-                Symbol("defaults: [.int(0)]"),
-                Symbol("flags: [.byte, .length]")
-            ]
+            type: .table
         ))
     }
 
@@ -126,11 +109,7 @@ final class InitTableTests: QuelboTests {
                     flags: [.none]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol("count: 100"),
-                Symbol("flags: [.none]")
-            ]
+            type: .table
         ))
     }
 
@@ -150,11 +129,7 @@ final class InitTableTests: QuelboTests {
                     flags: [.byte, .none]
                 )
                 """,
-            type: .table,
-            children: [
-                Symbol("count: readbufSize"),
-                Symbol("flags: [.byte, .none]")
-            ]
+            type: .table
         ))
     }
 
@@ -171,7 +146,7 @@ final class InitTableTests: QuelboTests {
             .decimal(0)
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             """
                 Table(
                     count: 59,

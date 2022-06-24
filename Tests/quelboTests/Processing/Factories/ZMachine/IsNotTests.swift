@@ -16,12 +16,12 @@ final class IsNotTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("readbuf", type: .table, category: .globals),
-            Symbol("sword", type: .object, category: .objects),
-            Symbol("theVoid", type: .void, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines),
-            Symbol("zilly", type: .zilElement, category: .globals),
+            Symbol(id: "readbuf", type: .table, category: .globals),
+            Symbol(id: "sword", type: .object, category: .objects),
+            Symbol(id: "theVoid", type: .void, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "trollMelee", type: .bool, category: .routines),
+            Symbol(id: "zilly", type: .zilElement, category: .globals),
         ])
     }
 
@@ -36,8 +36,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(true)",
-            type: .bool,
-            children: [.trueSymbol]
+            type: .bool
         ))
     }
 
@@ -62,10 +61,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(north)",
-            type: .bool,
-            children: [
-                Symbol("north", type: .direction, category: .directions),
-            ]
+            type: .bool
         ))
     }
 
@@ -76,10 +72,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(42)",
-            type: .bool,
-            children: [
-                Symbol("42", type: .int, meta: [.isLiteral]),
-            ]
+            type: .bool
         ))
     }
 
@@ -90,10 +83,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(sword)",
-            type: .bool,
-            children: [
-                Symbol("sword", type: .object, category: .objects),
-            ]
+            type: .bool
         ))
     }
 
@@ -104,10 +94,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(trollMelee)",
-            type: .bool,
-            children: [
-                Symbol("trollMelee", type: .bool, category: .routines),
-            ]
+            type: .bool
         ))
     }
 
@@ -118,10 +105,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #".isNot("Forty-two")"#,
-            type: .bool,
-            children: [
-                Symbol("Forty-two".quoted, type: .string, meta: [.isLiteral])
-            ]
+            type: .bool
         ))
     }
 
@@ -132,10 +116,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(readbuf)",
-            type: .bool,
-            children: [
-                Symbol("readbuf", type: .table, category: .globals),
-            ]
+            type: .bool
         ))
     }
 
@@ -150,10 +131,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(something)",
-            type: .bool,
-            children: [
-                Symbol("something", type: .thing)
-            ]
+            type: .bool
         ))
     }
 
@@ -164,10 +142,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(whatAmI)",
-            type: .bool,
-            children: [
-                Symbol("whatAmI")
-            ]
+            type: .bool
         ))
     }
 
@@ -178,10 +153,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(theVoid)",
-            type: .bool,
-            children: [
-                Symbol("theVoid", type: .void, category: .routines),
-            ]
+            type: .bool
         ))
     }
 
@@ -190,7 +162,7 @@ final class IsNotTests: QuelboTests {
             .global("ZILLY")
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             ".isNot(zilly)",
             type: .bool
         ))
@@ -207,18 +179,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot([1, 2, 3])",
-            type: .bool,
-            children: [
-                Symbol(
-                    "[1, 2, 3]",
-                    type: .array(.int),
-                    children: [
-                        .intSymbol(1),
-                        .intSymbol(2),
-                        .intSymbol(3),
-                    ]
-                )
-            ]
+            type: .bool
         ))
     }
 
@@ -233,10 +194,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".isNot(maybe)",
-            type: .bool,
-            children: [
-                Symbol("maybe", type: .optional(.object))
-            ]
+            type: .bool
         ))
     }
 }

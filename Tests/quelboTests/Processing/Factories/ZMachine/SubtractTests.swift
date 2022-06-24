@@ -16,10 +16,10 @@ final class SubtractTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("baseScore", type: .int, category: .globals),
-            Symbol("cyclowrath", type: .int, category: .globals),
-            Symbol("myBike", type: .string, category: .globals),
-            Symbol("otvalFrob", type: .int, category: .routines)
+            Symbol(id: "baseScore", type: .int, category: .globals),
+            Symbol(id: "cyclowrath", type: .int, category: .globals),
+            Symbol(id: "myBike", type: .string, category: .globals),
+            Symbol(id: "otvalFrob", type: .int, category: .routines)
         )
     }
 
@@ -35,10 +35,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "-42",
-            type: .int,
-            children: [
-                Symbol("42", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -49,10 +46,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "-foo",
-            type: .int,
-            children: [
-                Symbol("foo", type: .int),
-            ]
+            type: .int
         ))
     }
 
@@ -64,11 +58,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".subtract(9, 3)",
-            type: .int,
-            children: [
-                Symbol("9", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -81,12 +71,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".subtract(20, 5, 2)",
-            type: .int,
-            children: [
-                Symbol("20", type: .int, meta: [.isLiteral]),
-                Symbol("5", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -98,11 +83,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.subtract(biggerNumber)",
-            type: .int,
-            children: [
-                Symbol("bigNumber", type: .int, meta: [.mutating(true)]),
-                Symbol("biggerNumber", type: .int),
-            ]
+            type: .int
         ))
     }
 
@@ -114,11 +95,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.subtract(1)",
-            type: .int,
-            children: [
-                Symbol("cyclowrath", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("1", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -132,11 +109,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.subtract(otvalFrob())",
-            type: .int,
-            children: [
-                Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("otvalFrob()", type: .int),
-            ]
+            type: .int
         ))
     }
 }

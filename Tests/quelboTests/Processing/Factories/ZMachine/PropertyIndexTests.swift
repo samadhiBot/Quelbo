@@ -16,8 +16,8 @@ final class PropertyIndexTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("here", type: .object, category: .rooms),
-            Symbol("troll", type: .object, category: .objects),
+            Symbol(id: "here", type: .object, category: .rooms),
+            Symbol(id: "troll", type: .object, category: .objects),
         ])
     }
 
@@ -33,11 +33,7 @@ final class PropertyIndexTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "troll.propertyIndex(of: .strength)",
-            type: .int,
-            children: [
-                Symbol("troll", type: .object, category: .objects),
-                Symbol("strength", type: .int, category: .properties),
-            ]
+            type: .int
         ))
     }
 
@@ -53,11 +49,7 @@ final class PropertyIndexTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "here.propertyIndex(of: .dir)",
-            type: .int,
-            children: [
-                Symbol("here", type: .object, category: .rooms),
-                Symbol("dir", type: .direction),
-            ]
+            type: .int
         ))
     }
 

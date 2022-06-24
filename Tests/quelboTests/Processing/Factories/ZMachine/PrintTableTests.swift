@@ -35,10 +35,7 @@ final class PrintTableTests: QuelboTests {
                 \(.room(forest3))
             """)
             """#,
-            type: .void,
-            children: [
-                fooTable.with(code: "foo")
-            ]
+            type: .void
         ))
     }
 

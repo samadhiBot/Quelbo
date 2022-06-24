@@ -24,10 +24,7 @@ final class CapacityTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "capacity",
             code: "capacity: 6",
-            type: .int,
-            children: [
-                Symbol("6", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 

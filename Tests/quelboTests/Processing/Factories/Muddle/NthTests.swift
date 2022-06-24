@@ -36,25 +36,12 @@ final class NthTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"["AB", "CD", "EF"].nthElement(2)"#,
-            type: .string,
-            children: [
-                Symbol(
-                    id: "[\"AB\", \"CD\", \"EF\"]",
-                    code: "[\"AB\", \"CD\", \"EF\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol("\"AB\"", type: .string, meta: [.isLiteral]),
-                        Symbol("\"CD\"", type: .string, meta: [.isLiteral]),
-                        Symbol("\"EF\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
     func testShortHandCall() throws {
-        let symbol = try Factories.Set.init([
+        let symbol = try Factories.SetVariable.init([
             .atom("A"),
             .form([
                 .decimal(3),
@@ -69,26 +56,7 @@ final class NthTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
-            type: .string,
-            children: [
-                Symbol("a", type: .string, meta: [.mutating(true)]),
-                Symbol(
-                    "[\"AB\", \"CD\", \"EF\"].nthElement(3)",
-                    type: .string,
-                    children: [
-                        Symbol(
-                            "[\"AB\", \"CD\", \"EF\"]",
-                            type: .array(.string),
-                            children: [
-                                Symbol("\"AB\"", type: .string, meta: [.isLiteral]),
-                                Symbol("\"CD\"", type: .string, meta: [.isLiteral]),
-                                Symbol("\"EF\"", type: .string, meta: [.isLiteral])
-                            ]
-                        ),
-                        Symbol("3", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            type: .string
         ))
     }
 }

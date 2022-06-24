@@ -33,6 +33,21 @@ final class DirectionsTests: QuelboTests {
             .atom("LAND")
         ]).process()
 
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "<Directions>",
+            code: """
+                extension Direction {
+                    /// Represents an exit toward land.
+                    public static let land = Direction(
+                        id: "land",
+                        synonyms: ["LAND"]
+                    )
+                }
+                """,
+            type: .void,
+            category: .directions
+        ))
+
         let expectedDirections = [
             Symbol(id: "north", type: .direction, category: .properties),
             Symbol(id: "east", type: .direction, category: .properties),
@@ -59,22 +74,6 @@ final class DirectionsTests: QuelboTests {
                 category: .properties
             ),
         ]
-
-        XCTAssertNoDifference(symbol, Symbol(
-            id: "<Directions>",
-            code: """
-                extension Direction {
-                    /// Represents an exit toward land.
-                    public static let land = Direction(
-                        id: "land",
-                        synonyms: ["LAND"]
-                    )
-                }
-                """,
-            type: .void,
-            category: .directions,
-            children: expectedDirections
-        ))
 
         for direction in expectedDirections {
             XCTAssertNoDifference(

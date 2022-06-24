@@ -17,15 +17,15 @@ final class IsInTests: QuelboTests {
 
         try! Game.commit([
             Symbol(
-                "here",
+                id: "here",
                 type: .object,
                 category: .globals,
                 meta: [.maybeEmptyValue, .mutating(true)]
             ),
-            Symbol("kitchen", type: .object, category: .rooms),
-            Symbol("paperBag", type: .object, category: .objects),
-            Symbol("sandwich", type: .object, category: .objects),
-            Symbol("vVillain", type: .int, category: .constants),
+            Symbol(id: "kitchen", type: .object, category: .rooms),
+            Symbol(id: "paperBag", type: .object, category: .objects),
+            Symbol(id: "sandwich", type: .object, category: .objects),
+            Symbol(id: "vVillain", type: .int, category: .constants),
         ])
     }
 
@@ -41,11 +41,7 @@ final class IsInTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "sandwich.isIn(paperBag)",
-            type: .bool,
-            children: [
-                Symbol("sandwich", type: .object, category: .objects),
-                Symbol("paperBag", type: .object, category: .objects),
-            ]
+            type: .bool
         ))
     }
 
@@ -57,11 +53,7 @@ final class IsInTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "paperBag.isIn(kitchen)",
-            type: .bool,
-            children: [
-                Symbol("paperBag", type: .object, category: .objects),
-                Symbol("kitchen", type: .object, category: .rooms),
-            ]
+            type: .bool
         ))
     }
 
@@ -79,7 +71,7 @@ final class IsInTests: QuelboTests {
             .global("HERE")
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             "o.set(to: try oo.get(at: vVillain)).isIn(here)",
             type: .bool
         ))

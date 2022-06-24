@@ -16,9 +16,9 @@ final class ReadTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("lexbuf", type: .table, category: .globals),
-            Symbol("readbuf", type: .table, category: .globals),
-            Symbol("notbuf", type: .object, category: .objects),
+            Symbol(id: "lexbuf", type: .table, category: .globals),
+            Symbol(id: "readbuf", type: .table, category: .globals),
+            Symbol(id: "notbuf", type: .object, category: .objects),
         ])
     }
 
@@ -34,11 +34,7 @@ final class ReadTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "read(readbuf lexbuf)",
-            type: .void,
-            children: [
-                Symbol("readbuf", type: .table, category: .globals),
-                Symbol("lexbuf", type: .table, category: .globals),
-            ]
+            type: .void
         ))
     }
 

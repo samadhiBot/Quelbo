@@ -150,122 +150,7 @@ final class RoomTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .rooms,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: rooms",
-                    type: .object,
-                    children: [
-                        Symbol("rooms", type: .object)
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"West of House\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"West of House\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    "action: westHouse",
-                    type: .routine,
-                    children: [
-                        Symbol("westHouse", type: .routine)
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: """
-                     flags: [
-                         isDryLand,
-                         isOn,
-                         isSacred,
-                     ]
-                     """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "rlandBit", code: "isDryLand", type: .bool, category: .flags),
-                        Symbol(id: "onBit", code: "isOn", type: .bool, category: .flags),
-                        Symbol(id: "sacredBit", code: "isSacred", type: .bool, category: .flags),
-                    ]
-                ),
-                Symbol(
-                    id: "globals",
-                    code: """
-                     globals: [
-                         whiteHouse,
-                         board,
-                         forest,
-                     ]
-                     """,
-                    type: .array(.object),
-                    children: [
-                        Symbol("whiteHouse", type: .object),
-                        Symbol("board", type: .object),
-                        Symbol("forest", type: .object),
-                    ]
-                ),
-                Symbol(
-                    id: "directions",
-                    code: """
-                     directions: [
-                         .north: .to(northOfHouse),
-                         .south: .to(southOfHouse),
-                         .northEast: .to(northOfHouse),
-                         .southEast: .to(southOfHouse),
-                         .west: .to(forest1),
-                         .east: .blocked("The door is boarded and you can't remove the boards."),
-                         .southWest: .conditional(stoneBarrow, if: wonFlag),
-                         .in: .conditional(stoneBarrow, if: wonFlag),
-                     ]
-                     """,
-                    type: .array(.direction),
-                    children: [
-                        Symbol(
-                            id: "north",
-                            code: ".north: .to(northOfHouse)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "south",
-                            code: ".south: .to(southOfHouse)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "northEast",
-                            code: ".northEast: .to(northOfHouse)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "southEast",
-                            code: ".southEast: .to(southOfHouse)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "west",
-                            code: ".west: .to(forest1)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "east",
-                            code: ".east: .blocked(\"The door is boarded and you can\'t remove the boards.\")",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "southWest",
-                            code: ".southWest: .conditional(stoneBarrow, if: wonFlag)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "in",
-                            code: ".in: .conditional(stoneBarrow, if: wonFlag)",
-                            type: .direction
-                        )
-                    ]
-                )
-            ]
+            category: .rooms
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -333,7 +218,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "reservoirSouth",
             code: """
             /// The `reservoirSouth` (RESERVOIR-SOUTH) room.
@@ -444,7 +329,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "eastOfHouse",
             code: """
             /// The `eastOfHouse` (EAST-OF-HOUSE) room.
@@ -527,7 +412,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "studio",
             code: #"""
             /// The `studio` (STUDIO) room.
@@ -604,7 +489,7 @@ final class RoomTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "foyer",
             code: #"""
             /// The `foyer` (FOYER) room.
@@ -718,137 +603,7 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            category: .rooms,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: rooms",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "rooms",
-                            code: "rooms",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "longDescription",
-                    code: #"""
-                         longDescription: """
-                             You are on the gently flowing stream. The upstream route is \
-                             too narrow to navigate, and the downstream route is \
-                             invisible due to twisting walls. There is a narrow beach to \
-                             land on.
-                             """
-                         """#,
-                    type: .string,
-                    children: [
-                        Symbol(
-                            #"""
-                                """
-                                    You are on the gently flowing stream. The upstream route is \
-                                    too narrow to navigate, and the downstream route is \
-                                    invisible due to twisting walls. There is a narrow beach to \
-                                    land on.
-                                    """
-                                """#,
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"Stream\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"Stream\"", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: "flags: [isNotLand]",
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "nonlandBit", code: "isNotLand", type: .bool, category: .flags)
-                    ]
-                ),
-                Symbol(
-                    id: "globals",
-                    code: "globals: [globalWater]",
-                    type: .array(.object),
-                    children: [
-                        Symbol("globalWater", type: .object),
-                    ]
-                ),
-                Symbol(
-                    id: "things",
-                    code: """
-                         things: [
-                             Thing(
-                                 adjectives: [],
-                                 nouns: ["stream"],
-                                 action: streamPseudo
-                             ),
-                         ]
-                         """,
-                    type: .array(.thing),
-                    children: [
-                        Symbol(
-                            id: "thing",
-                            code: """
-                             Thing(
-                                 adjectives: [],
-                                 nouns: ["stream"],
-                                 action: streamPseudo
-                             )
-                             """,
-                            type: .thing
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "directions",
-                    code: """
-                         directions: [
-                             .up: .blocked("The channel is too narrow."),
-                             .west: .blocked("The channel is too narrow."),
-                             .land: .to(streamView),
-                             .down: .to(reservoir),
-                             .east: .to(reservoir),
-                         ]
-                         """,
-                    type: .array(.direction),
-                    children: [
-                        Symbol(
-                            id: "up",
-                            code: ".up: .blocked(\"The channel is too narrow.\")",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "west",
-                            code: ".west: .blocked(\"The channel is too narrow.\")",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "land",
-                            code: ".land: .to(streamView)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "down",
-                            code: ".down: .to(reservoir)",
-                            type: .direction
-                        ),
-                        Symbol(
-                            id: "east",
-                            code: ".east: .to(reservoir)",
-                            type: .direction
-                        )
-                    ]
-                )
-            ]
+            category: .rooms
         )
 
         XCTAssertNoDifference(symbol, expected)

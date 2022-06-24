@@ -65,64 +65,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: localGlobals",
-                    type: .object,
-                    children: [
-                        Symbol("localGlobals", type: .object)
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: "synonyms: [\"house\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol("house", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "adjectives",
-                    code: """
-                         adjectives: [
-                             "white",
-                             "beauti",
-                             "coloni",
-                         ]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("white", type: .string, meta: [.isLiteral]),
-                        Symbol("beauti", type: .string, meta: [.isLiteral]),
-                        Symbol("coloni", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"white house\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"white house\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: "flags: [omitDescription]",
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "ndescBit", code: "omitDescription", type: .bool, category: .flags)
-                    ]
-                ),
-                Symbol(
-                    "action: whiteHouseFunc",
-                    type: .routine,
-                    children: [
-                        Symbol("whiteHouseFunc", type: .routine)
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -192,90 +135,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "synonyms",
-                    code: """
-                         synonyms: ["egg", "treasure"]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("egg", type: .string, meta: [.isLiteral]),
-                        Symbol("treasure", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "adjectives",
-                    code: """
-                         adjectives: [
-                             "broken",
-                             "birds",
-                             "encrusted",
-                             "jewel",
-                         ]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("broken", type: .string, meta: [.isLiteral]),
-                        Symbol("birds", type: .string, meta: [.isLiteral]),
-                        Symbol("encrusted", type: .string, meta: [.isLiteral]),
-                        Symbol("jewel", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"broken jewel-encrusted egg\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"broken jewel-encrusted egg\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: """
-                         flags: [
-                             isContainer,
-                             isOpen,
-                             isTakable,
-                         ]
-                         """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags),
-                        Symbol(id: "contBit", code: "isContainer", type: .bool, category: .flags),
-                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
-                    ]
-                ),
-                Symbol(
-                    id: "capacity",
-                    code: "capacity: 6",
-                    type: .int,
-                    children: [
-                        Symbol("6", type: .int, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "takeValue",
-                    code: "takeValue: 2",
-                    type: .int,
-                    children: [
-                        Symbol("2", type: .int, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "longDescription",
-                    code: "longDescription: \"There is a somewhat ruined egg here.\"",
-                    type: .string,
-                    children: [
-                        Symbol(
-                            "\"There is a somewhat ruined egg here.\"",
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -336,80 +196,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: batRoom",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "batRoom",
-                            code: "batRoom",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: """
-                         synonyms: ["bat", "vampire"]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("bat", type: .string, meta: [.isLiteral]),
-                        Symbol("vampire", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "adjectives",
-                    code: """
-                         adjectives: ["vampire", "deranged"]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("vampire", type: .string, meta: [.isLiteral]),
-                        Symbol("deranged", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"bat\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"bat\"", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: """
-                         flags: [
-                             isActor,
-                             noImplicitTake,
-                         ]
-                         """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "actorBit", code: "isActor", type: .bool, category: .flags),
-                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
-                    ]
-                ),
-                Symbol(
-                    id: "descriptionFunction",
-                    code: "descriptionFunction: batD",
-                    type: .routine,
-                    children: [
-                        Symbol("batD", type: .routine),
-                    ]
-                ),
-                Symbol(
-                    "action: batFunc",
-                    type: .routine,
-                    children: [
-                        Symbol("batFunc", type: .routine),
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -482,121 +269,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """#,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: landOfLivingDead",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "landOfLivingDead",
-                            code: "landOfLivingDead",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: """
-                    synonyms: [
-                        "skull",
-                        "head",
-                        "treasure",
-                    ]
-                    """,
-                    type: .array(.string),
-                    children: [
-                        Symbol(
-                            id: "skull",
-                            code: "skull",
-                            type: .string,
-                            meta: [.isLiteral]
-                        ),
-                        Symbol(
-                            id: "head",
-                            code: "head",
-                            type: .string,
-                            meta: [.isLiteral]
-                        ),
-                        Symbol(
-                            id: "treasure",
-                            code: "treasure",
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "adjectives",
-                    code: "adjectives: [\"crystal\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol(
-                            id: "crystal",
-                            code: "crystal",
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"crystal skull\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"crystal skull\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "firstDescription",
-                    code: #"""
-                    firstDescription: """
-                        Lying in one corner of the room is a beautifully carved \
-                        crystal skull. It appears to be grinning at you rather \
-                        nastily.
-                        """
-                    """#,
-                    type: .string,
-                    children: [
-                        Symbol(
-                            #"""
-                            """
-                                Lying in one corner of the room is a beautifully carved \
-                                crystal skull. It appears to be grinning at you rather \
-                                nastily.
-                                """
-                            """#,
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: "flags: [isTakable]",
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags)
-                    ]
-                ),
-                Symbol(
-                    id: "value",
-                    code: "value: 10",
-                    type: .int,
-                    children: [
-                        Symbol("10", type: .int, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "takeValue",
-                    code: "takeValue: 10",
-                    type: .int,
-                    children: [
-                        Symbol("10", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -660,82 +333,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: bottle",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "bottle",
-                            code: "bottle",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: """
-                         synonyms: [
-                             "water",
-                             "quantity",
-                             "liquid",
-                             "h2o",
-                         ]
-                         """,
-                    type: .array(.string),
-                    children: [
-                        Symbol("water", type: .string, meta: [.isLiteral]),
-                        Symbol("quantity", type: .string, meta: [.isLiteral]),
-                        Symbol("liquid", type: .string, meta: [.isLiteral]),
-                        Symbol("h2o", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"quantity of water\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"quantity of water\"", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: """
-                         flags: [
-                             isDrinkable,
-                             isTakable,
-                             noImplicitTake,
-                         ]
-                         """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
-                        Symbol(id: "takeBit", code: "isTakable", type: .bool, category: .flags),
-                        Symbol(id: "drinkBit", code: "isDrinkable", type: .bool, category: .flags),
-                    ]
-                ),
-                Symbol(
-                    "action: waterFunc",
-                    type: .routine,
-                    children: [
-                        Symbol(
-                            id: "waterFunc",
-                            code: "waterFunc",
-                            type: .routine
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "size",
-                    code: "size: 4",
-                    type: .int,
-                    children: [
-                        Symbol("4", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -807,108 +405,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """#,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: trollRoom",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "trollRoom",
-                            code: "trollRoom",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: "synonyms: [\"troll\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol("troll", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "adjectives",
-                    code: "adjectives: [\"nasty\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol("nasty", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "description",
-                    code: "description: \"troll\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"troll\"", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "flags",
-                    code: """
-                         flags: [
-                             isActor,
-                             isOpen,
-                             noImplicitTake,
-                         ]
-                         """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "actorBit", code: "isActor", type: .bool, category: .flags),
-                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
-                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
-                    ]
-                ),
-                Symbol(
-                    "action: trollFunc",
-                    type: .routine,
-                    children: [
-                        Symbol(
-                            id: "trollFunc",
-                            code: "trollFunc",
-                            type: .routine
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "longDescription",
-                    code: #"""
-                         longDescription: """
-                             A nasty-looking troll, brandishing a bloody axe, blocks all \
-                             passages out of the room.
-                             """
-                         """#,
-                    type: .string,
-                    children: [
-                        Symbol(
-                            id: #"""
-                             """
-                                 A nasty-looking troll, brandishing a bloody axe, blocks all \
-                                 passages out of the room.
-                                 """
-                             """#,
-                            code: #"""
-                             """
-                                 A nasty-looking troll, brandishing a bloody axe, blocks all \
-                                 passages out of the room.
-                                 """
-                             """#,
-                            type: .string,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "strength",
-                    code: "strength: 2",
-                    type: .int,
-                    children: [
-                        Symbol("2", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -963,7 +460,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "advertisement",
             code: #"""
                 /// The `advertisement` (ADVERTISEMENT) object.
@@ -1036,7 +533,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "trophyCase",
             code: """
                 /// The `trophyCase` (TROPHY-CASE) object.
@@ -1105,45 +602,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "flags",
-                    code: """
-                         flags: [
-                             hasBeenTouched,
-                             isDestroyed,
-                             isDryLand,
-                             isFightable,
-                             isInvisible,
-                             isOn,
-                             isOpen,
-                             isSearchable,
-                             isStaggered,
-                             isSurface,
-                             isTransparent,
-                             isWearable,
-                             noImplicitTake,
-                         ]
-                         """,
-                    type: .array(.bool),
-                    children: [
-                        Symbol(id: "rmungBit", code: "isDestroyed", type: .bool, category: .flags),
-                        Symbol(id: "invisible", code: "isInvisible", type: .bool, category: .flags),
-                        Symbol(id: "touchBit", code: "hasBeenTouched", type: .bool, category: .flags),
-                        Symbol(id: "surfaceBit", code: "isSurface", type: .bool, category: .flags),
-                        Symbol(id: "trytakeBit", code: "noImplicitTake", type: .bool, category: .flags),
-                        Symbol(id: "openBit", code: "isOpen", type: .bool, category: .flags),
-                        Symbol(id: "searchBit", code: "isSearchable", type: .bool, category: .flags),
-                        Symbol(id: "transBit", code: "isTransparent", type: .bool, category: .flags),
-                        Symbol(id: "onBit", code: "isOn", type: .bool, category: .flags),
-                        Symbol(id: "rlandBit", code: "isDryLand", type: .bool, category: .flags),
-                        Symbol(id: "fightBit", code: "isFightable", type: .bool, category: .flags),
-                        Symbol(id: "staggered", code: "isStaggered", type: .bool, category: .flags),
-                        Symbol(id: "wearBit", code: "isWearable", type: .bool, category: .flags)
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -1230,135 +689,7 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .objects,
-            children: [
-                Symbol(
-                    id: "location",
-                    code: "location: globalObjects",
-                    type: .object,
-                    children: [
-                        Symbol(
-                            id: "globalObjects",
-                            code: "globalObjects",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "synonyms",
-                    code: "synonyms: [\"zzmgck\"]",
-                    type: .array(.string),
-                    children: [
-                        Symbol("zzmgck", type: .string, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    id: "descriptionFunction",
-                    code: "descriptionFunction: pathObject",
-                    type: .routine,
-                    children: [
-                        Symbol(
-                            id: "pathObject",
-                            code: "pathObject",
-                            type: .routine
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "globals",
-                    code: "globals: [globalObjects]",
-                    type: .array(.object),
-                    children: [
-                        Symbol(
-                            id: "globalObjects",
-                            code: "globalObjects",
-                            type: .object
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "advfcn",
-                    code: "advfcn: 0",
-                    type: .int,
-                    children: [
-                        .zeroSymbol,
-                    ]
-                ),
-                Symbol(
-                    id: "firstDescription",
-                    code: "firstDescription: \"F\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"F\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "longDescription",
-                    code: "longDescription: \"F\"",
-                    type: .string,
-                    children: [
-                        Symbol("\"F\"", type: .string, meta: [.isLiteral])
-                    ]
-                ),
-                Symbol(
-                    id: "things",
-                    code: """
-                         things: [
-                             Thing(
-                                 adjectives: [],
-                                 nouns: ["foobar"],
-                                 action: vWalk
-                             ),
-                         ]
-                         """,
-                    type: .array(.thing),
-                    children: [
-                        Symbol(
-                            id: "thing",
-                            code: """
-                             Thing(
-                                 adjectives: [],
-                                 nouns: ["foobar"],
-                                 action: vWalk
-                             )
-                             """,
-                            type: .thing
-                        )
-                    ]
-                ),
-                Symbol(
-                    id: "contfcn",
-                    code: "contfcn: 0",
-                    type: .int,
-                    children: [
-                        .zeroSymbol,
-                    ]
-                ),
-                Symbol(
-                    id: "vehicleType",
-                    code: "vehicleType: true",
-                    type: .bool,
-                    children: [
-                        .trueSymbol.with(id: "1"),
-                    ]
-                ),
-                Symbol(
-                    id: "size",
-                    code: "size: 0",
-                    type: .int,
-                    children: [
-                        .zeroSymbol,
-                    ]
-                ),
-                Symbol(
-                    id: "capacity",
-                    code: "capacity: 0",
-                    type: .int,
-                    children: [
-                        .zeroSymbol,
-                    ]
-                )
-            ]
+            category: .objects
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -1393,7 +724,7 @@ final class ObjectTests: QuelboTests {
             ])
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             id: "adventurer",
             code: """
                 /// The `adventurer` (ADVENTURER) object.

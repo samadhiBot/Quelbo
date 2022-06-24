@@ -5,15 +5,16 @@
 //  Created by Chris Sessions on 3/26/22.
 //
 
+import CustomDump
 import Foundation
 
 /// A representation of a piece of Zil code and its Swift translation.
-struct Symbol: Equatable, Identifiable {
+struct Symbol: Identifiable {
     /// The symbol's unique identifier.
     let id: Symbol.Identifier
 
     /// The Swift translation of a piece of Zil code.
-    let code: String
+    let codeBlock: (Self) throws -> String
 
     /// The ``Symbol/DataType-swift.enum`` for the ``code``.
     let type: DataType
@@ -25,18 +26,20 @@ struct Symbol: Equatable, Identifiable {
     let children: [Symbol]
 
     /// Any additional information required for symbol processing.
-    let meta: [MetaData]
+    let meta: Set<MetaData>
+}
 
+extension Symbol {
     init(
         id: Symbol.Identifier,
         code: String = "",
         type: DataType = .unknown,
         category: Category? = nil,
         children: [Symbol] = [],
-        meta: [MetaData] = []
+        meta: Set<MetaData> = []
     ) {
         self.id = id
-        self.code = code.rightTrimmed
+        self.codeBlock = { _ in code.rightTrimmed }
         self.type = type
         self.category = category
         self.children = children
@@ -48,14 +51,24 @@ struct Symbol: Equatable, Identifiable {
         type: DataType = .unknown,
         category: Category? = nil,
         children: [Symbol] = [],
-        meta: [MetaData] = []
+        meta: Set<MetaData> = []
     ) {
-        self.id = .id(code.rightTrimmed)
-        self.code = code.rightTrimmed
+        let staticCode = code.rightTrimmed
+
+        self.id = .id("")
+        self.codeBlock = { _ in staticCode }
         self.type = type
         self.category = category
         self.children = children
         self.meta = meta
+    }
+
+    var code: String {
+        do {
+            return try codeBlock(self)
+        } catch {
+            return "Symbol.code error: \(error)"
+        }
     }
 }
 
@@ -69,37 +82,41 @@ extension Symbol {
         }
     }
 
-    /// Returns a copy of the symbol without any child symbols.
-    var ignoringChildren: Symbol {
-        self.with(children: [])
-    }
-
     /// Returns a description of the symbol's data type.
     var dataType: String {
         for metaData in meta {
-            if case .type(let type) = metaData {
-                return type
-            }
+            if case .type(let type) = metaData { return type }
         }
         return type.description
     }
 
+    /// Returns an unevaluated token stored by the symbol, if one exists.
+    var definition: [Token] {
+        for metaData in meta {
+            if case .zil(let tokens) = metaData {
+                return tokens
+            }
+        }
+        return []
+    }
+
     /// Whether the symbol represents an `AGAIN` statement.
     var isAgainStatement: Bool {
-        self.id == .id("<Again>")
+        code.hasPrefix("continue")
     }
 
     /// Whether the symbol represents a code block.
     var isCodeBlock: Bool {
-        self.id == .id("<Block>")
+        meta.contains { metaData in
+            guard case .blockType = metaData else { return false }
+            return true
+        }
     }
 
     /// Whether the symbol represents a closure.
     var isFunctionClosure: Bool {
         for metaData in meta {
-            if case .type = metaData {
-                return true
-            }
+            if case .type = metaData { return true }
         }
         return false
     }
@@ -147,16 +164,6 @@ extension Symbol {
         self.id == .id("<Return>")
     }
 
-    /// Returns an unevaluated token stored by the symbol, if one exists.
-    var definition: [Token] {
-        for metaData in meta {
-            if case .zil(let tokens) = metaData {
-                return tokens
-            }
-        }
-        return []
-    }
-
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
     /// - Parameters:
@@ -174,7 +181,7 @@ extension Symbol {
         type newType: DataType? = nil,
         category newCategory: Category? = nil,
         children newChildren: [Symbol]? = nil,
-        meta newMeta: [MetaData] = []
+        meta newMeta: Set<MetaData> = []
     ) -> Symbol {
         Symbol(
             id: newID ?? id,
@@ -182,8 +189,16 @@ extension Symbol {
             type: newType ?? type,
             category: newCategory ?? category,
             children: newChildren ?? children,
-            meta: newMeta.isEmpty ? meta : meta.assigning(newMeta)
+            meta: newMeta.isEmpty ? meta : meta.union(newMeta)
         )
+    }
+
+    /// Returns the original Zil name of the object represented by the symbol.
+    var zilName: String {
+        for metaData in meta {
+            if case .zilName(let name) = metaData { return name }
+        }
+        return "???"
     }
 }
 
@@ -248,23 +263,36 @@ extension Symbol: Comparable {
     }
 }
 
+extension Symbol: CustomDumpReflectable {
+    var customDumpMirror: Mirror {
+        .init(
+            self,
+            children: [
+                "id": self.id,
+                "type": self.type,
+                "category": "\(self.category?.rawValue ?? "none")",
+                "meta": self.meta,
+                "code": self.code,
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
 extension Symbol: CustomStringConvertible {
     var description: String {
-        "\(id): \(type)"
-//        var desc: [String] = ["id: \(id)"]
-//        if code != id.stringLiteral {
-//            desc.append("code: \(code)")
-//        }
-//        if type != .unknown {
-//            desc.append("type: \(type)")
-//        }
-//        if let category = category {
-//            desc.append("category: \(category)")
-//        }
-//        if !meta.isEmpty {
-//            desc.append("meta: \(meta)")
-//        }
-//        return "{\n\(desc.joined(separator: "\n").indented)\n}"
+        id.description.isEmpty ? code : "\(id): \(type)"
+    }
+}
+
+extension Symbol: Equatable {
+    static func == (lhs: Symbol, rhs: Symbol) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.code == rhs.code &&
+        lhs.type == rhs.type &&
+        lhs.category == rhs.category &&
+        // lhs.children == rhs.children &&
+        lhs.meta == rhs.meta
     }
 }
 
@@ -422,6 +450,8 @@ extension Array where Element == Symbol {
     ///
     /// - Returns: A `Symbol` with the specified `id`, if one exists within the array.
     func find(id symbolID: Symbol.Identifier) -> Symbol? {
+        guard !symbolID.stringLiteral.isEmpty else { return nil }
+
         for symbol in self {
             if symbolID == symbol.id {
                 return symbol
@@ -465,9 +495,9 @@ extension Symbol {
 
     /// A literal integer `0` symbol.
     static func intSymbol(_ integer: Int) -> Symbol {
-        var metadata: [Symbol.MetaData] = [.isLiteral]
-        if(integer == 0) {
-            metadata.append(.maybeEmptyValue)
+        var metadata: Set<MetaData> = [.isLiteral]
+        if integer == 0 {
+            metadata.insert(.maybeEmptyValue)
         }
         return Symbol(
             "\(integer)",

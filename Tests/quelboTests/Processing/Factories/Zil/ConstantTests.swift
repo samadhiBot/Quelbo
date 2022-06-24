@@ -16,19 +16,19 @@ final class ConstantTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("cyclops", type: .object, category: .objects),
-            Symbol("cyclopsMelee", type: .bool, category: .routines),
-            Symbol("forest1", type: .object, category: .rooms),
-            Symbol("forest2", type: .object, category: .rooms),
-            Symbol("forest3", type: .object, category: .rooms),
-            Symbol("knife", type: .object, category: .objects),
-            Symbol("path", type: .object, category: .rooms),
-            Symbol("sword", type: .object, category: .objects),
-            Symbol("thief", type: .object, category: .objects),
-            Symbol("thiefMelee", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines),
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "cyclops", type: .object, category: .objects),
+            Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
+            Symbol(id: "forest1", type: .object, category: .rooms),
+            Symbol(id: "forest2", type: .object, category: .rooms),
+            Symbol(id: "forest3", type: .object, category: .rooms),
+            Symbol(id: "knife", type: .object, category: .objects),
+            Symbol(id: "path", type: .object, category: .rooms),
+            Symbol(id: "sword", type: .object, category: .objects),
+            Symbol(id: "thief", type: .object, category: .objects),
+            Symbol(id: "thiefMelee", type: .bool, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "trollMelee", type: .bool, category: .routines),
         ])
     }
 
@@ -46,10 +46,7 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: <Unknown> = unexpected",
             type: .unknown,
-            category: .constants,
-            children: [
-                Symbol("unexpected")
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -66,10 +63,7 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: Bool = true",
             type: .bool,
-            category: .constants,
-            children: [
-                .trueSymbol
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -95,10 +89,7 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: Int = 42",
             type: .int,
-            category: .constants,
-            children: [
-                Symbol("42", type: .int, meta: [.isLiteral])
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -126,39 +117,7 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants,
-            children: [
-                Symbol(
-                    """
-                        Table(
-                            .room(forest1),
-                            .room(forest2),
-                            .room(forest3)
-                        )
-                        """,
-                    type: .table,
-                    children: [
-                        Symbol(
-                            id: "forest1",
-                            code: ".room(forest1)",
-                            type: .zilElement,
-                            category: .rooms
-                        ),
-                        Symbol(
-                            id: "forest2",
-                            code: ".room(forest2)",
-                            type: .zilElement,
-                            category: .rooms
-                        ),
-                        Symbol(
-                            id: "forest3",
-                            code: ".room(forest3)",
-                            type: .zilElement,
-                            category: .rooms
-                        )
-                    ]
-                )
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -199,9 +158,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -270,9 +229,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("villains", category: .constants).ignoringChildren,
+            try Game.find("villains", category: .constants),
             expected
         )
     }
@@ -313,9 +272,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("def1Res", category: .constants).ignoringChildren,
+            try Game.find("def1Res", category: .constants),
             expected
         )
     }
@@ -335,9 +294,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -357,9 +316,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }
@@ -380,9 +339,9 @@ final class ConstantTests: QuelboTests {
             category: .constants
         )
 
-        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+        XCTAssertNoDifference(symbol, expected)
         XCTAssertNoDifference(
-            try Game.find("foo", category: .constants).ignoringChildren,
+            try Game.find("foo", category: .constants),
             expected
         )
     }

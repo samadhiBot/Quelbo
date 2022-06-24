@@ -1,5 +1,5 @@
 //
-//  SetTests.swift
+//  SetVariableTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 4/4/22.
@@ -9,22 +9,22 @@ import CustomDump
 import XCTest
 @testable import quelbo
 
-final class SetTests: QuelboTests {
-    let factory = Factories.Set.self
+final class SetVariableTests: QuelboTests {
+    let factory = Factories.SetVariable.self
 
     override func setUp() {
         super.setUp()
 
         try! Game.commit(
             Symbol(
-                "isNext",
+                id: "isNext",
                 type: .int,
                 category: .routines,
                 children: [
                     Symbol("number", type: .int)
                 ]
             ),
-            Symbol("thirty", type: .int, category: .globals)
+            Symbol(id: "thirty", type: .int, category: .globals)
         )
     }
 
@@ -33,7 +33,7 @@ final class SetTests: QuelboTests {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("SETG"))
     }
 
-    func testSetToDecimal() throws {
+    func testSetVariableToDecimal() throws {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
@@ -41,15 +41,11 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.set(to: 3)",
-            type: .int,
-            children: [
-                Symbol("foo", type: .int, meta: [.mutating(true)]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
-    func testSetToString() throws {
+    func testSetVariableToString() throws {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Bar!"),
@@ -57,15 +53,11 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"foo.set(to: "Bar!")"#,
-            type: .string,
-            children: [
-                Symbol("foo", type: .string, meta: [.mutating(true)]),
-                Symbol(#""Bar!""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
-    func testSetToBool() throws {
+    func testSetVariableToBool() throws {
         let symbol = try factory.init([
             .atom("ROBBED?"),
             .bool(true),
@@ -73,11 +65,7 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "isRobbed.set(to: true)",
-            type: .bool,
-            children: [
-                Symbol("isRobbed", type: .bool, meta: [.mutating(true)]),
-                .trueSymbol
-            ]
+            type: .bool
         ))
     }
 
@@ -93,24 +81,13 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "t.set(to: thirty.add(3))",
-            type: .int,
-            children: [
-                Symbol("t", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    "thirty.add(3)",
-                    type: .int,
-                    children: [
-                        Symbol("thirty", type: .int, category: .globals, meta: [.mutating(true)]),
-                        Symbol("3", type: .int, meta: [.isLiteral])
-                    ]
-                )
-            ]
+            type: .int
         ))
     }
 
-    func testSetToLocalVariable() throws {
+    func testSetVariableToLocalVariable() throws {
         let registry = SymbolRegistry([
-            Symbol("n", type: .string),
+            Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string),
         ])
 
         let symbol = try factory.init([
@@ -120,15 +97,11 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "x.set(to: n)",
-            type: .string,
-            children: [
-                Symbol("x", type: .string, meta: [.mutating(true)]),
-                Symbol("n", type: .string),
-            ]
+            type: .string
         ))
     }
 
-    func testSetToFunctionResult() throws {
+    func testSetVariableToFunctionResult() throws {
         let symbol = try factory.init([
             .atom("N"),
             .form([
@@ -139,21 +112,11 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: x.nextSibling)",
-            type: .object,
-            children: [
-                Symbol("n", type: .object, meta: [.mutating(true)]),
-                Symbol(
-                    "x.nextSibling",
-                    type: .object,
-                    children: [
-                        Symbol("x", type: .object)
-                    ]
-                )
-            ]
+            type: .object
         ))
     }
 
-    func testSetToModifiedSelf() throws {
+    func testSetVariableToModifiedSelf() throws {
         let symbol = try factory.init([
             .atom("N"),
             .form([
@@ -165,22 +128,11 @@ final class SetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "n.set(to: n.subtract(1))",
-            type: .int,
-            children: [
-                Symbol("n", type: .int, meta: [.mutating(true)]),
-                Symbol(
-                    "n.subtract(1)",
-                    type: .int,
-                    children: [
-                        Symbol("n", type: .int, meta: [.mutating(true)]),
-                        Symbol("1", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            type: .int
         ))
     }
 
-    func testSetWithoutAName() throws {
+    func testSetVariableWithoutAName() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),

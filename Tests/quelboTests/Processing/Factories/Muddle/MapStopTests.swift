@@ -30,10 +30,7 @@ final class MapStopTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "atms.mapStop",
-            type: .bool,
-            children: [
-                Symbol("atms")
-            ]
+            type: .bool
         ))
     }
 }

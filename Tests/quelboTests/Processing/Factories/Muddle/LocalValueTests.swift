@@ -12,13 +12,6 @@ import XCTest
 final class LocalValueTests: QuelboTests {
     let factory = Factories.LocalValue.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("LVAL"))
     }
@@ -28,6 +21,6 @@ final class LocalValueTests: QuelboTests {
             .atom("foo")
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("foo"))
+        XCTAssertNoDifference(symbol, Symbol(id: "foo", code: "foo"))
     }
 }

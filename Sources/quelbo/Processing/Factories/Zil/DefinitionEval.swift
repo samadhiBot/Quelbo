@@ -17,7 +17,7 @@ extension Factories {
         override func processTokens() throws {
             var callerParams = tokens
             self.nameSymbol = try findNameSymbol(in: &callerParams)
-            let defSymbol = try Game.find(.id(nameSymbol.code), category: .definitions)
+            let defSymbol = try Game.find(nameSymbol.id, category: .definitions)
 
             var definition = defSymbol.definition
 
@@ -48,8 +48,8 @@ extension Factories {
                 id: try evalID(tokens),
                 code: """
                     \(pro.discardableResult)\
-                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) function.
-                    func \(nameSymbol.code)(\(pro.paramsSymbol.code))\(pro.returnValue) {
+                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) function.
+                    func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
                     \(pro.codeBlock.indented)

@@ -16,8 +16,8 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("inc", type: .int, category: .routines),
-            Symbol("boardedWindow", type: .object, category: .globals),
+            Symbol(id: "inc", type: .int, category: .routines),
+            Symbol(id: "boardedWindow", type: .object, category: .globals),
             Symbol(id: "north", type: .direction, category: .properties),
         ])
     }
@@ -27,7 +27,12 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             .atom("BOARDED-WINDOW")
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("boardedWindow", type: .object, category: .globals))
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "boardedWindow",
+            code: "boardedWindow",
+            type: .object,
+            category: .globals
+        ))
     }
 
     func testSymbolizeBoolTrue() throws {
@@ -87,11 +92,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3)",
-            type: .int,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -101,7 +102,8 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "boardedWindow",
+            id: "boardedWindow",
+            code: "boardedWindow",
             type: .object,
             category: .globals
         ))
@@ -117,11 +119,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "[isFloating, false]",
-            type: .array(.bool),
-            children: [
-                Symbol("isFloating", type: .bool),
-                .falseSymbol
-            ]
+            type: .array(.bool)
         ))
     }
 
@@ -130,7 +128,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             .local("FOO-BAR")
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("fooBar"))
+        XCTAssertNoDifference(symbol, Symbol(id: "fooBar", code: "fooBar"))
     }
 
     func testSymbolizeProperty() throws {
@@ -151,7 +149,8 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "north",
+            id: "north",
+            code: "north",
             type: .direction,
             category: .directions
         ))
@@ -167,10 +166,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".random(100)",
-            type: .int,
-            children: [
-                Symbol("100", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 
@@ -187,11 +183,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3)",
-            type: .int,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 

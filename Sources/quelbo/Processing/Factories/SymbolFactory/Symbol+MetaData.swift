@@ -9,7 +9,7 @@ import Foundation
 
 extension Symbol {
     /// A set of options to provide additional information as required for symbol processing.
-    enum MetaData: Equatable {
+    enum MetaData: Hashable {
         /// Specifies an [activation](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2p2csry)
         /// for a program block symbol.
         case activation(String)
@@ -17,8 +17,11 @@ extension Symbol {
         /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
         case blockType(SymbolFactory.ProgramBlockType)
 
-        /// Specifies an unevaluated ``Token`` array.
+        /// Specifies an unevaluated Zil ``Token`` array.
         case zil([Token])
+
+        /// Specifies an original Zil name.
+        case zilName(String)
 
         /// Specifies that the symbol represents a literal value.
         case isLiteral
@@ -36,33 +39,5 @@ extension Symbol {
 
         /// Specifies a custom return value definition for the symbol.
         case type(String)
-    }
-}
-
-extension Array where Element == Symbol.MetaData {
-    /// Adds or replaces the specified ``Symbol/MetaData`` elements in the current array.
-    ///
-    /// - Parameter metaData: An array of `MetaData` elements to replace.
-    ///
-    /// - Returns: The `MetaData` array with the specified elements replaced.
-    func assigning(_ metaData: [Symbol.MetaData]) -> [Symbol.MetaData] {
-        var meta = self
-        metaData.forEach { newMeta in
-            for (index, element) in enumerated() {
-                switch (element, newMeta) {
-                case (.activation, .activation),
-                     (.blockType, .blockType),
-                     (.isLiteral, .isLiteral),
-                     (.mutating, .mutating),
-                     (.paramDeclarations, .paramDeclarations),
-                     (.type, .type),
-                     (.zil, .zil):
-                    meta.remove(at: index)
-                default: break
-                }
-            }
-            meta.append(newMeta)
-        }
-        return meta
     }
 }

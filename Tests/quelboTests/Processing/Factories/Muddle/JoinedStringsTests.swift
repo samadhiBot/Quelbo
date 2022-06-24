@@ -30,30 +30,7 @@ final class JoinedStringsTests: QuelboTests {
             """
             ["A", 66.ascii, "CD"].joined()
             """,
-            type: .string,
-            children: [
-                Symbol(
-                    "\"A\"",
-                    type: .string,
-                    meta: [.isLiteral]
-                ),
-                Symbol(
-                    "66.ascii",
-                    type: .string,
-                    children: [
-                        Symbol(
-                            "66",
-                            type: .int,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                ),
-                Symbol(
-                    "\"CD\"",
-                    type: .string,
-                    meta: [.isLiteral]
-                )
-            ]
+            type: .string
         ))
     }
 }

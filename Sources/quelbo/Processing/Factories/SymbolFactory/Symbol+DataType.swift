@@ -45,7 +45,7 @@ extension Symbol.DataType {
     }
 
     /// <#Description#>
-    var emptyMeta: [Symbol.MetaData] {
+    var emptyMeta: Set<Symbol.MetaData> {
         switch self {
         case .bool, .int: return [.isLiteral, .maybeEmptyValue]
         default: return []
@@ -164,7 +164,10 @@ extension Symbol.DataType {
             return true
         case (.bool, .int):
             return true
-        case (.int, _), (.object, _), (.string, _), (.table, _):
+        case (.int, _),
+             (.object, _),
+             (.string, _),
+             (.table, _):
             return symbol.meta.contains(.maybeEmptyValue)
         default:
             return false

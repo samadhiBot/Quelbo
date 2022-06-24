@@ -33,13 +33,7 @@ final class VectorTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"[1, 2, "AB", "C"]"#,
-            type: .array(.zilElement),
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("\"AB\"", type: .string, meta: [.isLiteral]),
-                Symbol("\"C\"", type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.zilElement)
         ))
     }
 }

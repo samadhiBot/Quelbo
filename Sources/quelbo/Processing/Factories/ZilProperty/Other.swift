@@ -32,8 +32,8 @@ extension Factories {
             }
 
             return Symbol(
-                id: .id(name.code),
-                code: "\(name.code): \(code)",
+                id: name.id,
+                code: "\(name.id): \(code)",
                 type: symbols.map(\.type).common ?? .unknown,
                 children: symbols
             )

@@ -17,7 +17,7 @@ final class RepeatTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("isFunnyReturn", type: .bool, category: .globals),
+            Symbol(id: "isFunnyReturn", type: .bool, category: .globals),
         ])
     }
 

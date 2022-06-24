@@ -72,20 +72,12 @@ final class DefineTests: QuelboTests {
                 }
                 """,
                 type: .int,
-                category: .functions,
-                children: [
-                    Symbol(
-                        id: "foo",
-                        code: "foo: Int",
-                        type: .int,
-                        meta: [.mutating(true)]
-                    )
-                ]
+                category: .functions
             )
         )
 
         XCTAssertNoDifference(
-            fooCaller.ignoringChildren,
+            fooCaller,
             Symbol("incForm(foo: foo)", type: .int)
         )
 
@@ -111,20 +103,12 @@ final class DefineTests: QuelboTests {
                 }
                 """,
                 type: .int,
-                category: .functions,
-                children: [
-                    Symbol(
-                        id: "bar",
-                        code: "bar: Int",
-                        type: .int,
-                        meta: [.mutating(true)]
-                    )
-                ]
+                category: .functions
             )
         )
 
         XCTAssertNoDifference(
-            barCaller.ignoringChildren,
+            barCaller,
             Symbol("incForm(bar: bar)", type: .int)
         )
     }
@@ -169,12 +153,12 @@ final class DefineTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            fooCaller.ignoringChildren,
+            fooCaller,
             Symbol("double(foo: foo)", type: .int)
         )
 
         XCTAssertNoDifference(
-            try Game.find("double(foo)", category: .functions).ignoringChildren,
+            try Game.find("double(foo)", category: .functions),
             Symbol(
                 id: "double(foo)",
                 code: """
@@ -200,12 +184,12 @@ final class DefineTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            barCaller.ignoringChildren,
+            barCaller,
             Symbol("double(bar: bar)", type: .int)
         )
 
         XCTAssertNoDifference(
-            try Game.find("double(bar)", category: .functions).ignoringChildren,
+            try Game.find("double(bar)", category: .functions),
             Symbol(
                 id: "double(bar)",
                 code: """
@@ -316,12 +300,12 @@ final class DefineTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            fooCaller.ignoringChildren,
+            fooCaller,
             Symbol("powerTo(foo: foo)", type: .int)
         )
 
         XCTAssertNoDifference(
-            try Game.find("powerTo(foo)", category: .functions).ignoringChildren,
+            try Game.find("powerTo(foo)", category: .functions),
             Symbol(
                 id: "powerTo(foo)",
                 code: """
@@ -343,8 +327,7 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .int,
-                category: .functions,
-                children: []
+                category: .functions
             )
         )
     }
@@ -391,7 +374,7 @@ final class DefineTests: QuelboTests {
             ])
         ], with: registry).process()
 
-        XCTAssertNoDifference(kbdReadbuf.ignoringChildren, Symbol(
+        XCTAssertNoDifference(kbdReadbuf, Symbol(
             id: "kbdReadbuf",
             code: "let kbdReadbuf: Table = makeReadbuf()",
             type: .table,
@@ -399,7 +382,7 @@ final class DefineTests: QuelboTests {
         ))
 
         XCTAssertNoDifference(
-            try Game.find("makeReadbuf()", category: .functions).ignoringChildren,
+            try Game.find("makeReadbuf()", category: .functions),
             Symbol(
                 id: "makeReadbuf()",
                 code: """
@@ -424,7 +407,7 @@ final class DefineTests: QuelboTests {
             ])
         ], with: registry).process()
 
-        XCTAssertNoDifference(editReadbuf.ignoringChildren, Symbol(
+        XCTAssertNoDifference(editReadbuf, Symbol(
             id: "editReadbuf",
             code: "let editReadbuf: Table = makeReadbuf()",
             type: .table,
@@ -478,7 +461,7 @@ final class DefineTests: QuelboTests {
 //            ])
 //        ]).process()
 //
-//        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+//        XCTAssertNoDifference(symbol, Symbol(
 //            id: "firstThree",
 //            code: """
 //                @discardableResult
@@ -502,7 +485,7 @@ final class DefineTests: QuelboTests {
 
     func testMultifrob() throws {
         let registry = SymbolRegistry([
-            Symbol("prsa", type: .object),
+            Symbol(id: "prsa", type: .object),
         ])
 
         let definition: [Token] = [
@@ -737,7 +720,7 @@ final class DefineTests: QuelboTests {
             ])
         ], with: registry).process()
 
-        XCTAssertNoDifference(isVerb.ignoringChildren, Symbol(
+        XCTAssertNoDifference(isVerb, Symbol(
             id: "isVerb",
             code: """
                 /// The `isVerb` (VERB?) macro.
@@ -753,7 +736,7 @@ final class DefineTests: QuelboTests {
         ))
 
         XCTAssertNoDifference(
-            try Game.find("multifrob(prsa:atms)", category: .functions).ignoringChildren,
+            try Game.find("multifrob(prsa:atms)", category: .functions),
             Symbol(
                 id: "multifrob(prsa:atms)",
                 code: """
@@ -937,9 +920,9 @@ final class DefineTests: QuelboTests {
 //            category: .functions
 //        )
 //
-//        XCTAssertNoDifference(symbol.ignoringChildren, expected)
+//        XCTAssertNoDifference(symbol, expected)
 ////        XCTAssertNoDifference(
-////            try Game.find("multiBits", category: .functions).ignoringChildren,
+////            try Game.find("multiBits", category: .functions),
 ////            expected
 ////        )
 //

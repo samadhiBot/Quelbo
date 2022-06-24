@@ -53,13 +53,17 @@ class SymbolFactory {
         throw FactoryError.unimplemented(self)
     }
 
+    /// Generates a symbol identifier based on the specified tokens.
+    ///
+    /// - Parameter tokens: Tokens used to produce an identifier.
+    ///
+    /// - Returns: A symbol identifier based on the specified tokens.
     func evalID(_ tokens: [Token]) throws -> Symbol.Identifier {
         var tokens = tokens
-        guard let name = tokens.shift()?.value.lowerCamelCase else {
-            throw Error.missingNameToken
-        }
-        let params = tokens.map(\.value.lowerCamelCase).joined(separator: ":")
-        return Symbol.Identifier(stringLiteral: "\(name)(\(params))")
+        let nameSymbol = try findNameSymbol(in: &tokens)
+        let params = try symbolize(tokens).map(\.code).joined(separator: ":")
+
+        return .init(stringLiteral: "\(nameSymbol.id)(\(params))")
     }
 
     /// Processes the ``tokens`` array into a ``Symbol`` array.
@@ -140,7 +144,6 @@ extension Array {
 
 extension SymbolFactory {
     enum Error: Swift.Error {
-        case missingNameToken
         case outOfRangeSymbolIndex(Int, [Symbol])
     }
 }

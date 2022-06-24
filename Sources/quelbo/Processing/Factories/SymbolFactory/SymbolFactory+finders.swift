@@ -8,9 +8,9 @@
 import Foundation
 
 extension SymbolFactory {
-    /// Scans through a ``Token`` array until it finds an atom, then returns a special ``Symbol``
-    /// representation, where `id` contains the original Zil name, and `code` contains its Swift
-    /// translation.
+    /// Scans through a ``Token`` array until it finds an atom, then returns a ``Symbol``
+    /// representation, where `id` contains a Swift name translation, and `meta` contains a
+    /// ``Symbol/MetaData/zilName(_:)`` case with the original Zil name.
     ///
     /// The `Token` array is mutated in the course of the search, removing any elements up to and
     /// including the target atom.
@@ -22,15 +22,17 @@ extension SymbolFactory {
     /// - Throws: When no atom is found.
     func findNameSymbol(in tokens: inout [Token]) throws -> Symbol {
         let original = tokens
+
         while !tokens.isEmpty {
             guard case .atom(let name) = tokens.shift() else {
                 continue
             }
             return Symbol(
-                id: .id(name),
-                code: name.lowerCamelCase
+                id: .id(name.lowerCamelCase),
+                meta: [.zilName(name)]
             )
         }
+
         throw FindError.nameSymbolNotFound(original)
     }
 
@@ -57,6 +59,7 @@ extension SymbolFactory {
     ) throws -> [Symbol] {
         let original = tokens
         var substitutions = substituting
+
         while !tokens.isEmpty {
             guard case .list(let params) = tokens.shift() else {
                 throw FindError.parametersSymbolNotFound(tokens)
@@ -78,6 +81,7 @@ extension SymbolFactory {
                 }
             }
         }
+
         throw FindError.parametersSymbolNotFound(original)
     }
 }
@@ -86,12 +90,13 @@ extension SymbolFactory {
 
 extension SymbolFactory {
     enum FindError: Swift.Error {
-        case nameSymbolNotFound([Token])
-        case parametersSymbolNotFound([Token])
         case conflictingTypes(
             id: Symbol.Identifier,
             expected: Symbol.DataType,
             registered: Symbol.DataType
         )
+        case nameSymbolNotFound([Token])
+        case parametersSymbolNotFound([Token])
+        case valueSymbolNotFound([Token])
     }
 }

@@ -42,27 +42,7 @@ final class RestTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "struct1.rest()",
-            type: .array(.int),
-            children: [
-                Symbol(
-                    "struct1",
-                    type: .array(.int),
-                    category: .globals,
-                    children: [
-                        Symbol(
-                            "[1, 2, 3, 4]",
-                            type: .array(.int),
-                            children: [
-                                Symbol("1", type: .int, meta: [.isLiteral]),
-                                Symbol("2", type: .int, meta: [.isLiteral]),
-                                Symbol("3", type: .int, meta: [.isLiteral]),
-                                Symbol("4", type: .int, meta: [.isLiteral]),
-                            ]
-                        )
-                    ]
-                )
-
-            ]
+            type: .array(.int)
         ))
     }
 
@@ -84,7 +64,7 @@ final class RestTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            symbol.ignoringChildren,
+            symbol,
             Symbol("struct2.rest()", type: .array(.zilElement))
         )
     }
@@ -108,7 +88,7 @@ final class RestTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(
-            symbol.ignoringChildren,
+            symbol,
             Symbol("struct3.rest(2)", type: .array(.zilElement))
         )
     }

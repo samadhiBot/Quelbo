@@ -29,19 +29,7 @@ final class TextTests: QuelboTests {
                     blank."
                     """
                 """#,
-            type: .string,
-            children: [
-                Symbol(
-                    #"""
-                        """
-                            The engravings translate to "This space intentionally left \
-                            blank."
-                            """
-                        """#,
-                    type: .string,
-                    meta: [.isLiteral]
-                )
-            ]
+            type: .string
         ))
     }
 

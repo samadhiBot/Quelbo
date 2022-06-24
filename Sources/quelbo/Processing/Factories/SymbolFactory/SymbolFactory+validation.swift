@@ -53,7 +53,6 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        // print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
@@ -65,7 +64,7 @@ extension SymbolFactory {
         case (true, true):
             if declaredType == .bool && symbol.type == .int {
                 return symbol.with(
-                    code: symbol.id == "0" ? "false" : "true",
+                    code: symbol.code == "0" ? "false" : "true",
                     type: .bool
                 )
             }
@@ -100,6 +99,8 @@ extension SymbolFactory {
             }
         }
 
+        //print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
+        
         throw ValidationError.failedToDetermineType(
             symbol,
             expected: declaredType,

@@ -16,7 +16,7 @@ final class NextSiblingTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("egg", type: .object, category: .objects),
+            Symbol(id: "egg", type: .object, category: .objects),
         ])
     }
 
@@ -31,10 +31,7 @@ final class NextSiblingTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "egg.nextSibling",
-            type: .object,
-            children: [
-                Symbol("egg", type: .object, category: .objects),
-            ]
+            type: .object
         ))
     }
 

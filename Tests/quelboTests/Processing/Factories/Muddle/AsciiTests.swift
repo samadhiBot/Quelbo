@@ -30,10 +30,7 @@ final class AsciiTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "\"A\".ascii",
-            type: .int,
-            children: [
-                Symbol("\"A\"", type: .string, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 
@@ -44,10 +41,7 @@ final class AsciiTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "65.ascii",
-            type: .string,
-            children: [
-                Symbol("65", type: .int, meta: [.isLiteral])
-            ]
+            type: .string
         ))
     }
 }

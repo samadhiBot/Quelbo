@@ -16,7 +16,7 @@ final class IsZeroTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("foo", type: .int, category: .globals)
+            Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
 
@@ -32,10 +32,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "2.isZero",
-            type: .bool,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral])
-            ]
+            type: .bool
         ))
     }
 
@@ -46,10 +43,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "foo.isZero",
-            type: .bool,
-            children: [
-                Symbol("foo", type: .int, category: .globals)
-            ]
+            type: .bool
         ))
     }
 
@@ -60,10 +54,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "bar.isZero",
-            type: .bool,
-            children: [
-                Symbol("bar", type: .int)
-            ]
+            type: .bool
         ))
     }
 

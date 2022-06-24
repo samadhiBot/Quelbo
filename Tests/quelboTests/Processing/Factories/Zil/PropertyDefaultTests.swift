@@ -26,10 +26,7 @@ final class PropertyDefaultTests: QuelboTests {
             id: "foo",
             code: "setPropertyDefault(foo, unexpected)",
             type: .unknown,
-            category: .constants,
-            children: [
-                Symbol("unexpected")
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -47,9 +44,6 @@ final class PropertyDefaultTests: QuelboTests {
             code: "setPropertyDefault(adjective, false)",
             type: .bool,
             category: .constants,
-            children: [
-                .falseSymbol
-            ],
             meta: [.maybeEmptyValue]
         )
 
@@ -67,10 +61,7 @@ final class PropertyDefaultTests: QuelboTests {
             id: "size",
             code: "setPropertyDefault(size, 5)",
             type: .int,
-            category: .constants,
-            children: [
-                Symbol("5", type: .int, meta: [.isLiteral])
-            ]
+            category: .constants
         )
 
         XCTAssertNoDifference(symbol, expected)

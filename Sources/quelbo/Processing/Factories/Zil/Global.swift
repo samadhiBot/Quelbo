@@ -21,7 +21,7 @@ extension Factories {
             .two(.variable(.unknown), .unknown)
         }
 
-        var metaData: [Symbol.MetaData] = []
+        var metaData: Set<Symbol.MetaData> = []
         var nameSymbol = Symbol("TBD")
         var valueSymbol = Symbol("TBD")
 
@@ -41,16 +41,20 @@ extension Factories {
             }
         }
 
-        var codeBlock: String {
-            let declare = isMutable ? "var" : "let"
+        var codeBlock: (Symbol) throws -> String {
+            let code = valueSymbol.code
+            let type = valueSymbol.dataType
 
-            return "\(declare) \(nameSymbol.code): \(valueSymbol.dataType) = \(valueSymbol.code)"
+            return { symbol in
+                let declare = symbol.category == .globals ? "var" : "let"
+                return "\(declare) \(symbol.id): \(type) = \(code)"
+            }
         }
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .id(nameSymbol.code),
-                code: codeBlock,
+                id: nameSymbol.id,
+                codeBlock: codeBlock,
                 type: valueSymbol.type,
                 category: isMutable ? .globals : .constants,
                 children: [valueSymbol],
@@ -59,5 +63,14 @@ extension Factories {
             try Game.commit(symbol)
             return symbol
         }
+    }
+}
+
+
+// MARK: - Errors
+
+extension Factories.Global {
+    enum Error: Swift.Error {
+        case unconsumedGlobalTokens([Token])
     }
 }

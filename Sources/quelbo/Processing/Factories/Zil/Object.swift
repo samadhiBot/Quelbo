@@ -52,10 +52,10 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .id(nameSymbol.code),
+                id: nameSymbol.id,
                 code: """
-                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName.lowercased()).
-                    var \(nameSymbol.code) = \(typeName)(
+                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
+                    var \(nameSymbol.id) = \(typeName)(
                     \(propertySymbols.sorted.codeValues(.commaLineBreakSeparated))
                     )
                     """,

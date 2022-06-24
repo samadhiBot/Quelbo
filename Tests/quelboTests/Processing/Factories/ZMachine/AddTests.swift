@@ -36,11 +36,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3)",
-            type: .int,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -53,12 +49,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             ".add(2, 3, 4)",
-            type: .int,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-                Symbol("4", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -70,11 +61,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "bigNumber.add(biggerNumber)",
-            type: .int,
-            children: [
-                Symbol("bigNumber", type: .int, meta: [.mutating(true)]),
-                Symbol("biggerNumber", type: .int),
-            ]
+            type: .int
         ))
     }
 
@@ -86,11 +73,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "cyclowrath.add(1)",
-            type: .int,
-            children: [
-                Symbol("cyclowrath", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("1", type: .int, meta: [.isLiteral]),
-            ]
+            type: .int
         ))
     }
 
@@ -104,11 +87,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "baseScore.add(otvalFrob())",
-            type: .int,
-            children: [
-                Symbol("baseScore", type: .int, category: .globals, meta: [.mutating(true)]),
-                Symbol("otvalFrob()", type: .int),
-            ]
+            type: .int
         ))
     }
 
@@ -124,30 +103,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "try src.get(at: 0).add(1)",
-            type: .int,
-            children: [
-                Symbol(
-                    "try src.get(at: 0)",
-                    type: .int,
-                    children: [
-                        Symbol(
-                            "src",
-                            type: .table
-                        ),
-                        Symbol(
-                            "0",
-                            type: .int,
-                            meta: [.isLiteral, .maybeEmptyValue]
-                        )
-                    ],
-                    meta: [.mutating(true)]
-                ),
-                Symbol(
-                    "1",
-                    type: .int,
-                    meta: [.isLiteral]
-                )
-            ]
+            type: .int
         ))
     }
 
@@ -162,7 +118,7 @@ final class AddTests: QuelboTests {
             .decimal(1)
         ]).process()
 
-        XCTAssertNoDifference(symbol.ignoringChildren, Symbol(
+        XCTAssertNoDifference(symbol, Symbol(
             "pAclause.add(1)",
             type: .int
         ))
