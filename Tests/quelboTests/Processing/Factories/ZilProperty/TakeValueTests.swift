@@ -24,10 +24,7 @@ final class TakeValueTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "takeValue",
             code: "takeValue: 10",
-            type: .int,
-            children: [
-                Symbol("10", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 

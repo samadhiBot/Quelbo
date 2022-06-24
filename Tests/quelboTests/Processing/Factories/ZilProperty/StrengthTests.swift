@@ -24,10 +24,7 @@ final class StrengthTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "strength",
             code: "strength: 2",
-            type: .int,
-            children: [
-                Symbol("2", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 

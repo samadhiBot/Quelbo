@@ -65,7 +65,7 @@ extension SymbolFactory {
         case (true, true):
             if declaredType == .bool && symbol.type == .int {
                 return symbol.with(
-                    code: symbol.id == "0" ? "false" : "true",
+                    code: symbol.code == "0" ? "false" : "true",
                     type: .bool
                 )
             }

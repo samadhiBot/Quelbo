@@ -34,13 +34,7 @@ final class GlobalsTests: QuelboTests {
                     forest,
                 ]
                 """,
-            type: .array(.object),
-            children: [
-                Symbol("wellHouse", type: .object),
-                Symbol("stream", type: .object),
-                Symbol("road", type: .object),
-                Symbol("forest", type: .object),
-            ]
+            type: .array(.object)
         ))
     }
 

@@ -32,7 +32,7 @@ extension Factories {
                 guard let value = paramSymbols.shift() else {
                     return nil
                 }
-                return symbol.with(code: "\(symbol.id): \(value.id)")
+                return symbol.with(code: "\(symbol.id): \(value.code)")
             }
         }
 

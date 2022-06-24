@@ -47,33 +47,7 @@ final class MapFirstTests: QuelboTests {
                 .add(3, 12),
             ]
             """,
-            type: .array(.int),
-            children: [
-                Symbol(
-                    ".add(1, 10)",
-                    type: .int,
-                    children: [
-                        Symbol("1", type: .int, meta: [.isLiteral]),
-                        Symbol("10", type: .int, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    ".add(2, 11)",
-                    type: .int,
-                    children: [
-                        Symbol("2", type: .int, meta: [.isLiteral]),
-                        Symbol("11", type: .int, meta: [.isLiteral]),
-                    ]
-                ),
-                Symbol(
-                    ".add(3, 12)",
-                    type: .int,
-                    children: [
-                        Symbol("3", type: .int, meta: [.isLiteral]),
-                        Symbol("12", type: .int, meta: [.isLiteral]),
-                    ]
-                )
-            ]
+            type: .array(.int)
         ))
     }
 

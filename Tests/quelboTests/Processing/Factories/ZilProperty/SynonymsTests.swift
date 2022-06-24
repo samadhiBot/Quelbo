@@ -27,11 +27,7 @@ final class SynonymsTests: QuelboTests {
             code: """
                 synonyms: ["egg", "treasure"]
                 """,
-            type: .array(.string),
-            children: [
-                Symbol("egg", type: .string, meta: [.isLiteral]),
-                Symbol("treasure", type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.string)
         ))
     }
 

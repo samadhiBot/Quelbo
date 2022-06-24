@@ -79,14 +79,6 @@ final class FunctionTests: QuelboTests {
                 }
                 """,
             type: .int,
-            children: [
-                Symbol(
-                    id: "n",
-                    code: "n: Int",
-                    type: .int,
-                    meta: [.mutating(true)]
-                )
-            ],
             meta: [
                 .mutating(false),
                 .type("(Int) -> Int"),
@@ -115,19 +107,6 @@ final class FunctionTests: QuelboTests {
                 }
                 """,
             type: .int,
-            children: [
-                Symbol(
-                    id: "a",
-                    code: "a: Int",
-                    type: .int,
-                    meta: [.mutating(true)]
-                ),
-                Symbol(
-                    id: "b",
-                    code: "b: Int",
-                    type: .int
-                )
-            ],
             meta: [
                 .mutating(false),
                 .type("(Int, Int) -> Int"),

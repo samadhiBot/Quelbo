@@ -40,12 +40,7 @@ final class AdjectivesTests: QuelboTests {
                     "coloni",
                 ]
                 """,
-            type: .array(.string),
-            children: [
-                Symbol("white", type: .string, meta: [.isLiteral]),
-                Symbol("beauti", type: .string, meta: [.isLiteral]),
-                Symbol("coloni", type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.string)
         ))
     }
 
@@ -67,13 +62,7 @@ final class AdjectivesTests: QuelboTests {
                     "west",
                 ]
                 """,
-            type: .array(.string),
-            children: [
-                Symbol("wooden", type: .string, meta: [.isLiteral]),
-                Symbol("gothic", type: .string, meta: [.isLiteral]),
-                Symbol("strange", type: .string, meta: [.isLiteral]),
-                Symbol("west", type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.string)
         ))
     }
 

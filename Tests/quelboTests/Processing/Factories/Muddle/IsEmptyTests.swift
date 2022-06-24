@@ -30,10 +30,7 @@ final class IsEmptyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "atms.isEmpty",
-            type: .bool,
-            children: [
-                Symbol("atms")
-            ]
+            type: .bool
         ))
     }
 }

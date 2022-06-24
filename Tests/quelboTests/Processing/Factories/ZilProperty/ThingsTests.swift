@@ -48,23 +48,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: ["flowery", "scrawled"],
-                            nouns: ["message", "scrawl", "writing", "script"],
-                            text: """
-                                The message reads, "This is not the maze where the pirate \
-                                leaves his treasure chest."
-                                """
-                        )
-                        """#,
-                    type: .thing
-                )
-            ]
+            type: .array(.thing)
         ))
     }
 
@@ -89,20 +73,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: [],
-                            nouns: ["writing", "script"],
-                            text: "The message reads..."
-                        )
-                        """#,
-                    type: .thing
-                )
-            ]
+            type: .array(.thing)
         ))
     }
 
@@ -130,20 +101,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: ["flowery", "scrawled"],
-                            nouns: ["writing", "script"],
-                            action: pitCrackFunc
-                        )
-                        """#,
-                    type: .thing
-                )
-            ]
+            type: .array(.thing)
         ))
     }
 
@@ -165,20 +123,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            children: [
-                Symbol(
-                    id: "thing",
-                    code: #"""
-                        Thing(
-                            adjectives: ["flowery"],
-                            nouns: ["message"],
-                            text: "The message reads..."
-                        )
-                        """#,
-                    type: .thing
-                )
-            ]
+            type: .array(.thing)
         ))
     }
 

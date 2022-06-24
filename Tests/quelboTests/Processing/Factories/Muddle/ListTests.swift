@@ -25,12 +25,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "[1, 2, 3]",
-            type: .array(.int),
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol("3", type: .int, meta: [.isLiteral]),
-            ]
+            type: .array(.int)
         ))
     }
 
@@ -43,12 +38,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             #"["AB", "CD", "EF"]"#,
-            type: .array(.string),
-            children: [
-                Symbol("AB".quoted, type: .string, meta: [.isLiteral]),
-                Symbol("CD".quoted, type: .string, meta: [.isLiteral]),
-                Symbol("EF".quoted, type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.string)
         ))
     }
 
@@ -62,13 +52,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "[1, 2, \"AB\", \"C\"]",
-            type: .array(.zilElement),
-            children: [
-                Symbol("1", type: .int, meta: [.isLiteral]),
-                Symbol("2", type: .int, meta: [.isLiteral]),
-                Symbol(#""AB""#, type: .string, meta: [.isLiteral]),
-                Symbol(#""C""#, type: .string, meta: [.isLiteral]),
-            ]
+            type: .array(.zilElement)
         ))
     }
 }
