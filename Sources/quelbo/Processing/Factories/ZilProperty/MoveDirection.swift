@@ -26,8 +26,9 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             let dirSymbol = try findNameSymbol(in: &tokens)
-            var direction = dirSymbol.code
-            if let predefined = Direction.find(dirSymbol.id.stringLiteral) {
+            var direction = dirSymbol.id.stringLiteral
+
+            if let predefined = Direction.find(dirSymbol.zilName) {
                 direction = predefined.id.description
             }
             self.name = try Game.find(
