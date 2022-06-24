@@ -22,13 +22,13 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let variable = try symbol(0).with(meta: [.mutating(true)])
+            let variable = try symbol(0)
             let value = try symbol(1)
 
             return Symbol(
                 code: "\(variable.code).set(to: \(value.code))",
                 type: value.type,
-                children: [variable, value]
+                children: symbols
             )
         }
     }

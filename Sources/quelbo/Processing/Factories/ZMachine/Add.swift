@@ -41,22 +41,20 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let original = symbols
+
             guard let first = symbols.shift() else {
                 throw Error.missingInitialArithmaticValue(tokens)
             }
 
             let mathFunction: String
-            let allSymbols: [Symbol]
-
             if first.isLiteral {
-                allSymbols = [first] + symbols
-                mathFunction = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
+                mathFunction = ".\(function)(\(original.codeValues(.commaSeparated)))"
             } else {
-                allSymbols = [first.with(meta: [.mutating(true)])] + symbols
                 mathFunction = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
-            return Symbol(code: mathFunction, type: .int, children: allSymbols)
+            return Symbol(code: mathFunction, type: .int, children: original)
         }
     }
 }

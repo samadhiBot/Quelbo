@@ -18,15 +18,15 @@ import Foundation
 /// branches could miss each others' type information.
 class SymbolRegistry {
     /// A dictionary of symbol identifiers and their associated data types.
-    private var registry: [Symbol.Identifier: Symbol]
+    private var registry: [Symbol]
 
     init(_ symbols: [Symbol] = []) {
-        self.registry = [:]
-        symbols.forEach { register($0) }
+        self.registry = []
+        register(symbols)
     }
 
-    subscript(id: Symbol.Identifier) -> Symbol? {
-        registry[id]
+    static func find(_ id: Symbol.Identifier) -> Symbol? {
+        registry.first { $0.id == id }
     }
 
     /// Registers the ``Symbol/DataType-swift.enum`` for the specified symbol ``Symbol/id``.
@@ -40,37 +40,45 @@ class SymbolRegistry {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     func register(_ symbol: Symbol) {
-        guard !symbol.type.isUnknown else { return }
+        assert(!symbol.id.stringLiteral.isEmpty, "Attempted to register a symbol without an id.")
 
-        let newSymbol = Symbol(
-            id: symbol.id,
-            code: symbol.id.stringLiteral,
-            type: symbol.type,
-            category: symbol.category,
-            meta: symbol.meta
-        )
-
-        registry.merge([symbol.id: newSymbol]) { registered, new in
-            new.type == registered.type ? new : new.with(type: .zilElement)
-        }
+        guard self[symbol.id] == nil else { return }
+        registry.append(symbol)
+        
+//        if registry[symbol.id] == nil { registry[symbol.id] = symbol }
+//
+//        if symbol.typeCertainty > existing.typeCertainty
+//
+//        let newSymbol = Symbol(
+//            id: symbol.id,
+//            code: symbol.id.stringLiteral,
+//            type: symbol.type,
+//            category: symbol.category,
+//            meta: symbol.meta
+//        )
+//
+//        registry.merge([symbol.id: newSymbol]) { registered, new in
+//            new.type == registered.type ? new : new.with(type: .zilElement)
+//        }
     }
 
     /// Registers the ``Symbol/DataType-swift.enum`` for each of the specified symbols.
     ///
     /// - Parameter symbols: The symbols to be type-registered.
-    func register(_ symbols: [Symbol]) throws {
-        for symbol in symbols {
-            register(symbol)
-            try register(symbol.children)
+    func register(_ symbols: [Symbol]) {
+        symbols.forEach { register($0) }
+//        for symbol in symbols {
+//            register(symbol)
+//            try register(symbol.children)
 
-            if symbol.isPlaceholderGlobal {
-                try Game.overwrite(symbol.with(
-                    code: "var \(symbol.code): \(symbol.type)\(symbol.type.emptyValueAssignment)",
-                    type: symbol.type.emptyValueType,
-                    meta: symbol.type.emptyMeta
-                ))
-            }
-        }
+//            if symbol.isPlaceholderGlobal {
+//                try Game.overwrite(symbol.with(
+//                    code: "var \(symbol.code): \(symbol.type)\(symbol.type.emptyValueAssignment)",
+//                    type: symbol.type.emptyValueType,
+//                    meta: symbol.type.emptyMeta
+//                ))
+//            }
+//        }
     }
 }
 

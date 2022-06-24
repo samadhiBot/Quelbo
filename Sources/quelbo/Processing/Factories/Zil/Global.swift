@@ -33,7 +33,7 @@ extension Factories {
 
             for metaData in valueSymbol.meta {
                 switch metaData {
-                case .maybeEmptyValue: self.metaData = [.maybeEmptyValue]
+                case .typeCertainty(let value): self.metaData = [.typeCertainty(value)]
                 case .mutating(true): self.isMutable = true
                 case .mutating(false): self.isMutable = false
                 default: break

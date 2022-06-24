@@ -22,7 +22,7 @@ class Game {
     var gameTokens: [Token] = []
 
     /// An array of ``Symbol`` values processed from the ``gameTokens``.
-    var gameSymbols: [Symbol] = []
+    var gameSymbols: Set<Symbol> = []
 
     /// The ZMachine version to emulate during processing.
     var zMachineVersion: Game.ZMachineVersion = .z3
@@ -62,6 +62,11 @@ extension Game {
     /// - Parameter symbols: An array of symbol values to commit.
     static func commit(_ symbols: [Symbol]) throws {
         try symbols.forEach { symbol in
+            assert(
+                !symbol.id.stringLiteral.isEmpty,
+                "Attempted to commit a symbol without an id."
+            )
+
             if let existing = try? find(symbol.id, category: symbol.category) {
                 if symbol == existing {
                     return

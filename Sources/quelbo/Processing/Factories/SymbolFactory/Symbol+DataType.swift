@@ -44,13 +44,13 @@ extension Symbol.DataType {
         }
     }
 
-    /// <#Description#>
-    var emptyMeta: Set<Symbol.MetaData> {
-        switch self {
-        case .bool, .int: return [.isLiteral, .maybeEmptyValue]
-        default: return []
-        }
-    }
+//    /// <#Description#>
+//    var emptyMeta: Set<Symbol.MetaData> {
+//        switch self {
+//        case .bool, .int: return [.isLiteral, .maybeEmptyValue]
+//        default: return []
+//        }
+//    }
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
@@ -156,23 +156,23 @@ extension Symbol.DataType {
     /// - Parameter symbol: A symbol with a conflicting type.
     ///
     /// - Returns: Whether the data type should supersede the one in the specified symbol.
-    func shouldReplaceType(in symbol: Symbol) -> Bool {
-        switch (self, symbol.type) {
-        case (.unknown, _):
-            return false
-        case (_, .zilElement):
-            return true
-        case (.bool, .int):
-            return true
-        case (.int, _),
-             (.object, _),
-             (.string, _),
-             (.table, _):
-            return symbol.meta.contains(.maybeEmptyValue)
-        default:
-            return false
-        }
-    }
+//    func shouldReplaceType(in symbol: Symbol) -> Bool {
+//        switch (self, symbol.type) {
+//        case (.unknown, _):
+//            return false
+//        case (_, .zilElement):
+//            return true
+//        case (.bool, .int):
+//            return true
+//        case (.int, _),
+//             (.object, _),
+//             (.string, _),
+//             (.table, _):
+//            return symbol.meta.contains(.maybeEmptyValue)
+//        default:
+//            return false
+//        }
+//    }
 }
 
 // MARK: - Conformances

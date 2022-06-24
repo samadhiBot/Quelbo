@@ -25,7 +25,7 @@ class SymbolFactory {
     let tokens: [Token]
 
     /// A dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
-    var registry: SymbolRegistry
+    var registry: Set<Symbol>
 
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []

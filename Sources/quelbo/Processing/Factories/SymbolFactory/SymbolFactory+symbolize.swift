@@ -143,7 +143,7 @@ extension SymbolFactory {
     func symbolizeBoolean(_ value: Bool) -> Symbol {
         var metaData: Set<Symbol.MetaData> = [.isLiteral]
         if value == false {
-            metaData.insert(.maybeEmptyValue)
+            metaData.insert(.typeCertainty(.booleanFalse))
         }
         return Symbol(code: "\(value)", type: .bool, meta: metaData)
     }
@@ -167,7 +167,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeDecimal(_ value: Int) -> Symbol {
-        .intSymbol(value)
+        .integerSymbol(value)
     }
 
     /// Translates a Zil
@@ -294,11 +294,13 @@ extension SymbolFactory {
 
         if let registered = registry[.id(name)] { return registered }
 
+        let expectedType = try Self.parameters.expectedType(at: index)
+
         return Symbol(
             id: .id(name),
             code: name,
-            type: try Self.parameters.expectedType(at: index),
-            meta: [.maybeEmptyValue]
+            type: expectedType,
+            meta: [.typeCertainty(expectedType == .unknown ? .unknown : .localValue)]
         )
     }
 

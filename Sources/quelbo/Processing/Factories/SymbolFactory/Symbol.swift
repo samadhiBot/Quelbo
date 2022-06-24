@@ -17,16 +17,16 @@ class Symbol: Identifiable {
     let codeBlock: (Symbol) throws -> String
 
     /// The ``Symbol/DataType-swift.enum`` for the ``code``.
-    let type: DataType
+    var type: DataType
 
     /// The symbol's ``Symbol/Category-swift.enum``.
-    let category: Category?
+    var category: Category?
 
     /// Any child symbols belonging to a complex symbol.
     let children: [Symbol]
 
     /// Any additional information required for symbol processing.
-    let meta: Set<MetaData>
+    var meta: Set<MetaData>
 
     init(
         id: Symbol.Identifier? = nil,
@@ -116,9 +116,7 @@ extension Symbol {
     /// Whether the symbol represents a literal value.
     var isLiteral: Bool {
         for metaData in meta {
-            if case .isLiteral = metaData {
-                return true
-            }
+            if case .isLiteral = metaData { return true }
         }
         return false
     }
@@ -126,7 +124,7 @@ extension Symbol {
     /// Whether the symbol represents a mutating variable.
     func isMutating(in symbols: [Symbol]) -> Bool? {
         for symbol in symbols {
-            if symbol.id == id && symbol.meta.contains(.mutating(true)) {
+            if symbol.id == id && !symbol.meta.contains(.isImmutable) {
                 return true
             }
             if let foundInChildren = isMutating(in: symbol.children) {
@@ -136,25 +134,28 @@ extension Symbol {
         return nil
     }
 
+    /// The level of confidence in a symbol's stated ``Symbol/type``.
+    var typeCertainty: Symbol.MetaData.TypeCertainty {
+        for metaData in meta {
+            if case .typeCertainty(let value) = metaData { return value }
+        }
+        return .certain
+    }
+
     /// Whether the symbol represents a global variable with a placeholder value of unknown type.
     ///
     /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`, where the `false` is
     /// ambiguous. If Quelbo discovers a different `type` through the variable's use in the code,
     /// it updates the global with the found `type`.
-    var isPlaceholderGlobal: Bool {
-        guard
-            [.constants, .globals].contains(category),
-            let committed = try? Game.find(id)
-        else {
-            return false
-        }
-        return committed.meta.contains(.maybeEmptyValue)
-    }
-
-    /// Whether the symbol represents a `RETURN` statement.
-    var isReturnStatement: Bool {
-        self.id == .id("<Return>")
-    }
+//    var isPlaceholderGlobal: Bool {
+//        guard
+//            [.constants, .globals].contains(category),
+//            let committed = try? Game.find(id)
+//        else {
+//            return false
+//        }
+//        return committed.meta.contains(.maybeEmptyValue)
+//    }
 
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
@@ -283,8 +284,14 @@ extension Symbol: Equatable {
         lhs.code == rhs.code &&
         lhs.type == rhs.type &&
         lhs.category == rhs.category &&
-        // lhs.children == rhs.children &&
         lhs.meta == rhs.meta
+    }
+}
+
+extension Symbol: Hashable {
+    func hash(into hasher: inout Hasher) {
+        assert(!id.stringLiteral.isEmpty, "Attempted to register a symbol without an id.")
+        hasher.combine(id)
     }
 }
 
@@ -421,10 +428,10 @@ extension Array where Element == Symbol {
     /// and returns the type of the returned value if one is found.
     var deepReturnDataTypes: [Symbol.ReturnType] {
         reduce(into: [Symbol.ReturnType]()) { partial, symbol in
-            if symbol.isReturnStatement, let foundtype = symbol.children.first?.type {
+            if symbol.meta.contains(.isReturnStatement), let found = symbol.children.first?.type {
                 partial.append(
                     Symbol.ReturnType(
-                        type: foundtype,
+                        type: found,
                         maybeEmptyValue: symbol.meta.contains(.maybeEmptyValue)
                     )
                 )
@@ -482,19 +489,22 @@ extension Array where Element == Symbol {
 extension Symbol {
     /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
-        Symbol(code: "false", type: .bool, meta: [.isLiteral, .maybeEmptyValue])
+        Symbol(
+            code: "false",
+            type: .bool,
+            meta: [
+                .isLiteral,
+                .typeCertainty(.booleanFalse)
+            ]
+        )
     }
 
     /// A literal integer `0` symbol.
-    static func intSymbol(_ integer: Int) -> Symbol {
-        var metadata: Set<MetaData> = [.isLiteral]
-        if integer == 0 {
-            metadata.insert(.maybeEmptyValue)
-        }
-        return Symbol(
+    static func integerSymbol(_ integer: Int) -> Symbol {
+        Symbol(
             code: "\(integer)",
             type: .int,
-            meta: metadata
+            meta: integer == 0 ? [.isLiteral, .typeCertainty(.integerZero)] : [.isLiteral]
         )
     }
 
@@ -505,13 +515,13 @@ extension Symbol {
 
     /// A literal integer `0` symbol.
     static var zeroSymbol: Symbol {
-        .intSymbol(0)
+        .integerSymbol(0)
     }
 }
 
-extension Symbol {
-    struct ReturnType {
-        let type: DataType
-        let maybeEmptyValue: Bool
-    }
-}
+//extension Symbol {
+//    struct ReturnType {
+//        let type: DataType
+//        let maybeEmptyValue: Bool
+//    }
+//}

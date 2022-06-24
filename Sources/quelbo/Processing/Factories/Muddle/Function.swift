@@ -39,7 +39,7 @@ extension Factories {
                 type: pro.type,
                 children: pro.paramsSymbol.children,
                 meta: [
-                    .mutating(false),
+                    .isImmutable,
                     .type("(\(argTypes))\(pro.returnValue)"),
                 ]
             )
