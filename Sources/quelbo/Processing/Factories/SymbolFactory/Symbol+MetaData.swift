@@ -17,8 +17,11 @@ extension Symbol {
         /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
         case blockType(SymbolFactory.ProgramBlockType)
 
-        /// Specifies an unevaluated ``Token`` array.
+        /// Specifies an unevaluated Zil ``Token`` array.
         case zil([Token])
+
+        /// Specifies an original Zil name.
+        case zilName(String)
 
         /// Specifies that the symbol represents a literal value.
         case isLiteral

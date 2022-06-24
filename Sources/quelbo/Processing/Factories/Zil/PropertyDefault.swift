@@ -16,8 +16,11 @@ extension Factories {
             ["PROPDEF"]
         }
 
-        override var codeBlock: String {
-            "setPropertyDefault(\(nameSymbol.code), \(valueSymbol.code))"
+        override var codeBlock: (Symbol) throws -> String {
+            let code = valueSymbol.code
+            return { symbol in
+                "setPropertyDefault(\(symbol.id), \(code))"
+            }
         }
     }
 }

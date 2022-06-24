@@ -27,7 +27,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .id(nameSymbol.code),
+                id: nameSymbol.id,
                 category: .definitions,
                 meta: [.zil(definition)]
             )

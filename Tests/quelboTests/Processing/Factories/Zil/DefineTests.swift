@@ -72,15 +72,7 @@ final class DefineTests: QuelboTests {
                 }
                 """,
                 type: .int,
-                category: .functions,
-                children: [
-                    Symbol(
-                        id: "foo",
-                        code: "foo: Int",
-                        type: .int,
-                        meta: [.mutating(true)]
-                    )
-                ]
+                category: .functions
             )
         )
 
@@ -111,15 +103,7 @@ final class DefineTests: QuelboTests {
                 }
                 """,
                 type: .int,
-                category: .functions,
-                children: [
-                    Symbol(
-                        id: "bar",
-                        code: "bar: Int",
-                        type: .int,
-                        meta: [.mutating(true)]
-                    )
-                ]
+                category: .functions
             )
         )
 
@@ -343,8 +327,7 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .int,
-                category: .functions,
-                children: []
+                category: .functions
             )
         )
     }
@@ -502,7 +485,7 @@ final class DefineTests: QuelboTests {
 
     func testMultifrob() throws {
         let registry = SymbolRegistry([
-            Symbol("prsa", type: .object),
+            Symbol(id: "prsa", type: .object),
         ])
 
         let definition: [Token] = [

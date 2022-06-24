@@ -15,12 +15,12 @@ final class RoutineCallTests: QuelboTests {
 
         try! Game.commit(
             Symbol(
-                "bagOfCoinsFunc",
+                id: "bagOfCoinsFunc",
                 type: .void,
                 category: .routines
             ),
             Symbol(
-                "oneFunc",
+                id: "oneFunc",
                 type: .int,
                 category: .routines,
                 children: [
@@ -28,7 +28,7 @@ final class RoutineCallTests: QuelboTests {
                 ]
             ),
             Symbol(
-                "twoFunc",
+                id: "twoFunc",
                 type: .string,
                 category: .routines,
                 children: [
@@ -37,7 +37,7 @@ final class RoutineCallTests: QuelboTests {
                 ]
             ),
             Symbol(
-                "threeFunc",
+                id: "threeFunc",
                 type: .string,
                 category: .routines,
                 children: [
@@ -68,10 +68,7 @@ final class RoutineCallTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             "oneFunc(number: 42)",
-            type: .int,
-            children: [
-                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral])
-            ]
+            type: .int
         ))
     }
 
@@ -89,11 +86,7 @@ final class RoutineCallTests: QuelboTests {
                     number: 42
                 )
                 """,
-            type: .string,
-            children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
-                Symbol(id: "number", code: "number: 42", type: .int, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 
@@ -116,12 +109,7 @@ final class RoutineCallTests: QuelboTests {
                     number: oneFunc(number: 42)
                 )
                 """,
-            type: .string,
-            children: [
-                Symbol(id: "answer", code: #"answer: "Answer""#, type: .string, meta: [.isLiteral]),
-                Symbol(id: "isValid", code: "isValid: true", type: .bool),
-                Symbol(id: "number", code: "number: oneFunc(number: 42)", type: .int, meta: [.isLiteral]),
-            ]
+            type: .string
         ))
     }
 }

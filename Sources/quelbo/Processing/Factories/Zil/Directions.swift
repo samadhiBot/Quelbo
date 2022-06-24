@@ -29,8 +29,9 @@ extension Factories {
             var tokens = tokens
             while let dir = try? findNameSymbol(in: &tokens) {
                 var code = ""
-                var name = dir.code
-                let zil = dir.id.stringLiteral
+                var name = dir.id.stringLiteral
+                let zil = dir.zilName
+
                 if let fizmoDirection = Direction.find(zil) {
                     name = fizmoDirection.id.description
                 } else {

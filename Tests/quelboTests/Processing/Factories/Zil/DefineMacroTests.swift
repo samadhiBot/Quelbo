@@ -65,30 +65,7 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines,
-            children: [
-                Symbol(
-                    id: "atm",
-                    code: "atm: Int",
-                    type: .int,
-                    meta: [
-                        Symbol.MetaData.mutating(true)
-                    ]
-                ),
-                Symbol(
-                    id: "[n, 1]",
-                    code: "n: Int = 1",
-                    type: .array(.int),
-                    children: [
-                        Symbol("n", type: .int),
-                        Symbol(
-                            "1",
-                            type: .int,
-                            meta: [.isLiteral]
-                        )
-                    ]
-                )
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -186,10 +163,7 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines,
-            children: [
-                Symbol(id: "any", code: "any: Int")
-            ]
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, expected)

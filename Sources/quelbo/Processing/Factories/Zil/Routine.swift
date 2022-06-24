@@ -31,11 +31,11 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                id: .id(nameSymbol.code),
+                id: nameSymbol.id,
                 code: """
                     \(pro.discardableResult)\
-                    /// The `\(nameSymbol.code)` (\(nameSymbol.id)) \(typeName).
-                    func \(nameSymbol.code)(\(pro.paramsSymbol.code))\(pro.returnValue) {
+                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName).
+                    func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\
                     \(pro.codeBlock.indented)

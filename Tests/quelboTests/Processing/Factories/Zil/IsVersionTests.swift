@@ -16,10 +16,10 @@ final class IsVersionTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("color", type: .bool, category: .routines),
-            Symbol("readbuf", type: .table),
-            Symbol("undo", type: .bool, category: .routines),
-            Symbol("zipOptions", type: .bool, category: .routines),
+            Symbol(id: "color", type: .bool, category: .routines),
+            Symbol(id: "readbuf", type: .table),
+            Symbol(id: "undo", type: .bool, category: .routines),
+            Symbol(id: "zipOptions", type: .bool, category: .routines),
         ])
     }
 

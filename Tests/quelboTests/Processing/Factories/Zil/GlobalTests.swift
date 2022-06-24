@@ -16,19 +16,19 @@ final class GlobalTests: QuelboTests {
         super.setUp()
 
         try! Game.commit(
-            Symbol("clearing", type: .object, category: .rooms),
-            Symbol("cyclops", type: .object, category: .objects),
-            Symbol("cyclopsMelee", type: .bool, category: .routines),
-            Symbol("forest1", type: .object, category: .rooms),
-            Symbol("forest2", type: .object, category: .rooms),
-            Symbol("forest3", type: .object, category: .rooms),
-            Symbol("knife", type: .object, category: .objects),
-            Symbol("path", type: .object, category: .rooms),
-            Symbol("sword", type: .object, category: .objects),
-            Symbol("thief", type: .object, category: .objects),
-            Symbol("thiefMelee", type: .bool, category: .routines),
-            Symbol("troll", type: .object, category: .objects),
-            Symbol("trollMelee", type: .bool, category: .routines)
+            Symbol(id: "clearing", type: .object, category: .rooms),
+            Symbol(id: "cyclops", type: .object, category: .objects),
+            Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
+            Symbol(id: "forest1", type: .object, category: .rooms),
+            Symbol(id: "forest2", type: .object, category: .rooms),
+            Symbol(id: "forest3", type: .object, category: .rooms),
+            Symbol(id: "knife", type: .object, category: .objects),
+            Symbol(id: "path", type: .object, category: .rooms),
+            Symbol(id: "sword", type: .object, category: .objects),
+            Symbol(id: "thief", type: .object, category: .objects),
+            Symbol(id: "thiefMelee", type: .bool, category: .routines),
+            Symbol(id: "troll", type: .object, category: .objects),
+            Symbol(id: "trollMelee", type: .bool, category: .routines)
         )
     }
 
@@ -46,10 +46,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: <Unknown> = unexpected",
-            category: .globals,
-            children: [
-                Symbol("unexpected")
-            ]
+            category: .globals
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -66,10 +63,7 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: "var foo: Bool = true",
             type: .bool,
-            category: .globals,
-            children: [
-                .trueSymbol
-            ]
+            category: .globals
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -87,9 +81,6 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            children: [
-                .falseSymbol
-            ],
             meta: [.maybeEmptyValue]
         )
 
@@ -116,10 +107,7 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: "var foo: Int = 42",
             type: .int,
-            category: .globals,
-            children: [
-                Symbol("42", type: .int, meta: [.isLiteral])
-            ]
+            category: .globals
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -147,39 +135,7 @@ final class GlobalTests: QuelboTests {
                     )
                     """,
             type: .table,
-            category: .globals,
-            children: [
-                Symbol(
-                    """
-                        Table(
-                            .room(forest1),
-                            .room(forest2),
-                            .room(forest3)
-                        )
-                        """,
-                    type: .table,
-                    children: [
-                        Symbol(
-                            id: "forest1",
-                            code: ".room(forest1)",
-                            type: .zilElement,
-                            category: .rooms
-                        ),
-                        Symbol(
-                            id: "forest2",
-                            code: ".room(forest2)",
-                            type: .zilElement,
-                            category: .rooms
-                        ),
-                        Symbol(
-                            id: "forest3",
-                            code: ".room(forest3)",
-                            type: .zilElement,
-                            category: .rooms
-                        )
-                    ]
-                )
-            ]
+            category: .globals
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -455,7 +411,6 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            children: [.falseSymbol],
             meta: [.maybeEmptyValue]
         ))
 
@@ -468,19 +423,7 @@ final class GlobalTests: QuelboTests {
 
         XCTAssertNoDifference(move, Symbol(
             "prso.move(to: clearing)",
-            type: .void,
-            children: [
-                Symbol(
-                    "prso",
-                    type: .object,
-                    category: .globals,
-                    children: [
-                        .falseSymbol
-                    ],
-                    meta: [.maybeEmptyValue]
-                ),
-                Symbol("clearing", type: .object, category: .rooms),
-            ]
+            type: .void
         ))
 
         // Inspecting the `prso` game symbol confirms that the type overwrite took place.
@@ -489,7 +432,6 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Object? = nil",
             type: .optional(.object),
             category: .globals,
-            children: [.falseSymbol],
             meta: [.maybeEmptyValue]
         ))
     }
@@ -507,7 +449,6 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            children: [.falseSymbol],
             meta: [.maybeEmptyValue]
         ))
 
@@ -529,7 +470,6 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            children: [.falseSymbol],
             meta: [.maybeEmptyValue]
         ))
     }

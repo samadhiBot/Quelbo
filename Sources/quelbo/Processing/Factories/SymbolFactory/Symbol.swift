@@ -14,7 +14,7 @@ struct Symbol: Identifiable {
     let id: Symbol.Identifier
 
     /// The Swift translation of a piece of Zil code.
-    let codeBlock: (Self) -> String
+    let codeBlock: (Self) throws -> String
 
     /// The ``Symbol/DataType-swift.enum`` for the ``code``.
     let type: DataType
@@ -27,7 +27,9 @@ struct Symbol: Identifiable {
 
     /// Any additional information required for symbol processing.
     let meta: Set<MetaData>
+}
 
+extension Symbol {
     init(
         id: Symbol.Identifier,
         code: String = "",
@@ -62,7 +64,11 @@ struct Symbol: Identifiable {
     }
 
     var code: String {
-        codeBlock(self)
+        do {
+            return try codeBlock(self)
+        } catch {
+            return "Symbol.code error: \(error)"
+        }
     }
 }
 
@@ -76,19 +82,22 @@ extension Symbol {
         }
     }
 
-    /// Returns a copy of the symbol without any child symbols.
-    var ignoringChildren: Symbol {
-        self.with(children: [])
-    }
-
     /// Returns a description of the symbol's data type.
     var dataType: String {
         for metaData in meta {
-            if case .type(let type) = metaData {
-                return type
-            }
+            if case .type(let type) = metaData { return type }
         }
         return type.description
+    }
+
+    /// Returns an unevaluated token stored by the symbol, if one exists.
+    var definition: [Token] {
+        for metaData in meta {
+            if case .zil(let tokens) = metaData {
+                return tokens
+            }
+        }
+        return []
     }
 
     /// Whether the symbol represents an `AGAIN` statement.
@@ -155,16 +164,6 @@ extension Symbol {
         self.id == .id("<Return>")
     }
 
-    /// Returns an unevaluated token stored by the symbol, if one exists.
-    var definition: [Token] {
-        for metaData in meta {
-            if case .zil(let tokens) = metaData {
-                return tokens
-            }
-        }
-        return []
-    }
-
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
     /// - Parameters:
@@ -192,6 +191,14 @@ extension Symbol {
             children: newChildren ?? children,
             meta: newMeta.isEmpty ? meta : meta.union(newMeta)
         )
+    }
+
+    /// Returns the original Zil name of the object represented by the symbol.
+    var zilName: String {
+        for metaData in meta {
+            if case .zilName(let name) = metaData { return name }
+        }
+        return "???"
     }
 }
 
