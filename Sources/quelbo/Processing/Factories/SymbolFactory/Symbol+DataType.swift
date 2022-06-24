@@ -164,7 +164,10 @@ extension Symbol.DataType {
             return true
         case (.bool, .int):
             return true
-        case (.int, _), (.object, _), (.string, _), (.table, _):
+        case (.int, _),
+             (.object, _),
+             (.string, _),
+             (.table, _):
             return symbol.meta.contains(.maybeEmptyValue)
         default:
             return false

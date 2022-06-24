@@ -297,7 +297,8 @@ extension SymbolFactory {
         return Symbol(
             id: .id(name),
             code: name,
-            type: try Self.parameters.expectedType(at: index)
+            type: try Self.parameters.expectedType(at: index),
+            meta: [.maybeEmptyValue]
         )
     }
 
