@@ -28,7 +28,7 @@ final class PrintTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
             output("""
                 \(.room(forest1))
                 \(.room(forest2))

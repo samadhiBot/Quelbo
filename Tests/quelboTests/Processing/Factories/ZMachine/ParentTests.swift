@@ -31,7 +31,7 @@ final class ParentTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "thief.parent",
+            code: "thief.parent",
             type: .object
         ))
     }

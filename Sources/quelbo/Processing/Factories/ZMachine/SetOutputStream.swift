@@ -28,21 +28,21 @@ extension Factories {
             }
 
             switch stream.code {
-            case "-1": symbols.insert(Symbol(".screenOff"), at: 0)
-            case "-2": symbols.insert(Symbol(".transcriptFileOff"), at: 0)
-            case "-3": symbols.insert(Symbol(".tableOff"), at: 0)
-            case "-4": symbols.insert(Symbol(".commandsFileOff"), at: 0)
-            case "1": symbols.insert(Symbol(".screenOn"), at: 0)
-            case "2": symbols.insert(Symbol(".transcriptFileOn"), at: 0)
-            case "3": symbols.insert(Symbol(".tableOn"), at: 0)
-            case "4": symbols.insert(Symbol(".commandsFileOn"), at: 0)
+            case "-1": symbols.insert(Symbol(code: ".screenOff"), at: 0)
+            case "-2": symbols.insert(Symbol(code: ".transcriptFileOff"), at: 0)
+            case "-3": symbols.insert(Symbol(code: ".tableOff"), at: 0)
+            case "-4": symbols.insert(Symbol(code: ".commandsFileOff"), at: 0)
+            case "1": symbols.insert(Symbol(code: ".screenOn"), at: 0)
+            case "2": symbols.insert(Symbol(code: ".transcriptFileOn"), at: 0)
+            case "3": symbols.insert(Symbol(code: ".tableOn"), at: 0)
+            case "4": symbols.insert(Symbol(code: ".commandsFileOn"), at: 0)
             default: throw Error.invalidOutputStream(stream.code)
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                "setOutputStream(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "setOutputStream(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .void
             )
         }

@@ -33,7 +33,7 @@ final class ReadTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "read(readbuf lexbuf)",
+            code: "read(readbuf lexbuf)",
             type: .void
         ))
     }

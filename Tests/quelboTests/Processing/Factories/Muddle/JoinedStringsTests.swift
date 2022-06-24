@@ -27,7 +27,7 @@ final class JoinedStringsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             ["A", 66.ascii, "CD"].joined()
             """,
             type: .string

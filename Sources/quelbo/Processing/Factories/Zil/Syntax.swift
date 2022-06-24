@@ -51,7 +51,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                """
+                code: """
                     Syntax(
                     \(definition.joined(separator: ",\n").indented)
                     )

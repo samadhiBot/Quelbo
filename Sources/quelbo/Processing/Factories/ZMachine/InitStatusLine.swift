@@ -21,7 +21,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            Symbol("initStatusLine()", type: .void)
+            Symbol(code: "initStatusLine()", type: .void)
         }
     }
 }

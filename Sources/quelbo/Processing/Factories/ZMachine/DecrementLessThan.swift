@@ -29,7 +29,7 @@ extension Factories {
             let value = try symbol(1)
             
             return Symbol(
-                "\(variable.code).decrement().isLessThan(\(value.code))",
+                code: "\(variable.code).decrement().isLessThan(\(value.code))",
                 type: .bool,
                 children: [variable, value]
             )

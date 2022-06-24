@@ -22,7 +22,7 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(2)",
+            code: "output(2)",
             type: .void
         ))
     }
@@ -42,7 +42,7 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(infinity)",
+            code: "output(infinity)",
             type: .void
         ))
     }
@@ -57,7 +57,7 @@ final class PrintNumberTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(.add(2, 3))",
+            code: "output(.add(2, 3))",
             type: .void
         ))
     }

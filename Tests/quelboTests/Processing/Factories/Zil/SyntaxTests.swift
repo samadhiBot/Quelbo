@@ -24,7 +24,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "quit",
                     actionRoutine: vQuit
@@ -46,7 +46,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "contemplate",
                     directObject: Syntax.Object(),
@@ -78,7 +78,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "take",
                     directObject: Syntax.Object(
@@ -110,7 +110,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "water",
                     directObject: Syntax.Object(
@@ -149,7 +149,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "put",
                     directObject: Syntax.Object(
@@ -183,7 +183,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
@@ -213,7 +213,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
@@ -249,7 +249,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
-            """
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(

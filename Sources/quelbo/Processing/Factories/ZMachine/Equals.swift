@@ -35,7 +35,7 @@ extension Factories {
             }
 
             return Symbol(
-                "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))",
+                code: "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))",
                 type: .bool,
                 children: original
             )

@@ -30,7 +30,7 @@ final class NextSiblingTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "egg.nextSibling",
+            code: "egg.nextSibling",
             type: .object
         ))
     }

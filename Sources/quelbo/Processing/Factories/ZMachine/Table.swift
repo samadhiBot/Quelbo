@@ -42,7 +42,7 @@ extension Factories {
             processFlags()
 
             return Symbol(
-                "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .table,
                 children: symbols
             )
@@ -70,13 +70,14 @@ extension Factories.Table {
         guard !flags.isEmpty else {
             return
         }
+
         let flagValues = flags
             .map({ ".\($0)" })
             .sorted()
             .joined(separator: ", ")
-        symbols.append(Symbol(
-            "flags: [\(flagValues)]"
-        ))
+
+        symbols.append(Symbol(code: "flags: [\(flagValues)]"))
+
         if flags.contains(.pure) {
             isMutable = false
         }

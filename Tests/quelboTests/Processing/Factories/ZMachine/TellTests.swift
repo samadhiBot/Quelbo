@@ -40,7 +40,7 @@ final class TellTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             output("You are in a large cavernous room")
             output(troll.description)
             output(42)

@@ -23,6 +23,9 @@ extension Symbol {
         /// Specifies an original Zil name.
         case zilName(String)
 
+        /// Whether the symbol represents an ``Factories/Again`` statement.
+        case isAgainStatement
+
         /// Specifies that the symbol represents a literal value.
         case isLiteral
 

@@ -19,7 +19,7 @@ final class VerifyTests: QuelboTests {
     func testVerify() throws {
         let symbol = try factory.init([]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("verify()", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "verify()", type: .void))
     }
 
     func testVerifyWithParameterThrows() throws {

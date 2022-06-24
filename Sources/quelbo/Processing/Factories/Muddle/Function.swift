@@ -29,7 +29,7 @@ extension Factories {
                 .joined(separator: ", ")
 
             return Symbol(
-                """
+                code: """
                     {\(argNames.isEmpty ? "" : " (\(argNames))\(pro.returnValue) in")
                     \(pro.warningComments(indented: true))\
                     \(pro.auxiliaryDefs(indented: true))\

@@ -12,7 +12,7 @@ extension Factories {
     ///
     class RoutineCall: SymbolFactory {
         /// The functions or routine defined in a game.
-        var routine = Symbol("TBD")
+        var routine = Symbol(code: "TBD")
 
         /// The function or routine parameters.
         var params: [Symbol] = []
@@ -38,7 +38,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: routine.type,
                 children: params
             )

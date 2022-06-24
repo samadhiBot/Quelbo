@@ -34,7 +34,7 @@ final class BitwiseAndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".bitwiseAnd(1, 0, 2, someInt)",
+            code: ".bitwiseAnd(1, 0, 2, someInt)",
             type: .int
         ))
     }

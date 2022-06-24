@@ -32,10 +32,10 @@ extension SymbolFactory {
                 )
             case .character(let character):
                 symbols.append(
-                    Symbol(character.quoted, type: .string, meta: [.isLiteral])
+                    Symbol(code: character.quoted, type: .string, meta: [.isLiteral])
                 )
             case .commented(let token):
-                symbols.append(Symbol("/* \(token.value) */", type: .comment))
+                symbols.append(Symbol(code: "/* \(token.value) */", type: .comment))
             case .decimal(let int):
                 symbols.append(
                     symbolizeDecimal(int)
@@ -74,7 +74,7 @@ extension SymbolFactory {
                 )
             case .string(let string):
                 symbols.append(
-                    Symbol(string.quoted, type: .string, meta: [.isLiteral])
+                    Symbol(code: string.quoted, type: .string, meta: [.isLiteral])
                 )
             case .type(let token):
                 symbols.append(
@@ -145,7 +145,7 @@ extension SymbolFactory {
         if value == false {
             metaData.insert(.maybeEmptyValue)
         }
-        return Symbol("\(value)", type: .bool, meta: metaData)
+        return Symbol(code: "\(value)", type: .bool, meta: metaData)
     }
 
     /// Translates a Zil
@@ -156,7 +156,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil character.
     func symbolizeCharacter(_ zil: String) throws -> Symbol {
-        Symbol(zil.quoted, type: .string, meta: [.isLiteral])
+        Symbol(code: zil.quoted, type: .string, meta: [.isLiteral])
     }
 
     /// Translates a Zil
@@ -211,7 +211,7 @@ extension SymbolFactory {
                 throw SymbolizationError.invalidZilForm(formTokens)
             }
             return Symbol(
-                "\(closure.code)(\(nested.codeValues(.commaSeparated)))",
+                code: "\(closure.code)(\(nested.codeValues(.commaSeparated)))",
                 type: closure.type,
                 children: nested
             )
@@ -313,7 +313,7 @@ extension SymbolFactory {
         let propertyName = zil.lowerCamelCase
         if let factory = try? Game.zilPropertyFactories.find(zil) {
             return Symbol(
-                propertyName,
+                code: propertyName,
                 type: factory.returnType,
                 category: .properties
             )
@@ -364,14 +364,14 @@ extension SymbolFactory {
             guard case .decimal(let value) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return Symbol("\(value)", type: .int8, meta: [.isLiteral])
+            return Symbol(code: "\(value)", type: .int8, meta: [.isLiteral])
         case "DECL":
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
             return try Factories.DeclareType(tokens, with: registry).process()
         case "SPLICE":
-            return Symbol("SPLICE (not yet implemented)")
+            return Symbol(code: "SPLICE (not yet implemented)")
         default:
             throw SymbolizationError.unknownType(type)
         }

@@ -35,7 +35,7 @@ final class MultiplyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".multiply(9, 3)",
+            code: ".multiply(9, 3)",
             type: .int
         ))
     }
@@ -48,7 +48,7 @@ final class MultiplyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".multiply(20, 5, 2)",
+            code: ".multiply(20, 5, 2)",
             type: .int
         ))
     }
@@ -60,7 +60,7 @@ final class MultiplyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.multiply(biggerNumber)",
+            code: "bigNumber.multiply(biggerNumber)",
             type: .int
         ))
     }
@@ -72,7 +72,7 @@ final class MultiplyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.multiply(1)",
+            code: "cyclowrath.multiply(1)",
             type: .int
         ))
     }
@@ -86,7 +86,7 @@ final class MultiplyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.multiply(otvalFrob())",
+            code: "baseScore.multiply(otvalFrob())",
             type: .int
         ))
     }

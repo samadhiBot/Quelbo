@@ -32,7 +32,7 @@ final class PrintTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"output("Hello World")"#,
+            code: #"output("Hello World")"#,
             type: .void
         ))
     }
@@ -43,7 +43,7 @@ final class PrintTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(message)",
+            code: "output(message)",
             type: .void
         ))
     }

@@ -32,7 +32,7 @@ final class IsGreaterThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isGreaterThan(3)",
+            code: "2.isGreaterThan(3)",
             type: .bool
         ))
     }
@@ -44,7 +44,7 @@ final class IsGreaterThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isGreaterThan(foo)",
+            code: "2.isGreaterThan(foo)",
             type: .bool
         ))
     }
@@ -56,7 +56,7 @@ final class IsGreaterThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isGreaterThan(bar)",
+            code: "2.isGreaterThan(bar)",
             type: .bool
         ))
     }

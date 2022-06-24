@@ -52,7 +52,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if rarg.equals(mEnter) {
                 output("Rarg equals mEnter")
             }
@@ -88,7 +88,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if rarg.equals(mEnter) {
                 output("Rarg equals mEnter")
             } else if troll.isIn(here) {
@@ -111,7 +111,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if wonFlag {
                 output(" A secret path leads southwest into the forest.")
             }
@@ -137,7 +137,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if here.equals(clearing) {
                 "The grating opens."
             } else {
@@ -177,7 +177,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 if n.decrement().isLessThan(1) {
                     output("No more bottles of beer on the wall!")
                     output("\n")
@@ -204,7 +204,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 if isFunnyReturn {
                     output("RETURN EXIT ROUTINE")
                 }
@@ -248,7 +248,7 @@ final class CondTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 if .or(
                     prsi.hasFlag(openBit),
                     isOpenable(),

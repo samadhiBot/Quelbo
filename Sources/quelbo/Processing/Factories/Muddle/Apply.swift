@@ -21,7 +21,7 @@ extension Factories {
         }
 
         /// The user-defined applicable that is being called.
-        var applicable = Symbol("TBD")
+        var applicable = Symbol(code: "TBD")
 
         /// The user-defined applicable parameters.
         var params: [Symbol] = []

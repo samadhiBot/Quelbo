@@ -9,12 +9,12 @@ import CustomDump
 import Foundation
 
 /// A representation of a piece of Zil code and its Swift translation.
-struct Symbol: Identifiable {
+class Symbol: Identifiable {
     /// The symbol's unique identifier.
     let id: Symbol.Identifier
 
     /// The Swift translation of a piece of Zil code.
-    let codeBlock: (Self) throws -> String
+    let codeBlock: (Symbol) throws -> String
 
     /// The ``Symbol/DataType-swift.enum`` for the ``code``.
     let type: DataType
@@ -27,19 +27,17 @@ struct Symbol: Identifiable {
 
     /// Any additional information required for symbol processing.
     let meta: Set<MetaData>
-}
 
-extension Symbol {
     init(
-        id: Symbol.Identifier,
-        code: String = "",
+        id: Symbol.Identifier? = nil,
+        code codeBlock: @escaping (Symbol) throws -> String,
         type: DataType = .unknown,
         category: Category? = nil,
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        self.id = id
-        self.codeBlock = { _ in code.rightTrimmed }
+        self.id = id ?? .id("")
+        self.codeBlock = codeBlock
         self.type = type
         self.category = category
         self.children = children
@@ -47,16 +45,15 @@ extension Symbol {
     }
 
     init(
-        _ code: String,
+        id: Symbol.Identifier? = nil,
+        code: String = "",
         type: DataType = .unknown,
         category: Category? = nil,
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        let staticCode = code.rightTrimmed
-
-        self.id = .id("")
-        self.codeBlock = { _ in staticCode }
+        self.id = id ?? .id("")
+        self.codeBlock = { _ in code.rightTrimmed }
         self.type = type
         self.category = category
         self.children = children
@@ -98,11 +95,6 @@ extension Symbol {
             }
         }
         return []
-    }
-
-    /// Whether the symbol represents an `AGAIN` statement.
-    var isAgainStatement: Bool {
-        code.hasPrefix("continue")
     }
 
     /// Whether the symbol represents a code block.
@@ -490,7 +482,7 @@ extension Array where Element == Symbol {
 extension Symbol {
     /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
-        Symbol("false", type: .bool, meta: [.isLiteral, .maybeEmptyValue])
+        Symbol(code: "false", type: .bool, meta: [.isLiteral, .maybeEmptyValue])
     }
 
     /// A literal integer `0` symbol.
@@ -500,7 +492,7 @@ extension Symbol {
             metadata.insert(.maybeEmptyValue)
         }
         return Symbol(
-            "\(integer)",
+            code: "\(integer)",
             type: .int,
             meta: metadata
         )
@@ -508,7 +500,7 @@ extension Symbol {
 
     /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
-        Symbol("true", type: .bool, meta: [.isLiteral])
+        Symbol(code: "true", type: .bool, meta: [.isLiteral])
     }
 
     /// A literal integer `0` symbol.

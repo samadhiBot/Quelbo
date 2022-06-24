@@ -34,7 +34,7 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.move(to: paperBag)",
+            code: "sandwich.move(to: paperBag)",
             type: .void
         ))
     }
@@ -46,14 +46,14 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.move(to: kitchen)",
+            code: "paperBag.move(to: kitchen)",
             type: .void
         ))
     }
 
     func testMoveLocalWeaponToHere() throws {
         let registry = SymbolRegistry([
-            Symbol("dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
+            Symbol(code: "dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
         ])
 
         let symbol = try factory.init([
@@ -62,7 +62,7 @@ final class MoveTests: QuelboTests {
         ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "dweapon.move(to: here)",
+            code: "dweapon.move(to: here)",
             type: .void
         ))
     }

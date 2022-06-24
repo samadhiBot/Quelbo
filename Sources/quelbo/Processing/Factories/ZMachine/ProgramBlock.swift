@@ -43,7 +43,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                codeBlock,
+                code: codeBlock,
                 type: pro.type,
                 children: pro.children,
                 meta: pro.metaData

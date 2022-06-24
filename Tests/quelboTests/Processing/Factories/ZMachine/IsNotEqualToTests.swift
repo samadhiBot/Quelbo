@@ -33,7 +33,7 @@ final class IsNotEqualToTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isNotEqualTo(3)",
+            code: "2.isNotEqualTo(3)",
             type: .bool
         ))
     }
@@ -46,7 +46,7 @@ final class IsNotEqualToTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isNotEqualTo(3, 4)",
+            code: "2.isNotEqualTo(3, 4)",
             type: .bool
         ))
     }
@@ -58,7 +58,7 @@ final class IsNotEqualToTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #""hello".isNotEqualTo("goodBye")"#,
+            code: #""hello".isNotEqualTo("goodBye")"#,
             type: .bool
         ))
     }
@@ -70,7 +70,7 @@ final class IsNotEqualToTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isPlayerAlive.isNotEqualTo(isWorldAlive)",
+            code: "isPlayerAlive.isNotEqualTo(isWorldAlive)",
             type: .bool
         ))
     }

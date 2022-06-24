@@ -31,7 +31,7 @@ final class FormTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".add(1, 2)",
+            code: ".add(1, 2)",
             type: .int
         ))
     }
@@ -62,7 +62,7 @@ final class FormTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "a.set(to: .add(1, a))",
+            code: "a.set(to: .add(1, a))",
             type: .int
         ))
     }

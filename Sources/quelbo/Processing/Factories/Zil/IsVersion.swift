@@ -18,7 +18,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
-                try conditionalSymbols().codeValues(.separator(" else ")),
+                code: try conditionalSymbols().codeValues(.separator(" else ")),
                 type: .void,
                 children: symbols
             )
@@ -50,11 +50,11 @@ extension Factories.IsVersion {
             }
 
             conditions.append(Symbol(
-                """
-                \(ifStatement){
-                \(condition.codeValues(.singleLineBreak, .indented))
-                }
-                """,
+                code: """
+                    \(ifStatement){
+                    \(condition.codeValues(.singleLineBreak, .indented))
+                    }
+                    """,
                 children: list.children
             ))
         }

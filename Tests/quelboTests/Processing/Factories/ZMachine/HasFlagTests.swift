@@ -32,7 +32,7 @@ final class HasFlagTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "kitchenWindow.hasFlag(openBit)",
+            code: "kitchenWindow.hasFlag(openBit)",
             type: .bool
         ))
     }

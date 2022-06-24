@@ -31,7 +31,7 @@ final class PropertySizeTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.propertySize(of: .strength)",
+            code: "troll.propertySize(of: .strength)",
             type: .int
         ))
     }

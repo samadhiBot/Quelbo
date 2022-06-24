@@ -44,7 +44,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -66,7 +66,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .object(troll),
                     .object(sword),
@@ -94,7 +94,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -130,7 +130,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .table(Table(
                         .object(troll),

@@ -30,7 +30,7 @@ final class PrintDescriptionTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(troll.description)",
+            code: "output(troll.description)",
             type: .void
         ))
     }

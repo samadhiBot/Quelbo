@@ -29,7 +29,7 @@ final class AsciiTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "\"A\".ascii",
+            code: "\"A\".ascii",
             type: .int
         ))
     }
@@ -40,7 +40,7 @@ final class AsciiTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "65.ascii",
+            code: "65.ascii",
             type: .string
         ))
     }

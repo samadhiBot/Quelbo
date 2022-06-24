@@ -32,14 +32,14 @@ final class PropertyIndexTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.propertyIndex(of: .strength)",
+            code: "troll.propertyIndex(of: .strength)",
             type: .int
         ))
     }
 
     func testPropertyIndexOfObjectInLocal() throws {
         let registry = SymbolRegistry([
-            Symbol("dir", type: .direction),
+            Symbol(code: "dir", type: .direction),
         ])
 
         let symbol = try factory.init([
@@ -48,7 +48,7 @@ final class PropertyIndexTests: QuelboTests {
         ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "here.propertyIndex(of: .dir)",
+            code: "here.propertyIndex(of: .dir)",
             type: .int
         ))
     }

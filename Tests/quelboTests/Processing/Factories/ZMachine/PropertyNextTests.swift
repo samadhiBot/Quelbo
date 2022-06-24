@@ -31,7 +31,7 @@ final class PropertyNextTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.nextProperty(after: .strength)",
+            code: "troll.nextProperty(after: .strength)",
             type: .int
         ))
     }

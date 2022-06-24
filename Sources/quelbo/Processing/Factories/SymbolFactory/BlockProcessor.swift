@@ -20,8 +20,8 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
-    var codeSymbol = Symbol("TBD")
-    var paramsSymbol = Symbol("TBD")
+    var codeSymbol = Symbol(code: "TBD")
+    var paramsSymbol = Symbol(code: "TBD")
 
     private var auxiliaries: [Symbol] = []
     private var warnings: [String] = []
@@ -232,7 +232,7 @@ extension BlockProcessor {
         var symbols = codeSymbols
 
         while let symbol = symbols.shift() {
-            if symbol.isAgainStatement {
+            if symbol.meta.contains(.isAgainStatement) {
                 blockType?.makeRepeating()
             }
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
@@ -244,7 +244,7 @@ extension BlockProcessor {
         }
 
         return Symbol(
-            codeLines.joined(separator: "\n"),
+            code: codeLines.joined(separator: "\n"),
             type: returnType ?? .void,
             children: codeSymbols
         )
@@ -311,7 +311,7 @@ extension BlockProcessor {
                 parameters.append(paramSymbol)
                 if paramSymbol.isMutating(in: validatedCode.children) == true {
                     auxiliaries.append(Symbol(
-                        "\(paramSymbol.id) = \(paramSymbol.id)",
+                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
                         type: paramSymbol.type
                     ))
                 }
@@ -321,7 +321,7 @@ extension BlockProcessor {
         }
 
         return Symbol(
-            parameters.codeValues(.commaSeparatedNoTrailingComma),
+            code: parameters.codeValues(.commaSeparatedNoTrailingComma),
             children: parameters
         )
     }

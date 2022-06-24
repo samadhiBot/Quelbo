@@ -19,7 +19,7 @@ final class SaveTests: QuelboTests {
     func testSave() throws {
         let symbol = try factory.init([]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("save()", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "save()", type: .void))
     }
 
     func testSaveWithParameterThrows() throws {

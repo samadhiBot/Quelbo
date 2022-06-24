@@ -32,7 +32,7 @@ final class SetFlagTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "trapDoor.openBit = true",
+            code: "trapDoor.openBit = true",
             type: .void
         ))
     }

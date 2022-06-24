@@ -29,7 +29,7 @@ final class IsEmptyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "atms.isEmpty",
+            code: "atms.isEmpty",
             type: .bool
         ))
     }

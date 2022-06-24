@@ -422,7 +422,7 @@ final class GlobalTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(move, Symbol(
-            "prso.move(to: clearing)",
+            code: "prso.move(to: clearing)",
             type: .void
         ))
 
@@ -460,7 +460,7 @@ final class GlobalTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(set, Symbol(
-            "kitchenWindowFlag.set(to: true)",
+            code: "kitchenWindowFlag.set(to: true)",
             type: .bool
         ))
 

@@ -21,7 +21,7 @@ final class SetVariableTests: QuelboTests {
                 type: .int,
                 category: .routines,
                 children: [
-                    Symbol("number", type: .int)
+                    Symbol(code: "number", type: .int)
                 ]
             ),
             Symbol(id: "thirty", type: .int, category: .globals)
@@ -40,7 +40,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.set(to: 3)",
+            code: "foo.set(to: 3)",
             type: .int
         ))
     }
@@ -52,7 +52,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"foo.set(to: "Bar!")"#,
+            code: #"foo.set(to: "Bar!")"#,
             type: .string
         ))
     }
@@ -64,7 +64,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isRobbed.set(to: true)",
+            code: "isRobbed.set(to: true)",
             type: .bool
         ))
     }
@@ -80,7 +80,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "t.set(to: thirty.add(3))",
+            code: "t.set(to: thirty.add(3))",
             type: .int
         ))
     }
@@ -96,7 +96,7 @@ final class SetVariableTests: QuelboTests {
         ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "x.set(to: n)",
+            code: "x.set(to: n)",
             type: .string
         ))
     }
@@ -111,7 +111,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.set(to: x.nextSibling)",
+            code: "n.set(to: x.nextSibling)",
             type: .object
         ))
     }
@@ -127,7 +127,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.set(to: n.subtract(1))",
+            code: "n.set(to: n.subtract(1))",
             type: .int
         ))
     }

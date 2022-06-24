@@ -35,7 +35,7 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".divide(9, 3)",
+            code: ".divide(9, 3)",
             type: .int
         ))
     }
@@ -48,7 +48,7 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".divide(20, 5, 2)",
+            code: ".divide(20, 5, 2)",
             type: .int
         ))
     }
@@ -60,7 +60,7 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.divide(biggerNumber)",
+            code: "bigNumber.divide(biggerNumber)",
             type: .int
         ))
     }
@@ -72,7 +72,7 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.divide(1)",
+            code: "cyclowrath.divide(1)",
             type: .int
         ))
     }
@@ -86,7 +86,7 @@ final class DivideTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.divide(otvalFrob())",
+            code: "baseScore.divide(otvalFrob())",
             type: .int
         ))
     }

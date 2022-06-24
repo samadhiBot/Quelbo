@@ -45,18 +45,18 @@ extension Factories {
                 throw Error.missingInitialArithmaticValue(tokens)
             }
 
-            let code: String
+            let mathFunction: String
             let allSymbols: [Symbol]
 
             if first.isLiteral {
                 allSymbols = [first] + symbols
-                code = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
+                mathFunction = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
             } else {
                 allSymbols = [first.with(meta: [.mutating(true)])] + symbols
-                code = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
+                mathFunction = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
-            return Symbol(code, type: .int, children: allSymbols)
+            return Symbol(code: mathFunction, type: .int, children: allSymbols)
         }
     }
 }

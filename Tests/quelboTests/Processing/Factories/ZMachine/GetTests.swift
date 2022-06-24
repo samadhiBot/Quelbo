@@ -30,7 +30,7 @@ final class GetTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try foo.get(at: 2)",
+            code: "try foo.get(at: 2)",
             type: .zilElement
         ))
     }

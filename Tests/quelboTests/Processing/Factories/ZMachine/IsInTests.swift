@@ -40,7 +40,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.isIn(paperBag)",
+            code: "sandwich.isIn(paperBag)",
             type: .bool
         ))
     }
@@ -52,7 +52,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.isIn(kitchen)",
+            code: "paperBag.isIn(kitchen)",
             type: .bool
         ))
     }
@@ -72,7 +72,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "o.set(to: try oo.get(at: vVillain)).isIn(here)",
+            code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",
             type: .bool
         ))
     }

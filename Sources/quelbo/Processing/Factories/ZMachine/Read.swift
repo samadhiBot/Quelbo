@@ -22,7 +22,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "read(\(symbols.codeValues()))",
+                code: "read(\(symbols.codeValues()))",
                 type: .void,
                 children: symbols
             )

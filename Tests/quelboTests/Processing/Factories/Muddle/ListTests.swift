@@ -24,7 +24,7 @@ final class ListTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "[1, 2, 3]",
+            code: "[1, 2, 3]",
             type: .array(.int)
         ))
     }
@@ -37,7 +37,7 @@ final class ListTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"["AB", "CD", "EF"]"#,
+            code: #"["AB", "CD", "EF"]"#,
             type: .array(.string)
         ))
     }
@@ -51,7 +51,7 @@ final class ListTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "[1, 2, \"AB\", \"C\"]",
+            code: "[1, 2, \"AB\", \"C\"]",
             type: .array(.zilElement)
         ))
     }

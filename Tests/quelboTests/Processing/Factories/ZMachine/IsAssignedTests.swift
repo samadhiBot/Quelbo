@@ -22,7 +22,7 @@ final class IsAssignedTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.isAssigned",
+            code: "foo.isAssigned",
             type: .bool
         ))
     }

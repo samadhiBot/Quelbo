@@ -30,7 +30,7 @@ final class IsOneTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isOne",
+            code: "2.isOne",
             type: .bool
         ))
     }
@@ -41,7 +41,7 @@ final class IsOneTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.isOne",
+            code: "foo.isOne",
             type: .bool
         ))
     }
@@ -52,7 +52,7 @@ final class IsOneTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bar.isOne",
+            code: "bar.isOne",
             type: .bool
         ))
     }

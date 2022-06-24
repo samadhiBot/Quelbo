@@ -40,7 +40,7 @@ final class MapFirstTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 .add(1, 10),
                 .add(2, 11),
@@ -64,7 +64,7 @@ final class MapFirstTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 "Zil".nthElement(1),
                 "is".nthElement(1),
@@ -98,7 +98,7 @@ final class MapFirstTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 { (n: Int) -> Int in
                     var n = n

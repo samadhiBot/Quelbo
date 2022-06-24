@@ -22,7 +22,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "[\(symbols.codeValues(.commaSeparated))].joined()",
+                code: "[\(symbols.codeValues(.commaSeparated))].joined()",
                 type: .string,
                 children: symbols
             )

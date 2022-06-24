@@ -22,8 +22,8 @@ extension Factories {
         }
 
         var metaData: Set<Symbol.MetaData> = []
-        var nameSymbol = Symbol("TBD")
-        var valueSymbol = Symbol("TBD")
+        var nameSymbol = Symbol(code: "TBD")
+        var valueSymbol = Symbol(code: "TBD")
 
         override func processTokens() throws {
             try super.processTokens()
@@ -54,7 +54,7 @@ extension Factories {
         override func process() throws -> Symbol {
             let symbol = Symbol(
                 id: nameSymbol.id,
-                codeBlock: codeBlock,
+                code: codeBlock,
                 type: valueSymbol.type,
                 category: isMutable ? .globals : .constants,
                 children: [valueSymbol],

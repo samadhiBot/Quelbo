@@ -30,7 +30,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(try symbol(0).code).\(function)",
+                code: "\(try symbol(0).code).\(function)",
                 type: .bool,
                 children: symbols
             )

@@ -17,7 +17,7 @@ final class BindTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            Symbol("isFunnyReturn", type: .bool, category: .globals),
+            Symbol(code: "isFunnyReturn", type: .bool, category: .globals),
         ])
     }
 
