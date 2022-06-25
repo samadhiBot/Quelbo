@@ -122,12 +122,12 @@ extension SymbolFactory {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
 
-        if let defined = try? Game.find(.id(name), type: expectedType) {
-            return defined.with(code: name)
-        }
-
         if zil == "T" {
             guard case .variable = expectedType else { return .trueSymbol }
+        }
+
+        if let defined = try? Game.find(.id(name), type: expectedType) {
+            return defined.with(code: name)
         }
 
         return Symbol(

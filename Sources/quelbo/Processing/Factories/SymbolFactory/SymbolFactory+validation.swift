@@ -54,15 +54,14 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
+        if declaredType == .zilElement {
+            return try assignZilElementType(on: symbol)
+        }
         guard
             symbol.type != declaredType,
             symbol.typeCertainty < .certain
         else {
             return symbol
-        }
-
-        if declaredType == .zilElement {
-            return try assignZilElementType(on: symbol)
         }
         if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
             throw ValidationError.expectedVariableFoundLiteral(symbol)

@@ -36,7 +36,7 @@ extension Factories {
             let type = valueSymbol.dataType
 
             return { symbol in
-                let declare = symbol.category == .globals ? "var" : "let"
+                let declare = symbol.meta.contains(.isImmutable) ? "let" : "var"
                 return "\(declare) \(symbol.id): \(type) = \(code)"
             }
         }
@@ -50,12 +50,11 @@ extension Factories {
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
-                category: valueSymbol.meta.contains(.isImmutable) ? .constants : .globals,
+                category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
                 meta: metaData.union(valueSymbol.meta).subtracting([.isLiteral])
             )
 
-            print("// 🥭 \(symbol)")
             Game.commit(symbol)
             return symbol
         }

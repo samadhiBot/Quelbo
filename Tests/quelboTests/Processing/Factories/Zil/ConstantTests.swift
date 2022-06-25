@@ -46,7 +46,8 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: <Unknown> = unexpected",
             type: .unknown,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -63,7 +64,8 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: Bool = true",
             type: .bool,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -89,7 +91,8 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: "let foo: Int = 42",
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -117,7 +120,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -155,7 +159,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -226,7 +231,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -269,7 +275,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -291,7 +298,8 @@ final class ConstantTests: QuelboTests {
                 let foo: [String] = ["BAR"]
                 """,
             type: .array(.string),
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -313,7 +321,8 @@ final class ConstantTests: QuelboTests {
                 let foo: String = "BAR"
                 """,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -336,7 +345,8 @@ final class ConstantTests: QuelboTests {
                     let foo: String = "Forty Two!"
                     """,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
