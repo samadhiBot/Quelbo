@@ -52,9 +52,10 @@ extension Factories {
                 type: valueSymbol.type,
                 category: valueSymbol.meta.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: metaData.union(valueSymbol.meta) 
+                meta: metaData.union(valueSymbol.meta).subtracting([.isLiteral])
             )
 
+            print("// 🥭 \(symbol)")
             Game.commit(symbol)
             return symbol
         }

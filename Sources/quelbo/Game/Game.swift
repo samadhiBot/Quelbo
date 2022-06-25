@@ -79,7 +79,7 @@ extension Game {
     static func find(
         _ id: Symbol.Identifier,
         type: Symbol.DataType? = nil,
-        category: Symbol.Category? = nil
+        category categories: Symbol.Category...
     ) throws -> Symbol {
         guard
             let symbol = shared.gameSymbols.first(where: {
@@ -89,13 +89,13 @@ extension Game {
                 if let type = type, type.isUnambiguous, $0.type != type {
                     return false
                 }
-                if let category = category, $0.category != category {
-                    return false
+                if let symbolCategory = $0.category, !categories.isEmpty {
+                    return categories.contains(symbolCategory)
                 }
                 return true
             })
         else {
-            throw GameError.symbolNotFound(id, category: category)
+            throw GameError.symbolNotFound(id, categories: categories)
         }
         return symbol
     }
@@ -119,7 +119,7 @@ extension Game {
     static func upsert(_ symbol: Symbol) -> Symbol {
         assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
 
-        guard let existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
+        guard var existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
             shared.gameSymbols.insert(symbol)
             return symbol
         }

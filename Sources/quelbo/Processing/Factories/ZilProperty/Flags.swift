@@ -34,6 +34,7 @@ extension Factories {
                 } else {
                     let flag = Flag.find(symbol.code)
                     let flagSymbol = symbol.with(
+                        id: .id(flag.id.description),
                         code: flag.id.description,
                         category: .flags
                     )

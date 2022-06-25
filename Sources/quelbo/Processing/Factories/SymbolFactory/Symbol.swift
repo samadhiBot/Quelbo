@@ -9,7 +9,7 @@ import CustomDump
 import Foundation
 
 /// A representation of a piece of Zil code and its Swift translation.
-class Symbol: Identifiable {
+struct Symbol: Identifiable {
     /// The symbol's unique identifier.
     let id: Symbol.Identifier
 
@@ -168,22 +168,22 @@ extension Symbol {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func reconcile(with other: Symbol) -> Symbol {
+    mutating func reconcile(with other: Symbol) -> Symbol {
         if type != other.type && typeCertainty < other.typeCertainty {
             type = other.type
+            meta.insert(.typeCertainty(other.typeCertainty))
         }
-        if category != other.category {
-            category = other.category
+        if let otherCategory = other.category, category != otherCategory {
+            category = otherCategory
         }
-        if meta != other.meta {
-            meta = other.meta
-        }
+//        if meta != other.meta {
+//            meta = other.meta
+//        }
 
-        return Symbol(
-            id: id,
+        print("// 🌶️ Reconciled \(self)") 
+
+        return self.with(
             code: other.code,
-            type: type,
-            category: category,
             children: other.children,
             meta: other.meta
         )
@@ -212,15 +212,17 @@ extension Symbol {
     /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`, where the `false` is
     /// ambiguous. If Quelbo discovers a different `type` through the variable's use in the code,
     /// it updates the global with the found `type`.
-//    var isPlaceholderGlobal: Bool {
-//        guard
-//            [.constants, .globals].contains(category),
-//            let committed = try? Game.find(id)
-//        else {
-//            return false
-//        }
-//        return committed.meta.contains(.maybeEmptyValue)
-//    }
+    var isPlaceholderGlobal: Bool {
+        guard let committed = try? Game.find(id, category: .constants, .globals) else {
+            return false
+        }
+        for metaData in committed.meta {
+            if case .typeCertainty(let certainty) = metaData {
+                return certainty <= .integerZero
+            }
+        }
+        return false
+    }
 
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
@@ -247,7 +249,7 @@ extension Symbol {
             type: newType ?? type,
             category: newCategory ?? category,
             children: newChildren ?? children,
-            meta: newMeta.isEmpty ? meta : meta.union(newMeta)
+            meta: newMeta.isEmpty ? meta : newMeta
         )
     }
 
@@ -340,11 +342,11 @@ extension Symbol: CustomDumpReflectable {
 extension Symbol: CustomStringConvertible {
     var description: String {
         var details: [String] = []
-        var ref = "\(ObjectIdentifier(self))"
-        ref.removeFirst(28)
-        ref.removeLast()
+//        var ref = "\(ObjectIdentifier(self))"
+//        ref.removeFirst(28)
+//        ref.removeLast()
         if identifiable { details.append("id: \(id)") }
-        details.append("ref: \(ref)")
+//        details.append("ref: \(ref)")
         if !code.isEmpty { details.append("code: \(code)") }
         details.append("type: \(type)")
         if let category = category { details.append("category: \(category)") }
