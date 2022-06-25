@@ -90,7 +90,7 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let registry = SymbolRegistry()
+                    let registry: Set<Symbol> = []
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }

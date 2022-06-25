@@ -15,7 +15,7 @@ final class FunctionTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -53,7 +53,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("() -> Int"),
             ]
         ))
@@ -80,7 +80,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("(Int) -> Int"),
             ]
         ))
@@ -108,7 +108,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("(Int, Int) -> Int"),
             ]
         ))

@@ -84,6 +84,30 @@ extension SymbolFactory {
 
         throw FindError.parametersSymbolNotFound(original)
     }
+
+    /// Searches the ``SymbolFactory/registry`` for a symbol whose `id` matches the one specified.
+    ///
+    /// - Parameter id: The symbol `id` to search for.
+    ///
+    /// - Returns: A symbol with the specified `id` if one has been registered.
+    func findRegistered(_ id: Symbol.Identifier) -> Symbol? {
+        registry.first(where: { $0.id == id })
+    }
+
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    func upsert(_ symbol: Symbol) -> Symbol {
+        assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
+
+        guard let existing = registry.first(where: { $0.id == symbol.id }) else {
+            registry.insert(symbol)
+            return symbol
+        }
+
+        return existing.reconcile(with: symbol)
+    }
+
 }
 
 // MARK: - Errors

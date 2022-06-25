@@ -33,17 +33,17 @@ class SymbolFactory {
     /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
     var blockType: ProgramBlockType?
 
-    /// Whether the symbol representation is mutable.
-    var isMutable: Bool = true
+//    /// Whether the symbol representation is mutable.
+//    var isMutable: Bool = true
 
     required init(
         _ tokens: [Token],
         in blockType: ProgramBlockType? = nil,
-        with registry: SymbolRegistry? = nil
+        with registry: Set<Symbol> = []
     ) throws {
         self.blockType = blockType
         self.tokens = tokens
-        self.registry = registry ?? SymbolRegistry()
+        self.registry = registry
         try processTokens()
     }
 

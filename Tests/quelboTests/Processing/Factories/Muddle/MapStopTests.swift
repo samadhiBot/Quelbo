@@ -15,7 +15,7 @@ final class MapStopTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 

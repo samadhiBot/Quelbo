@@ -15,7 +15,7 @@ final class GlobalTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "cyclops", type: .object, category: .objects),
             Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
@@ -81,7 +81,7 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -411,7 +411,7 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
 
         // Move expects `prso` to be an object, not a boolean. This triggers an overwrite of the
@@ -432,7 +432,7 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Object? = nil",
             type: .optional(.object),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
     }
 
@@ -449,7 +449,7 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
@@ -470,7 +470,7 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
     }
 }

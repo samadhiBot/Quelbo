@@ -16,7 +16,7 @@ final class ProgramBlockTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(
                 id: "isFunnyReturn",
                 code: "let isFunnyReturn: Bool = false",

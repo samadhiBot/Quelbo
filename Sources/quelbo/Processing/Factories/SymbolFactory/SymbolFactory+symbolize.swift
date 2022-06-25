@@ -121,16 +121,29 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
-        if let defined = try? Game.find(.id(name), type: expectedType) {
-            return defined.with(code: name)
-        }
+
         if zil == "T" {
-            switch expectedType {
-            case .variable: break
-            default: return .trueSymbol
-            }
+            guard case .variable = expectedType else { return .trueSymbol }
         }
-        return Symbol(id: .id(name), code: name, type: expectedType)
+
+        return Game.upsert(Symbol(
+            id: .id(name),
+            code: name,
+            type: expectedType
+        ))
+
+//        let name = zil.lowerCamelCase
+//        let expectedType = try Self.parameters.expectedType(at: index)
+//        if let defined = try? Game.find(.id(name), type: expectedType) {
+//            return defined.with(code: name)
+//        }
+//        if zil == "T" {
+//            switch expectedType {
+//            case .variable: break
+//            default: return .trueSymbol
+//            }
+//        }
+//        return Symbol(id: .id(name), code: name, type: expectedType)
     }
 
     /// Translates a Zil
@@ -244,7 +257,6 @@ extension SymbolFactory {
 
         let factory = try findFactory()
         let symbol = try factory.process()
-        self.isMutable = factory.isMutable
         return symbol
     }
 
@@ -291,17 +303,16 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-
-        if let registered = registry[.id(name)] { return registered }
-
         let expectedType = try Self.parameters.expectedType(at: index)
 
-        return Symbol(
+        return upsert(Symbol(
             id: .id(name),
             code: name,
             type: expectedType,
-            meta: [.typeCertainty(expectedType == .unknown ? .unknown : .localValue)]
-        )
+            meta: [
+                .typeCertainty(expectedType == .unknown ? .unknown : .localValue)
+            ]
+        ))
     }
 
     /// Translates a Zil Object

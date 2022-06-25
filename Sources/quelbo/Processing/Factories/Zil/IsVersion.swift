@@ -17,13 +17,13 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let symbol = Symbol(
+            Symbol(
                 code: try conditionalSymbols().codeValues(.separator(" else ")),
                 type: .void,
                 children: symbols
             )
-            try Game.commit(symbol)
-            return symbol
+//            Game.commit(symbol)
+//            return symbol
         }
     }
 }

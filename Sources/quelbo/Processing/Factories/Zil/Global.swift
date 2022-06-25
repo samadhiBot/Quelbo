@@ -21,7 +21,6 @@ extension Factories {
             .two(.variable(.unknown), .unknown)
         }
 
-        var metaData: Set<Symbol.MetaData> = []
         var nameSymbol = Symbol(code: "TBD")
         var valueSymbol = Symbol(code: "TBD")
 
@@ -30,15 +29,6 @@ extension Factories {
 
             self.nameSymbol = try symbol(0)
             self.valueSymbol = try symbol(1)
-
-            for metaData in valueSymbol.meta {
-                switch metaData {
-                case .typeCertainty(let value): self.metaData = [.typeCertainty(value)]
-                case .mutating(true): self.isMutable = true
-                case .mutating(false): self.isMutable = false
-                default: break
-                }
-            }
         }
 
         var codeBlock: (Symbol) throws -> String {
@@ -51,16 +41,21 @@ extension Factories {
             }
         }
 
+        var metaData: Set<Symbol.MetaData> {
+            []
+        }
+
         override func process() throws -> Symbol {
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
-                category: isMutable ? .globals : .constants,
+                category: valueSymbol.meta.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: metaData
+                meta: metaData.union(valueSymbol.meta) 
             )
-            try Game.commit(symbol)
+
+            Game.commit(symbol)
             return symbol
         }
     }

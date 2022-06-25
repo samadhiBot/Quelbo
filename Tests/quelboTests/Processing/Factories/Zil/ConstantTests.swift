@@ -15,7 +15,7 @@ final class ConstantTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "cyclops", type: .object, category: .objects),
             Symbol(id: "cyclopsMelee", type: .bool, category: .routines),

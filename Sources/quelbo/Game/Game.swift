@@ -53,40 +53,16 @@ extension Game {
     /// Commit one or more processed ``Symbol`` values to the known ``gameSymbols``.
     ///
     /// - Parameter symbols: One or more symbol values to commit.
-    static func commit(_ symbols: Symbol...) throws {
-        try commit(symbols)
+    static func commit(_ symbols: Symbol...) {
+        commit(symbols)
     }
 
     /// Commit an array of processed ``Symbol`` values to the known ``gameSymbols``.
     ///
     /// - Parameter symbols: An array of symbol values to commit.
-    static func commit(_ symbols: [Symbol]) throws {
-        try symbols.forEach { symbol in
-            assert(
-                !symbol.id.stringLiteral.isEmpty,
-                "Attempted to commit a symbol without an id."
-            )
-
-            if let existing = try? find(symbol.id, category: symbol.category) {
-                if symbol == existing {
-                    return
-                }
-                switch (symbol.category, existing.category) {
-                case (.constants, .globals): return
-                case (.globals, .constants): return try overwrite(symbol)
-                default:
-                    break
-                }
-                if symbol.type.shouldReplaceType(in: existing) {
-                    try overwrite(symbol)
-                }
-                return
-//                else if existing.type.shouldReplaceType(in: symbol) {
-//                    return
-//                }
-//                throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
-            }
-            shared.gameSymbols.append(symbol)
+    static func commit(_ symbols: [Symbol]) {
+        symbols.forEach { symbol in
+            _ = upsert(symbol)
         }
     }
 
@@ -129,14 +105,25 @@ extension Game {
     /// - Parameter symbol: The symbol value to overwrite.
     ///
     /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
-    static func overwrite(_ symbol: Symbol) throws {
-        guard symbol.type.hasReturnValue && symbol.type != .bool else {
-            return
+//    static func overwrite(_ symbol: Symbol) throws {
+//        guard symbol.type.hasReturnValue && symbol.type != .bool else {
+//            return
+//        }
+//        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
+//            throw GameError.symbolNotFound(symbol.id, category: symbol.category)
+//        }
+//        shared.gameSymbols.remove(at: index)
+//        shared.gameSymbols.append(symbol)
+//    }
+
+    static func upsert(_ symbol: Symbol) -> Symbol {
+        assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
+
+        guard let existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
+            shared.gameSymbols.insert(symbol)
+            return symbol
         }
-        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-            throw GameError.symbolNotFound(symbol.id, category: symbol.category)
-        }
-        shared.gameSymbols.remove(at: index)
-        shared.gameSymbols.append(symbol)
+
+        return existing.reconcile(with: symbol)
     }
 }

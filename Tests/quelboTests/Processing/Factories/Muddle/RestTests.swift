@@ -15,7 +15,7 @@ final class RestTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -24,7 +24,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfIntegerList() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT1"),
@@ -47,7 +47,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedList() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT2"),
@@ -70,7 +70,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedListAfterFirstTwo() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT3"),

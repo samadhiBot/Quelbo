@@ -40,8 +40,10 @@ extension SymbolFactory {
         default: break
         }
 
-        try registry.register(typedSymbols)
-        return typedSymbols
+        return typedSymbols.map { symbol in
+            if symbol.identifiable { return upsert(symbol) }
+            return symbol
+        }
     }
 }
 
@@ -56,7 +58,7 @@ extension SymbolFactory {
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
-        if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
+        if case .variable = declaredType, symbol.isLiteral { // }&& !symbol.isPlaceholderGlobal {
             throw ValidationError.expectedVariableFoundLiteral(symbol)
         }
 
@@ -71,13 +73,13 @@ extension SymbolFactory {
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
-            if declaredType.shouldReplaceType(in: symbol) {
-                return symbol.with(type: declaredType)
-            }
+//            if declaredType.shouldReplaceType(in: symbol) {
+//                return symbol.with(type: declaredType)
+//            }
         case (true, false):
-            if declaredType.shouldReplaceType(in: registry[symbol.id] ?? symbol) {
-                return symbol.with(type: declaredType)
-            }
+//            if declaredType.shouldReplaceType(in: registry[symbol.id] ?? symbol) {
+//                return symbol.with(type: declaredType)
+//            }
             if declaredType.acceptsLiteral ||
                 symbol.category == .properties ||
                 declaredType.isUnknown && !symbol.type.isUnknown {
@@ -94,12 +96,12 @@ extension SymbolFactory {
                 symbol.type == .optional(declaredType) {
                 return symbol
             }
-            if declaredType.shouldReplaceType(in: symbol) {
-                return symbol.with(type: declaredType)
-            }
+//            if declaredType.shouldReplaceType(in: symbol) {
+//                return symbol.with(type: declaredType)
+//            }
         }
 
-        //print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
+        print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
         
         throw ValidationError.failedToDetermineType(
             symbol,

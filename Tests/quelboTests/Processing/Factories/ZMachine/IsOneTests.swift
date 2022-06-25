@@ -15,7 +15,7 @@ final class IsOneTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int, category: .globals)
         ])
     }

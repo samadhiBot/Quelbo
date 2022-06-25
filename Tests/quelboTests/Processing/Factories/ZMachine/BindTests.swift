@@ -16,8 +16,13 @@ final class BindTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            Symbol(code: "isFunnyReturn", type: .bool, category: .globals),
+        Game.commit([
+            Symbol(
+                id: "isFunnyReturn",
+                code: "isFunnyReturn",
+                type: .bool,
+                category: .globals
+            ),
         ])
     }
 

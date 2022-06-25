@@ -15,7 +15,7 @@ final class EqualsTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
             Symbol(id: "isWorldAlive", type: .bool, category: .globals)
         )

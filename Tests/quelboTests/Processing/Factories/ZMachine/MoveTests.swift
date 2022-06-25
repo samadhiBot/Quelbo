@@ -15,7 +15,7 @@ final class MoveTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "here", type: .object, category: .rooms),
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
@@ -52,9 +52,16 @@ final class MoveTests: QuelboTests {
     }
 
     func testMoveLocalWeaponToHere() throws {
-        let registry = SymbolRegistry([
-            Symbol(code: "dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(
+                id: "dweapon",
+                type: .bool,
+                meta: [
+                    .isLiteral,
+                    .typeCertainty(.booleanFalse),
+                ]
+            ),
+        ]
 
         let symbol = try factory.init([
             .local("DWEAPON"),

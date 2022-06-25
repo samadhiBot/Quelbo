@@ -15,7 +15,7 @@ final class ReadTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "lexbuf", type: .table, category: .globals),
             Symbol(id: "readbuf", type: .table, category: .globals),
             Symbol(id: "notbuf", type: .object, category: .objects),

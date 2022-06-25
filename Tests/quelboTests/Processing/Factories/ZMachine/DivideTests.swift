@@ -15,7 +15,7 @@ final class DivideTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "baseScore", type: .int, category: .globals),
             Symbol(id: "cyclowrath", type: .int, category: .globals),
             Symbol(id: "myBike", type: .string, category: .globals),

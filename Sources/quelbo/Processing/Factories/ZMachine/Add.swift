@@ -44,7 +44,7 @@ extension Factories {
             let original = symbols
 
             guard let first = symbols.shift() else {
-                throw Error.missingInitialArithmaticValue(tokens)
+                throw Error.missingInitialArithmeticValue(tokens)
             }
 
             let mathFunction: String
@@ -63,6 +63,6 @@ extension Factories {
 
 extension Factories.Add {
     enum Error: Swift.Error {
-        case missingInitialArithmaticValue([Token])
+        case missingInitialArithmeticValue([Token])
     }
 }

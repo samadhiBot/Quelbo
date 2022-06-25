@@ -15,7 +15,7 @@ final class CondTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "bottles", type: .int, category: .routines),
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "here", type: .object, category: .rooms),

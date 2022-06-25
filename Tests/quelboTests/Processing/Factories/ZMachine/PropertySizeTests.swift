@@ -15,7 +15,7 @@ final class PropertySizeTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects)
         ])
     }

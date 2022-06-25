@@ -15,7 +15,7 @@ final class SetVariableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(
                 id: "isNext",
                 type: .int,
@@ -86,9 +86,9 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToLocalVariable() throws {
-        let registry = SymbolRegistry([
+        let registry: Set<Symbol> = [
             Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string),
-        ])
+        ]
 
         let symbol = try factory.init([
             .atom("X"),

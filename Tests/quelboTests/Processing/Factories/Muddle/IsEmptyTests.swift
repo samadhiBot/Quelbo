@@ -15,7 +15,7 @@ final class IsEmptyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 

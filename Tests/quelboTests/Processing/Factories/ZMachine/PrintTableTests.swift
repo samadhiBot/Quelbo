@@ -15,7 +15,7 @@ final class PrintTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([fooTable])
+        Game.commit([fooTable])
     }
 
     func testFindFactory() throws {

@@ -15,7 +15,7 @@ final class IsNotTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "readbuf", type: .table, category: .globals),
             Symbol(id: "sword", type: .object, category: .objects),
             Symbol(id: "theVoid", type: .void, category: .routines),
@@ -51,9 +51,9 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotDirection() throws {
-        let registry = SymbolRegistry([
-            Symbol(code: "north", type: .direction, category: .directions)
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(id: "north", type: .direction, category: .directions)
+        ]
 
         let symbol = try factory.init([
             .local("NORTH")
@@ -121,9 +121,10 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotThing() throws {
-        let registry = SymbolRegistry([
-            Symbol(code: "something", type: .thing)
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(id: "prsa", type: .object),
+            Symbol(id: "something", type: .thing)
+        ]
 
         let symbol = try factory.init([
             .local("SOMETHING")
@@ -184,9 +185,9 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotOptional() throws {
-        let registry = SymbolRegistry([
-            Symbol(code: "maybe", type: .optional(.object))
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(id: "maybe", type: .optional(.object))
+        ]
 
         let symbol = try factory.init([
             .local("MAYBE")

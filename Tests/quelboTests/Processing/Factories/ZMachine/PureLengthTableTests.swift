@@ -17,7 +17,7 @@ final class PureLengthTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "forest1", type: .object, category: .rooms),
             Symbol(id: "forest2", type: .object, category: .rooms),

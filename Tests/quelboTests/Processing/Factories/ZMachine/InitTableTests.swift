@@ -18,7 +18,7 @@ final class InitTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "readbufSize", type: .int, category: .constants)
         ])
     }

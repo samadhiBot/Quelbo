@@ -25,15 +25,16 @@ extension Factories {
                 if value.type.isUnknown {
                     if value.id == "t" {
                         value = .trueSymbol
-                    } else if let registered = registry[value.id] {
-                        value = value.with(type: registered.type)
+                    } else if let registered = findRegistered(value.id) {
+                        value = registered
+//                        value = value.with(type: registered.type)
                     }
                 }
                 return Symbol(
-                    id: "<Return>",
-                    code: "return \(value.code)",
+                    code: { "return \($0.children[0].code)" },
                     type: value.type,
-                    children: [value]
+                    children: [value],
+                    meta: [.isReturnStatement(value.type)]
                 )
             }
 
@@ -56,24 +57,24 @@ extension Factories {
 extension Factories.Return {
     func breakSymbol(_ activation: String? = nil) -> Symbol {
         guard let activation = activation else {
-            return Symbol(id: "<Return>", code: "break")
+            return Symbol(code: "break")
         }
-        return Symbol(id: "<Return>", code: "break \(activation)")
+        return Symbol(code: "break \(activation)")
     }
 
     func continueSymbol(_ activation: String? = nil) -> Symbol {
         guard let activation = activation else {
-            return Symbol(id: "<Return>", code: "continue")
+            return Symbol(code: "continue")
         }
-        return Symbol(id: "<Return>", code: "continue \(activation)")
+        return Symbol(code: "continue \(activation)")
     }
 
     var returnTrueSymbol: Symbol {
         Symbol(
-            id: "<Return>",
             code: "return true",
             type: .bool,
-            children: [.trueSymbol]
+            children: [.trueSymbol],
+            meta: [.isReturnStatement(.bool)]
         )
     }
 

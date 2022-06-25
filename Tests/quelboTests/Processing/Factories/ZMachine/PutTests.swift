@@ -15,7 +15,7 @@ final class PutTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "mytable", type: .table, category: .globals)
         ])
     }

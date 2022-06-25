@@ -333,7 +333,7 @@ final class DefineTests: QuelboTests {
     }
 
     func testMakeReadbufDefine() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         let _ = try Factories.Constant([
             .atom("READBUF-SIZE"),
@@ -484,9 +484,9 @@ final class DefineTests: QuelboTests {
 //    }
 
     func testMultifrob() throws {
-        let registry = SymbolRegistry([
+        let registry: Set<Symbol> = [
             Symbol(id: "prsa", type: .object),
-        ])
+        ]
 
         let definition: [Token] = [
             .list([

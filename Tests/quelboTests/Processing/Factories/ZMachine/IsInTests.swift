@@ -15,13 +15,9 @@ final class IsInTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            Symbol(
-                id: "here",
-                type: .object,
-                category: .globals,
-                meta: [.maybeEmptyValue, .mutating(true)]
-            ),
+        let _ = try! Factories.Global([.atom("HERE"), .decimal(0)]).process()
+
+        Game.commit([
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
             Symbol(id: "sandwich", type: .object, category: .objects),

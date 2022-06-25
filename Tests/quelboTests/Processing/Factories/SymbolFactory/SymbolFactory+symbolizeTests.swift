@@ -15,7 +15,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "inc", type: .int, category: .routines),
             Symbol(id: "boardedWindow", type: .object, category: .globals),
             Symbol(id: "north", type: .direction, category: .properties),

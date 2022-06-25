@@ -15,7 +15,7 @@ final class AndTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foundTreasureChest", type: .bool, category: .globals),
             Symbol(id: "mEnter", type: .int, category: .globals),
         ])

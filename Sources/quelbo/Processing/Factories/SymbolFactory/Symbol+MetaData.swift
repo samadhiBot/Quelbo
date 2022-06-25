@@ -34,8 +34,9 @@ extension Symbol {
         /// Specifies that the symbol represents a literal value.
         case isLiteral
 
-        /// Specifies that the symbol represents a ``Factories/Return`` statement.
-        case isReturnStatement
+        /// Specifies that the symbol represents a ``Factories/Return`` statement, with the
+        /// specified return type if it returns a value.
+        case isReturnStatement(Symbol.DataType?)
 
         /// Specifies special parameter declarations in certain block processing cases.
         case paramDeclarations(String)
@@ -74,5 +75,11 @@ extension Symbol.MetaData {
 
         /// The symbol's type is known.
         case certain
+    }
+}
+
+extension Symbol.MetaData.TypeCertainty: Comparable {
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.rawValue < rhs.rawValue
     }
 }

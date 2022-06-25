@@ -45,7 +45,7 @@ extension Factories {
                 category: .routines,
                 children: pro.paramsSymbol.children
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
         }
     }

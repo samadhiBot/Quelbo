@@ -44,7 +44,7 @@ final class PropertyDefaultTests: QuelboTests {
             code: "setPropertyDefault(adjective, false)",
             type: .bool,
             category: .constants,
-            meta: [.maybeEmptyValue]
+            meta: []
         )
 
         XCTAssertNoDifference(symbol, expected)

@@ -15,7 +15,7 @@ final class SetFlagTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "openBit", type: .bool, category: .globals),
             Symbol(id: "trapDoor", type: .object, category: .objects),
         ])

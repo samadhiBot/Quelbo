@@ -9,14 +9,14 @@ import XCTest
 @testable import quelbo
 
 class QuelboTests: XCTestCase {
-    var registry: SymbolRegistry!
+    var registry: Set<Symbol>!
 
     override func setUp() {
         super.setUp()
 
         Game.shared.gameSymbols = []
         Game.shared.zMachineVersion = .z3
-        self.registry = SymbolRegistry()
+        self.registry = Set<Symbol>()
     }
 
     func AssertSameFactory(

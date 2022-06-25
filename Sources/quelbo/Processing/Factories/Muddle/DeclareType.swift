@@ -50,13 +50,12 @@ extension Factories {
                         id: .id(name),
                         code: "var \(name): \(dataType)\(dataType.emptyValueAssignment)",
                         type: dataType.emptyValueType,
-                        category: isGlobal ? .globals : nil,
-                        meta: dataType.emptyMeta
+                        category: isGlobal ? .globals : nil
                     )
                     symbols.append(symbol)
 
                     if isGlobal {
-                        try Game.commit(symbol)
+                        Game.commit(symbol)
                     }
                 }
             }

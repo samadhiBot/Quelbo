@@ -15,7 +15,7 @@ final class PrintCharacterTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "letterZ", type: .string, category: .globals)
         )
     }

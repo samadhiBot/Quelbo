@@ -15,7 +15,7 @@
 //    override func setUp() {
 //        super.setUp()
 //
-//        try! Game.commit(
+//        Game.commit(
 //            Symbol(code: "boardedWindow", type: .object, category: .globals)
 //        )
 //    }

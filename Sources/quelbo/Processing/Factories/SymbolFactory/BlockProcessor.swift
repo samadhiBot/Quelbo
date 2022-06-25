@@ -212,14 +212,20 @@ extension BlockProcessor {
 
 extension BlockProcessor {
     func findReturnType(in codeSymbols: [Symbol]) throws -> Symbol.DataType? {
-        let allTypes = codeSymbols.deepReturnDataTypes
-        if allTypes.isEmpty { return nil }
-        if allTypes.count == 1 { return allTypes[0].type }
-        let isOptional = allTypes.contains(where: \.maybeEmptyValue)
-        if let definite = allTypes.filter({ !$0.maybeEmptyValue }).map(\.type).common {
-            return isOptional ? .optional(definite) : definite
+        let allTypes = codeSymbols.deepReturnTypes
+
+        switch allTypes.count {
+        case 0: return nil
+        case 1: return allTypes[0].type
+        default:
+            let maxCertainty = allTypes
+                .sorted(by: { $0.typeCertainty > $1.typeCertainty })[0]
+                .typeCertainty
+            return allTypes
+                .filter { $0.typeCertainty >= maxCertainty }
+                .map(\.type)
+                .common
         }
-        return allTypes.map(\.type).common
     }
 
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
@@ -283,21 +289,21 @@ extension BlockProcessor {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
-                    type = registry[nameSymbol.id]?.type ??
-                           registry[valueSymbol.id]?.type ??
+                    type = findRegistered(nameSymbol.id)?.type ??
+                           findRegistered(valueSymbol.id)?.type ??
                            .unknown
                 }
                 paramSymbol = param.with(
                     code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
                 )
-                registry.register(nameSymbol.with(type: type))
-                registry.register(valueSymbol.with(type: type))
+//                registry.register(nameSymbol.with(type: type))
+//                registry.register(valueSymbol.with(type: type))
 
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
                     code: "\(found.id): \(found.type)\(context.defaultValue(for: found))"
                 )
-            } else if let type = registry[param.id]?.type {
+            } else if let type = findRegistered(param.id)?.type {
                 paramSymbol = param.with(
                     code: "\(param.id): \(type)"
                 )

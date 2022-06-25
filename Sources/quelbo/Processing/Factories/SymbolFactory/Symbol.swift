@@ -28,6 +28,14 @@ class Symbol: Identifiable {
     /// Any additional information required for symbol processing.
     var meta: Set<MetaData>
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - id: <#id description#>
+    ///   - codeBlock: <#codeBlock description#>
+    ///   - type: <#type description#>
+    ///   - category: <#category description#>
+    ///   - children: <#children description#>
+    ///   - meta: <#meta description#>
     init(
         id: Symbol.Identifier? = nil,
         code codeBlock: @escaping (Symbol) throws -> String,
@@ -44,6 +52,14 @@ class Symbol: Identifiable {
         self.meta = meta
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - id: <#id description#>
+    ///   - code: <#code description#>
+    ///   - type: <#type description#>
+    ///   - category: <#category description#>
+    ///   - children: <#children description#>
+    ///   - meta: <#meta description#>
     init(
         id: Symbol.Identifier? = nil,
         code: String = "",
@@ -59,7 +75,12 @@ class Symbol: Identifiable {
         self.children = children
         self.meta = meta
     }
+}
 
+// MARK: - Symbol helper methods
+
+extension Symbol {
+    /// Runs the ``Symbol/codeBlock`` and returns the resulting `String`.
     var code: String {
         do {
             return try codeBlock(self)
@@ -67,11 +88,7 @@ class Symbol: Identifiable {
             return "Symbol.code error: \(error)"
         }
     }
-}
 
-// MARK: - Symbol helper methods
-
-extension Symbol {
     /// Whether the symbol's children are ``Factories/Table`` definition flags.
     var containsTableFlags: Bool {
         !children.isEmpty && children.allSatisfy {
@@ -105,6 +122,11 @@ extension Symbol {
         }
     }
 
+    /// <#Description#>
+    var identifiable: Bool {
+        !id.stringLiteral.isEmpty
+    }
+
     /// Whether the symbol represents a closure.
     var isFunctionClosure: Bool {
         for metaData in meta {
@@ -133,6 +155,49 @@ extension Symbol {
         }
         return nil
     }
+
+    /// Whether the symbol represents a return statement.
+    var isReturnStatement: Bool {
+        for metaData in meta {
+            if case .isReturnStatement = metaData { return true }
+        }
+        return false
+    }
+
+
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    func reconcile(with other: Symbol) -> Symbol {
+        if type != other.type && typeCertainty < other.typeCertainty {
+            type = other.type
+        }
+        if category != other.category {
+            category = other.category
+        }
+        if meta != other.meta {
+            meta = other.meta
+        }
+
+        return Symbol(
+            id: id,
+            code: other.code,
+            type: type,
+            category: category,
+            children: other.children,
+            meta: other.meta
+        )
+    }
+
+    /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
+    /// the return value type. In all other cases, it returns `nil`.
+    var returnValueType: Symbol.DataType? {
+        for metaData in meta {
+            if case .isReturnStatement(let type) = metaData { return type }
+        }
+        return nil
+    }
+
 
     /// The level of confidence in a symbol's stated ``Symbol/type``.
     var typeCertainty: Symbol.MetaData.TypeCertainty {
@@ -274,7 +339,18 @@ extension Symbol: CustomDumpReflectable {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        id.description.isEmpty ? code : "\(id): \(type)"
+        var details: [String] = []
+        var ref = "\(ObjectIdentifier(self))"
+        ref.removeFirst(28)
+        ref.removeLast()
+        if identifiable { details.append("id: \(id)") }
+        details.append("ref: \(ref)")
+        if !code.isEmpty { details.append("code: \(code)") }
+        details.append("type: \(type)")
+        if let category = category { details.append("category: \(category)") }
+        if !meta.isEmpty { details.append("meta: \(meta)") }
+
+        return "{\n\(details.joined(separator: ",\n").indented)\n}"
     }
 }
 
@@ -290,7 +366,7 @@ extension Symbol: Equatable {
 
 extension Symbol: Hashable {
     func hash(into hasher: inout Hasher) {
-        assert(!id.stringLiteral.isEmpty, "Attempted to register a symbol without an id.")
+        assert(identifiable, "Attempted to register a symbol without an id: \(code)")
         hasher.combine(id)
     }
 }
@@ -424,19 +500,20 @@ extension Array where Element == Symbol {
         }
     }
 
-    /// Deep-searches a ``Symbol`` array for an explicit `return` statement with a return value,
-    /// and returns the type of the returned value if one is found.
-    var deepReturnDataTypes: [Symbol.ReturnType] {
-        reduce(into: [Symbol.ReturnType]()) { partial, symbol in
-            if symbol.meta.contains(.isReturnStatement), let found = symbol.children.first?.type {
-                partial.append(
-                    Symbol.ReturnType(
-                        type: found,
-                        maybeEmptyValue: symbol.meta.contains(.maybeEmptyValue)
-                    )
-                )
+    /// Deep-searches a ``Symbol`` array for explicit `return` statements with return values, and
+    /// returns their symbol representations.
+    var deepReturnTypes: [Symbol] {
+        reduce(into: [Symbol]()) { partial, symbol in
+            partial.append(contentsOf: symbol.children.deepReturnTypes)
+            if let _ = symbol.returnValueType {
+                partial.append(symbol)
             }
-            partial.append(contentsOf: symbol.children.deepReturnDataTypes)
+//            partial.sort { $0.typeCertainty > $1.typeCertainty }
+//            let sorted = partial.sorted(by: { $0.typeCertainty > $1.typeCertainty })
+//            guard let maxCertainty = sorted.first?.typeCertainty else {
+//                return
+//            }
+//            partial = sorted.filter { $0.typeCertainty >= maxCertainty }
         }
     }
 

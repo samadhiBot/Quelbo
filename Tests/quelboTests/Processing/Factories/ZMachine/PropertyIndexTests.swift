@@ -15,7 +15,7 @@ final class PropertyIndexTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "here", type: .object, category: .rooms),
             Symbol(id: "troll", type: .object, category: .objects),
         ])
@@ -38,9 +38,9 @@ final class PropertyIndexTests: QuelboTests {
     }
 
     func testPropertyIndexOfObjectInLocal() throws {
-        let registry = SymbolRegistry([
-            Symbol(code: "dir", type: .direction),
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(id: "dir", type: .direction),
+        ]
 
         let symbol = try factory.init([
             .global("HERE"),
