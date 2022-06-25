@@ -57,12 +57,6 @@ extension SymbolFactory {
         if declaredType == .zilElement {
             return try assignZilElementType(on: symbol)
         }
-        guard
-            symbol.type != declaredType,
-            symbol.typeCertainty < .certain
-        else {
-            return symbol
-        }
         if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
             throw ValidationError.expectedVariableFoundLiteral(symbol)
         }
