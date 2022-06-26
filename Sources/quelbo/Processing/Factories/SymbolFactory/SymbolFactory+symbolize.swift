@@ -146,10 +146,16 @@ extension SymbolFactory {
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeBoolean(_ value: Bool) -> Symbol {
         var metaData: Set<Symbol.MetaData> = [.isLiteral]
+//        var codeBlock: (Symbol) throws -> String = { _ in "true" }
         if value == false {
             metaData.insert(.typeCertainty(.booleanFalse))
+//            codeBlock = { $0.type.emptyValueAssignment }
         }
-        return Symbol(code: "\(value)", type: .bool, meta: metaData)
+        return Symbol(
+            code: "\(value)",
+            type: .bool,
+            meta: metaData
+        )
     }
 
     /// Translates a Zil
@@ -296,7 +302,7 @@ extension SymbolFactory {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
 
-        return upsert(Symbol(
+        return try upsert(Symbol(
             id: .id(name),
             code: name,
             type: expectedType,

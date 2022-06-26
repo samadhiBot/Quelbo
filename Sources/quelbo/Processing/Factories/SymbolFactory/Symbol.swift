@@ -169,9 +169,14 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     mutating func reconcile(with other: Symbol) -> Symbol {
+        var metaData = meta
+
         if type != other.type && typeCertainty < other.typeCertainty {
             type = other.type
-            meta.insert(.typeCertainty(other.typeCertainty))
+            metaData = metaData.filter {
+                if case .typeCertainty = $0 { return false } else { return true }
+            }
+            metaData.insert(.typeCertainty(other.typeCertainty))
         }
         if let otherCategory = other.category, category != otherCategory {
             category = otherCategory
@@ -183,9 +188,9 @@ extension Symbol {
         print("// 🌶️ Reconciled \(self)") 
 
         return self.with(
-            code: other.code,
-            children: other.children,
-            meta: other.meta
+//            code: other.code,
+//            children: other.children,
+            meta: metaData
         )
     }
 
@@ -200,7 +205,12 @@ extension Symbol {
 
 
     /// The level of confidence in a symbol's stated ``Symbol/type``.
+    ///
+    /// Symbols only specify their ``Symbol/MetaData/typeCertainty(_:)`` when their type is in
+    /// question. 
     var typeCertainty: Symbol.MetaData.TypeCertainty {
+        guard !type.isUnknown else { return .unknown }
+
         for metaData in meta {
             if case .typeCertainty(let value) = metaData { return value }
         }
@@ -212,17 +222,9 @@ extension Symbol {
     /// This occurs with zil declarations such as `<GLOBAL PRSO <>>`, where the `false` is
     /// ambiguous. If Quelbo discovers a different `type` through the variable's use in the code,
     /// it updates the global with the found `type`.
-    var isPlaceholderGlobal: Bool {
-        guard let committed = try? Game.find(id, category: .constants, .globals) else {
-            return false
-        }
-        for metaData in committed.meta {
-            if case .typeCertainty(let certainty) = metaData {
-                return certainty <= .integerZero
-            }
-        }
-        return false
-    }
+//    var isPlaceholder: Bool {
+//        typeCertainty != .certain
+//    }
 
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
@@ -241,7 +243,7 @@ extension Symbol {
         type newType: DataType? = nil,
         category newCategory: Category? = nil,
         children newChildren: [Symbol]? = nil,
-        meta newMeta: Set<MetaData> = []
+        meta newMeta: Set<MetaData>? = nil
     ) -> Symbol {
         Symbol(
             id: newID ?? id,
@@ -249,7 +251,7 @@ extension Symbol {
             type: newType ?? type,
             category: newCategory ?? category,
             children: newChildren ?? children,
-            meta: newMeta.isEmpty ? meta : newMeta
+            meta: newMeta ?? meta
         )
     }
 
@@ -535,6 +537,24 @@ extension Array where Element == Symbol {
                 return symbol
             } else if let childSymbol = symbol.children.find(id: symbolID) {
                 return childSymbol
+            }
+        }
+        return nil
+    }
+
+    /// <#Description#>
+    ///
+    /// - Returns: <#description#>
+    func findByTypeCertainty() -> Symbol? {
+        guard count > 1 else { return first }
+
+        var symbols = sorted { $0.typeCertainty > $1.typeCertainty }
+        while let subject = symbols.shift() {
+            if subject.typeCertainty > symbols.first?.typeCertainty ?? .unknown {
+                return subject
+            }
+            if subject.type != symbols.first?.type {
+                return nil
             }
         }
         return nil

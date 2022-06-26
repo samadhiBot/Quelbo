@@ -105,16 +105,22 @@ extension Game {
     /// - Parameter symbol: The symbol value to overwrite.
     ///
     /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
-//    static func overwrite(_ symbol: Symbol) throws {
+    static func overwrite(_ symbol: Symbol) throws {
 //        guard symbol.type.hasReturnValue && symbol.type != .bool else {
 //            return
 //        }
-//        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-//            throw GameError.symbolNotFound(symbol.id, category: symbol.category)
-//        }
-//        shared.gameSymbols.remove(at: index)
-//        shared.gameSymbols.append(symbol)
-//    }
+        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
+            let categories: [Symbol.Category]
+            if let category = symbol.category {
+                categories = [category]
+            } else {
+                categories = []
+            }
+            throw GameError.symbolNotFound(symbol.id, categories: categories)
+        }
+        shared.gameSymbols.remove(at: index)
+        shared.gameSymbols.insert(symbol)
+    }
 
     static func upsert(_ symbol: Symbol) -> Symbol {
         assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")

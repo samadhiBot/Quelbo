@@ -40,8 +40,8 @@ extension SymbolFactory {
         default: break
         }
 
-        return typedSymbols.map { symbol in
-            symbol.identifiable ? upsert(symbol) : symbol
+        return try typedSymbols.map { symbol in
+            symbol.identifiable ? try upsert(symbol) : symbol
         }
     }
 }
@@ -54,51 +54,128 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        if declaredType == .zilElement {
-            return try assignZilElementType(on: symbol)
-        }
-        if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
-            throw ValidationError.expectedVariableFoundLiteral(symbol)
-        }
-
-        switch (symbol.type.isLiteral, declaredType.isLiteral) {
-        case (true, true):
-            if declaredType == .bool && symbol.type == .int {
-                return symbol.with(
-                    code: symbol.code == "0" ? "false" : "true",
-                    type: .bool
-                )
+        print("// 🍓 \(declaredType) >> \(symbol)")
+        switch (declaredType, symbol.type) {
+        case (.unknown, _):
+            guard
+                siblings.count > 1,
+                let mostCertain = siblings.findByTypeCertainty()
+            else {
+                print("// 🍏 \(symbol)")
+                return symbol
+//                break
             }
+
+            return symbol.with(
+                type: mostCertain.type,
+                meta: symbol.meta.withTypeCertainty(of: mostCertain)
+            )
+
+        case (.variable(let declaredVariableType), .variable):
+//            if symbol.isLiteral && !symbol.isPlaceholder {
+//                throw ValidationError.expectedVariableFoundLiteral(symbol)
+//            }
+            guard
+                declaredVariableType != .unknown,
+                siblings.count > 1,
+                let mostCertain = siblings.findByTypeCertainty()
+            else {
+                print("// 🥭 \(symbol)")
+                return symbol
+            }
+
+            return symbol.with(
+                type: mostCertain.type.asVariable,
+                meta: symbol.meta.withTypeCertainty(of: mostCertain)
+            )
+        case (.variable, _):
+            throw ValidationError.expectedVariableFoundLiteral(symbol)
+//            if siblings.count == 1 {
+//                return symbol
+//            }
+//            guard let mostCertain = siblings.findByTypeCertainty() else { break }
+//
+//            if let mostCertain = siblings.findByTypeCertainty() {
+//                let type = mostCertain.type.asVariable
+//                print("// 🥦 \(symbol.with(type: mostCertain.type, meta: symbol.meta.withTypeCertainty(of: mostCertain)))")
+//                let variable = symbol.with(
+//                    type: mostCertain.type.asVariable,
+//                    meta: symbol.meta.withTypeCertainty(of: mostCertain)
+//                )
+//
+//                // check against declared type
+//
+//                return variable
+//            }
+//            print("// 🌽")
+        case (.zilElement, _):
+            return try assignZilElementType(on: symbol)
+        default:
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
-            if let updated = declaredType.replacingType(in: symbol) {
-                return updated
+            print("// 🍌 \(declaredType) >> \(symbol)")
+            if symbol.typeCertainty == .certain {
+                break
             }
-        case (true, false):
-            if let updated = declaredType.replacingType(in: findRegistered(symbol.id) ?? symbol) {
-                return updated
-            }
-            if declaredType.acceptsLiteral ||
-                symbol.category == .properties ||
-                declaredType.isUnknown && !symbol.type.isUnknown {
-                return symbol
-            }
-        case (false, true):
-            return symbol.with(type: declaredType)
-        case (false, false):
-            guard symbol.type.isProperty || symbol.type.hasKnownReturnValue else {
-                return symbol.with(type: siblings.map(\.type).common)
-            }
-            if declaredType.isUnknown ||
-                symbol.type == declaredType ||
-                symbol.type == .optional(declaredType) {
-                return symbol
-            }
-            if let updated = declaredType.replacingType(in: symbol) {
-                return updated
-            }
+
+            return symbol.with(
+                type: declaredType,
+                meta: symbol.meta.withoutTypeCertainty
+            )
         }
+
+//        if symbol.type == declaredType { return symbol }
+//
+//        if let mostCertain = siblings.findByTypeCertainty() {
+//            return symbol.with(
+//                type: mostCertain.type,
+//                meta: symbol.meta.withTypeCertainty(of: mostCertain)
+//            )
+//        }
+
+        print("// 🌽 \(symbol)")
+
+
+
+//        switch (symbol.type.isLiteral, declaredType.isLiteral) {
+//        case (true, true):
+//            if declaredType == .bool && symbol.type == .int {
+//                return symbol.with(
+//                    code: symbol.code == "0" ? "false" : "true",
+//                    type: .bool
+//                )
+//            }
+//            if [declaredType, .zilElement].contains(symbol.type) {
+//                return symbol
+//            }
+//            if let updated = declaredType.replacingType(in: symbol) {
+//                return updated
+//            }
+//        case (true, false):
+//            if let updated = declaredType.replacingType(in: findRegistered(symbol.id) ?? symbol) {
+//                return updated
+//            }
+//            if declaredType.acceptsLiteral ||
+//                symbol.category == .properties ||
+//                declaredType.isUnknown && !symbol.type.isUnknown {
+//                return symbol
+//            }
+//        case (false, true):
+//            return symbol.with(type: declaredType)
+//        case (false, false):
+//            guard symbol.type.isProperty || symbol.type.hasKnownReturnValue else {
+//                return symbol.with(type: siblings.map(\.type).common)
+//            }
+//            if declaredType.isUnknown ||
+//                symbol.type == declaredType ||
+//                symbol.type == .optional(declaredType) {
+//                return symbol
+//            }
+//            if let updated = declaredType.replacingType(in: symbol) {
+//                return updated
+//            }
+//        }
 
         print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
         

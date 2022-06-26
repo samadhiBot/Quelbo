@@ -44,30 +44,27 @@ extension Symbol.DataType {
         }
     }
 
-//    /// <#Description#>
-//    var emptyMeta: Set<Symbol.MetaData> {
-//        switch self {
-//        case .bool, .int: return [.isLiteral, .maybeEmptyValue]
-//        default: return []
-//        }
-//    }
+    /// <#Description#>
+    var asVariable: Self {
+        switch self {
+        case .variable: return self
+        default: return .variable(self)
+        }
+    }
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
         switch self {
         case .bool: return " = false"
-        case .comment: break
+        case .comment, .unknown, .void: return " = \(self)"
         case .direction, .object, .routine, .table, .thing: return "? = nil"
         case .int, .int8, .int16, .int32: return " = 0"
         case .optional, .property: return " = nil"
         case .string: return " = \"\""
-        case .unknown: break
-        case .void: break
         case .array: return " = []"
         case .variable(let type): return type.emptyValueAssignment
         case .zilElement: return " = .none"
         }
-        return " = <\(self)>"
     }
 
     /// An empty placeholder type for the data type.
@@ -157,33 +154,21 @@ extension Symbol.DataType {
     ///
     /// - Returns: Whether the data type should supersede the one in the specified symbol.
     func replacingType(in symbol: Symbol) -> Symbol? {
-        guard !self.isUnknown, symbol.typeCertainty < .certain else {
+        guard !self.isUnknown && symbol.typeCertainty < .certain else {
             return nil
         }
 
-        return symbol.with(
-            type: self,
-            meta: symbol.meta.filter {
-                if case .typeCertainty = $0 { return false } else { return true }
-            }
-        )
+        let optionalType: Symbol.DataType
+        if case .optional = self {
+            optionalType = self
+        } else {
+            optionalType = .optional(self)
+        }
 
-//        switch (self, symbol.typeCertainty) {
-//        case (.unknown, _):
-//            return false
-//        case (.)
-////        case (_, .zilElement):
-////            return true
-////        case (.bool, .int):
-////            return true
-////        case (.int, _),
-////             (.object, _),
-////             (.string, _),
-////             (.table, _):
-////            return symbol.meta.contains(.maybeEmptyValue)
-//        default:
-//            return false
-//        }
+        return symbol.with(
+            type: optionalType,
+            meta: symbol.meta.withoutTypeCertainty
+        )
     }
 }
 

@@ -67,9 +67,7 @@ extension Factories.Table {
     }
 
     func processFlags() {
-        guard !flags.isEmpty else {
-            return
-        }
+        guard !flags.isEmpty else { return }
 
         let flagValues = flags
             .map({ ".\($0)" })

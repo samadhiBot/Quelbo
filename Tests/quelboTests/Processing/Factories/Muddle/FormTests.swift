@@ -42,7 +42,11 @@ final class FormTests: QuelboTests {
             .local("A"),
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol(id: "a", code: "a"))
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "a",
+            code: "a",
+            meta: [.typeCertainty(.unknown)]
+        ))
     }
 
     func testNestedForms() throws {

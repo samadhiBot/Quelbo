@@ -81,7 +81,7 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: []
+            meta: [.typeCertainty(.booleanFalse)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -173,7 +173,8 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -388,7 +389,8 @@ final class GlobalTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -411,10 +413,10 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: []
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
-        // Move expects `prso` to be an object, not a boolean. This triggers an overwrite of the
+        // Move expects `prso` to be an object, not a boolean. This triggers an update of the
         // `prso` game symbol's type from boolean to object.
         let move = try Factories.Move.init([
             .global("PRSO"),
@@ -426,13 +428,13 @@ final class GlobalTests: QuelboTests {
             type: .void
         ))
 
-        // Inspecting the `prso` game symbol confirms that the type overwrite took place.
+        // Inspecting the `prso` game symbol confirms that the type update took place.
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Object? = nil",
             type: .optional(.object),
             category: .globals,
-            meta: []
+            meta: [.typeCertainty(.certain)]
         ))
     }
 

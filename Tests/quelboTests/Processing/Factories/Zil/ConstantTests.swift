@@ -39,7 +39,7 @@ final class ConstantTests: QuelboTests {
     func testAtom() throws {
         let symbol = try factory.init([
             .atom("FOO"),
-            .atom("unexpected")
+            .atom("UNEXPECTED")
         ]).process()
 
         let expected = Symbol(

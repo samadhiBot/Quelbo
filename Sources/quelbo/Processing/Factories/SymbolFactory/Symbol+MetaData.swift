@@ -83,3 +83,24 @@ extension Symbol.MetaData.TypeCertainty: Comparable {
         lhs.rawValue < rhs.rawValue
     }
 }
+
+extension Set where Element == Symbol.MetaData {
+    /// <#Description#>
+    /// - Parameter other: <#other description#>
+    /// - Returns: <#description#>
+    func withTypeCertainty(of other: Symbol) -> Self {
+        let otherTypeCertainty = other.typeCertainty
+        if otherTypeCertainty == .certain {
+            return withoutTypeCertainty
+        } else {
+            return withoutTypeCertainty.union([.typeCertainty(otherTypeCertainty)])
+        }
+    }
+
+    /// <#Description#>
+    var withoutTypeCertainty: Self {
+        filter {
+            if case .typeCertainty = $0 { return false } else { return true }
+        }
+    }
+}

@@ -32,12 +32,21 @@ extension Factories {
         }
 
         var codeBlock: (Symbol) throws -> String {
-            let code = valueSymbol.code
-            let type = valueSymbol.dataType
-
-            return { symbol in
+            { symbol in
                 let declare = symbol.meta.contains(.isImmutable) ? "let" : "var"
-                return "\(declare) \(symbol.id): \(type) = \(code)"
+                let value: String
+                switch symbol.typeCertainty {
+                case .certain, .unknown:
+                    value = " = \(symbol.children[0].code)"
+//                case :
+//                    value = " = \(symbol.id)"
+                default:
+                    value = symbol.type.emptyValueAssignment
+                }
+
+//                = symbol.isPlaceholder ? symbol.type.emptyValueAssignment
+//                                                 : " = \(symbol.children[0].code)"
+                return "\(declare) \(symbol.id): \(symbol.type)\(value)"
             }
         }
 
@@ -46,13 +55,20 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            var meta = metaData
+                .union(valueSymbol.meta)
+                .subtracting([.isLiteral])
+            if valueSymbol.meta.contains(.isImmutable) {
+                meta.insert(.isImmutable)
+            }
+
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
-                category: metaData.contains(.isImmutable) ? .constants : .globals,
+                category: meta.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: metaData.union(valueSymbol.meta).subtracting([.isLiteral])
+                meta: meta
             )
 
             Game.commit(symbol)
