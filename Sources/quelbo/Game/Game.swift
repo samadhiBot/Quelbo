@@ -122,14 +122,24 @@ extension Game {
         shared.gameSymbols.insert(symbol)
     }
 
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
     static func upsert(_ symbol: Symbol) -> Symbol {
         assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
 
-        guard var existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
-            shared.gameSymbols.insert(symbol)
+        switch shared.gameSymbols.insert(symbol) {
+        case (true, _):
             return symbol
+        case (false, var existing):
+            return existing.reconcile(with: symbol)
         }
 
-        return existing.reconcile(with: symbol)
+//        guard var existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
+//            shared.gameSymbols.insert(symbol)
+//            return symbol
+//        }
+//
+//        return existing.reconcile(with: symbol)
     }
 }
