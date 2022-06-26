@@ -35,17 +35,14 @@ extension Factories {
             { symbol in
                 let declare = symbol.meta.contains(.isImmutable) ? "let" : "var"
                 let value: String
+
                 switch symbol.typeCertainty {
                 case .certain, .unknown:
                     value = " = \(symbol.children[0].code)"
-//                case :
-//                    value = " = \(symbol.id)"
                 default:
                     value = symbol.type.emptyValueAssignment
                 }
 
-//                = symbol.isPlaceholder ? symbol.type.emptyValueAssignment
-//                                                 : " = \(symbol.children[0].code)"
                 return "\(declare) \(symbol.id): \(symbol.type)\(value)"
             }
         }

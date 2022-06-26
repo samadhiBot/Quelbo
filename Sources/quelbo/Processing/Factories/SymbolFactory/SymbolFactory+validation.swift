@@ -56,15 +56,16 @@ extension SymbolFactory {
     ) throws -> Symbol? {
         print("// 🍓 \(declaredType) >> \(symbol)")
         switch (declaredType, symbol.type) {
+        case (.property, _):
+            if symbol.category == .properties {
+                return symbol
+            }
+
         case (.unknown, _):
             guard
                 siblings.count > 1,
                 let mostCertain = siblings.findByTypeCertainty()
-            else {
-                print("// 🍏 \(symbol)")
-                return symbol
-//                break
-            }
+            else { return symbol }
 
             return symbol.with(
                 type: mostCertain.type,
@@ -72,44 +73,23 @@ extension SymbolFactory {
             )
 
         case (.variable(let declaredVariableType), .variable):
-//            if symbol.isLiteral && !symbol.isPlaceholder {
-//                throw ValidationError.expectedVariableFoundLiteral(symbol)
-//            }
             guard
                 declaredVariableType != .unknown,
                 siblings.count > 1,
                 let mostCertain = siblings.findByTypeCertainty()
-            else {
-                print("// 🥭 \(symbol)")
-                return symbol
-            }
+            else { return symbol }
 
             return symbol.with(
                 type: mostCertain.type.asVariable,
                 meta: symbol.meta.withTypeCertainty(of: mostCertain)
             )
+
         case (.variable, _):
             throw ValidationError.expectedVariableFoundLiteral(symbol)
-//            if siblings.count == 1 {
-//                return symbol
-//            }
-//            guard let mostCertain = siblings.findByTypeCertainty() else { break }
-//
-//            if let mostCertain = siblings.findByTypeCertainty() {
-//                let type = mostCertain.type.asVariable
-//                print("// 🥦 \(symbol.with(type: mostCertain.type, meta: symbol.meta.withTypeCertainty(of: mostCertain)))")
-//                let variable = symbol.with(
-//                    type: mostCertain.type.asVariable,
-//                    meta: symbol.meta.withTypeCertainty(of: mostCertain)
-//                )
-//
-//                // check against declared type
-//
-//                return variable
-//            }
-//            print("// 🌽")
+
         case (.zilElement, _):
             return try assignZilElementType(on: symbol)
+
         default:
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
@@ -125,18 +105,15 @@ extension SymbolFactory {
             )
         }
 
-//        if symbol.type == declaredType { return symbol }
-//
-//        if let mostCertain = siblings.findByTypeCertainty() {
-//            return symbol.with(
-//                type: mostCertain.type,
-//                meta: symbol.meta.withTypeCertainty(of: mostCertain)
-//            )
-//        }
+        print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
 
-        print("// 🌽 \(symbol)")
-
-
+        throw ValidationError.failedToDetermineType(
+            symbol,
+            expected: declaredType,
+            found: symbol.type,
+            siblings: siblings,
+            in: self
+        )
 
 //        switch (symbol.type.isLiteral, declaredType.isLiteral) {
 //        case (true, true):
@@ -176,16 +153,6 @@ extension SymbolFactory {
 //                return updated
 //            }
 //        }
-
-        print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
-        
-        throw ValidationError.failedToDetermineType(
-            symbol,
-            expected: declaredType,
-            found: symbol.type,
-            siblings: siblings,
-            in: self
-        )
     }
 
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {
