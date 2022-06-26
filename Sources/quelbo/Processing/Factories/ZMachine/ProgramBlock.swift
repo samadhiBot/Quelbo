@@ -22,22 +22,33 @@ extension Factories {
             self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
         }
 
-        var codeBlock: String {
-            if pro.isRepeating {
-                return """
-                    \(pro.paramDeclarations())\
-                    \(pro.activation)\
-                    while true {
-                    \(pro.codeSymbol.code.indented)
-                    }
-                    """
-            } else {
-                return """
-                    do {
-                    \(pro.paramDeclarations(indented: true))\
-                    \(pro.codeSymbol.code.indented)
-                    }
-                    """
+        var codeBlock: (Symbol) throws -> String {
+            let activation = pro.activation
+            let isRepeating = pro.isRepeating
+
+            return { symbol in
+                let code = symbol.children[0].code
+                let paramDeclarations = symbol.children[1]
+                    .children
+                    .map { $0.localVariable }
+                    .joined(separator: "\n")
+                    .appending("\n")
+                if isRepeating {
+                    return """
+                        \(paramDeclarations)\
+                        \(activation)\
+                        while true {
+                        \(code.indented)
+                        }
+                        """
+                } else {
+                    return """
+                        do {
+                        \(paramDeclarations.indented))\
+                        \(code.indented)
+                        }
+                        """
+                }
             }
         }
 

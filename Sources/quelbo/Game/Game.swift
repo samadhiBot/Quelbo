@@ -131,7 +131,7 @@ extension Game {
         switch shared.gameSymbols.insert(symbol) {
         case (true, _):
             return symbol
-        case (false, var existing):
+        case (false, let existing):
             return existing.reconcile(with: symbol)
         }
 

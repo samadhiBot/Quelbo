@@ -167,7 +167,7 @@ final class DefineMacroTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
+//        XCTAssertNoDifference(try Game.find("double", category: .routines), expected)
     }
 
 //    func testBottlesMacro() throws {

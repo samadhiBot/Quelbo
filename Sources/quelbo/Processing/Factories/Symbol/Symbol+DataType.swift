@@ -1,5 +1,5 @@
 //
-//  Symbol.swift
+//  Symbol+DataType.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/26/22.

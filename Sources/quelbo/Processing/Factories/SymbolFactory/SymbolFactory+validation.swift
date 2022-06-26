@@ -54,7 +54,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("// 🍓 \(declaredType) >> \(symbol)")
+        //print("// 🍓 \(declaredType) >> \(symbol)")
         switch (declaredType, symbol.type) {
         case (.property, _):
             if symbol.category == .properties {

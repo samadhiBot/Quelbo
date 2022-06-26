@@ -9,7 +9,7 @@ import CustomDump
 import Foundation
 
 /// A representation of a piece of Zil code and its Swift translation.
-struct Symbol: Identifiable {
+class Symbol: Identifiable {
     /// The symbol's unique identifier.
     let id: Symbol.Identifier
 
@@ -164,34 +164,33 @@ extension Symbol {
         return false
     }
 
+    /// <#Description#>
+    var localVariable: String {
+        if code.contains("=") {
+            return "var \(code)"
+        } else {
+            return "var \(code)\(type.emptyValueAssignment)"
+        }
+    }
 
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    mutating func reconcile(with other: Symbol) -> Symbol {
+    func reconcile(with other: Symbol) -> Symbol {
         var metaData = meta
 
         if type != other.type && typeCertainty < other.typeCertainty {
-            type = other.type
-            metaData = metaData.filter {
-                if case .typeCertainty = $0 { return false } else { return true }
-            }
-            metaData.insert(.typeCertainty(other.typeCertainty))
+            self.type = other.type
+            metaData = metaData.withTypeCertainty(of: other)
         }
         if let otherCategory = other.category, category != otherCategory {
-            category = otherCategory
+            self.category = otherCategory
         }
-//        if meta != other.meta {
-//            meta = other.meta
-//        }
+        self.meta = metaData
 
-        print("// 🌶️ Reconciled \(self)") 
+        //print("// 🌶️ Reconciled \(self)")
 
-        return self.with(
-//            code: other.code,
-//            children: other.children,
-            meta: metaData
-        )
+        return self
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
@@ -617,10 +616,3 @@ extension Symbol {
         .integerSymbol(0)
     }
 }
-
-//extension Symbol {
-//    struct ReturnType {
-//        let type: DataType
-//        let maybeEmptyValue: Bool
-//    }
-//}

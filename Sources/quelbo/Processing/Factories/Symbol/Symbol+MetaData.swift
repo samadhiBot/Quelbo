@@ -1,5 +1,5 @@
 //
-//  MetaData.swift
+//  Symbol+MetaData.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 5/16/22.
@@ -77,6 +77,8 @@ extension Symbol.MetaData {
         case certain
     }
 }
+
+// MARK: - Conformances
 
 extension Symbol.MetaData.TypeCertainty: Comparable {
     static func < (lhs: Self, rhs: Self) -> Bool {
