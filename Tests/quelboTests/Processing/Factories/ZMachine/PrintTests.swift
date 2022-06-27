@@ -15,7 +15,7 @@ final class PrintTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "message", type: .string, category: .globals)
         )
     }
@@ -32,7 +32,7 @@ final class PrintTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"output("Hello World")"#,
+            code: #"output("Hello World")"#,
             type: .void
         ))
     }
@@ -43,7 +43,7 @@ final class PrintTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(message)",
+            code: "output(message)",
             type: .void
         ))
     }

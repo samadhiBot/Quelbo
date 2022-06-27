@@ -15,7 +15,7 @@ final class FunctionTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -44,7 +44,7 @@ final class FunctionTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 {
                     var x: Int = 1
                     var y: Int = 2
@@ -53,7 +53,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("() -> Int"),
             ]
         ))
@@ -72,7 +72,7 @@ final class FunctionTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 { (n: Int) -> Int in
                     var n = n
                     return n.multiply(n)
@@ -80,7 +80,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("(Int) -> Int"),
             ]
         ))
@@ -100,7 +100,7 @@ final class FunctionTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 { (a: Int, b: Int) -> Int in
                     var a = a
                     return a.add(b)
@@ -108,7 +108,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .mutating(false),
+                .isImmutable,
                 .type("(Int, Int) -> Int"),
             ]
         ))

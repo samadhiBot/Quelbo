@@ -15,7 +15,7 @@ final class RoutineTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "axe", type: .object, category: .objects),
             Symbol(id: "fDef", type: .int),
             Symbol(id: "fWep", type: .int),
@@ -570,7 +570,7 @@ final class RoutineTests: QuelboTests {
     }
 
     func testDweaponMini() throws {
-        try! Game.commit(findWeaponRoutine)
+        Game.commit(findWeaponRoutine)
 
         let _ = try Factories.Global([
             .atom("HERE"),
@@ -622,7 +622,7 @@ final class RoutineTests: QuelboTests {
     }
 
     func testRemoveCarefully() throws {
-        try! Game.commit(findWeaponRoutine)
+        Game.commit(findWeaponRoutine)
 
         let _ = try Factories.Global([
             .atom("LIT"),
@@ -734,7 +734,7 @@ final class RoutineTests: QuelboTests {
     }
 
     func testSingRoutine() throws {
-        try! Game.commit(bottlesRoutine)
+        Game.commit(bottlesRoutine)
 
         let symbol = try factory.init([
             .atom("SING"),

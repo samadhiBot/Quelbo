@@ -27,7 +27,7 @@ extension Factories {
             let value = try symbol(2)
 
             return Symbol(
-                "try \(table.code).put(element: \(value.code), at: \(offset.code))",
+                code: "try \(table.code).put(element: \(value.code), at: \(offset.code))",
                 type: value.type,
                 children: symbols
             )

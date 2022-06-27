@@ -15,7 +15,7 @@ final class ClearFlagTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "openBit", type: .bool, category: .globals),
             Symbol(id: "trapDoor", type: .object, category: .objects),
         ])
@@ -32,7 +32,7 @@ final class ClearFlagTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "trapDoor.openBit = false",
+            code: "trapDoor.openBit = false",
             type: .void
         ))
     }

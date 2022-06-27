@@ -36,15 +36,15 @@ extension Factories {
 
             presetFlags.forEach { flags.insert($0) }
             checkFlags()
+            processFlags()
         }
 
         override func process() throws -> Symbol {
-            processFlags()
-
-            return Symbol(
-                "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
+            Symbol(
+                code: "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .table,
-                children: symbols
+                children: symbols,
+                meta: flags.contains(.pure) ? [.isImmutable] : []
             )
         }
     }
@@ -67,18 +67,13 @@ extension Factories.Table {
     }
 
     func processFlags() {
-        guard !flags.isEmpty else {
-            return
-        }
+        guard !flags.isEmpty else { return }
+
         let flagValues = flags
             .map({ ".\($0)" })
             .sorted()
             .joined(separator: ", ")
-        symbols.append(Symbol(
-            "flags: [\(flagValues)]"
-        ))
-        if flags.contains(.pure) {
-            isMutable = false
-        }
+
+        symbols.append(Symbol(code: "flags: [\(flagValues)]"))
     }
 }

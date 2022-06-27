@@ -15,7 +15,7 @@ final class BitwiseAndTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "someInt", type: .int, category: .globals),
         ])
     }
@@ -34,7 +34,7 @@ final class BitwiseAndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".bitwiseAnd(1, 0, 2, someInt)",
+            code: ".bitwiseAnd(1, 0, 2, someInt)",
             type: .int
         ))
     }

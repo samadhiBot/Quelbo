@@ -15,7 +15,7 @@ final class PrintTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([fooTable])
+        Game.commit([fooTable])
     }
 
     func testFindFactory() throws {
@@ -28,7 +28,7 @@ final class PrintTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
             output("""
                 \(.room(forest1))
                 \(.room(forest2))

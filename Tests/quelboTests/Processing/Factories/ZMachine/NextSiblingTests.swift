@@ -15,7 +15,7 @@ final class NextSiblingTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "egg", type: .object, category: .objects),
         ])
     }
@@ -30,7 +30,7 @@ final class NextSiblingTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "egg.nextSibling",
+            code: "egg.nextSibling",
             type: .object
         ))
     }

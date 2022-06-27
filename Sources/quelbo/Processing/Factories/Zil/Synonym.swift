@@ -40,7 +40,7 @@ extension Factories {
                 type: .string,
                 category: .syntax
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
         }
     }

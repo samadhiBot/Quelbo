@@ -50,16 +50,16 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let symbol = Symbol(
-                """
+             Symbol(
+                code: """
                     Syntax(
                     \(definition.joined(separator: ",\n").indented)
                     )
                     """,
                 category: .syntax
             )
-            try Game.commit(symbol)
-            return symbol
+//            Game.commit(symbol)
+//            return symbol
         }
     }
 }

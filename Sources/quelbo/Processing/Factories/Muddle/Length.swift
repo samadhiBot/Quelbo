@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(try symbol(0).code).count",
+                code: "\(try symbol(0).code).count",
                 type: .int,
                 children: symbols
             )

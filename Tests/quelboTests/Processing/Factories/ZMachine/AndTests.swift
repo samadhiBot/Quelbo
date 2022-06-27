@@ -15,7 +15,7 @@ final class AndTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foundTreasureChest", type: .bool, category: .globals),
             Symbol(id: "mEnter", type: .int, category: .globals),
         ])
@@ -31,7 +31,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true)",
+            code: ".and(true)",
             type: .bool
         ))
     }
@@ -43,7 +43,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true, true)",
+            code: ".and(true, true)",
             type: .bool
         ))
     }
@@ -56,7 +56,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true, false, true)",
+            code: ".and(true, false, true)",
             type: .bool
         ))
     }
@@ -69,7 +69,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(1, 0, 2)",
+            code: ".and(1, 0, 2)",
             type: .int
         ))
     }
@@ -88,7 +88,7 @@ final class AndTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             .and(
                 rarg.equals(mEnter),
                 .isNot(foundTreasureChest)

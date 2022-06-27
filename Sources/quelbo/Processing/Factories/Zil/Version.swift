@@ -20,7 +20,11 @@ extension Factories {
             let zMachineVersion = try Game.ZMachineVersion(tokens: tokens)
 
             nameSymbol = Symbol(id: "zMachineVersion", type: .string)
-            valueSymbol = Symbol(zMachineVersion.rawValue.quoted, type: .string, meta: [.isLiteral])
+            valueSymbol = Symbol(
+                code: zMachineVersion.rawValue.quoted,
+                type: .string,
+                meta: [.isLiteral]
+            )
         }
     }
 }

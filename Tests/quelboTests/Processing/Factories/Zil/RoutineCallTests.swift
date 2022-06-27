@@ -13,7 +13,7 @@ final class RoutineCallTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(
                 id: "bagOfCoinsFunc",
                 type: .void,
@@ -55,7 +55,7 @@ final class RoutineCallTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bagOfCoinsFunc()",
+            code: "bagOfCoinsFunc()",
             type: .void
         ))
     }
@@ -67,7 +67,7 @@ final class RoutineCallTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "oneFunc(number: 42)",
+            code: "oneFunc(number: 42)",
             type: .int
         ))
     }
@@ -80,7 +80,7 @@ final class RoutineCallTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 twoFunc(
                     answer: \"Answer\",
                     number: 42
@@ -102,7 +102,7 @@ final class RoutineCallTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 threeFunc(
                     answer: \"Answer\",
                     isValid: true,

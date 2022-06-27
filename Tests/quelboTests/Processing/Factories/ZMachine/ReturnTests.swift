@@ -15,7 +15,7 @@ final class ReturnTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int),
             Symbol(id: "forest1", type: .object, category: .rooms),
         ])

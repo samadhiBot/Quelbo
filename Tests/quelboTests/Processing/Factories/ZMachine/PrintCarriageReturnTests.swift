@@ -15,7 +15,7 @@ final class PrintCarriageReturnTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "message", type: .string, category: .globals)
         ])
     }
@@ -30,7 +30,7 @@ final class PrintCarriageReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 output("Hello World")
                 output("\n")
                 """#,
@@ -44,7 +44,7 @@ final class PrintCarriageReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 output(message)
                 output("\n")
                 """#,

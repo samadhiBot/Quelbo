@@ -15,7 +15,7 @@ final class NthTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -35,7 +35,7 @@ final class NthTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"["AB", "CD", "EF"].nthElement(2)"#,
+            code: #"["AB", "CD", "EF"].nthElement(2)"#,
             type: .string
         ))
     }
@@ -55,7 +55,7 @@ final class NthTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
+            code: #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
             type: .string
         ))
     }

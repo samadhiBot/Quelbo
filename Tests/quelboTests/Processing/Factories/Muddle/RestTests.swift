@@ -15,7 +15,7 @@ final class RestTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -24,7 +24,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfIntegerList() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT1"),
@@ -41,13 +41,13 @@ final class RestTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "struct1.rest()",
+            code: "struct1.rest()",
             type: .array(.int)
         ))
     }
 
     func testRestOfMixedList() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT2"),
@@ -65,12 +65,12 @@ final class RestTests: QuelboTests {
 
         XCTAssertNoDifference(
             symbol,
-            Symbol("struct2.rest()", type: .array(.zilElement))
+            Symbol(code: "struct2.rest()", type: .array(.zilElement))
         )
     }
 
     func testRestOfMixedListAfterFirstTwo() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         _ = try Factories.Global([
             .atom("STRUCT3"),
@@ -89,7 +89,7 @@ final class RestTests: QuelboTests {
 
         XCTAssertNoDifference(
             symbol,
-            Symbol("struct3.rest(2)", type: .array(.zilElement))
+            Symbol(code: "struct3.rest(2)", type: .array(.zilElement))
         )
     }
 }

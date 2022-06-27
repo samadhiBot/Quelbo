@@ -15,8 +15,8 @@
 //    override func setUp() {
 //        super.setUp()
 //
-//        try! Game.commit(
-//            Symbol("boardedWindow", type: .object, category: .globals)
+//        Game.commit(
+//            Symbol(code: "boardedWindow", type: .object, category: .globals)
 //        )
 //    }
 //
@@ -25,7 +25,7 @@
 ////            .atom("BOARDED-WINDOW")
 ////        ]).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("boardedWindow", type: .object, category: .globals))
+////        XCTAssertNoDifference(symbol, Symbol(code: "boardedWindow", type: .object, category: .globals))
 //    }
 //
 //    func testEvaluateBoolTrue() throws {
@@ -57,7 +57,7 @@
 ////            .commented(.bool(true))
 ////        ]).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("/* true */", type: .comment))
+////        XCTAssertNoDifference(symbol, Symbol(code: "/* true */", type: .comment))
 //    }
 //
 //    func testEvaluateDecimal() throws {
@@ -83,8 +83,8 @@
 ////            ".add(2, 3)",
 ////            type: .int,
 ////            children: [
-////                Symbol("2", type: .int, meta: [.isLiteral]),
-////                Symbol("3", type: .int, meta: [.isLiteral]),
+////                Symbol(code: "2", type: .int, meta: [.isLiteral]),
+////                Symbol(code: "3", type: .int, meta: [.isLiteral]),
 ////            ]
 ////        ))
 //    }
@@ -117,7 +117,7 @@
 ////            id: "<List>",
 ////            type: .list,
 ////            children: [
-////                Symbol("isFloating", type: .bool),
+////                Symbol(code: "isFloating", type: .bool),
 ////                .falseSymbol
 ////            ]
 ////        ))
@@ -128,7 +128,7 @@
 ////            .local("FOO-BAR")
 ////        ]).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("fooBar"))
+////        XCTAssertNoDifference(symbol, Symbol(code: "fooBar"))
 //    }
 //
 //    func testEvaluateProperty() throws {
@@ -183,7 +183,7 @@
 ////            )
 ////        ]).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("5", type: .int, meta: [.isLiteral]))
+////        XCTAssertNoDifference(symbol, Symbol(code: "5", type: .int, meta: [.isLiteral]))
 ////    }
 ////
 ////

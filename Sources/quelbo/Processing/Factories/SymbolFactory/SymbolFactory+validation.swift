@@ -40,8 +40,9 @@ extension SymbolFactory {
         default: break
         }
 
-        try registry.register(typedSymbols)
-        return typedSymbols
+        return try typedSymbols.map { symbol in
+            symbol.identifiable ? try upsert(symbol) : symbol
+        }
     }
 }
 
@@ -53,54 +54,59 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        if declaredType == .zilElement {
-            return try assignZilElementType(on: symbol)
-        }
-        if case .variable = declaredType, symbol.isLiteral && !symbol.isPlaceholderGlobal {
-            throw ValidationError.expectedVariableFoundLiteral(symbol)
-        }
-
-        switch (symbol.type.isLiteral, declaredType.isLiteral) {
-        case (true, true):
-            if declaredType == .bool && symbol.type == .int {
-                return symbol.with(
-                    code: symbol.code == "0" ? "false" : "true",
-                    type: .bool
-                )
+        //print("// 🍓 \(declaredType) >> \(symbol)")
+        switch (declaredType, symbol.type) {
+        case (.property, _):
+            if symbol.category == .properties {
+                return symbol
             }
+
+        case (.unknown, _):
+            guard
+                siblings.count > 1,
+                let mostCertain = siblings.findByTypeCertainty()
+            else { return symbol }
+
+            return symbol.with(
+                type: mostCertain.type,
+                meta: symbol.meta.withTypeCertainty(of: mostCertain)
+            )
+
+        case (.variable(let declaredVariableType), .variable):
+            guard
+                declaredVariableType != .unknown,
+                siblings.count > 1,
+                let mostCertain = siblings.findByTypeCertainty()
+            else { return symbol }
+
+            return symbol.with(
+                type: mostCertain.type.asVariable,
+                meta: symbol.meta.withTypeCertainty(of: mostCertain)
+            )
+
+        case (.variable, _):
+            throw ValidationError.expectedVariableFoundLiteral(symbol)
+
+        case (.zilElement, _):
+            return try assignZilElementType(on: symbol)
+
+        default:
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
-            if declaredType.shouldReplaceType(in: symbol) {
-                return symbol.with(type: declaredType)
+            print("// 🍌 \(declaredType) >> \(symbol)")
+            if symbol.typeCertainty == .certain {
+                break
             }
-        case (true, false):
-            if declaredType.shouldReplaceType(in: registry[symbol.id] ?? symbol) {
-                return symbol.with(type: declaredType)
-            }
-            if declaredType.acceptsLiteral ||
-                symbol.category == .properties ||
-                declaredType.isUnknown && !symbol.type.isUnknown {
-                return symbol
-            }
-        case (false, true):
-            return symbol.with(type: declaredType)
-        case (false, false):
-            guard symbol.type.isProperty || symbol.type.hasKnownReturnValue else {
-                return symbol.with(type: siblings.map(\.type).common)
-            }
-            if declaredType.isUnknown ||
-                symbol.type == declaredType ||
-                symbol.type == .optional(declaredType) {
-                return symbol
-            }
-            if declaredType.shouldReplaceType(in: symbol) {
-                return symbol.with(type: declaredType)
-            }
+
+            return symbol.with(
+                type: declaredType,
+                meta: symbol.meta.withoutTypeCertainty
+            )
         }
 
-        //print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
-        
+        print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
+
         throw ValidationError.failedToDetermineType(
             symbol,
             expected: declaredType,
@@ -108,6 +114,45 @@ extension SymbolFactory {
             siblings: siblings,
             in: self
         )
+
+//        switch (symbol.type.isLiteral, declaredType.isLiteral) {
+//        case (true, true):
+//            if declaredType == .bool && symbol.type == .int {
+//                return symbol.with(
+//                    code: symbol.code == "0" ? "false" : "true",
+//                    type: .bool
+//                )
+//            }
+//            if [declaredType, .zilElement].contains(symbol.type) {
+//                return symbol
+//            }
+//            if let updated = declaredType.replacingType(in: symbol) {
+//                return updated
+//            }
+//        case (true, false):
+//            if let updated = declaredType.replacingType(in: findRegistered(symbol.id) ?? symbol) {
+//                return updated
+//            }
+//            if declaredType.acceptsLiteral ||
+//                symbol.category == .properties ||
+//                declaredType.isUnknown && !symbol.type.isUnknown {
+//                return symbol
+//            }
+//        case (false, true):
+//            return symbol.with(type: declaredType)
+//        case (false, false):
+//            guard symbol.type.isProperty || symbol.type.hasKnownReturnValue else {
+//                return symbol.with(type: siblings.map(\.type).common)
+//            }
+//            if declaredType.isUnknown ||
+//                symbol.type == declaredType ||
+//                symbol.type == .optional(declaredType) {
+//                return symbol
+//            }
+//            if let updated = declaredType.replacingType(in: symbol) {
+//                return updated
+//            }
+//        }
     }
 
     func assignZilElementType(on symbol: Symbol) throws -> Symbol? {

@@ -15,13 +15,9 @@ final class IsInTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            Symbol(
-                id: "here",
-                type: .object,
-                category: .globals,
-                meta: [.maybeEmptyValue, .mutating(true)]
-            ),
+        let _ = try! Factories.Global([.atom("HERE"), .decimal(0)]).process()
+
+        Game.commit([
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
             Symbol(id: "sandwich", type: .object, category: .objects),
@@ -40,7 +36,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.isIn(paperBag)",
+            code: "sandwich.isIn(paperBag)",
             type: .bool
         ))
     }
@@ -52,7 +48,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.isIn(kitchen)",
+            code: "paperBag.isIn(kitchen)",
             type: .bool
         ))
     }
@@ -72,7 +68,7 @@ final class IsInTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "o.set(to: try oo.get(at: vVillain)).isIn(here)",
+            code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",
             type: .bool
         ))
     }

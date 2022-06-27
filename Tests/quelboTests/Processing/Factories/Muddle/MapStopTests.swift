@@ -15,7 +15,7 @@ final class MapStopTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -29,7 +29,7 @@ final class MapStopTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "atms.mapStop",
+            code: "atms.mapStop",
             type: .bool
         ))
     }

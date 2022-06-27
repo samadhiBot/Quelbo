@@ -20,7 +20,7 @@ final class AgainTests: QuelboTests {
     func testIsAgainStatement() throws {
         let symbol = try factory.init([]).process()
 
-        XCTAssertTrue(symbol.isAgainStatement)
+        XCTAssertTrue(symbol.meta.contains(.isAgainStatement))
     }
 
     func testAgainRoutine1() throws {

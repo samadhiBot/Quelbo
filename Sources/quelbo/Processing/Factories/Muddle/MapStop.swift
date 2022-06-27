@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(try symbol(0).code).mapStop",
+                code: "\(try symbol(0).code).mapStop",
                 type: .bool,
                 children: symbols
             )

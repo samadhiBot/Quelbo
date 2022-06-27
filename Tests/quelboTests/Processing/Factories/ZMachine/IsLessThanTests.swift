@@ -15,7 +15,7 @@ final class IsLessThanTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
@@ -32,7 +32,7 @@ final class IsLessThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThan(3)",
+            code: "2.isLessThan(3)",
             type: .bool
         ))
     }
@@ -44,7 +44,7 @@ final class IsLessThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThan(foo)",
+            code: "2.isLessThan(foo)",
             type: .bool
         ))
     }
@@ -56,7 +56,7 @@ final class IsLessThanTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThan(bar)",
+            code: "2.isLessThan(bar)",
             type: .bool
         ))
     }

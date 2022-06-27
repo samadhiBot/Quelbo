@@ -19,7 +19,7 @@ final class ReturnFatalTests: QuelboTests {
     func testReturnFatal() throws {
         let symbol = try factory.init([]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("returnFatal()", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "returnFatal()", type: .void))
     }
 
     func testReturnFatalWithParameterThrows() throws {

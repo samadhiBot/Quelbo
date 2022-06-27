@@ -25,7 +25,7 @@ class SymbolFactory {
     let tokens: [Token]
 
     /// A dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
-    var registry: SymbolRegistry
+    var registry: Set<Symbol>
 
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []
@@ -33,17 +33,17 @@ class SymbolFactory {
     /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
     var blockType: ProgramBlockType?
 
-    /// Whether the symbol representation is mutable.
-    var isMutable: Bool = true
+//    /// Whether the symbol representation is mutable.
+//    var isMutable: Bool = true
 
     required init(
         _ tokens: [Token],
         in blockType: ProgramBlockType? = nil,
-        with registry: SymbolRegistry? = nil
+        with registry: Set<Symbol> = []
     ) throws {
         self.blockType = blockType
         self.tokens = tokens
-        self.registry = registry ?? SymbolRegistry()
+        self.registry = registry
         try processTokens()
     }
 

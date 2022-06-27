@@ -78,7 +78,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(
             fooCaller,
-            Symbol("incForm(foo: foo)", type: .int)
+            Symbol(code: "incForm(foo: foo)", type: .int)
         )
 
         XCTAssertThrowsError(try Game.find("incForm(bar)", category: .functions))
@@ -109,7 +109,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(
             barCaller,
-            Symbol("incForm(bar: bar)", type: .int)
+            Symbol(code: "incForm(bar: bar)", type: .int)
         )
     }
 
@@ -154,7 +154,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(
             fooCaller,
-            Symbol("double(foo: foo)", type: .int)
+            Symbol(code: "double(foo: foo)", type: .int)
         )
 
         XCTAssertNoDifference(
@@ -185,7 +185,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(
             barCaller,
-            Symbol("double(bar: bar)", type: .int)
+            Symbol(code: "double(bar: bar)", type: .int)
         )
 
         XCTAssertNoDifference(
@@ -301,7 +301,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(
             fooCaller,
-            Symbol("powerTo(foo: foo)", type: .int)
+            Symbol(code: "powerTo(foo: foo)", type: .int)
         )
 
         XCTAssertNoDifference(
@@ -333,7 +333,7 @@ final class DefineTests: QuelboTests {
     }
 
     func testMakeReadbufDefine() throws {
-        let registry = SymbolRegistry()
+        let registry: Set<Symbol> = []
 
         let _ = try Factories.Constant([
             .atom("READBUF-SIZE"),
@@ -484,9 +484,9 @@ final class DefineTests: QuelboTests {
 //    }
 
     func testMultifrob() throws {
-        let registry = SymbolRegistry([
+        let registry: Set<Symbol> = [
             Symbol(id: "prsa", type: .object),
-        ])
+        ]
 
         let definition: [Token] = [
             .list([

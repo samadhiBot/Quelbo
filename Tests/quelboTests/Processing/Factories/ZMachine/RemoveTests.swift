@@ -15,7 +15,7 @@ final class RemoveTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "sandwich", type: .object, category: .objects),
         ])
     }
@@ -30,7 +30,7 @@ final class RemoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.remove()",
+            code: "sandwich.remove()",
             type: .void
         ))
     }

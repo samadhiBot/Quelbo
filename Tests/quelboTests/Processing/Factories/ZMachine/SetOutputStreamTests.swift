@@ -21,7 +21,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(-1)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.screenOff)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.screenOff)", type: .void))
     }
 
     func testSetOutputStreamTranscriptFileOff() throws {
@@ -29,7 +29,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(-2)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.transcriptFileOff)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.transcriptFileOff)", type: .void))
     }
 
     func testSetOutputStreamTableOff() throws {
@@ -37,7 +37,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(-3)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.tableOff)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.tableOff)", type: .void))
     }
 
     func testSetOutputStreamCommandsFileOff() throws {
@@ -45,7 +45,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(-4)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.commandsFileOff)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.commandsFileOff)", type: .void))
     }
 
     func testSetOutputStreamScreenOn() throws {
@@ -53,7 +53,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(1)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.screenOn)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.screenOn)", type: .void))
     }
 
     func testSetOutputStreamTranscriptFileOn() throws {
@@ -61,7 +61,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(2)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.transcriptFileOn)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.transcriptFileOn)", type: .void))
     }
 
     func testSetOutputStreamTableOn() throws {
@@ -69,7 +69,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(3)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.tableOn)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.tableOn)", type: .void))
     }
 
     func testSetOutputStreamCommandsFileOn() throws {
@@ -77,7 +77,7 @@ final class SetOutputStreamTests: QuelboTests {
             .decimal(4)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("setOutputStream(.commandsFileOn)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "setOutputStream(.commandsFileOn)", type: .void))
     }
     func testNonIntegerThrows() throws {
         XCTAssertThrowsError(

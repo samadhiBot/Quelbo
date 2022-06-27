@@ -56,7 +56,7 @@ extension Factories {
             guard !symbols.isEmpty else {
                 throw Error.noDirectionsDefined(self.tokens)
             }
-            try Game.commit(symbols)
+            Game.commit(symbols)
         }
 
         override func process() throws -> Symbol {

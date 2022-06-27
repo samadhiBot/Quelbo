@@ -15,7 +15,7 @@ final class PutTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "mytable", type: .table, category: .globals)
         ])
     }
@@ -33,7 +33,7 @@ final class PutTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try mytable.put(element: 123, at: 1)",
+            code: "try mytable.put(element: 123, at: 1)",
             type: .int
         ))
     }
@@ -46,7 +46,7 @@ final class PutTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"try mytable.put(element: "hello", at: 1)"#,
+            code: #"try mytable.put(element: "hello", at: 1)"#,
             type: .string
         ))
     }
@@ -59,7 +59,7 @@ final class PutTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try rfrob.put(element: msg, at: 1)",
+            code: "try rfrob.put(element: msg, at: 1)",
             type: .int
         ))
     }

@@ -16,13 +16,32 @@ extension Factories {
             ["PROG"]
         }
 
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                in: .blockWithDefaultActivation,
+                with: registry
+            )
         }
 
-        var codeBlock: String {
+        override func process() throws -> Symbol {
+            Symbol(
+                code: codeBlock,
+                type: blockProcessor.type,
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
+            )
+        }
+    }
+}
+
+extension Factories.ProgramBlock {
+    var codeBlock: (Symbol) throws -> String {
+        { symbol in
+            let pro = Symbol.BlockPro(symbol.children)
+
             if pro.isRepeating {
                 return """
                     \(pro.paramDeclarations())\
@@ -39,15 +58,6 @@ extension Factories {
                     }
                     """
             }
-        }
-
-        override func process() throws -> Symbol {
-            Symbol(
-                codeBlock,
-                type: pro.type,
-                children: pro.children,
-                meta: pro.metaData
-            )
         }
     }
 }

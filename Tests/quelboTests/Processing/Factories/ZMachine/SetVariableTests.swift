@@ -15,13 +15,13 @@ final class SetVariableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(
                 id: "isNext",
                 type: .int,
                 category: .routines,
                 children: [
-                    Symbol("number", type: .int)
+                    Symbol(code: "number", type: .int)
                 ]
             ),
             Symbol(id: "thirty", type: .int, category: .globals)
@@ -40,7 +40,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.set(to: 3)",
+            code: "foo.set(to: 3)",
             type: .int
         ))
     }
@@ -52,7 +52,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"foo.set(to: "Bar!")"#,
+            code: #"foo.set(to: "Bar!")"#,
             type: .string
         ))
     }
@@ -64,7 +64,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isRobbed.set(to: true)",
+            code: "isRobbed.set(to: true)",
             type: .bool
         ))
     }
@@ -80,15 +80,15 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "t.set(to: thirty.add(3))",
+            code: "t.set(to: thirty.add(3))",
             type: .int
         ))
     }
 
     func testSetVariableToLocalVariable() throws {
-        let registry = SymbolRegistry([
+        let registry: Set<Symbol> = [
             Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string),
-        ])
+        ]
 
         let symbol = try factory.init([
             .atom("X"),
@@ -96,7 +96,7 @@ final class SetVariableTests: QuelboTests {
         ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "x.set(to: n)",
+            code: "x.set(to: n)",
             type: .string
         ))
     }
@@ -111,7 +111,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.set(to: x.nextSibling)",
+            code: "n.set(to: x.nextSibling)",
             type: .object
         ))
     }
@@ -127,7 +127,7 @@ final class SetVariableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.set(to: n.subtract(1))",
+            code: "n.set(to: n.subtract(1))",
             type: .int
         ))
     }

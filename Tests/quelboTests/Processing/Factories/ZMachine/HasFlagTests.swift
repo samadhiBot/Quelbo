@@ -15,7 +15,7 @@ final class HasFlagTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "kitchenWindow", type: .object),
             Symbol(id: "openBit", type: .property(.bool)),
         ])
@@ -32,7 +32,7 @@ final class HasFlagTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "kitchenWindow.hasFlag(openBit)",
+            code: "kitchenWindow.hasFlag(openBit)",
             type: .bool
         ))
     }

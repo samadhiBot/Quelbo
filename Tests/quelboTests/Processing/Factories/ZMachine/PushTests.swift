@@ -21,7 +21,7 @@ final class PushTests: QuelboTests {
             .decimal(0)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol("push(0)", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "push(0)", type: .void))
     }
 
     func testPushMultipleValuesThrows() throws {

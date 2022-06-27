@@ -20,7 +20,7 @@ final class InitStatusLineTests: QuelboTests {
         let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "initStatusLine()",
+            code: "initStatusLine()",
             type: .void
         ))
     }

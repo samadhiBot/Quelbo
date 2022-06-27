@@ -63,7 +63,7 @@ extension Factories {
                 category: category,
                 children: propertySymbols
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
         }
     }
@@ -131,4 +131,3 @@ extension Factories.Object {
         case invalidObjectProperty(Token)
     }
 }
-

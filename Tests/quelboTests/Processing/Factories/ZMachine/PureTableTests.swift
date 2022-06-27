@@ -17,7 +17,7 @@ final class PureTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "forest1", type: .object, category: .rooms),
             Symbol(id: "forest2", type: .object, category: .rooms),
@@ -44,7 +44,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -66,7 +66,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .object(troll),
                     .object(sword),
@@ -94,7 +94,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -130,7 +130,7 @@ final class PureTableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .table(Table(
                         .object(troll),

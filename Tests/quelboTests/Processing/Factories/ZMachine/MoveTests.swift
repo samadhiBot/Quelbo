@@ -15,7 +15,7 @@ final class MoveTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "here", type: .object, category: .rooms),
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
@@ -34,7 +34,7 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.move(to: paperBag)",
+            code: "sandwich.move(to: paperBag)",
             type: .void
         ))
     }
@@ -46,15 +46,22 @@ final class MoveTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.move(to: kitchen)",
+            code: "paperBag.move(to: kitchen)",
             type: .void
         ))
     }
 
     func testMoveLocalWeaponToHere() throws {
-        let registry = SymbolRegistry([
-            Symbol("dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
-        ])
+        let registry: Set<Symbol> = [
+            Symbol(
+                id: "dweapon",
+                type: .bool,
+                meta: [
+                    .isLiteral,
+                    .typeCertainty(.booleanFalse),
+                ]
+            ),
+        ]
 
         let symbol = try factory.init([
             .local("DWEAPON"),
@@ -62,7 +69,7 @@ final class MoveTests: QuelboTests {
         ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "dweapon.move(to: here)",
+            code: "dweapon.move(to: here)",
             type: .void
         ))
     }

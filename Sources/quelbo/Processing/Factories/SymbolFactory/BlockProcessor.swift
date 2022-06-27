@@ -20,11 +20,11 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
-    var codeSymbol = Symbol("TBD")
-    var paramsSymbol = Symbol("TBD")
+    var codeSymbol = Symbol()
+    var paramsSymbol = Symbol()
 
-    private var auxiliaries: [Symbol] = []
-    private var warnings: [String] = []
+    var auxiliaries: [Symbol] = []
+    var warnings: [String] = []
 
     override func processTokens() throws {
         var tokens = tokens
@@ -67,85 +67,91 @@ extension BlockProcessor {
 // MARK: - Computed properties
 
 extension BlockProcessor {
-    /// The block activation, if one has been assigned.
-    var activation: String {
-        switch blockType! {
-        case .blockWithActivation(let activation):
-            return "\(activation): "
-        case .repeatingWithActivation(let activation):
-            return "\(activation): "
-        default:
-            return ""
-        }
+    var argumentTypes: String {
+        paramsSymbol.children
+            .map { $0.type.description }
+            .joined(separator: ", ")
     }
 
-    func auxiliaryDefs(indented: Bool = false) -> String {
-        emit(
-            auxiliaries.compactMap {
-                guard !$0.code.contains("=") else {
-                    return nil
-                }
-                return $0.localVariable
-            },
-            shouldIndent: indented
-        )
-    }
-
-    func auxiliaryDefsWithDefaultValues(indented: Bool = false) -> String {
-        emit(
-            auxiliaries.compactMap {
-                guard $0.code.contains("=") else {
-                    return nil
-                }
-                return $0.localVariable
-            },
-            shouldIndent: indented
-        )
-    }
+//    /// The block activation, if one has been assigned.
+//    var activation: String {
+//        switch blockType! {
+//        case .blockWithActivation(let activation):
+//            return "\(activation): "
+//        case .repeatingWithActivation(let activation):
+//            return "\(activation): "
+//        default:
+//            return ""
+//        }
+//    }
+//
+//    func auxiliaryDefs(indented: Bool = false) -> String {
+//        emit(
+//            auxiliaries.compactMap {
+//                guard !$0.code.contains("=") else {
+//                    return nil
+//                }
+//                return $0.localVariable
+//            },
+//            shouldIndent: indented
+//        )
+//    }
+//
+//    func auxiliaryDefsWithDefaultValues(indented: Bool = false) -> String {
+//        emit(
+//            auxiliaries.compactMap {
+//                guard $0.code.contains("=") else {
+//                    return nil
+//                }
+//                return $0.localVariable
+//            },
+//            shouldIndent: indented
+//        )
+//    }
 
     var children: [Symbol] {
-        codeSymbol.children
+        [codeSymbol, paramsSymbol] + auxiliaries
     }
 
-    var codeBlock: String {
-        if isRepeating {
-            return """
-                \(deepParameters)\
-                \(activation)\
-                while true {
-                \(auxiliaryDefsWithDefaultValues(indented: true))\
-                \(codeSymbol.code.indented)
-                }
-                """
-        } else {
-            return """
-                \(auxiliaryDefsWithDefaultValues())\
-                \(codeSymbol.code)
-                """
-        }
-    }
-
-    var deepParameters: String {
-        guard let deepParams = codeSymbol.children.deepParamDeclarations else {
-            return ""
-        }
-        return deepParams.appending("\n")
-    }
-
-    var discardableResult: String {
-        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
-    }
-
-    var isRepeating: Bool {
-        if blockType?.isRepeating == true {
-            return true
-        }
-        if children.deepRepeating == true {
-            blockType?.setActivation("defaultAct")
-            return true
-        }
-        return false
-    }
+//    var codeBlock: String {
+//        if isRepeating {
+//            return """
+//                \(deepParameters)\
+//                \(activation)\
+//                while true {
+//                \(auxiliaryDefsWithDefaultValues(indented: true))\
+//                \(codeSymbol.code.indented)
+//                }
+//                """
+//        } else {
+//            return """
+//                \(auxiliaryDefsWithDefaultValues())\
+//                \(codeSymbol.code)
+//                """
+//        }
+//    }
+//
+//    var deepParameters: String {
+//        guard let deepParams = codeSymbol.children.deepParamDeclarations else {
+//            return ""
+//        }
+//        return deepParams.appending("\n")
+//    }
+//
+//    var discardableResult: String {
+//        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
+//    }
+//
+//    var isRepeating: Bool {
+//        if blockType?.isRepeating == true {
+//            return true
+//        }
+//        if children.deepRepeating == true {
+//            blockType?.setActivation("defaultAct")
+//            return true
+//        }
+//        return false
+//    }
 
     var metaData: Set<Symbol.MetaData> {
         guard let type = blockType else { return [] }
@@ -164,14 +170,14 @@ extension BlockProcessor {
         }
     }
 
-    func paramDeclarations(indented: Bool = false) -> String {
-        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
-
-        return emit(
-            paramsSymbol.children.map { $0.localVariable },
-            shouldIndent: indented
-        )
-    }
+//    func paramDeclarations(indented: Bool = false) -> String {
+//        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
+//
+//        return emit(
+//            paramsSymbol.children.map { $0.localVariable },
+//            shouldIndent: indented
+//        )
+//    }
 
     var returnValue: String {
         codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
@@ -212,14 +218,20 @@ extension BlockProcessor {
 
 extension BlockProcessor {
     func findReturnType(in codeSymbols: [Symbol]) throws -> Symbol.DataType? {
-        let allTypes = codeSymbols.deepReturnDataTypes
-        if allTypes.isEmpty { return nil }
-        if allTypes.count == 1 { return allTypes[0].type }
-        let isOptional = allTypes.contains(where: \.maybeEmptyValue)
-        if let definite = allTypes.filter({ !$0.maybeEmptyValue }).map(\.type).common {
-            return isOptional ? .optional(definite) : definite
+        let allTypes = codeSymbols.deepReturnTypes
+
+        switch allTypes.count {
+        case 0: return nil
+        case 1: return allTypes[0].type
+        default:
+            let maxCertainty = allTypes
+                .sorted(by: { $0.typeCertainty > $1.typeCertainty })[0]
+                .typeCertainty
+            return allTypes
+                .filter { $0.typeCertainty >= maxCertainty }
+                .map(\.type)
+                .common
         }
-        return allTypes.map(\.type).common
     }
 
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
@@ -232,7 +244,7 @@ extension BlockProcessor {
         var symbols = codeSymbols
 
         while let symbol = symbols.shift() {
-            if symbol.isAgainStatement {
+            if symbol.meta.contains(.isAgainStatement) {
                 blockType?.makeRepeating()
             }
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
@@ -244,7 +256,7 @@ extension BlockProcessor {
         }
 
         return Symbol(
-            codeLines.joined(separator: "\n"),
+            code: codeLines.joined(separator: "\n"),
             type: returnType ?? .void,
             children: codeSymbols
         )
@@ -259,18 +271,9 @@ extension BlockProcessor {
         var symbols = symbols
 
         while let param = symbols.shift() {
-            switch param.id {
-            case "<Arguments>":
-                context = .normal
+            if case .paramSetContext(let newContext) = param.meta.first {
+                context = newContext
                 continue
-            case "<Locals>":
-                context = .local
-                continue
-            case "<Optionals>":
-                context = .optional
-                continue
-            default:
-                break
             }
 
             var paramSymbol: Symbol
@@ -283,26 +286,26 @@ extension BlockProcessor {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
-                    type = registry[nameSymbol.id]?.type ??
-                           registry[valueSymbol.id]?.type ??
+                    type = findRegistered(nameSymbol.id)?.type ??
+                           findRegistered(valueSymbol.id)?.type ??
                            .unknown
                 }
                 paramSymbol = param.with(
                     code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
                 )
-                registry.register(nameSymbol.with(type: type))
-                registry.register(valueSymbol.with(type: type))
+//                registry.register(nameSymbol.with(type: type))
+//                registry.register(valueSymbol.with(type: type))
 
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
                     code: "\(found.id): \(found.type)\(context.defaultValue(for: found))"
                 )
-            } else if let type = registry[param.id]?.type {
+            } else if let type = findRegistered(param.id)?.type {
                 paramSymbol = param.with(
                     code: "\(param.id): \(type)"
                 )
             } else {
-                warnings.append("// Parameter `\(param)` was specified but unused")
+                warnings.append("// Parameter `\(param.id)` was specified but unused")
                 continue
             }
 
@@ -311,7 +314,7 @@ extension BlockProcessor {
                 parameters.append(paramSymbol)
                 if paramSymbol.isMutating(in: validatedCode.children) == true {
                     auxiliaries.append(Symbol(
-                        "\(paramSymbol.id) = \(paramSymbol.id)",
+                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
                         type: paramSymbol.type
                     ))
                 }
@@ -321,19 +324,9 @@ extension BlockProcessor {
         }
 
         return Symbol(
-            parameters.codeValues(.commaSeparatedNoTrailingComma),
+            code: parameters.codeValues(.commaSeparatedNoTrailingComma),
             children: parameters
         )
-    }
-}
-
-extension Symbol {
-    fileprivate var localVariable: String {
-        if code.contains("=") {
-            return "var \(code)"
-        } else {
-            return "var \(code)\(type.emptyValueAssignment)"
-        }
     }
 }
 

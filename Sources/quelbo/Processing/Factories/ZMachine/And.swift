@@ -30,7 +30,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                ".\(function)(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: ".\(function)(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: symbols.map(\.type).common ?? .unknown,
                 children: symbols
             )

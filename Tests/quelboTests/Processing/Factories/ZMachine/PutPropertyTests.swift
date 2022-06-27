@@ -15,7 +15,7 @@ final class PutPropertyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects),
             Symbol(id: "winner", type: .object, category: .globals),
         ])
@@ -33,7 +33,7 @@ final class PutPropertyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.strength = 10",
+            code: "troll.strength = 10",
             type: .int
         ))
     }
@@ -46,7 +46,7 @@ final class PutPropertyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "winner.action = 0",
+            code: "winner.action = 0",
             type: .int
         ))
     }

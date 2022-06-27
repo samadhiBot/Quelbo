@@ -90,7 +90,7 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let registry = SymbolRegistry()
+                    let registry: Set<Symbol> = []
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
@@ -143,7 +143,7 @@ enum GameError: Swift.Error {
     case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
     case failedToProcessTokens([String])
     case invalidZMachineVersion([Token])
-    case symbolNotFound(Symbol.Identifier, category: Symbol.Category?)
+    case symbolNotFound(Symbol.Identifier, categories: [Symbol.Category])
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)

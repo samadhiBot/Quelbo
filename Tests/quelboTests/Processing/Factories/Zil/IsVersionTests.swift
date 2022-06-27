@@ -15,7 +15,7 @@ final class IsVersionTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "color", type: .bool, category: .routines),
             Symbol(id: "readbuf", type: .table),
             Symbol(id: "undo", type: .bool, category: .routines),
@@ -86,7 +86,7 @@ final class IsVersionTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                if zMachineVersion == zip {
                    resp.set(to: try readbuf.get(at: 1))
                } else if zMachineVersion == ezip {

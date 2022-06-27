@@ -15,7 +15,7 @@ final class RoomTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "north", type: .direction, category: .properties),
             Symbol(id: "east", type: .direction, category: .properties),
             Symbol(id: "west", type: .direction, category: .properties),

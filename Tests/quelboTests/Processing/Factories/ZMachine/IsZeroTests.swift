@@ -15,7 +15,7 @@ final class IsZeroTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
@@ -31,7 +31,7 @@ final class IsZeroTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isZero",
+            code: "2.isZero",
             type: .bool
         ))
     }
@@ -42,7 +42,7 @@ final class IsZeroTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.isZero",
+            code: "foo.isZero",
             type: .bool
         ))
     }
@@ -53,7 +53,7 @@ final class IsZeroTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bar.isZero",
+            code: "bar.isZero",
             type: .bool
         ))
     }

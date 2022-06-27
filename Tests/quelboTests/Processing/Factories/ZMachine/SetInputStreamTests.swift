@@ -22,7 +22,7 @@ final class SetInputStreamTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "setInputStream(.keyboard)",
+            code: "setInputStream(.keyboard)",
             type: .void
         ))
     }
@@ -33,7 +33,7 @@ final class SetInputStreamTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "setInputStream(.file)",
+            code: "setInputStream(.file)",
             type: .void
         ))
     }

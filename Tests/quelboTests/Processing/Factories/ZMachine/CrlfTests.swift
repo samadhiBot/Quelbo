@@ -20,7 +20,7 @@ final class CrlfTests: QuelboTests {
         let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"output("\n")"#,
+            code: #"output("\n")"#,
             type: .void
         ))
     }

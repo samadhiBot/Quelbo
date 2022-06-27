@@ -15,7 +15,7 @@ final class IsEmptyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -29,7 +29,7 @@ final class IsEmptyTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "atms.isEmpty",
+            code: "atms.isEmpty",
             type: .bool
         ))
     }

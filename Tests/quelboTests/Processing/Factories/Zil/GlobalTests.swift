@@ -15,7 +15,7 @@ final class GlobalTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "cyclops", type: .object, category: .objects),
             Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
@@ -81,7 +81,7 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -173,7 +173,8 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -388,7 +389,8 @@ final class GlobalTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -411,10 +413,10 @@ final class GlobalTests: QuelboTests {
             code: "var prso: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
-        // Move expects `prso` to be an object, not a boolean. This triggers an overwrite of the
+        // Move expects `prso` to be an object, not a boolean. This triggers an update of the
         // `prso` game symbol's type from boolean to object.
         let move = try Factories.Move.init([
             .global("PRSO"),
@@ -422,17 +424,17 @@ final class GlobalTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(move, Symbol(
-            "prso.move(to: clearing)",
+            code: "prso.move(to: clearing)",
             type: .void
         ))
 
-        // Inspecting the `prso` game symbol confirms that the type overwrite took place.
+        // Inspecting the `prso` game symbol confirms that the type update took place.
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Object? = nil",
             type: .optional(.object),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.certain)]
         ))
     }
 
@@ -449,7 +451,7 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
@@ -460,7 +462,7 @@ final class GlobalTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(set, Symbol(
-            "kitchenWindowFlag.set(to: true)",
+            code: "kitchenWindowFlag.set(to: true)",
             type: .bool
         ))
 
@@ -470,7 +472,7 @@ final class GlobalTests: QuelboTests {
             code: "var kitchenWindowFlag: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: []
         ))
     }
 }

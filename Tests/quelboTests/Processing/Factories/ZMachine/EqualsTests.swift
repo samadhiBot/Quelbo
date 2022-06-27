@@ -15,7 +15,7 @@ final class EqualsTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
             Symbol(id: "isWorldAlive", type: .bool, category: .globals)
         )
@@ -34,7 +34,7 @@ final class EqualsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.equals(3)",
+            code: "2.equals(3)",
             type: .bool
         ))
     }
@@ -46,7 +46,7 @@ final class EqualsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.equals(3)",
+            code: "n.equals(3)",
             type: .bool
         ))
     }
@@ -59,7 +59,7 @@ final class EqualsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.equals(3, 4)",
+            code: "2.equals(3, 4)",
             type: .bool
         ))
     }
@@ -71,7 +71,7 @@ final class EqualsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #""hello".equals("goodBye")"#,
+            code: #""hello".equals("goodBye")"#,
             type: .bool
         ))
     }
@@ -83,7 +83,7 @@ final class EqualsTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isPlayerAlive.equals(isWorldAlive)",
+            code: "isPlayerAlive.equals(isWorldAlive)",
             type: .bool
         ))
     }

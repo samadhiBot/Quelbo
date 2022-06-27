@@ -16,7 +16,7 @@ final class RepeatTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "isFunnyReturn", type: .bool, category: .globals),
         ])
     }

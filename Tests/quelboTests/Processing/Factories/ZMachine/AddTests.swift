@@ -15,7 +15,7 @@ final class AddTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "baseScore", type: .int, category: .globals),
             Symbol(id: "cyclowrath", type: .int, category: .globals),
             Symbol(id: "myBike", type: .string, category: .globals),
@@ -35,7 +35,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".add(2, 3)",
+            code: ".add(2, 3)",
             type: .int
         ))
     }
@@ -48,7 +48,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".add(2, 3, 4)",
+            code: ".add(2, 3, 4)",
             type: .int
         ))
     }
@@ -60,7 +60,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.add(biggerNumber)",
+            code: "bigNumber.add(biggerNumber)",
             type: .int
         ))
     }
@@ -72,7 +72,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.add(1)",
+            code: "cyclowrath.add(1)",
             type: .int
         ))
     }
@@ -86,7 +86,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.add(otvalFrob())",
+            code: "baseScore.add(otvalFrob())",
             type: .int
         ))
     }
@@ -102,7 +102,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try src.get(at: 0).add(1)",
+            code: "try src.get(at: 0).add(1)",
             type: .int
         ))
     }
@@ -119,7 +119,7 @@ final class AddTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "pAclause.add(1)",
+            code: "pAclause.add(1)",
             type: .int
         ))
     }

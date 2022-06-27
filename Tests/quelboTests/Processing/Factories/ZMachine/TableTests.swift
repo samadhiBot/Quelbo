@@ -17,7 +17,7 @@ final class TableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "forest1", type: .object, category: .rooms),
             Symbol(id: "forest2", type: .object, category: .rooms),
@@ -44,7 +44,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -65,7 +65,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .object(troll),
                     .object(sword),
@@ -91,7 +91,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .int(1),
                     .int(2),
@@ -114,7 +114,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             Table(
                 .int(0),
                 .int8(0),
@@ -139,7 +139,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -171,7 +171,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .string("up to your ankles."),
                     .string("up to your shin."),
@@ -210,7 +210,7 @@ final class TableTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .table(Table(
                         .object(troll),

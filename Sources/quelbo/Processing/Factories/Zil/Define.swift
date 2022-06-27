@@ -31,7 +31,7 @@ extension Factories {
                 category: .definitions,
                 meta: [.zil(definition)]
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
         }
     }

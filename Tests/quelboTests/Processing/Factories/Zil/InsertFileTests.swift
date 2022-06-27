@@ -22,7 +22,7 @@ final class InsertFileTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "// Insert file \'\"parser\"\'",
+            code: "// Insert file \'\"parser\"\'",
             type: .comment
         ))
     }

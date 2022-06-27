@@ -67,11 +67,11 @@ extension SymbolFactory {
             return try params.map { token in
                 switch token {
                 case .string("ARGS"):
-                    return Symbol(id: "<Arguments>")
+                    return Symbol(meta: [.paramSetContext(.normal)])
                 case .string("AUX"), .string("EXTRA"):
-                    return Symbol(id: "<Locals>")
+                    return Symbol(meta: [.paramSetContext(.local)])
                 case .string("OPT"), .string("OPTIONAL"):
-                    return Symbol(id: "<Optionals>")
+                    return Symbol(meta: [.paramSetContext(.optional)])
                 default:
                     if let substitution = substitutions.shift() {
                         return try symbolize(substitution)
@@ -84,6 +84,46 @@ extension SymbolFactory {
 
         throw FindError.parametersSymbolNotFound(original)
     }
+
+    /// Searches the ``SymbolFactory/registry`` for a symbol whose `id` matches the one specified.
+    ///
+    /// - Parameter id: The symbol `id` to search for.
+    ///
+    /// - Returns: A symbol with the specified `id` if one has been registered.
+    func findRegistered(_ id: Symbol.Identifier) -> Symbol? {
+        registry.first(where: { $0.id == id })
+    }
+
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    func upsert(_ symbol: Symbol) throws -> Symbol {
+        assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
+
+        if symbol.category == .globals {
+            guard let existing = try? Game.find(symbol.id, category: .globals) else {
+                Game.commit(symbol)
+                return symbol
+            }
+
+            // return existing.reconcile(with: symbol)
+            let updated = existing.reconcile(with: symbol)
+            try Game.overwrite(updated)
+            print("🥒 upsert global \(updated)")
+            return updated.with(code: symbol.code)
+        }
+
+        guard let existing = registry.first(where: { $0.id == symbol.id }) else {
+            registry.insert(symbol)
+            return symbol
+        }
+
+        // return existing.reconcile(with: symbol)
+        let updated = existing.reconcile(with: symbol)
+        print("🥒 upsert registry \(updated)")
+        return updated
+    }
+
 }
 
 // MARK: - Errors
