@@ -13,8 +13,8 @@ extension Symbol {
         var paramsSymbol: Symbol
         var blockType: SymbolFactory.ProgramBlockType?
 
-        private var auxiliaries: [Symbol] = []
-        private var warnings: [String] = []
+        var auxiliaries: [Symbol] = []
+        var warnings: [String] = []
     }
 }
 
@@ -55,32 +55,27 @@ extension Symbol.BlockPro {
         )
     }
 
-    //        var children: [Symbol] {
-    //            [codeSymbol, paramsSymbol]
-    //        }
-
-    var codeBlock: String {
+    mutating func codeBlock() -> String {
         if isRepeating {
             return """
-                    \(deepParameters)\
-                    \(activation)\
-                    while true {
-                    \(auxiliaryDefsWithDefaultValues(indented: true))\
-                    \(codeSymbol.code.indented)
-                    }
-                    """
+                \(deepParameters)\
+                \(activation)\
+                while true {
+                \(auxiliaryDefsWithDefaultValues(indented: true))\
+                \(codeSymbol.code.indented)
+                }
+                """
         } else {
             return """
-                    \(auxiliaryDefsWithDefaultValues())\
-                    \(codeSymbol.code)
-                    """
+                \(auxiliaryDefsWithDefaultValues())\
+                \(codeSymbol.code)
+                """
         }
     }
 
     var deepParameters: String {
-        guard let deepParams = codeSymbol.children.deepParamDeclarations else {
-            return ""
-        }
+        guard let deepParams = codeSymbol.children.deepParamDeclarations else { return "" }
+
         return deepParams.appending("\n")
     }
 
@@ -110,7 +105,6 @@ extension Symbol.BlockPro {
             return true
         }
         if [codeSymbol, paramsSymbol].deepRepeating == true {
-            blockType?.setActivation("defaultAct")
             return true
         }
         return false

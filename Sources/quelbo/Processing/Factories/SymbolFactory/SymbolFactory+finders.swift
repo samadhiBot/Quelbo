@@ -101,7 +101,7 @@ extension SymbolFactory {
         assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
 
         if symbol.category == .globals {
-            guard var existing = try? Game.find(symbol.id, category: .globals) else {
+            guard let existing = try? Game.find(symbol.id, category: .globals) else {
                 Game.commit(symbol)
                 return symbol
             }
@@ -113,7 +113,7 @@ extension SymbolFactory {
             return updated.with(code: symbol.code)
         }
 
-        guard var existing = registry.first(where: { $0.id == symbol.id }) else {
+        guard let existing = registry.first(where: { $0.id == symbol.id }) else {
             registry.insert(symbol)
             return symbol
         }

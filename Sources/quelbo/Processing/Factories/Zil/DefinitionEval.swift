@@ -12,7 +12,7 @@ extension Factories {
     ///
     class DefinitionEval: SymbolFactory {
         var nameSymbol: Symbol!
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
             var callerParams = tokens
@@ -40,27 +40,42 @@ extension Factories {
                 definition.insert(.atom(activation), at: 0)
             }
 
-            self.pro = try BlockProcessor(definition, with: registry)
+            self.blockProcessor = try BlockProcessor(definition, with: registry)
         }
 
         override func process() throws -> Symbol {
             let symbol = Symbol(
                 id: try evalID(tokens),
-                code: """
-                    \(pro.discardableResult)\
-                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) function.
-                    func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
-                    \(pro.warningComments(indented: true))\
-                    \(pro.auxiliaryDefs(indented: true))\
-                    \(pro.codeBlock.indented)
-                    }
-                    """,
-                type: pro.type,
+                code: codeBlock,
+                type: blockProcessor.type,
                 category: .functions,
-                children: pro.paramsSymbol.children
+                children: blockProcessor.children
             )
             Game.commit(symbol)
             return symbol
+        }
+    }
+}
+
+extension Factories.DefinitionEval {
+    var codeBlock: (Symbol) throws -> String {
+        let nameSymbol = nameSymbol!
+
+        return { symbol in
+            var pro = Symbol.BlockPro(
+                codeSymbol: symbol.children[0],
+                paramsSymbol: symbol.children[1]
+            )
+
+            return """
+                \(pro.discardableResult)\
+                /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) function.
+                func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
+                \(pro.warningComments(indented: true))\
+                \(pro.auxiliaryDefs(indented: true))\
+                \(pro.codeBlock().indented)
+                }
+                """
         }
     }
 }

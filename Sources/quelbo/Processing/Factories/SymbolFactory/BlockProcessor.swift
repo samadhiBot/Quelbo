@@ -66,7 +66,13 @@ extension BlockProcessor {
 
 // MARK: - Computed properties
 
-//extension BlockProcessor {
+extension BlockProcessor {
+    var argumentTypes: String {
+        paramsSymbol.children
+            .map { $0.type.description }
+            .joined(separator: ", ")
+    }
+
 //    /// The block activation, if one has been assigned.
 //    var activation: String {
 //        switch blockType! {
@@ -102,11 +108,11 @@ extension BlockProcessor {
 //            shouldIndent: indented
 //        )
 //    }
-//
-//    var children: [Symbol] {
-//        [codeSymbol, paramsSymbol]
-//    }
-//
+
+    var children: [Symbol] {
+        [codeSymbol, paramsSymbol]
+    }
+
 //    var codeBlock: String {
 //        if isRepeating {
 //            return """
@@ -146,24 +152,24 @@ extension BlockProcessor {
 //        }
 //        return false
 //    }
-//
-//    var metaData: Set<Symbol.MetaData> {
-//        guard let type = blockType else { return [] }
-//
-//        switch type {
-//        case .repeatingWithoutDefaultActivation:
-//            let params = paramsSymbol.children
-//                .map { $0.localVariable }
-//                .joined(separator: "\n")
-//            return [
-//                .blockType(type),
-//                .paramDeclarations(params),
-//            ]
-//        default:
-//            return [.blockType(type)]
-//        }
-//    }
-//
+
+    var metaData: Set<Symbol.MetaData> {
+        guard let type = blockType else { return [] }
+
+        switch type {
+        case .repeatingWithoutDefaultActivation:
+            let params = paramsSymbol.children
+                .map { $0.localVariable }
+                .joined(separator: "\n")
+            return [
+                .blockType(type),
+                .paramDeclarations(params),
+            ]
+        default:
+            return [.blockType(type)]
+        }
+    }
+
 //    func paramDeclarations(indented: Bool = false) -> String {
 //        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
 //
@@ -172,23 +178,23 @@ extension BlockProcessor {
 //            shouldIndent: indented
 //        )
 //    }
-//
-//    var returnValue: String {
-//        codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
-//    }
-//
-//    var type: Symbol.DataType {
-//        codeSymbol.type
-//    }
-//
+
+    var returnValue: String {
+        codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
+    }
+
+    var type: Symbol.DataType {
+        codeSymbol.type
+    }
+
 //    func warningComments(indented: Bool = false) -> String {
 //        emit(
 //            warnings,
 //            shouldIndent: indented
 //        )
 //    }
-//}
-//
+}
+
 //extension BlockProcessor {
 //    private func emit(
 //        _ values: [String],

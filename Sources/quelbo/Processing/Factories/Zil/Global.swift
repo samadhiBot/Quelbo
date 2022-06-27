@@ -74,7 +74,6 @@ extension Factories {
     }
 }
 
-
 // MARK: - Errors
 
 extension Factories.Global {

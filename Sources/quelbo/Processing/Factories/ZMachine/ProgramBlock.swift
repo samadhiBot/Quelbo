@@ -16,49 +16,50 @@ extension Factories {
             ["PROG"]
         }
 
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
-        }
-
-        var codeBlock: (Symbol) throws -> String {
-            let activation = pro.activation
-            let isRepeating = pro.isRepeating
-
-            return { symbol in
-                let code = symbol.children[0].code
-                let paramDeclarations = symbol.children[1]
-                    .children
-                    .map { $0.localVariable }
-                    .joined(separator: "\n")
-                    .appending("\n")
-                if isRepeating {
-                    return """
-                        \(paramDeclarations)\
-                        \(activation)\
-                        while true {
-                        \(code.indented)
-                        }
-                        """
-                } else {
-                    return """
-                        do {
-                        \(paramDeclarations.indented))\
-                        \(code.indented)
-                        }
-                        """
-                }
-            }
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                in: .blockWithDefaultActivation,
+                with: registry
+            )
         }
 
         override func process() throws -> Symbol {
             Symbol(
                 code: codeBlock,
-                type: pro.type,
-                children: pro.children,
-                meta: pro.metaData
+                type: blockProcessor.type,
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
             )
+        }
+    }
+}
+
+extension Factories.ProgramBlock {
+    var codeBlock: (Symbol) throws -> String {
+        { symbol in
+            let pro = Symbol.BlockPro(
+                codeSymbol: symbol.children[0],
+                paramsSymbol: symbol.children[1]
+            )
+            if pro.isRepeating {
+                return """
+                    \(pro.paramDeclarations())\
+                    \(pro.activation)\
+                    while true {
+                    \(pro.codeSymbol.code.indented)
+                    }
+                    """
+            } else {
+                return """
+                    do {
+                    \(pro.paramDeclarations(indented: true))\
+                    \(pro.codeSymbol.code.indented)
+                    }
+                    """
+            }
         }
     }
 }
