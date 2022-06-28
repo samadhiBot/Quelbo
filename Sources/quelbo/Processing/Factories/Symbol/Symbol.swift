@@ -80,6 +80,14 @@ class Symbol: Identifiable {
 // MARK: - Symbol helper methods
 
 extension Symbol {
+    /// Whether the symbol represents a literal value.
+    var blockType: SymbolFactory.ProgramBlockType? {
+        for metaData in meta {
+            if case .blockType(let blockType) = metaData { return blockType }
+        }
+        return nil
+    }
+
     /// Runs the ``Symbol/codeBlock`` and returns the resulting `String`.
     var code: String {
         do {

@@ -29,47 +29,42 @@ final class ReturnTests: QuelboTests {
         let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            meta: [.isReturnStatement(nil)]
         ))
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ34() throws {
         Game.shared.zMachineVersion = .z3
 
-        let symbol = try factory
-            .init([], in: .blockWithDefaultActivation)
-            .process()
+        let symbol = try factory.init([]).process()
+        symbol.meta = [.blockType(.blockWithDefaultActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
-            code: "break"
+            code: "break",
+            meta: [.blockType(.blockWithDefaultActivation)]
         ))
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ5Plus() throws {
         Game.shared.zMachineVersion = .z5
 
-        let symbol = try factory
-            .init([], in: .blockWithDefaultActivation)
-            .process()
+        let symbol = try factory.init([]).process()
+        symbol.meta = [.blockType(.blockWithDefaultActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            meta: [.blockType(.blockWithDefaultActivation)]
         ))
     }
 
     func testReturnNoValueBlockWithoutDefaultActivation() throws {
-        let symbol = try factory
-            .init([], in: .blockWithoutDefaultActivation)
-            .process()
+        let symbol = try factory.init([]).process()
+        symbol.meta = [.blockType(.blockWithoutDefaultActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
-            code: "break defaultAct"
+            code: "break defaultAct",
+            meta: [.blockType(.blockWithoutDefaultActivation)]
         ))
     }
 
@@ -79,9 +74,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            type: .bool,
+            meta: [.isReturnStatement(.bool)]
         ))
     }
 
@@ -91,9 +86,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            type: .bool,
+            meta: [.isReturnStatement(.bool)]
         ))
     }
 
@@ -103,9 +98,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return false",
-            type: .bool
+            type: .bool,
+            meta: [.isReturnStatement(.bool)]
         ))
     }
 
@@ -115,9 +110,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return 42",
-            type: .int
+            type: .int,
+            meta: [.isReturnStatement(.int)]
         ))
     }
 
@@ -127,9 +122,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: #"return "grue""#,
-            type: .string
+            type: .string,
+            meta: [.isReturnStatement(.string)]
         ))
     }
 
@@ -139,9 +134,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return foo",
-            type: .int
+            type: .int,
+            meta: [.isReturnStatement(.int)]
         ))
     }
 
@@ -151,9 +146,9 @@ final class ReturnTests: QuelboTests {
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return forest1",
-            type: .object
+            type: .object,
+            meta: [.isReturnStatement(.object)]
         ))
     }
 }

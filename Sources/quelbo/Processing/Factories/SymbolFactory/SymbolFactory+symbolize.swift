@@ -236,7 +236,6 @@ extension SymbolFactory {
         func findFactory() throws -> SymbolFactory {
             if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
                 tokens,
-                in: blockType,
                 with: registry
             ) {
                 return zMachine
@@ -283,7 +282,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        try Factories.List(listTokens, in: blockType, with: registry).process()
+        try Factories.List(listTokens, with: registry).process()
     }
 
     /// Translates a Zil

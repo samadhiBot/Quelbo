@@ -16,6 +16,7 @@ extension Symbol {
         init(for symbol: Symbol) {
             self.codeSymbol = symbol.children[0]
             self.paramsSymbol = symbol.children[1]
+            self.blockType = symbol.blockType
         }
     }
 }

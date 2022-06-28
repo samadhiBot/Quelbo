@@ -21,35 +21,66 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            if var value = symbols.first {
-                if value.type.isUnknown {
-                    if value.id == "t" {
-                        value = .trueSymbol
-                    } else if let registered = findRegistered(value.id) {
-                        value = registered
-//                        value = value.with(type: registered.type)
-                    }
+            if var value = symbols.shift() {
+//                if value.typeCertainty < .certain {
+//                    if value.id == "t" {
+//                        value = .trueSymbol
+//                    } else if let registered = findRegistered(value.id) {
+//                        value = registered
+////                        value = value.with(type: registered.type)
+//                    }
+//                }
+                if value.typeCertainty < .certain, let registered = findRegistered(value.id) {
+                    value = registered
                 }
                 return Symbol(
-                    code: { "return \($0.children[0].code)" },
+                    code: { symbol in
+                        "return \(symbol.children[0].code)"
+                    },
                     type: value.type,
                     children: [value],
                     meta: [.isReturnStatement(value.type)]
                 )
             }
 
-            switch blockType {
-            case .blockWithActivation,
-                 .blockWithDefaultActivation,
-                 .repeatingWithActivation,
-                 .repeatingWithDefaultActivation:
-                return versioned(breakSymbol())
-            case .blockWithoutDefaultActivation,
-                 .repeatingWithoutDefaultActivation:
-                return breakSymbol("defaultAct")
-            case .none:
-                return returnTrueSymbol
-            }
+            return Symbol(
+                code: { symbol in
+                    switch symbol.blockType {
+                    case .blockWithActivation(let activation):
+                        if Game.shared.zMachineVersion.intValue <= 4 {
+                            return "break \(activation)"
+                        } else {
+                            return "return true"
+                        }
+                    case .blockWithDefaultActivation, .repeatingWithDefaultActivation:
+                        if Game.shared.zMachineVersion.intValue <= 4 {
+                            return "break"
+                        } else {
+                            return "return true"
+                        }
+                    case .blockWithoutDefaultActivation, .repeatingWithoutDefaultActivation:
+                        return "break defaultAct"
+                    case .repeatingWithActivation(let activation):
+                        return "break \(activation)"
+                    case .none:
+                        return "return true"
+                    }
+                },
+                meta: [.isReturnStatement(nil)]
+            )
+
+//            switch blockType {
+//            case .blockWithActivation,
+//                 .blockWithDefaultActivation,
+//                 .repeatingWithActivation,
+//                 .repeatingWithDefaultActivation:
+//                return versioned(breakSymbol())
+//            case .blockWithoutDefaultActivation,
+//                 .repeatingWithoutDefaultActivation:
+//                return breakSymbol("defaultAct")
+//            case .none:
+//                return returnTrueSymbol
+//            }
         }
     }
 }

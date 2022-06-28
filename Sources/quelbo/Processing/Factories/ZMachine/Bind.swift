@@ -17,11 +17,8 @@ extension Factories {
         }
 
         override func processTokens() throws {
-            self.blockProcessor = try BlockProcessor(
-                tokens,
-                in: .blockWithoutDefaultActivation,
-                with: registry
-            )
+            self.blockProcessor = try BlockProcessor(tokens, with: registry)
+            blockProcessor.blockType = .blockWithoutDefaultActivation
         }
     }
 }

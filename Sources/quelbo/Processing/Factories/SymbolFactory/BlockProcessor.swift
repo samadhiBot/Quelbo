@@ -20,9 +20,10 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
+    var blockType: SymbolFactory.ProgramBlockType?
     var codeSymbol = Symbol()
     var paramsSymbol = Symbol()
-
+    
 //    var auxiliaries: [Symbol] = []
 //    var warnings: [String] = []
 
