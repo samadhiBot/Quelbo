@@ -40,7 +40,7 @@ extension Factories {
 extension Factories.ProgramBlock {
     var codeBlock: (Symbol) throws -> String {
         { symbol in
-            let pro = Symbol.BlockPro(symbol.children)
+            let pro = Symbol.BlockPro(for: symbol)
 
             if pro.isRepeating {
                 return """

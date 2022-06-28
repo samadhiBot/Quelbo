@@ -60,16 +60,14 @@ extension Factories {
 extension Factories.DefinitionEval {
     var codeBlock: (Symbol) throws -> String {
         let nameSymbol = nameSymbol!
-        let warningComments = blockProcessor.warningComments(indented: true)
 
         return { symbol in
-            var pro = Symbol.BlockPro(symbol.children)
+            var pro = Symbol.BlockPro(for: symbol)
 
             return """
                 \(pro.discardableResult)\
                 /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) function.
                 func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
-                \(warningComments)\
                 \(pro.auxiliaryDefs(indented: true))\
                 \(pro.codeBlock().indented)
                 }

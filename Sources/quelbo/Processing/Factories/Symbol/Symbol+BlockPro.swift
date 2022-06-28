@@ -12,15 +12,10 @@ extension Symbol {
         var codeSymbol: Symbol
         var paramsSymbol: Symbol
         var blockType: SymbolFactory.ProgramBlockType?
-        var auxiliaries: [Symbol] = []
-//        var warnings: [String]
 
-        init(_ symbols: [Symbol]) {
-            self.codeSymbol = symbols[0]
-            self.paramsSymbol = symbols[1]
-            if symbols.count > 2 {
-                self.auxiliaries = Array(symbols[2...])
-            } 
+        init(for symbol: Symbol) {
+            self.codeSymbol = symbol.children[0]
+            self.paramsSymbol = symbol.children[1]
         }
     }
 }
@@ -38,18 +33,35 @@ extension Symbol.BlockPro {
         }
     }
 
+    /// <#Description#>
+    var auxiliaries: [Symbol] {
+        paramsSymbol.children.filter { $0.isParamWith(context: .local) }
+    }
+
+    /// <#Description#>
+    var normalAndOptionalParams: [Symbol] {
+        paramsSymbol.children.filter { !$0.isParamWith(context: .local) }
+    }
+
+    /// <#Description#>
+    /// - Parameter indented: <#indented description#>
+    /// - Returns: <#description#>
     func auxiliaryDefs(indented: Bool = false) -> String {
         emit(
             auxiliaries.compactMap {
                 guard !$0.code.contains("=") else {
                     return nil
                 }
+                print("// 🥥 \($0.localVariable)")
                 return $0.localVariable
             },
             shouldIndent: indented
         )
     }
 
+    /// <#Description#>
+    /// - Parameter indented: <#indented description#>
+    /// - Returns: <#description#>
     func auxiliaryDefsWithDefaultValues(indented: Bool = false) -> String {
         emit(
             auxiliaries.compactMap {
@@ -62,6 +74,8 @@ extension Symbol.BlockPro {
         )
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     mutating func codeBlock() -> String {
         if isRepeating {
             return """
@@ -80,21 +94,29 @@ extension Symbol.BlockPro {
         }
     }
 
+    /// <#Description#>
     var deepParameters: String {
         guard let deepParams = codeSymbol.children.deepParamDeclarations else { return "" }
 
         return deepParams.appending("\n")
     }
 
+    /// <#Description#>
     var discardableResult: String {
         codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
     }
 
+    /// <#Description#>
+    /// - Parameters:
+    ///   - values: <#values description#>
+    ///   - shouldIndent: <#shouldIndent description#>
+    /// - Returns: <#description#>
     func emit(
         _ values: [String],
         shouldIndent: Bool
     ) -> String {
         guard !values.isEmpty else { return "" }
+        print("// 🫐 \(values)")
         if shouldIndent {
             return values
                 .joined(separator: "\n")
@@ -107,6 +129,7 @@ extension Symbol.BlockPro {
         }
     }
 
+    /// <#Description#>
     var isRepeating: Bool {
         if blockType?.isRepeating == true {
             return true
@@ -117,6 +140,7 @@ extension Symbol.BlockPro {
         return false
     }
 
+    /// <#Description#>
     var metaData: Set<Symbol.MetaData> {
         guard let type = blockType else { return [] }
 
@@ -134,19 +158,24 @@ extension Symbol.BlockPro {
         }
     }
 
+    /// <#Description#>
+    /// - Parameter indented: <#indented description#>
+    /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
         guard blockType != .repeatingWithoutDefaultActivation else { return "" }
 
         return emit(
-            paramsSymbol.children.map { $0.localVariable },
+            normalAndOptionalParams.map { $0.localVariable },
             shouldIndent: indented
         )
     }
 
+    /// <#Description#>
     var returnValue: String {
         codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
     }
 
+    /// <#Description#>
     var type: Symbol.DataType {
         codeSymbol.type
     }

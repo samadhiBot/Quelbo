@@ -42,15 +42,12 @@ extension Factories {
 
 extension Factories.Function {
     var codeBlock: (Symbol) throws -> String {
-        let warningComments = blockProcessor.warningComments(indented: true)
-
-        return { symbol in
-            var pro = Symbol.BlockPro(symbol.children)
+        { symbol in
+            var pro = Symbol.BlockPro(for: symbol)
             let argNames = pro.paramsSymbol.children.codeValues(.commaSeparated)
 
             return """
                 {\(argNames.isEmpty ? "" : " (\(argNames))\(pro.returnValue) in")
-                \(warningComments)\
                 \(pro.auxiliaryDefs(indented: true))\
                 \(pro.codeBlock().indented)
                 }

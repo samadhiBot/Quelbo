@@ -157,6 +157,17 @@ extension Symbol {
     }
 
     /// Whether the symbol represents a return statement.
+    func isParamWith(context: BlockProcessor.Context) -> Bool {
+        for metaData in meta {
+            if case .paramContext(let paramContext) = metaData {
+                return paramContext == context
+            }
+        }
+        return false
+    }
+
+
+    /// Whether the symbol represents a return statement.
     var isReturnStatement: Bool {
         for metaData in meta {
             if case .isReturnStatement = metaData { return true }
@@ -251,6 +262,19 @@ extension Symbol {
             category: newCategory ?? category,
             children: newChildren ?? children,
             meta: newMeta ?? meta
+        )
+    }
+
+    func with(
+        codeBlock: @escaping (Symbol) throws -> String
+    ) -> Symbol {
+        Symbol(
+            id: id,
+            code: codeBlock,
+            type: type,
+            category: category,
+            children: children,
+            meta: meta
         )
     }
 

@@ -23,8 +23,8 @@ class BlockProcessor: SymbolFactory {
     var codeSymbol = Symbol()
     var paramsSymbol = Symbol()
 
-    var auxiliaries: [Symbol] = []
-    var warnings: [String] = []
+//    var auxiliaries: [Symbol] = []
+//    var warnings: [String] = []
 
     override func processTokens() throws {
         var tokens = tokens
@@ -110,7 +110,7 @@ extension BlockProcessor {
 //    }
 
     var children: [Symbol] {
-        [codeSymbol, paramsSymbol] + auxiliaries
+        [codeSymbol, paramsSymbol]
     }
 
 //    var codeBlock: String {
@@ -187,12 +187,12 @@ extension BlockProcessor {
         codeSymbol.type
     }
 
-    func warningComments(indented: Bool = false) -> String {
-        emit(
-            warnings,
-            shouldIndent: indented
-        )
-    }
+//    func warningComments(indented: Bool = false) -> String {
+//        emit(
+//            warnings,
+//            shouldIndent: indented
+//        )
+//    }
 }
 
 extension BlockProcessor {
@@ -291,36 +291,47 @@ extension BlockProcessor {
                            .unknown
                 }
                 paramSymbol = param.with(
-                    code: "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
+                    codeBlock: { symbol in
+                        "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
+                    }
                 )
 //                registry.register(nameSymbol.with(type: type))
 //                registry.register(valueSymbol.with(type: type))
 
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
-                    code: "\(found.id): \(found.type)\(context.defaultValue(for: found))"
+                    codeBlock: { symbol in
+                        "\(symbol.id): \(symbol.type)\(context.defaultValue(for: symbol))"
+                    }
                 )
-            } else if let type = findRegistered(param.id)?.type {
-                paramSymbol = param.with(
-                    code: "\(param.id): \(type)"
+            } else if let registered = findRegistered(param.id) {
+                paramSymbol = registered.with(
+                    codeBlock: { symbol in
+                        "\(symbol.id): \(symbol.type)"
+                    }
                 )
             } else {
-                warnings.append("// Parameter `\(param.id)` was specified but unused")
-                continue
+                throw Error.unusedParameter(param)
             }
 
-            switch context {
-            case .normal, .optional:
-                parameters.append(paramSymbol)
-                if paramSymbol.isMutating(in: validatedCode.children) == true {
-                    auxiliaries.append(Symbol(
-                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
-                        type: paramSymbol.type
-                    ))
-                }
-            case .local:
-                auxiliaries.append(paramSymbol)
-            }
+            var metaData = paramSymbol.meta
+            metaData.insert(.paramContext(context))
+            parameters.append(paramSymbol.with(
+                meta: metaData
+            ))
+
+//            switch context {
+//            case .normal, .optional:
+//                parameters.append(paramSymbol)
+//                if paramSymbol.isMutating(in: validatedCode.children) == true {
+//                    auxiliaries.append(Symbol(
+//                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
+//                        type: paramSymbol.type
+//                    ))
+//                }
+//            case .local:
+//                auxiliaries.append(paramSymbol)
+//            }
         }
 
         return Symbol(
@@ -335,5 +346,6 @@ extension BlockProcessor {
 extension BlockProcessor {
     enum Error: Swift.Error {
         case invalidNameValueParameterPair([Symbol])
+        case unusedParameter(Symbol)
     }
 }
