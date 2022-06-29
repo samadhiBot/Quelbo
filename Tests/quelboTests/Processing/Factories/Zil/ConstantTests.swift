@@ -47,7 +47,7 @@ final class ConstantTests: QuelboTests {
             code: "let foo: <Unknown> = unexpected",
             type: .unknown,
             category: .constants,
-            meta: [.isImmutable]
+            meta: [.isImmutable, .typeCertainty(.unknown)]
         )
 
         XCTAssertNoDifference(symbol, expected)

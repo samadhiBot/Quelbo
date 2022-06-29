@@ -52,13 +52,18 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            var metaData = metaData
+            if valueSymbol.typeCertainty < .certain {
+                metaData.insert(.typeCertainty(valueSymbol.typeCertainty))
+            }
+
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
                 category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: [.typeCertainty(valueSymbol.typeCertainty)]
+                meta: metaData
             )
 
             Game.commit(symbol)
