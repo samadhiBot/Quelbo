@@ -118,7 +118,7 @@ final class AddTests: QuelboTests {
             code: "var pAclause: Bool = false",
             type: .bool,
             category: .globals,
-            meta: [.isLiteralBoolean(false), .typeCertainty(.booleanFalse)]
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
         let symbol = try factory.init([
@@ -131,7 +131,7 @@ final class AddTests: QuelboTests {
             code: "var pAclause: Int = 0",
             type: .int,
             category: .globals,
-            meta: [.isLiteralBoolean(false)]
+            meta: []
         ))
 
         XCTAssertNoDifference(symbol, Symbol(

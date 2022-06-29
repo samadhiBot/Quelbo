@@ -249,13 +249,22 @@ extension Symbol {
     /// - Returns: The symbol with any specified properties updated.
     func with(
         id newID: Symbol.Identifier? = nil,
+        code newCode: String? = nil,
         type newType: DataType? = nil,
         category newCategory: Category? = nil,
         children newChildren: [Symbol]? = nil,
         meta newMeta: Set<MetaData>? = nil
     ) -> Symbol {
-        Symbol(
+        var codeValue: ((Symbol) throws -> String) {
+            if let newCode = newCode {
+                return { _ in newCode }
+            } else {
+                return codeBlock
+            }
+        }
+        return Symbol(
             id: newID ?? id,
+            code: codeValue,
             type: newType ?? type,
             category: newCategory ?? category,
             children: newChildren ?? children,
@@ -263,31 +272,21 @@ extension Symbol {
         )
     }
 
-    /// <#Description#>
-    /// - Parameter newCode: <#newCode description#>
-    /// - Returns: <#description#>
-    func with(code newCode: String) -> Symbol {
+    func with(
+        id newID: Symbol.Identifier? = nil,
+        code newCode: @escaping (Symbol) throws -> String,
+        type newType: DataType? = nil,
+        category newCategory: Category? = nil,
+        children newChildren: [Symbol]? = nil,
+        meta newMeta: Set<MetaData>? = nil
+    ) -> Symbol {
         Symbol(
-            id: id,
+            id: newID ?? id,
             code: newCode,
-            type: type,
-            category: category,
-            children: children,
-            meta: meta
-        )
-    }
-
-    /// <#Description#>
-    /// - Parameter codeBlock: <#codeBlock description#>
-    /// - Returns: <#description#>
-    func with(codeBlock: @escaping (Symbol) throws -> String) -> Symbol {
-        Symbol(
-            id: id,
-            code: codeBlock,
-            type: type,
-            category: category,
-            children: children,
-            meta: meta
+            type: newType ?? type,
+            category: newCategory ?? category,
+            children: newChildren ?? children,
+            meta: newMeta ?? meta
         )
     }
 
@@ -532,10 +531,11 @@ extension Array where Element == Symbol {
     }
 
     var deepReplaceEmptyReturnValues: [Symbol] {
-        map { symbol in
-            symbol
-                .with(code: symbol.code.replacingOccurrences(of: "return false", with: "return nil"))
-                .with(children: symbol.children.deepReplaceEmptyReturnValues)
+        map {
+            $0.with(
+                code: $0.code.replacingOccurrences(of: "return false", with: "return nil"),
+                children: $0.children.deepReplaceEmptyReturnValues
+            )
         }
     }
 

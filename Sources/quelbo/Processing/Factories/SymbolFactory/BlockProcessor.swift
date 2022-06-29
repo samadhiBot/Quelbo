@@ -114,7 +114,7 @@ extension BlockProcessor {
         [codeSymbol, paramsSymbol]
     }
 
-//    var codeBlock: String {
+//    var code: String {
 //        if isRepeating {
 //            return """
 //                \(deepParameters)\
@@ -292,7 +292,7 @@ extension BlockProcessor {
                            .unknown
                 }
                 paramSymbol = param.with(
-                    codeBlock: { symbol in
+                    code: { symbol in
                         "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
                     }
                 )
@@ -301,13 +301,13 @@ extension BlockProcessor {
 
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
-                    codeBlock: { symbol in
+                    code: { symbol in
                         "\(symbol.id): \(symbol.type)\(context.defaultValue(for: symbol))"
                     }
                 )
             } else if let registered = findRegistered(param.id) {
                 paramSymbol = registered.with(
-                    codeBlock: { symbol in
+                    code: { symbol in
                         "\(symbol.id): \(symbol.type)"
                     }
                 )
