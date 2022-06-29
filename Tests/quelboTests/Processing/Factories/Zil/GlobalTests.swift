@@ -46,7 +46,8 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: <Unknown> = unexpected",
-            category: .globals
+            category: .globals,
+            meta: [.typeCertainty(.unknown)]
         )
 
         XCTAssertNoDifference(symbol, expected)

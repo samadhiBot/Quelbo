@@ -75,6 +75,8 @@ final class AndTests: QuelboTests {
     }
 
     func testAndTwoBooleanExpressions() throws {
+        let registry: Set<Symbol> = [Symbol(id: "rarg", type: .int)]
+
         let symbol = try factory.init([
             .form([
                 .atom("=?"),
@@ -85,7 +87,7 @@ final class AndTests: QuelboTests {
                 .atom("NOT"),
                 .global("FOUND-TREASURE-CHEST"),
             ]),
-        ]).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

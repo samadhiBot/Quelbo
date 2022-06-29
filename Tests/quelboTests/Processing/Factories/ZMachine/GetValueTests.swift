@@ -39,8 +39,7 @@ final class GetValueTests: QuelboTests {
             Symbol(
                 id: "sandwich",
                 code: "var sandwich: Bool = true",
-                type: .bool,
-                category: .globals
+                type: .bool
             )
         ]
 
@@ -51,8 +50,7 @@ final class GetValueTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "sandwich",
             code: "sandwich",
-            type: .bool,
-            category: .globals
+            type: .bool
         ))
     }
 

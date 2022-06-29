@@ -92,6 +92,10 @@ final class AddTests: QuelboTests {
     }
 
     func testAddOneToTableElement() throws {
+        let registry: Set<Symbol> = [
+            Symbol(id: "src", code: "<table definition>", type: .table)
+        ]
+
         let symbol = try factory.init([
             .form([
                 .atom("GETB"),
@@ -99,7 +103,7 @@ final class AddTests: QuelboTests {
                 .decimal(0)
             ]),
             .decimal(1)
-        ]).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "try src.get(at: 0).add(1)",

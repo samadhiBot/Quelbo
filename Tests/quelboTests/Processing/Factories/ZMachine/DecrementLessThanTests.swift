@@ -17,10 +17,14 @@ final class DecrementLessThanTests: QuelboTests {
     }
 
     func testDecrementLessThan() throws {
+        let registry: Set<Symbol> = [
+            Symbol(id: "foo", type: .variable(.int))
+        ]
+
         let symbol = try factory.init([
             .local("FOO"),
             .decimal(3),
-        ]).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.decrement().isLessThan(3)",

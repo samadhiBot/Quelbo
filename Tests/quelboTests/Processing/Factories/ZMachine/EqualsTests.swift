@@ -40,10 +40,12 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualAtomAndDecimal() throws {
+        let registry: Set<Symbol> = [Symbol(id: "n", type: .int)]
+
         let symbol = try factory.init([
             .local("N"),
             .decimal(3),
-        ]).process()
+        ], with: registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "n.equals(3)",
