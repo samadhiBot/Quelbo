@@ -63,7 +63,7 @@ class SymbolFactory {
         let nameSymbol = try findNameSymbol(in: &tokens)
         let params = try symbolize(tokens).map(\.code).joined(separator: ":")
 
-        return .init(stringLiteral: "\(nameSymbol.id)(\(params))")
+        return .init(stringLiteral: "\(nameSymbol)(\(params))")
     }
 
     /// Processes the ``tokens`` array into a ``Symbol`` array.

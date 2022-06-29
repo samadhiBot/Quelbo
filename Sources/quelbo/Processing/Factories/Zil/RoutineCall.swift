@@ -32,13 +32,13 @@ extension Factories {
                 guard let value = paramSymbols.shift() else {
                     return nil
                 }
-                return symbol.with(code: "\(symbol.id): \(value.code)")
+                return symbol.with(code: "\(symbol): \(value.code)")
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                code: "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "\(routine)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: routine.type,
                 children: params
             )

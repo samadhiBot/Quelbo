@@ -11,7 +11,7 @@ import Foundation
 /// A representation of a piece of Zil code and its Swift translation.
 class Symbol: Identifiable {
     /// The symbol's unique identifier.
-    let id: Symbol.Identifier
+    let id: Symbol.Identifier?
 
     /// The Swift translation of a piece of Zil code.
     let codeBlock: (Symbol) throws -> String
@@ -23,7 +23,7 @@ class Symbol: Identifiable {
     var category: Category?
 
     /// Any child symbols belonging to a complex symbol.
-    let children: [Symbol]
+    var children: [Symbol]
 
     /// Any additional information required for symbol processing.
     var meta: Set<MetaData>
@@ -44,7 +44,7 @@ class Symbol: Identifiable {
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        self.id = id ?? .id("")
+        self.id = id
         self.codeBlock = codeBlock
         self.type = type
         self.category = category
@@ -68,7 +68,7 @@ class Symbol: Identifiable {
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        self.id = id ?? .id("")
+        self.id = id
         self.codeBlock = { _ in code.rightTrimmed }
         self.type = type
         self.category = category
@@ -129,9 +129,9 @@ extension Symbol {
     }
 
     /// <#Description#>
-    var identifiable: Bool {
-        !id.stringLiteral.isEmpty
-    }
+//    var identifiable: Bool {
+//        id != nil
+//    }
 
     /// Whether the symbol represents a closure.
     var isFunctionClosure: Bool {
@@ -192,16 +192,19 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with other: Symbol) {
-        var metaData = meta
+//        var metaData = meta
 
-        if type != other.type && typeCertainty < other.typeCertainty {
+        print("// 🥔 \(self.code) vs \(other.code)")
+        if typeCertainty < other.typeCertainty {
             self.type = other.type
-            metaData = metaData.withTypeCertainty(of: other)
+//            metaData = metaData.withTypeCertainty(of: other)
         }
         if let otherCategory = other.category, category != otherCategory {
             self.category = otherCategory
         }
-        self.meta = metaData
+        self.children = other.children
+//        self.meta = metaData
+        self.meta = other.meta
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
@@ -235,6 +238,26 @@ extension Symbol {
 //    var isPlaceholder: Bool {
 //        typeCertainty != .certain
 //    }
+
+    /// <#Description#>
+    /// - Parameter value: <#value description#>
+    func translate(_ value: String) -> String {
+        switch type {
+        case .bool:
+            switch value {
+            case "0", "false": return "false"
+            default: return "true"
+            }
+        case .int, .int16, .int32, .int8:
+            switch value {
+            case "0", "false": return "0"
+            case "true": return "1"
+            default: return value
+            }
+        default:
+            return value
+        }
+    }
 
     /// Returns the symbol with one or more properties replaced with those specified.
     ///
@@ -378,18 +401,23 @@ extension Symbol: CustomDumpReflectable {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        var details: [String] = []
-//        var ref = "\(ObjectIdentifier(self))"
-//        ref.removeFirst(28)
-//        ref.removeLast()
-        if identifiable { details.append("id: \(id)") }
-//        details.append("ref: \(ref)")
-        if !code.isEmpty { details.append("code: \(code)") }
-        details.append("type: \(type)")
-        if let category = category { details.append("category: \(category)") }
-        if !meta.isEmpty { details.append("meta: \(meta)") }
-
-        return "{\n\(details.joined(separator: ",\n").indented)\n}"
+        if let id = id {
+            return id.stringLiteral
+        } else {
+            return code
+        }
+//        var details: [String] = []
+////        var ref = "\(ObjectIdentifier(self))"
+////        ref.removeFirst(28)
+////        ref.removeLast()
+//        if let id = id { details.append("id: \(id)") }
+////        details.append("ref: \(ref)")
+//        if !code.isEmpty { details.append("code: \(code)") }
+//        details.append("type: \(type)")
+//        if let category = category { details.append("category: \(category)") }
+//        if !meta.isEmpty { details.append("meta: \(meta)") }
+//
+//        return "{\n\(details.joined(separator: ",\n").indented)\n}"
     }
 }
 
@@ -405,7 +433,9 @@ extension Symbol: Equatable {
 
 extension Symbol: Hashable {
     func hash(into hasher: inout Hasher) {
-        assert(identifiable, "Attempted to register a symbol without an id: \(code)")
+        guard let id = id else {
+            fatalError("Attempted to register a symbol without an id: \(code)")
+        }
         hasher.combine(id)
     }
 }
@@ -564,8 +594,8 @@ extension Array where Element == Symbol {
     /// - Parameter id: A unique `Symbol` identifier.
     ///
     /// - Returns: A `Symbol` with the specified `id`, if one exists within the array.
-    func find(id symbolID: Symbol.Identifier) -> Symbol? {
-        guard !symbolID.stringLiteral.isEmpty else { return nil }
+    func find(id symbolID: Symbol.Identifier?) -> Symbol? {
+        guard let symbolID = symbolID else { return nil }
 
         for symbol in self {
             if symbolID == symbol.id {
@@ -621,22 +651,28 @@ extension Array where Element == Symbol {
 // MARK: - Common literal symbols
 
 extension Symbol {
+    /// A literal integer `0` symbol.
+    static func booleanSymbol(_ boolean: Bool) -> Symbol {
+        Symbol(
+            code: { symbol in
+                symbol.translate("\(boolean)")
+            },
+            type: .bool,
+            meta: boolean ? [.isLiteral] : [.isLiteral, .typeCertainty(.booleanFalse)]
+        )
+    }
+
     /// A literal boolean `false` symbol.
     static var falseSymbol: Symbol {
-        Symbol(
-            code: "false",
-            type: .bool,
-            meta: [
-                .isLiteral,
-                .typeCertainty(.booleanFalse)
-            ]
-        )
+        .booleanSymbol(false)
     }
 
     /// A literal integer `0` symbol.
     static func integerSymbol(_ integer: Int) -> Symbol {
         Symbol(
-            code: "\(integer)",
+            code: { symbol in
+                symbol.translate("\(integer)")
+            },
             type: .int,
             meta: integer == 0 ? [.isLiteral, .typeCertainty(.integerZero)] : [.isLiteral]
         )
@@ -644,7 +680,7 @@ extension Symbol {
 
     /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
-        Symbol(code: "true", type: .bool, meta: [.isLiteral])
+        .booleanSymbol(true)
     }
 
     /// A literal integer `0` symbol.

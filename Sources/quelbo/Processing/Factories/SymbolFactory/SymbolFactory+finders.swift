@@ -90,7 +90,7 @@ extension SymbolFactory {
     /// - Parameter id: The symbol `id` to search for.
     ///
     /// - Returns: A symbol with the specified `id` if one has been registered.
-    func findRegistered(_ id: Symbol.Identifier) -> Symbol? {
+    func findRegistered(_ id: Symbol.Identifier?) -> Symbol? {
         registry.first(where: { $0.id == id })
     }
 
@@ -98,10 +98,12 @@ extension SymbolFactory {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func upsert(_ symbol: Symbol) throws -> Symbol {
-        assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
+        guard let id = symbol.id else {
+            fatalError()
+        }
 
         if symbol.category == .globals {
-            guard let global = try? Game.find(symbol.id, category: .globals) else {
+            guard let global = try? Game.find(id, category: .globals) else {
                 Game.commit(symbol)
                 return symbol
             }
@@ -113,7 +115,7 @@ extension SymbolFactory {
             return global //updated.with(code: symbol.code)
         }
 
-        guard let local = registry.first(where: { $0.id == symbol.id }) else {
+        guard let local = registry.first(where: { id == $0.id }) else {
             registry.insert(symbol)
             return symbol
         }

@@ -19,7 +19,7 @@ extension Factories {
         override var codeBlock: (Symbol) throws -> String {
             let code = valueSymbol.code
             return { symbol in
-                "setPropertyDefault(\(symbol.id), \(code))"
+                "setPropertyDefault(\(symbol), \(code))"
             }
         }
     }

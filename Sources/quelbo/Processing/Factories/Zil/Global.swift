@@ -43,7 +43,7 @@ extension Factories {
                     value = symbol.type.emptyValueAssignment
                 }
 
-                return "\(declare) \(symbol.id): \(symbol.type)\(value)"
+                return "\(declare) \(symbol): \(symbol.type)\(value)"
             }
         }
 
@@ -52,20 +52,13 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-//            var meta = metaData
-////                .union(valueSymbol.meta)
-////                .subtracting([.isLiteral])
-//            if valueSymbol.meta.contains(.isImmutable) {
-//                meta.insert(.isImmutable)
-//            }
-
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
                 category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: metaData
+                meta: [.typeCertainty(valueSymbol.typeCertainty)]
             )
 
             Game.commit(symbol)

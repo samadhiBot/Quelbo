@@ -282,6 +282,7 @@ extension BlockProcessor {
                 guard
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
+                    let nameSymbolID = nameSymbol.id,
                     let valueSymbol = param.children.last
                 else {
                     throw Error.invalidNameValueParameterPair(param.children)
@@ -293,7 +294,7 @@ extension BlockProcessor {
                 }
                 paramSymbol = param.with(
                     code: { symbol in
-                        "\(nameSymbol.id): \(type) = \(valueSymbol.code)"
+                        "\(nameSymbolID): \(type) = \(valueSymbol.code)"
                     }
                 )
 //                registry.register(nameSymbol.with(type: type))
@@ -302,13 +303,13 @@ extension BlockProcessor {
             } else if let found = validatedCode.children.find(id: param.id) {
                 paramSymbol = found.with(
                     code: { symbol in
-                        "\(symbol.id): \(symbol.type)\(context.defaultValue(for: symbol))"
+                        "\(symbol): \(symbol.type)\(context.defaultValue(for: symbol))"
                     }
                 )
             } else if let registered = findRegistered(param.id) {
                 paramSymbol = registered.with(
                     code: { symbol in
-                        "\(symbol.id): \(symbol.type)"
+                        "\(symbol): \(symbol.type)"
                     }
                 )
             } else {

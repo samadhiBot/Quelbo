@@ -77,11 +77,12 @@ extension Game {
     ///
     /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
     static func find(
-        _ id: Symbol.Identifier,
+        _ id: Symbol.Identifier?,
         type: Symbol.DataType? = nil,
         category categories: Symbol.Category...
     ) throws -> Symbol {
         guard
+            let id = id,
             let symbol = shared.gameSymbols.first(where: {
                 if $0.id != id {
                     return false
@@ -95,7 +96,7 @@ extension Game {
                 return true
             })
         else {
-            throw GameError.symbolNotFound(id, categories: categories)
+            throw GameError.symbolNotFound(id ?? "Nil", categories: categories)
         }
         return symbol
     }
@@ -116,7 +117,7 @@ extension Game {
             } else {
                 categories = []
             }
-            throw GameError.symbolNotFound(symbol.id, categories: categories)
+            throw GameError.symbolNotFound(symbol.id ?? "Nil", categories: categories)
         }
         shared.gameSymbols.remove(at: index)
         shared.gameSymbols.insert(symbol)
@@ -126,8 +127,6 @@ extension Game {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     static func upsert(_ symbol: Symbol) -> Symbol {
-        assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
-
         switch shared.gameSymbols.insert(symbol) {
         case (true, _):
             return symbol

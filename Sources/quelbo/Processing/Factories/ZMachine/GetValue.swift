@@ -23,11 +23,11 @@ extension Factories {
         override func process() throws -> Symbol {
             let variable = try symbol(0)
 
-            guard variable.identifiable else {
+            guard let variableName = variable.id?.stringLiteral else {
                 throw Error.illegalGetValueOnNonIdentifiable(variable)
             }
 
-            return variable.with(code: variable.id.stringLiteral)
+            return variable.with(code: variableName)
         }
     }
 }

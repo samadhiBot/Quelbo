@@ -54,8 +54,8 @@ extension Factories {
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: """
-                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
-                    var \(nameSymbol.id) = \(typeName)(
+                    /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
+                    var \(nameSymbol) = \(typeName)(
                     \(propertySymbols.sorted.codeValues(.commaLineBreakSeparated))
                     )
                     """,

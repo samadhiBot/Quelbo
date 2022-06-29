@@ -40,14 +40,14 @@ extension Factories {
                 guard let value = symbols.shift() else {
                     throw Error.missingApplyParameter(symbol)
                 }
-                return symbol.with(code: "\(symbol.id): \(value)")
+                return symbol.with(code: "\(symbol): \(value)")
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
                 id: applicable.id,
-                code: "\(applicable.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "\(applicable)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: applicable.type,
                 children: params
             )

@@ -54,8 +54,8 @@ extension Factories.Routine {
 
             return """
                 \(pro.discardableResult)\
-                /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName).
-                func \(nameSymbol.id)\
+                /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
+                func \(nameSymbol)\
                 (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
                 \(pro.returnValue) {
                 \(pro.auxiliaryDefs(indented: true))\

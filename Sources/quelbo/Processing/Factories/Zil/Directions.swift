@@ -28,8 +28,10 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             while let dir = try? findNameSymbol(in: &tokens) {
+                guard var name = dir.id?.stringLiteral else {
+                    throw Error.missingDirectionID(dir)
+                }
                 var code = ""
-                var name = dir.id.stringLiteral
                 let zil = dir.zilName
 
                 if let fizmoDirection = Direction.find(zil) {
@@ -81,6 +83,7 @@ extension Factories {
 
 extension Factories.Directions {
     enum Error: Swift.Error {
+        case missingDirectionID(Symbol)
         case noDirectionsDefined([Token])
         case unconsumedDirectionTokens([Token])
     }

@@ -41,7 +41,7 @@ extension SymbolFactory {
         }
 
         return try typedSymbols.map { symbol in
-            symbol.identifiable ? try upsert(symbol) : symbol
+            symbol.id != nil ? try upsert(symbol) : symbol
         }
     }
 }
@@ -54,7 +54,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        //print("// 🍓 \(declaredType) >> \(symbol)")
+        print("// 🍓 \(declaredType) >> \(symbol)")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(type: .bool)
@@ -103,7 +103,12 @@ extension SymbolFactory {
             return symbol.with(
                 type: declaredType,
                 children: symbol.children.map { child in
-                    child.typeCertainty == .certain ? child : child.with(type: declaredType)
+                    guard child.typeCertainty < .certain else { return child }
+
+                    return child.with(
+                        type: declaredType,
+                        meta: child.meta.withoutTypeCertainty
+                    )
                 },
                 meta: symbol.meta.withoutTypeCertainty
             )

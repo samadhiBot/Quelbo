@@ -66,8 +66,8 @@ extension Factories.DefinitionEval {
 
             return """
                 \(pro.discardableResult)\
-                /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) function.
-                func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
+                /// The `\(nameSymbol)` (\(nameSymbol.zilName)) function.
+                func \(nameSymbol)(\(pro.paramsSymbol.code))\(pro.returnValue) {
                 \(pro.auxiliaryDefs(indented: true))\
                 \(pro.codeBlock().indented)
                 }

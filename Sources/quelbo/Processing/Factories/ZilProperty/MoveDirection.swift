@@ -26,15 +26,21 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             let dirSymbol = try findNameSymbol(in: &tokens)
-            var direction = dirSymbol.id.stringLiteral
+            guard var dirString = dirSymbol.id?.stringLiteral else {
+                throw Error.missingDirectionID(dirSymbol)
+            }
 
             if let predefined = Direction.find(dirSymbol.zilName) {
-                direction = predefined.id.description
+                dirString = predefined.id.description
             }
-            self.name = try Game.find(
-                .id(direction),
+            let foundDirection = try Game.find(
+                .id(dirString),
                 category: .properties
-            ).id.stringLiteral
+            )
+            guard let name = foundDirection.id?.stringLiteral else {
+                throw Error.missingDirectionID(foundDirection)
+            }
+            self.name = name
 
             while let token = tokens.shift() {
                 switch token {
@@ -134,5 +140,6 @@ extension Factories.MoveDirection {
         case invalidPerDirectionParameter(Token)
         case invalidSorryDirectionParameter(Token)
         case invalidToDirectionParameter(Token)
+        case missingDirectionID(Symbol)
     }
 }
