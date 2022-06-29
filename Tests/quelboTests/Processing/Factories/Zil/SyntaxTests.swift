@@ -24,6 +24,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "quit",
             code: """
                 Syntax(
                     verb: "quit",
@@ -34,7 +35,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testContemplateSyntax() throws {
@@ -46,6 +47,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "contemplate",
             code: """
                 Syntax(
                     verb: "contemplate",
@@ -57,7 +59,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testTakeSyntax() throws {
@@ -78,6 +80,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "take",
             code: """
                 Syntax(
                     verb: "take",
@@ -92,7 +95,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testWaterSyntax() throws {
@@ -110,6 +113,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "water",
             code: """
                 Syntax(
                     verb: "water",
@@ -124,7 +128,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testPutSyntax() throws {
@@ -149,6 +153,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "put",
             code: """
                 Syntax(
                     verb: "put",
@@ -167,7 +172,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testWakeSyntax() throws {
@@ -183,6 +188,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "wake",
             code: """
                 Syntax(
                     verb: "wake",
@@ -196,7 +202,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testWakeUpSyntax() throws {
@@ -213,6 +219,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "wake",
             code: """
                 Syntax(
                     verb: "wake",
@@ -227,7 +234,7 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 
     func testWakeKludgeSyntax() throws {
@@ -249,6 +256,7 @@ final class SyntaxTests: QuelboTests {
         ]).process()
 
         let expected = Symbol(
+            id: "wake",
             code: """
                 Syntax(
                     verb: "wake",
@@ -266,6 +274,6 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, expected)
-        XCTAssertNoDifference(try Game.find(symbol.id, category: .syntax), expected)
+        XCTAssertNoDifference(try Game.find(symbol.id!, category: .syntax), expected)
     }
 }

@@ -283,13 +283,14 @@ extension BlockProcessor {
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
                     let nameSymbolID = nameSymbol.id,
-                    let valueSymbol = param.children.last
+                    let valueSymbol = param.children.last,
+                    let valueSymbolID = valueSymbol.id
                 else {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
-                    type = findRegistered(nameSymbol.id)?.type ??
-                           findRegistered(valueSymbol.id)?.type ??
+                    type = findRegistered(nameSymbolID)?.type ??
+                           findRegistered(valueSymbolID)?.type ??
                            .unknown
                 }
                 paramSymbol = param.with(
@@ -306,7 +307,7 @@ extension BlockProcessor {
                         "\(symbol): \(symbol.type)\(context.defaultValue(for: symbol))"
                     }
                 )
-            } else if let registered = findRegistered(param.id) {
+            } else if let paramID = param.id, let registered = findRegistered(paramID) {
                 paramSymbol = registered.with(
                     code: { symbol in
                         "\(symbol): \(symbol.type)"

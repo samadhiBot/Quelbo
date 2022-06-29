@@ -17,8 +17,11 @@ extension Factories {
         override func processTokens() throws {
             var callerParams = tokens
             self.nameSymbol = try findNameSymbol(in: &callerParams)
-            let defSymbol = try Game.find(nameSymbol.id, category: .definitions)
+            guard let definitionID = nameSymbol.id else {
+                throw Error.missingDefinitionIdentifier(nameSymbol)
+            }
 
+            let defSymbol = try Game.find(definitionID, category: .definitions)
             var definition = defSymbol.definition
 
             var activation: String?
@@ -81,5 +84,6 @@ extension Factories.DefinitionEval {
 extension Factories.DefinitionEval {
     enum Error: Swift.Error {
         case definitionParametersNotFound([Token])
+        case missingDefinitionIdentifier(Symbol)
     }
 }

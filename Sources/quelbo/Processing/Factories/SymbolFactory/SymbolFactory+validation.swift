@@ -40,9 +40,11 @@ extension SymbolFactory {
         default: break
         }
 
-        return try typedSymbols.map { symbol in
-            symbol.id != nil ? try upsert(symbol) : symbol
+        for symbol in typedSymbols {
+            try upsert(symbol)
         }
+
+        return typedSymbols
     }
 }
 
@@ -78,7 +80,9 @@ extension SymbolFactory {
                 declaredVariableType != .unknown,
                 siblings.count > 1,
                 let mostCertain = siblings.findByTypeCertainty()
-            else { return symbol }
+            else {
+                return symbol
+            }
 
             return symbol.with(
                 type: mostCertain.type.asVariable,

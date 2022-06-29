@@ -260,7 +260,6 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-
         return try Game.find(.id(name)).with(code: name)
     }
 
@@ -290,15 +289,16 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
+        let metaData: Set<Symbol.MetaData> = [
+            .typeCertainty(expectedType == .unknown ? .unknown : .localValue),
+        ]
 
-        return try upsert(Symbol(
+        return Symbol(
             id: .id(name),
             code: name,
             type: expectedType,
-            meta: [
-                .typeCertainty(expectedType == .unknown ? .unknown : .localValue)
-            ]
-        ))
+            meta: metaData
+        )
     }
 
     /// Translates a Zil Object

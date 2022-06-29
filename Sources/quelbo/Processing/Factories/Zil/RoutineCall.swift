@@ -20,11 +20,15 @@ extension Factories {
         override func processTokens() throws {
             var routineTokens = tokens
             let nameSymbol = try findNameSymbol(in: &routineTokens)
-            if let routine = try? Game.find(nameSymbol.id, category: .routines) {
+            guard let routineID = nameSymbol.id else {
+                throw Error.missingRoutineIdentifier(nameSymbol)
+            }
+
+            if let routine = try? Game.find(routineID, category: .routines) {
                 self.routine = routine
             } else {
                 self.routine = try Game.find(try evalID(tokens), category: .functions)
-                                       .with(id: nameSymbol.id)
+                                       .with(id: routineID)
             }
 
             var paramSymbols = try symbolize(routineTokens)
@@ -50,6 +54,7 @@ extension Factories {
 
 extension Factories.RoutineCall {
     enum Error: Swift.Error {
+        case missingRoutineIdentifier(Symbol)
         case missingRoutineParameter(Symbol)
     }
 }

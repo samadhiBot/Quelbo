@@ -194,17 +194,17 @@ extension Symbol {
     func reconcile(with other: Symbol) {
 //        var metaData = meta
 
-        print("// 🥔 \(self.code) vs \(other.code)")
+        print("// 🥔 \(self) vs \(other)")
         if typeCertainty < other.typeCertainty {
             self.type = other.type
 //            metaData = metaData.withTypeCertainty(of: other)
+            self.children = other.children
+            self.meta = other.meta
+            if let otherCategory = other.category, category != otherCategory {
+                self.category = otherCategory
+            }
         }
-        if let otherCategory = other.category, category != otherCategory {
-            self.category = otherCategory
-        }
-        self.children = other.children
 //        self.meta = metaData
-        self.meta = other.meta
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
@@ -388,14 +388,30 @@ extension Symbol: CustomDumpReflectable {
         .init(
             self,
             children: [
-                "id": self.id,
+                "id": self.id == nil ? "none" : self.id!.stringLiteral,
                 "type": self.type,
-                "category": "\(self.category?.rawValue ?? "none")",
+                "category": self.category?.rawValue ?? "none",
                 "meta": self.meta,
                 "code": self.code,
             ],
             displayStyle: .struct
         )
+    }
+}
+
+extension Symbol: CustomDebugStringConvertible {
+    var debugDescription: String {
+        """
+        {
+            id: \(id?.stringLiteral ?? "none"),
+            code \(code),
+            type: \(type),
+            category: \(category?.rawValue ?? "none"),
+            children: \(children),
+            meta: \(meta)
+        }
+        """
+
     }
 }
 
@@ -406,18 +422,6 @@ extension Symbol: CustomStringConvertible {
         } else {
             return code
         }
-//        var details: [String] = []
-////        var ref = "\(ObjectIdentifier(self))"
-////        ref.removeFirst(28)
-////        ref.removeLast()
-//        if let id = id { details.append("id: \(id)") }
-////        details.append("ref: \(ref)")
-//        if !code.isEmpty { details.append("code: \(code)") }
-//        details.append("type: \(type)")
-//        if let category = category { details.append("category: \(category)") }
-//        if !meta.isEmpty { details.append("meta: \(meta)") }
-//
-//        return "{\n\(details.joined(separator: ",\n").indented)\n}"
     }
 }
 

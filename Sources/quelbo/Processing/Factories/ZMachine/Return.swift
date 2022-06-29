@@ -30,9 +30,13 @@ extension Factories {
 ////                        value = value.with(type: registered.type)
 //                    }
 //                }
-                if value.typeCertainty < .certain, let registered = findRegistered(value.id) {
+                if value.typeCertainty < .certain,
+                    let id = value.id,
+                    let registered = findRegistered(id)
+                {
                     value = registered
                 }
+
                 return Symbol(
                     code: { symbol in
                         "return \(symbol.children[0].code)"

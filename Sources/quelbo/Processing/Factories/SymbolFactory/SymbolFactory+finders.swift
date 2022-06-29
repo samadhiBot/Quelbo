@@ -90,40 +90,38 @@ extension SymbolFactory {
     /// - Parameter id: The symbol `id` to search for.
     ///
     /// - Returns: A symbol with the specified `id` if one has been registered.
-    func findRegistered(_ id: Symbol.Identifier?) -> Symbol? {
+    func findRegistered(_ id: Symbol.Identifier) -> Symbol? {
         registry.first(where: { $0.id == id })
     }
 
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func upsert(_ symbol: Symbol) throws -> Symbol {
-        guard let id = symbol.id else {
-            fatalError()
-        }
+    func upsert(_ symbol: Symbol) throws {
+        guard let id = symbol.id else { return }
 
         if symbol.category == .globals {
             guard let global = try? Game.find(id, category: .globals) else {
                 Game.commit(symbol)
-                return symbol
+                return
             }
 
             // return existing.reconcile(with: symbol)
             global.reconcile(with: symbol)
 //            try Game.overwrite(updated)
             print("🥒 upsert global \(global)")
-            return global //updated.with(code: symbol.code)
+//            return symbol //updated.with(code: symbol.code)
         }
 
         guard let local = registry.first(where: { id == $0.id }) else {
             registry.insert(symbol)
-            return symbol
+            return
         }
 
         // return local.reconcile(with: symbol)
         local.reconcile(with: symbol)
         print("🥒 upsert registry \(local)")
-        return local
+//        return symbol
     }
 
 }

@@ -12,14 +12,14 @@ import XCTest
 final class EqualsTests: QuelboTests {
     let factory = Factories.Equals.self
 
-    override func setUp() {
-        super.setUp()
-
-        Game.commit(
-            Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
-            Symbol(id: "isWorldAlive", type: .bool, category: .globals)
-        )
-    }
+//    override func setUp() {
+//        super.setUp()
+//
+//        Game.commit(
+//            Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
+//            Symbol(id: "isWorldAlive", type: .bool, category: .globals)
+//        )
+//    }
 
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("=?"))
@@ -77,6 +77,9 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualTwoGlobalBools() throws {
+        let _ = try Factories.Global([.atom("PLAYER-ALIVE?"), .bool(true)]).process()
+        let _ = try Factories.Global([.atom("WORLD-ALIVE?"), .bool(true)]).process()
+
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),
             .global("WORLD-ALIVE?"),

@@ -77,7 +77,7 @@ final class DirectionsTests: QuelboTests {
 
         for direction in expectedDirections {
             XCTAssertNoDifference(
-                try Game.find(direction.id, category: .properties),
+                try Game.find(direction.id!, category: .properties),
                 direction
             )
         }

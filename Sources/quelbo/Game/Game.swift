@@ -77,26 +77,23 @@ extension Game {
     ///
     /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
     static func find(
-        _ id: Symbol.Identifier?,
+        _ id: Symbol.Identifier,
         type: Symbol.DataType? = nil,
         category categories: Symbol.Category...
     ) throws -> Symbol {
-        guard
-            let id = id,
-            let symbol = shared.gameSymbols.first(where: {
-                if $0.id != id {
-                    return false
-                }
-                if let type = type, type.isUnambiguous, $0.type != type {
-                    return false
-                }
-                if let symbolCategory = $0.category, !categories.isEmpty {
-                    return categories.contains(symbolCategory)
-                }
-                return true
-            })
-        else {
-            throw GameError.symbolNotFound(id ?? "Nil", categories: categories)
+        guard let symbol = shared.gameSymbols.first(where: {
+            if $0.id != id {
+                return false
+            }
+            if let type = type, type.isUnambiguous, $0.type != type {
+                return false
+            }
+            if let symbolCategory = $0.category, !categories.isEmpty {
+                return categories.contains(symbolCategory)
+            }
+            return true
+        }) else {
+            throw GameError.symbolNotFound(id, categories: categories)
         }
         return symbol
     }
