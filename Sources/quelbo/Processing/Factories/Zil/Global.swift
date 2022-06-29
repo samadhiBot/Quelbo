@@ -56,6 +56,9 @@ extension Factories {
             if valueSymbol.typeCertainty < .certain {
                 metaData.insert(.typeCertainty(valueSymbol.typeCertainty))
             }
+            if valueSymbol.meta.contains(.isImmutable) {
+                metaData.insert(.isImmutable)
+            }
 
             let symbol = Symbol(
                 id: nameSymbol.id,

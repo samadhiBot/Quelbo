@@ -104,13 +104,15 @@ extension SymbolFactory {
                 break
             }
 
+            let newType = declaredType.isLiteral ? declaredType : .optional(declaredType)
+
             return symbol.with(
-                type: declaredType,
+                type: newType,
                 children: symbol.children.map { child in
                     guard child.typeCertainty < .certain else { return child }
 
                     return child.with(
-                        type: declaredType,
+                        type: newType,
                         meta: child.meta.withoutTypeCertainty
                     )
                 },

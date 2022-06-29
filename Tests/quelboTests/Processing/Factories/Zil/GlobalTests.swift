@@ -434,8 +434,7 @@ final class GlobalTests: QuelboTests {
             id: "prso",
             code: "var prso: Object? = nil",
             type: .optional(.object),
-            category: .globals,
-            meta: [.typeCertainty(.certain)]
+            category: .globals
         ))
     }
 

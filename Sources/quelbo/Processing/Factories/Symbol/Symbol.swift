@@ -254,6 +254,11 @@ extension Symbol {
             case "true": return "1"
             default: return value
             }
+        case .optional:
+            switch value {
+            case "0", "false": return "nil"
+            default: return value
+            }
         default:
             return value
         }

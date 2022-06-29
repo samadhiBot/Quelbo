@@ -287,18 +287,29 @@ extension SymbolFactory {
         _ zil: String,
         at index: Int
     ) throws -> Symbol {
-        let name = zil.lowerCamelCase
-        let expectedType = try Self.parameters.expectedType(at: index)
-        let metaData: Set<Symbol.MetaData> = [
-            .typeCertainty(expectedType == .unknown ? .unknown : .localValue),
-        ]
+        let localName = zil.lowerCamelCase
+        guard let found = findRegistered(.id(localName)) else {
+            throw SymbolizationError.unknownLocal(zil, at: index)
+        }
 
-        return Symbol(
-            id: .id(name),
-            code: name,
-            type: expectedType,
-            meta: metaData
-        )
+        return found.with(code: localName)
+//        let name = zil.lowerCamelCase
+//        return findRegistered(.id(zil.lowerCamelCase))!
+
+//        try Game.find(.id(name)).with(code: name)
+
+//        let name = zil.lowerCamelCase
+//        let expectedType = try Self.parameters.expectedType(at: index)
+//        let metaData: Set<Symbol.MetaData> = [
+//            .typeCertainty(expectedType == .unknown ? .unknown : .localValue),
+//        ]
+//
+//        return Symbol(
+//            id: .id(name),
+//            code: name,
+//            type: expectedType,
+//            meta: metaData
+//        )
     }
 
     /// Translates a Zil Object
@@ -392,6 +403,7 @@ extension SymbolFactory {
         case invalidZilForm([Token])
         case noRoutineOrDefinition([Token])
         case singleTokenSymbolizationFailed(Token)
+        case unknownLocal(String, at: Int)
         case unknownZilProperty(String)
         case unknownType(String)
         case missingDeclarationValue([Token])
