@@ -38,7 +38,7 @@ extension Factories {
 
                 switch symbol.typeCertainty {
                 case .certain, .unknown:
-                    value = " = \(symbol.children[0].code)"
+                    value = " = \(try symbol.literalValue(for: symbol.type))"
                 default:
                     value = symbol.type.emptyValueAssignment
                 }
@@ -52,20 +52,20 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            var meta = metaData
-                .union(valueSymbol.meta)
-                .subtracting([.isLiteral])
-            if valueSymbol.meta.contains(.isImmutable) {
-                meta.insert(.isImmutable)
-            }
+//            var meta = metaData
+////                .union(valueSymbol.meta)
+////                .subtracting([.isLiteral])
+//            if valueSymbol.meta.contains(.isImmutable) {
+//                meta.insert(.isImmutable)
+//            }
 
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
                 type: valueSymbol.type,
-                category: meta.contains(.isImmutable) ? .constants : .globals,
+                category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
-                meta: meta
+                meta: metaData
             )
 
             Game.commit(symbol)

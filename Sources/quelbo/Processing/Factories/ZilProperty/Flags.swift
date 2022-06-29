@@ -33,11 +33,9 @@ extension Factories {
                     return flag
                 } else {
                     let flag = Flag.find(symbol.code)
-                    let flagSymbol = symbol.with(
-                        id: .id(flag.zil),
-                        code: flag.id.description,
-                        category: .flags
-                    )
+                    let flagSymbol = symbol
+                        .with(id: .id(flag.zil), category: .flags)
+                        .with(code: flag.id.description)
                     Game.commit(flagSymbol)
                     return flagSymbol
                 }

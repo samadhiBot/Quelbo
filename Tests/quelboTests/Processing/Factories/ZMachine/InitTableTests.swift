@@ -13,7 +13,9 @@ import XCTest
 
 final class InitTableTests: QuelboTests {
     let factory = Factories.InitTable.self
-    let zeroZilElementSymbol = Symbol.zeroSymbol.with(code: ".int(0)", type: .zilElement)
+    let zeroZilElementSymbol = Symbol.zeroSymbol
+        .with(code: ".int(0)")
+        .with(type: .zilElement)
 
     override func setUp() {
         super.setUp()

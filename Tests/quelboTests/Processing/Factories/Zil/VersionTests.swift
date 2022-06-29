@@ -25,7 +25,8 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -42,7 +43,8 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3Time""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -58,7 +60,8 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)

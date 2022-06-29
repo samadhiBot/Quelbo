@@ -56,10 +56,11 @@ extension SymbolFactory {
     ) throws -> Symbol? {
         //print("// 🍓 \(declaredType) >> \(symbol)")
         switch (declaredType, symbol.type) {
+        case (.bool, .int):
+            return symbol.with(type: .bool)
+
         case (.property, _):
-            if symbol.category == .properties {
-                return symbol
-            }
+            if symbol.category == .properties { return symbol }
 
         case (.unknown, _):
             guard
@@ -101,6 +102,9 @@ extension SymbolFactory {
 
             return symbol.with(
                 type: declaredType,
+                children: symbol.children.map { child in
+                    child.typeCertainty == .certain ? child : child.with(type: declaredType)
+                },
                 meta: symbol.meta.withoutTypeCertainty
             )
         }
@@ -161,67 +165,55 @@ extension SymbolFactory {
             if symbol.containsTableFlags {
                 return symbol
             }
-            return symbol.with(
-                code: ".table([\(symbol.children.codeValues(.commaSeparated))])",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".table([\(symbol.children.codeValues(.commaSeparated))])")
+                .with(type: .zilElement)
         case .bool:
-            return symbol.with(
-                code: ".bool(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".bool(\(symbol.code))")
+                .with(type: .zilElement)
         case .comment:
-            return symbol.with(
-                code: "// \(symbol.code)",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: "// \(symbol.code)")
+                .with(type: .zilElement)
         case .int:
-            return symbol.with(
-                code: ".int(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".int(\(symbol.code))")
+                .with(type: .zilElement)
         case .int8:
-            return symbol.with(
-                code: ".int8(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".int8(\(symbol.code))")
+                .with(type: .zilElement)
         case .int16:
-            return symbol.with(
-                code: ".int16(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".int16(\(symbol.code))")
+                .with(type: .zilElement)
         case .int32:
-            return symbol.with(
-                code: ".int32(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".int32(\(symbol.code))")
+                .with(type: .zilElement)
         case .object:
             if symbol.category == .rooms {
-                return symbol.with(
-                    code: ".room(\(symbol.code))",
-                    type: .zilElement
-                )
+                return symbol
+                    .with(code: ".room(\(symbol.code))")
+                    .with(type: .zilElement)
             } else {
-                return symbol.with(
-                    code: ".object(\(symbol.code))",
-                    type: .zilElement
-                )
+                return symbol
+                    .with(code: ".object(\(symbol.code))")
+                    .with(type: .zilElement)
             }
         case .string:
-            return symbol.with(
-                code: ".string(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".string(\(symbol.code))")
+                .with(type: .zilElement)
         case .table:
-            return symbol.with(
-                code: ".table(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".table(\(symbol.code))")
+                .with(type: .zilElement)
         case .zilElement:
-            return symbol.with(
-                code: ".table(\(symbol.code))",
-                type: .zilElement
-            )
+            return symbol
+                .with(code: ".table(\(symbol.code))")
+                .with(type: .zilElement)
         case .direction, .optional, .property, .routine, .thing, .unknown, .void, .variable:
             throw ValidationError.unexpectedZilElement(symbol)
         }

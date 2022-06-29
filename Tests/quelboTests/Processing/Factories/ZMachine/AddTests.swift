@@ -108,15 +108,31 @@ final class AddTests: QuelboTests {
     }
 
     func testAddOneToGlobalDefinedAsFalse() throws {
-        let _ = try Factories.Global([
+        let pAclause = try Factories.Global([
             .atom("P-ACLAUSE"),
             .bool(false)
         ]).process()
+
+        XCTAssertNoDifference(pAclause, Symbol(
+            id: "pAclause",
+            code: "var pAclause: Bool = false",
+            type: .bool,
+            category: .globals,
+            meta: [.isLiteralBoolean(false), .typeCertainty(.booleanFalse)]
+        ))
 
         let symbol = try factory.init([
             .global("P-ACLAUSE"),
             .decimal(1)
         ]).process()
+
+        XCTAssertNoDifference(pAclause, Symbol(
+            id: "pAclause",
+            code: "var pAclause: Int = 0",
+            type: .int,
+            category: .globals,
+            meta: [.isLiteralBoolean(false)]
+        ))
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "pAclause.add(1)",

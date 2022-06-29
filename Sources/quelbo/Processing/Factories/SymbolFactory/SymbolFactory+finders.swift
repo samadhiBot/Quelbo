@@ -101,27 +101,27 @@ extension SymbolFactory {
         assert(symbol.identifiable, "Attempted to upsert a symbol without an id: \(symbol.code)")
 
         if symbol.category == .globals {
-            guard let existing = try? Game.find(symbol.id, category: .globals) else {
+            guard let global = try? Game.find(symbol.id, category: .globals) else {
                 Game.commit(symbol)
                 return symbol
             }
 
             // return existing.reconcile(with: symbol)
-            let updated = existing.reconcile(with: symbol)
-            try Game.overwrite(updated)
-            print("🥒 upsert global \(updated)")
-            return updated.with(code: symbol.code)
+            global.reconcile(with: symbol)
+//            try Game.overwrite(updated)
+            print("🥒 upsert global \(global)")
+            return global //updated.with(code: symbol.code)
         }
 
-        guard let existing = registry.first(where: { $0.id == symbol.id }) else {
+        guard let local = registry.first(where: { $0.id == symbol.id }) else {
             registry.insert(symbol)
             return symbol
         }
 
-        // return existing.reconcile(with: symbol)
-        let updated = existing.reconcile(with: symbol)
-        print("🥒 upsert registry \(updated)")
-        return updated
+        // return local.reconcile(with: symbol)
+        local.reconcile(with: symbol)
+        print("🥒 upsert registry \(local)")
+        return local
     }
 
 }

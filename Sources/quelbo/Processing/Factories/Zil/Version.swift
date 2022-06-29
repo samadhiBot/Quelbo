@@ -23,7 +23,7 @@ extension Factories {
             valueSymbol = Symbol(
                 code: zMachineVersion.rawValue.quoted,
                 type: .string,
-                meta: [.isLiteral]
+                meta: [.isLiteralString(zMachineVersion.rawValue)]
             )
         }
     }

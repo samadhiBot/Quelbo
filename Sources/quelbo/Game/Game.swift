@@ -132,7 +132,8 @@ extension Game {
         case (true, _):
             return symbol
         case (false, let existing):
-            return existing.reconcile(with: symbol)
+            existing.reconcile(with: symbol)
+            return existing
         }
 
 //        guard var existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {

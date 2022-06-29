@@ -25,8 +25,17 @@ extension Symbol {
         /// Unless this is present, symbols are assumed to represent mutable instances.
         case isImmutable
 
-        /// Specifies that the symbol represents a literal value.
+        ///
         case isLiteral
+
+//        ///
+//        case isLiteralBoolean(Bool)
+//
+//        ///
+//        case isLiteralDecimal(Int)
+//
+//        /// Specifies that the symbol represents a literal value.
+//        case isLiteralString(String)
 
         /// Specifies that the symbol represents a ``Factories/Return`` statement, with the
         /// specified return type if it returns a value.

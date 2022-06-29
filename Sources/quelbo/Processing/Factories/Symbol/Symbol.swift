@@ -112,12 +112,26 @@ extension Symbol {
         return type.description
     }
 
+    /// Returns an ...
+    var initialBooleanValue: Bool? {
+        for metaData in meta {
+            if case .isLiteralBoolean(let value) = metaData { return value }
+        }
+        return nil
+    }
+
+    /// Returns an ...
+    var initialDecimalValue: Int? {
+        for metaData in meta {
+            if case .isLiteralDecimal(let value) = metaData { return value }
+        }
+        return nil
+    }
+
     /// Returns an unevaluated token stored by the symbol, if one exists.
     var definition: [Token] {
         for metaData in meta {
-            if case .zil(let tokens) = metaData {
-                return tokens
-            }
+            if case .zil(let tokens) = metaData { return tokens }
         }
         return []
     }
@@ -146,7 +160,10 @@ extension Symbol {
     /// Whether the symbol represents a literal value.
     var isLiteral: Bool {
         for metaData in meta {
-            if case .isLiteral = metaData { return true }
+            switch metaData {
+            case .isLiteralBoolean, .isLiteralDecimal, .isLiteralString: return true
+            default: return false
+            }
         }
         return false
     }
@@ -167,9 +184,7 @@ extension Symbol {
     /// Whether the symbol represents a return statement.
     func isParamWith(context: BlockProcessor.Context) -> Bool {
         for metaData in meta {
-            if case .paramContext(let paramContext) = metaData {
-                return paramContext == context
-            }
+            if case .paramContext(let paramContext) = metaData { return paramContext == context }
         }
         return false
     }
@@ -184,6 +199,29 @@ extension Symbol {
     }
 
     /// <#Description#>
+    func literalValue(for type: Symbol.DataType) throws -> String {
+        for metaData in meta {
+            switch metaData {
+            case .isLiteralBoolean(let bool):
+                switch type {
+                case .int, .int16, .int32, .int8: return bool ? "1" : "0"
+                default: return "\(bool)"
+                }
+            case .isLiteralDecimal(let int):
+                switch type {
+                case .bool: return int == 0 ? "false" : "true"
+                default: return "\(int)"
+                }
+            case .isLiteralString(let string):
+                return "\(string)"
+            default:
+                continue
+            }
+        }
+        assert(false, "literalValue(for: \(type)) called on symbol with no literal value set.")
+    }
+
+    /// <#Description#>
     var localVariable: String {
         if code.contains("=") {
             return "var \(code)"
@@ -195,7 +233,7 @@ extension Symbol {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func reconcile(with other: Symbol) -> Symbol {
+    func reconcile(with other: Symbol) {
         var metaData = meta
 
         if type != other.type && typeCertainty < other.typeCertainty {
@@ -206,10 +244,6 @@ extension Symbol {
             self.category = otherCategory
         }
         self.meta = metaData
-
-        //print("// 🌶️ Reconciled \(self)")
-
-        return self
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
@@ -257,7 +291,6 @@ extension Symbol {
     /// - Returns: The symbol with any specified properties updated.
     func with(
         id newID: Symbol.Identifier? = nil,
-        code newCode: String? = nil,
         type newType: DataType? = nil,
         category newCategory: Category? = nil,
         children newChildren: [Symbol]? = nil,
@@ -265,7 +298,6 @@ extension Symbol {
     ) -> Symbol {
         Symbol(
             id: newID ?? id,
-            code: newCode ?? code,
             type: newType ?? type,
             category: newCategory ?? category,
             children: newChildren ?? children,
@@ -273,9 +305,24 @@ extension Symbol {
         )
     }
 
-    func with(
-        codeBlock: @escaping (Symbol) throws -> String
-    ) -> Symbol {
+    /// <#Description#>
+    /// - Parameter newCode: <#newCode description#>
+    /// - Returns: <#description#>
+    func with(code newCode: String) -> Symbol {
+        Symbol(
+            id: id,
+            code: newCode,
+            type: type,
+            category: category,
+            children: children,
+            meta: meta
+        )
+    }
+
+    /// <#Description#>
+    /// - Parameter codeBlock: <#codeBlock description#>
+    /// - Returns: <#description#>
+    func with(codeBlock: @escaping (Symbol) throws -> String) -> Symbol {
         Symbol(
             id: id,
             code: codeBlock,
@@ -527,11 +574,10 @@ extension Array where Element == Symbol {
     }
 
     var deepReplaceEmptyReturnValues: [Symbol] {
-        map {
-            $0.with(
-                code: $0.code.replacingOccurrences(of: "return false", with: "return nil"),
-                children: $0.children.deepReplaceEmptyReturnValues
-            )
+        map { symbol in
+            symbol
+                .with(code: symbol.code.replacingOccurrences(of: "return false", with: "return nil"))
+                .with(children: symbol.children.deepReplaceEmptyReturnValues)
         }
     }
 
@@ -623,7 +669,7 @@ extension Symbol {
             code: "false",
             type: .bool,
             meta: [
-                .isLiteral,
+                .isLiteralBoolean(false),
                 .typeCertainty(.booleanFalse)
             ]
         )
@@ -632,15 +678,31 @@ extension Symbol {
     /// A literal integer `0` symbol.
     static func integerSymbol(_ integer: Int) -> Symbol {
         Symbol(
-            code: "\(integer)",
+            code: { symbol in
+                guard let value = symbol.initialDecimalValue else {
+                    return "???"
+                }
+
+                if symbol.type == .bool {
+                    return value == 0 ? "false" : "true"
+                } else {
+                    return "\(value)"
+                }
+            },
             type: .int,
-            meta: integer == 0 ? [.isLiteral, .typeCertainty(.integerZero)] : [.isLiteral]
+            meta: integer == 0 ?
+                [.isLiteralDecimal(0), .typeCertainty(.integerZero)] :
+                [.isLiteralDecimal(integer)]
         )
     }
 
     /// A literal boolean `true` symbol.
     static var trueSymbol: Symbol {
-        Symbol(code: "true", type: .bool, meta: [.isLiteral])
+        Symbol(
+            code: "true",
+            type: .bool,
+            meta: [.isLiteralBoolean(true)]
+        )
     }
 
     /// A literal integer `0` symbol.

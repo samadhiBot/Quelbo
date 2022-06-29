@@ -24,7 +24,7 @@ final class RoutineCallTests: QuelboTests {
                 type: .int,
                 category: .routines,
                 children: [
-                    Symbol(id: "number", type: .int, meta: [.isLiteral])
+                    Symbol(id: "number", type: .int, meta: [])
                 ]
             ),
             Symbol(
@@ -32,8 +32,8 @@ final class RoutineCallTests: QuelboTests {
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol(id: "answer", type: .string, meta: [.isLiteral]),
-                    Symbol(id: "number", type: .int, meta: [.isLiteral]),
+                    Symbol(id: "answer", type: .string, meta: []),
+                    Symbol(id: "number", type: .int, meta: []),
                 ]
             ),
             Symbol(
@@ -41,9 +41,9 @@ final class RoutineCallTests: QuelboTests {
                 type: .string,
                 category: .routines,
                 children: [
-                    Symbol(id: "answer", type: .string, meta: [.isLiteral]),
+                    Symbol(id: "answer", type: .string, meta: []),
                     Symbol(id: "isValid", type: .bool),
-                    Symbol(id: "number", type: .int, meta: [.isLiteral]),
+                    Symbol(id: "number", type: .int, meta: []),
                 ]
             )
         )
