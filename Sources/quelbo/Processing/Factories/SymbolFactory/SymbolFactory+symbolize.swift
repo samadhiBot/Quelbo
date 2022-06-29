@@ -32,11 +32,7 @@ extension SymbolFactory {
                 )
             case .character(let character):
                 symbols.append(
-                    Symbol(
-                        code: character.quoted,
-                        type: .string,
-                        meta: [.isLiteralString(character)]
-                    )
+                    Symbol(code: character.quoted, type: .string, meta: [.isLiteral])
                 )
             case .commented(let token):
                 symbols.append(Symbol(code: "/* \(token.value) */", type: .comment))
@@ -78,11 +74,7 @@ extension SymbolFactory {
                 )
             case .string(let string):
                 symbols.append(
-                    Symbol(
-                        code: string.quoted,
-                        type: .string,
-                        meta: [.isLiteralString(string)]
-                    )
+                    Symbol(code: string.quoted, type: .string, meta: [.isLiteral])
                 )
             case .type(let token):
                 symbols.append(
@@ -153,16 +145,14 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeBoolean(_ value: Bool) -> Symbol {
-        var metaData: Set<Symbol.MetaData> = [.isLiteralBoolean(value)]
+        var metaData: Set<Symbol.MetaData> = [.isLiteral]
 //        var codeBlock: (Symbol) throws -> String = { _ in "true" }
         if value == false {
             metaData.insert(.typeCertainty(.booleanFalse))
 //            codeBlock = { $0.type.emptyValueAssignment }
         }
         return Symbol(
-            code: { symbol in
-                "\(try symbol.literalValue(for: symbol.type))"
-            },
+            code: "\(value)",
             type: .bool,
             meta: metaData
         )
@@ -175,12 +165,8 @@ extension SymbolFactory {
     /// - Parameter zil: The original Zil character as a `String`.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil character.
-    func symbolizeCharacter(_ character: String) throws -> Symbol {
-        Symbol(
-            code: character.quoted,
-            type: .string,
-            meta: [.isLiteralString(character)]
-        )
+    func symbolizeCharacter(_ zil: String) throws -> Symbol {
+        Symbol(code: zil.quoted, type: .string, meta: [.isLiteral])
     }
 
     /// Translates a Zil
@@ -384,11 +370,7 @@ extension SymbolFactory {
             guard case .decimal(let value) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return Symbol(
-                code: "\(value)",
-                type: .int8,
-                meta: [.isLiteralDecimal(value)]
-            )
+            return Symbol(code: "\(value)", type: .int8, meta: [.isLiteral])
         case "DECL":
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)

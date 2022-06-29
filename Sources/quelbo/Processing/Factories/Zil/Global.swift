@@ -38,7 +38,7 @@ extension Factories {
 
                 switch symbol.typeCertainty {
                 case .certain, .unknown:
-                    value = " = \(try symbol.literalValue(for: symbol.type))"
+                    value = " = \(symbol.children[0].code)"
                 default:
                     value = symbol.type.emptyValueAssignment
                 }

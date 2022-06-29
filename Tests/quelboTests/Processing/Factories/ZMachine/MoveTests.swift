@@ -57,6 +57,7 @@ final class MoveTests: QuelboTests {
                 id: "dweapon",
                 type: .bool,
                 meta: [
+                    .isLiteral,
                     .typeCertainty(.booleanFalse),
                 ]
             ),

@@ -59,7 +59,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "Z".quoted,
             type: .string,
-            meta: []
+            meta: [.isLiteral]
         ))
     }
 
@@ -76,7 +76,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
             .decimal(42)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol(code: "42", type: .int, meta: []))
+        XCTAssertNoDifference(symbol, Symbol(code: "42", type: .int, meta: [.isLiteral]))
     }
 
     func testSymbolizeEval() throws {
@@ -195,7 +195,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: #""Plants can talk""#,
             type: .string,
-            meta: []
+            meta: [.isLiteral]
         ))
     }
 
@@ -208,7 +208,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "42",
             type: .int8,
-            meta: []
+            meta: [.isLiteral]
         ))
     }
 }

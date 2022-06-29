@@ -29,9 +29,7 @@ extension Factories {
                 id: "synonyms",
                 code: "synonyms: [\(symbols.quoted.codeValues(.commaSeparated))]",
                 type: Self.returnType,
-                children: symbols.map {
-                    $0.with(meta: [.isLiteralString($0.code)])
-                }
+                children: symbols.map { $0.with(meta: [.isLiteral]) }
             )
         }
     }
