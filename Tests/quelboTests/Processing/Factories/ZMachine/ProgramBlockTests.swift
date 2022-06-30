@@ -260,6 +260,8 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
+        ], with: [
+            Symbol(id: "x", type: .variable(.int))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

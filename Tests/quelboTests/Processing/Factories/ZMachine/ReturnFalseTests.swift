@@ -20,10 +20,9 @@ final class ReturnFalseTests: QuelboTests {
         let symbol = try factory.init([]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return false",
             type: .bool,
-            meta: [.isLiteral]
+            meta: [.isReturnStatement(.bool)]
         ))
     }
 

@@ -85,6 +85,8 @@ final class OrTests: QuelboTests {
                 .atom("NOT"),
                 .global("FOUND-TREASURE-CHEST"),
             ]),
+        ], with: [
+            Symbol(id: "rarg", type: .int)
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

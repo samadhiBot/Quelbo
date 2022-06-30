@@ -42,6 +42,8 @@ final class SubtractTests: QuelboTests {
     func testSubtractOneAtom() throws {
         let symbol = try factory.init([
             .local("FOO"),
+        ], with: [
+            Symbol(id: "foo", type: .int)
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

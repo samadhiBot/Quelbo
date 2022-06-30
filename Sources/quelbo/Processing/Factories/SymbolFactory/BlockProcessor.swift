@@ -283,14 +283,13 @@ extension BlockProcessor {
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
                     let nameSymbolID = nameSymbol.id,
-                    let valueSymbol = param.children.last,
-                    let valueSymbolID = valueSymbol.id
+                    let valueSymbol = param.children.last
                 else {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
                 if type.isUnknown {
                     type = findRegistered(nameSymbolID)?.type ??
-                           findRegistered(valueSymbolID)?.type ??
+                           findRegistered(valueSymbol.id)?.type ??
                            .unknown
                 }
                 paramSymbol = param.with(

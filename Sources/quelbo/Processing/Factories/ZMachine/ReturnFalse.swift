@@ -17,9 +17,12 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            .falseSymbol
-                .with(id: "<Return>", children: [.falseSymbol])
-                .with(code: "return false")
+            Symbol(
+                code: "return false",
+                type: .bool,
+                children: [.falseSymbol],
+                meta: [.isReturnStatement(.bool)]
+            )
         }
     }
 }

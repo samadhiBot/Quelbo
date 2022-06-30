@@ -61,8 +61,10 @@ extension SymbolFactory {
         case (.bool, .int):
             return symbol.with(type: .bool)
 
-        case (.property, _):
-            if symbol.category == .properties { return symbol }
+        case (.property(let propertyType), _):
+            if symbol.category == .properties || propertyType.isUnknown {
+                return symbol
+            }
 
         case (.unknown, _), (.array(.unknown), _):
             guard

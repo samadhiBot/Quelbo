@@ -52,7 +52,8 @@ final class PureLengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -76,7 +77,8 @@ final class PureLengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -105,7 +107,8 @@ final class PureLengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -150,7 +153,8 @@ final class PureLengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 }

@@ -729,7 +729,7 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `adventurer` (ADVENTURER) object.
                 var adventurer = Object(
-                    action: 0,
+                    action: nil,
                     description: "cretin",
                     flags: [
                         isActor,

@@ -108,6 +108,8 @@ final class SetVariableTests: QuelboTests {
                 .atom("NEXT?"),
                 .local("X")
             ]),
+        ], with: [
+            Symbol(id: "x", type: .object)
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
@@ -124,6 +126,8 @@ final class SetVariableTests: QuelboTests {
                 .local("N"),
                 .decimal(1)
             ])
+        ], with: [
+            Symbol(id: "n", type: .int)
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

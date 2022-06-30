@@ -150,7 +150,8 @@ final class TableTests: QuelboTests {
                     flags: [.pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -185,7 +186,8 @@ final class TableTests: QuelboTests {
                     flags: [.pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 

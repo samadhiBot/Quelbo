@@ -38,14 +38,12 @@ final class PropertyIndexTests: QuelboTests {
     }
 
     func testPropertyIndexOfObjectInLocal() throws {
-        let registry: Set<Symbol> = [
-            Symbol(id: "dir", type: .direction),
-        ]
-
         let symbol = try factory.init([
             .global("HERE"),
             .local("DIR")
-        ], with: registry).process()
+        ], with: [
+            Symbol(id: "dir", type: .direction),
+        ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "here.propertyIndex(of: .dir)",

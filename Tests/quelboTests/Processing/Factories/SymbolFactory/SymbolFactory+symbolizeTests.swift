@@ -126,9 +126,15 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
     func testSymbolizeLocal() throws {
         let symbol = try testFactory.init([
             .local("FOO-BAR")
+        ], with: [
+            Symbol(id: "fooBar", type: .object)
         ]).process()
 
-        XCTAssertNoDifference(symbol, Symbol(id: "fooBar", code: "fooBar"))
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "fooBar",
+            code: "fooBar",
+            type: .object
+        ))
     }
 
     func testSymbolizeProperty() throws {

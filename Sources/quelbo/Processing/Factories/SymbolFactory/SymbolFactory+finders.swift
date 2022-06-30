@@ -90,8 +90,10 @@ extension SymbolFactory {
     /// - Parameter id: The symbol `id` to search for.
     ///
     /// - Returns: A symbol with the specified `id` if one has been registered.
-    func findRegistered(_ id: Symbol.Identifier) -> Symbol? {
-        registry.first(where: { $0.id == id })
+    func findRegistered(_ id: Symbol.Identifier?) -> Symbol? {
+        guard let id = id else { return nil }
+
+        return registry.first(where: { $0.id == id })
     }
 
     /// <#Description#>
