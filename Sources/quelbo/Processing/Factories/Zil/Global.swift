@@ -63,7 +63,7 @@ extension Factories {
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: codeBlock,
-                type: valueSymbol.type,
+                type: metaData.contains(.isImmutable) ? valueSymbol.type : valueSymbol.type.asVariable,
                 category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
                 meta: metaData

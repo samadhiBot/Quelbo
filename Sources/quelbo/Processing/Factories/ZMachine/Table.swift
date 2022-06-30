@@ -36,11 +36,12 @@ extension Factories {
 
             presetFlags.forEach { flags.insert($0) }
             checkFlags()
-            processFlags()
         }
 
         override func process() throws -> Symbol {
-            Symbol(
+            processFlags()
+
+            return Symbol(
                 code: "Table(\(symbols.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: .table,
                 children: symbols,

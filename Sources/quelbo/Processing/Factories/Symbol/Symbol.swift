@@ -196,15 +196,20 @@ extension Symbol {
 
         print("// 🥔 \(self) vs \(other)")
         if typeCertainty < other.typeCertainty {
-            self.type = other.type
-//            metaData = metaData.withTypeCertainty(of: other)
+            if case .variable = type {
+                self.type = other.type.asVariable
+            } else {
+                self.type = other.type
+            }
+
             self.children = other.children
-            self.meta = other.meta
+
             if let otherCategory = other.category, category != otherCategory {
                 self.category = otherCategory
             }
+
+            self.meta = other.meta
         }
-//        self.meta = metaData
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides

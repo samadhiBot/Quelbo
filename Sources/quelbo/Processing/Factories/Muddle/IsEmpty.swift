@@ -17,7 +17,7 @@ extension Factories {
         }
 
         override class var parameters: SymbolFactory.Parameters {
-            .one(.unknown)
+            .one(.variable(.unknown))
         }
 
         override class var returnType: Symbol.DataType {

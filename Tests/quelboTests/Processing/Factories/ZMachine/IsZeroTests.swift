@@ -50,6 +50,8 @@ final class IsZeroTests: QuelboTests {
     func testIsZeroLocal() throws {
         let symbol = try factory.init([
             .local("BAR")
+        ], with: [
+            Symbol(id: "bar", type: .variable(.int))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

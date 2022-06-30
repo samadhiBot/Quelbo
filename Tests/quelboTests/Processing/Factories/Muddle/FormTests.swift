@@ -40,12 +40,14 @@ final class FormTests: QuelboTests {
         let symbol = try factory.init([
             .atom("LVAL"),
             .local("A"),
+        ], with: [
+            Symbol(id: "a", type: .variable(.string))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "a",
             code: "a",
-            meta: [.typeCertainty(.unknown)]
+            type: .variable(.string)
         ))
     }
 
@@ -63,6 +65,8 @@ final class FormTests: QuelboTests {
                     .local("A")
                 ])
             ])
+        ], with: [
+            Symbol(id: "a", type: .variable(.int))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

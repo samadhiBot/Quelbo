@@ -20,6 +20,8 @@ final class IncrementGreaterThanTests: QuelboTests {
         let symbol = try factory.init([
             .local("FOO"),
             .decimal(3),
+        ], with: [
+            Symbol(id: "foo", type: .variable(.int))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

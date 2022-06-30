@@ -65,6 +65,8 @@ final class IsInTests: QuelboTests {
                 ])
             ]),
             .global("HERE")
+        ], with: [
+            Symbol(id: "oo", type: .variable(.table))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

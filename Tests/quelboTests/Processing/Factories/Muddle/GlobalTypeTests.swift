@@ -38,8 +38,7 @@ final class GlobalTypeTests: QuelboTests {
                     id: "beachDig",
                     code: "var beachDig: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 )
             ]
         )
@@ -65,22 +64,19 @@ final class GlobalTypeTests: QuelboTests {
                     id: "ms",
                     code: "var ms: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 ),
                 Symbol(
                     id: "wd",
                     code: "var wd: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 ),
                 Symbol(
                     id: "rs",
                     code: "var rs: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 ),
             ]
         )
@@ -111,15 +107,13 @@ final class GlobalTypeTests: QuelboTests {
                     id: "verbose",
                     code: "var verbose: Bool = false",
                     type: .bool,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 ),
                 Symbol(
                     id: "superBrief",
                     code: "var superBrief: Bool = false",
                     type: .bool,
-                    category: .globals,
-                    meta: [.isLiteral]
+                    category: .globals
                 ),
             ]
         )

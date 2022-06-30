@@ -120,7 +120,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(pAclause, Symbol(
             id: "pAclause",
             code: "var pAclause: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
             meta: [.typeCertainty(.booleanFalse)]
         ))
@@ -133,7 +133,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(pAclause, Symbol(
             id: "pAclause",
             code: "var pAclause: Int = 0",
-            type: .int,
+            type: .variable(.int),
             category: .globals,
             meta: []
         ))

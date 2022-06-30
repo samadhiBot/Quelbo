@@ -56,7 +56,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("// 🍓 \(declaredType) >> \(symbol)")
+        print("// 🍓 \(declaredType) >> \(symbol)(\(symbol.type))")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(type: .bool)
@@ -64,7 +64,7 @@ extension SymbolFactory {
         case (.property, _):
             if symbol.category == .properties { return symbol }
 
-        case (.unknown, _):
+        case (.unknown, _), (.array(.unknown), _):
             guard
                 siblings.count > 1,
                 let mostCertain = siblings.findByTypeCertainty()
@@ -95,32 +95,47 @@ extension SymbolFactory {
         case (.zilElement, _):
             return try assignZilElementType(on: symbol)
 
+        case (_, .property(let propertyType)):
+            if declaredType == propertyType {
+                return symbol
+            }
+//            fallthrough
+
+        case (_, .variable(let variableType)):
+            if declaredType == variableType {
+                return symbol
+            }
+            fallthrough
+
         default:
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
-            print("// 🍌 \(declaredType) >> \(symbol)")
             if symbol.typeCertainty == .certain {
                 break
             }
 
-            let newType = declaredType.isLiteral ? declaredType : .optional(declaredType)
+            print("// 🍌 \(declaredType) >> \(symbol)")
+
+            let childType = declaredType.isLiteral ? declaredType : .optional(declaredType)
+            var parentType = childType
+            if case .variable = symbol.type {
+                parentType = childType.asVariable
+            }
 
             return symbol.with(
-                type: newType,
+                type: parentType,
                 children: symbol.children.map { child in
                     guard child.typeCertainty < .certain else { return child }
 
                     return child.with(
-                        type: newType,
+                        type: childType,
                         meta: child.meta.withoutTypeCertainty
                     )
                 },
                 meta: symbol.meta.withoutTypeCertainty
             )
         }
-
-        print("🍅 \(symbol): \(symbol.type)(\(declaredType)) (\(symbol.type.isLiteral), \(declaredType.isLiteral))")
 
         throw ValidationError.failedToDetermineType(
             symbol,

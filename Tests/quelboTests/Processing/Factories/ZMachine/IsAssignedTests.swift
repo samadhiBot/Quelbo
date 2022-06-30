@@ -19,6 +19,8 @@ final class IsAssignedTests: QuelboTests {
     func testIsAssigned() throws {
         let symbol = try factory.init([
             .local("FOO")
+        ], with: [
+            Symbol(id: "foo", type: .variable(.bool))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(

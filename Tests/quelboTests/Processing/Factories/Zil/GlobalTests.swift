@@ -46,6 +46,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: <Unknown> = unexpected",
+            type: .variable(.unknown),
             category: .globals,
             meta: [.typeCertainty(.unknown)]
         )
@@ -63,7 +64,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: Bool = true",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals
         )
 
@@ -80,7 +81,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "prso",
             code: "var prso: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
             meta: [.typeCertainty(.booleanFalse)]
         )
@@ -107,7 +108,7 @@ final class GlobalTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "var foo: Int = 42",
-            type: .int,
+            type: .variable(.int),
             category: .globals
         )
 
@@ -135,7 +136,7 @@ final class GlobalTests: QuelboTests {
                         .room(forest3)
                     )
                     """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -245,7 +246,7 @@ final class GlobalTests: QuelboTests {
                     flags: [.length]
                 )
                 """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -288,7 +289,7 @@ final class GlobalTests: QuelboTests {
                     // /* ["REST", "DEF1", "4"] */
                 )
                 """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -310,7 +311,7 @@ final class GlobalTests: QuelboTests {
             code: """
                 var foo: [String] = ["BAR"]
                 """,
-            type: .array(.string),
+            type: .variable(.array(.string)),
             category: .globals
         )
 
@@ -332,7 +333,7 @@ final class GlobalTests: QuelboTests {
             code: """
                 var foo: String = "BAR"
                 """,
-            type: .string,
+            type: .variable(.string),
             category: .globals
         )
 
@@ -354,7 +355,7 @@ final class GlobalTests: QuelboTests {
             code: """
                 var foo: String = "Forty Two!"
                 """,
-            type: .string,
+            type: .variable(.string),
             category: .globals
         )
 
@@ -412,7 +413,7 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
             meta: [.typeCertainty(.booleanFalse)]
         ))
@@ -433,7 +434,7 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Object? = nil",
-            type: .optional(.object),
+            type: .variable(.optional(.object)),
             category: .globals
         ))
     }
@@ -449,9 +450,9 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
             id: "kitchenWindowFlag",
             code: "var kitchenWindowFlag: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: []
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
@@ -470,9 +471,9 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
             id: "kitchenWindowFlag",
             code: "var kitchenWindowFlag: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: []
+            meta: [.typeCertainty(.booleanFalse)]
         ))
     }
 }

@@ -12,13 +12,6 @@ import XCTest
 final class NthTests: QuelboTests {
     let factory = Factories.Nth.self
 
-    override func setUp() {
-        super.setUp()
-
-        Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("NTH"))
     }

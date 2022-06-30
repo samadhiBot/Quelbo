@@ -29,7 +29,7 @@ final class GetValueTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             id: "sandwich",
             code: "sandwich",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals
         ))
     }

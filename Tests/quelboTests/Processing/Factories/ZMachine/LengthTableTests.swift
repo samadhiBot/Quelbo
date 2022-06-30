@@ -105,7 +105,8 @@ final class LengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 

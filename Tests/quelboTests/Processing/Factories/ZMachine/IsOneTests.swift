@@ -49,6 +49,8 @@ final class IsOneTests: QuelboTests {
     func testIsOneLocal() throws {
         let symbol = try factory.init([
             .local("BAR")
+        ], with: [
+            Symbol(id: "bar", type: .variable(.int))
         ]).process()
 
         XCTAssertNoDifference(symbol, Symbol(
