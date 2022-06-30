@@ -51,11 +51,13 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let name = nameSymbol.description
+
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: """
-                    /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
-                    var \(nameSymbol) = \(typeName)(
+                    /// The `\(name)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
+                    var \(name) = \(typeName)(
                     \(propertySymbols.sorted.codeValues(.commaLineBreakSeparated))
                     )
                     """,

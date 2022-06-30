@@ -650,13 +650,14 @@ extension Array where Element == Symbol {
         }
     }
 
-    /// Returns the ``Symbol`` array sorted by element ``Symbol/id``.
+    /// Returns the ``Symbol`` array sorted by element ``Symbol/code`` for flag symbols, and by
+    /// ``Symbol/description`` for all other symbols.
     var sorted: [Symbol] {
         sorted {
             if $0.category == .flags {
                 return $0.code < $1.code
             } else {
-                return $0.id < $1.id
+                return $0.description < $1.description
             }
         }
     }
