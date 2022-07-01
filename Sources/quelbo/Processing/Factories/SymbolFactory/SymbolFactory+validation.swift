@@ -56,7 +56,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("// 🍓 \(declaredType) >> \(symbol)(\(symbol.type))")
+        print("// 🍓 \(declaredType) => \(symbol)(\(symbol.type))")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(type: .bool)
@@ -117,7 +117,7 @@ extension SymbolFactory {
                 break
             }
 
-            print("// 🍌 \(declaredType) >> \(symbol)")
+            print("// 🍌 \(declaredType) ==>> \(symbol)")
 
             let childType = declaredType.isLiteral ? declaredType : .optional(declaredType)
             var parentType = childType

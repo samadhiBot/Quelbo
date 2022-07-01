@@ -192,24 +192,23 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with other: Symbol) {
-//        var metaData = meta
+        guard other.typeCertainty > typeCertainty else { return }
 
-        print("// 🥔 \(self) vs \(other)")
-        if typeCertainty < other.typeCertainty {
-            if case .variable = type {
-                self.type = other.type.asVariable
-            } else {
-                self.type = other.type
-            }
-
-            self.children = other.children
-
-            if let otherCategory = other.category, category != otherCategory {
-                self.category = otherCategory
-            }
-
-            self.meta = other.meta
+        print("🥔 \(self) << \(other)")
+        if case .variable = type {
+            self.type = other.type.asVariable
+        } else {
+            self.type = other.type
         }
+
+        self.children = other.children
+
+        if let otherCategory = other.category, category != otherCategory {
+            self.category = otherCategory
+        }
+
+        self.meta = other.meta
+        customDump(self)
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides

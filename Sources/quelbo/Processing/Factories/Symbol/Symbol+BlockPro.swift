@@ -53,7 +53,7 @@ extension Symbol.BlockPro {
                 guard !$0.code.contains("=") else {
                     return nil
                 }
-                print("// 🥥 \($0.localVariable)")
+//                print("// 🥥 \($0.localVariable)")
                 return $0.localVariable
             },
             shouldIndent: indented
@@ -117,7 +117,7 @@ extension Symbol.BlockPro {
         shouldIndent: Bool
     ) -> String {
         guard !values.isEmpty else { return "" }
-        print("// 🫐 \(values)")
+//        print("// 🫐 \(values)")
         if shouldIndent {
             return values
                 .joined(separator: "\n")
