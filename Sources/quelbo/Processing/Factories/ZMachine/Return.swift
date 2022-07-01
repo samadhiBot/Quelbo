@@ -31,8 +31,8 @@ extension Factories {
 //                    }
 //                }
                 if value.typeCertainty < .certain,
-                    let id = value.id,
-                    let registered = findRegistered(id)
+                   value.isIdentifiable,
+                   let registered = findRegistered(value.id)
                 {
                     value = registered
                 }

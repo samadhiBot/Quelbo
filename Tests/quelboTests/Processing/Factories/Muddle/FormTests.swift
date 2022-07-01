@@ -37,7 +37,7 @@ final class FormTests: QuelboTests {
     }
 
     func testLocalValueForm() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "a", type: .variable(.string))
         )
 
@@ -54,7 +54,7 @@ final class FormTests: QuelboTests {
     }
 
     func testNestedForms() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "a", type: .variable(.int))
         )
 

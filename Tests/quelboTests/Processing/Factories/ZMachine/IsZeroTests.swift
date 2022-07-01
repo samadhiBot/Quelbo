@@ -48,7 +48,7 @@ final class IsZeroTests: QuelboTests {
     }
 
     func testIsZeroLocal() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "bar", type: .variable(.int))
         )
 

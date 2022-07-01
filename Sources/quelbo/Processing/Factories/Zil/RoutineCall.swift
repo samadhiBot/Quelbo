@@ -20,15 +20,15 @@ extension Factories {
         override func processTokens() throws {
             var routineTokens = tokens
             let nameSymbol = try findNameSymbol(in: &routineTokens)
-            guard let routineID = nameSymbol.id else {
+            guard nameSymbol.isIdentifiable else {
                 throw Error.missingRoutineIdentifier(nameSymbol)
             }
 
-            if let routine = try? Game.find(routineID, category: .routines) {
+            if let routine = try? Game.find(nameSymbol.id, category: .routines) {
                 self.routine = routine
             } else {
                 self.routine = try Game.find(try evalID(tokens), category: .functions)
-                                       .with(id: routineID)
+                                       .with(id: nameSymbol.id)
             }
 
             var paramSymbols = try symbolize(routineTokens)

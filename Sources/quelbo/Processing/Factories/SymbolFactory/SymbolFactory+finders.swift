@@ -59,26 +59,34 @@ extension SymbolFactory {
     ) throws -> [Symbol] {
         let original = tokens
         var substitutions = substituting
+        var context: Symbol.ParamContext = .normal
 
         while !tokens.isEmpty {
             guard case .list(let params) = tokens.shift() else {
                 throw FindError.parametersSymbolNotFound(tokens)
             }
-            return try params.map { token in
+            return try params.compactMap { token in
                 switch token {
                 case .string("ARGS"):
-                    return Symbol(meta: [.paramSetContext(.normal)])
+                    context = .normal
                 case .string("AUX"), .string("EXTRA"):
-                    return Symbol(meta: [.paramSetContext(.local)])
+                    context = .local
                 case .string("OPT"), .string("OPTIONAL"):
-                    return Symbol(meta: [.paramSetContext(.optional)])
+                    context = .optional
                 default:
                     if let substitution = substitutions.shift() {
-                        return try symbolize(substitution)
+                        let symbol = try symbolize(substitution).with(
+                            meta: [.paramContext(context)]
+                        )
+                        return try upsert(symbol)
                     } else {
-                        return try symbolize(token)
+                        let symbol = try symbolize(token).with(
+                            meta: [.paramContext(context)]
+                        )
+                        return try upsert(symbol)
                     }
                 }
+                return nil
             }
         }
 
@@ -99,31 +107,17 @@ extension SymbolFactory {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func upsert(_ symbol: Symbol) throws {
-        guard let id = symbol.id else { return }
+    func upsert(_ symbol: Symbol) throws -> Symbol {
+        guard symbol.isIdentifiable else { return symbol }
 
-        if symbol.category == .globals {
-            guard let global = try? Game.find(id, category: .globals) else {
-                Game.commit(symbol)
-                return
-            }
+        guard symbol.category != .globals else { return Game.upsert(symbol) }
 
-            // return existing.reconcile(with: symbol)
-            global.reconcile(with: symbol)
-//            try Game.overwrite(updated)
-            print("🥒 upsert global \(global)")
-//            return symbol //updated.with(code: symbol.code)
+        if let existing = registry.find(id: symbol.id) {
+            return existing.reconcile(with: symbol)
+        } else {
+            registry.append(symbol)
+            return symbol
         }
-
-        guard let local = registry.first(where: { id == $0.id }) else {
-            registry.insert(symbol)
-            return
-        }
-
-        // return local.reconcile(with: symbol)
-        local.reconcile(with: symbol)
-        print("🥒 upsert registry \(local)")
-//        return symbol
     }
 }
 

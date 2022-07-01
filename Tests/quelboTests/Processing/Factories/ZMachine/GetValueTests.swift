@@ -35,13 +35,13 @@ final class GetValueTests: QuelboTests {
     }
 
     func testGetLocalValue() throws {
-        var registry: Set<Symbol> = [
+        registry.append(
             Symbol(
                 id: "sandwich",
                 code: "var sandwich: Bool = true",
                 type: .bool
             )
-        ]
+        )
 
         let symbol = try factory.init([
             .local("SANDWICH"),

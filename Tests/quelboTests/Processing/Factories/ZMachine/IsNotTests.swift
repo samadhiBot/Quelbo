@@ -51,9 +51,9 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotDirection() throws {
-        var registry: Set<Symbol> = [
+        registry.append(
             Symbol(id: "north", type: .direction, category: .directions)
-        ]
+        )
 
         let symbol = try factory.init([
             .local("NORTH")
@@ -121,10 +121,10 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotThing() throws {
-        var registry: Set<Symbol> = [
+        registry.append(contentsOf: [
             Symbol(id: "prsa", type: .object),
-            Symbol(id: "something", type: .thing)
-        ]
+            Symbol(id: "something", type: .thing),
+        ])
 
         let symbol = try factory.init([
             .local("SOMETHING")
@@ -185,7 +185,7 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotOptional() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "maybe", type: .optional(.object))
         )
 

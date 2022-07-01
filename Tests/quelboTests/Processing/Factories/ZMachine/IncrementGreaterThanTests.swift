@@ -17,7 +17,7 @@ final class IncrementGreaterThanTests: QuelboTests {
     }
 
     func testIncrementGreaterThan() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "foo", type: .variable(.int))
         )
 

@@ -86,7 +86,7 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToLocalVariable() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string)
         )
 
@@ -102,7 +102,7 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToFunctionResult() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "x", type: .object)
         )
 
@@ -121,7 +121,7 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToModifiedSelf() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "n", type: .int)
         )
 

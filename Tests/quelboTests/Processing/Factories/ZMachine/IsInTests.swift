@@ -54,7 +54,7 @@ final class IsInTests: QuelboTests {
     }
 
     func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "oo", type: .variable(.table))
         )
 

@@ -38,30 +38,8 @@ class BlockProcessor: SymbolFactory {
         print("// 🍒 \(registry)")
         let codeSymbols = try symbolize(tokens)
 
+        self.paramsSymbol = try validateParameters(paramSymbols)
         self.codeSymbol = try validateCode(codeSymbols)
-        self.paramsSymbol = try validateParameters(paramSymbols, against: codeSymbol)
-    }
-}
-
-// MARK: - BlockProcessor.Context
-
-extension BlockProcessor {
-    enum Context {
-        case normal
-        case local
-        case optional
-
-        func defaultValue(for symbol: Symbol) -> String {
-            guard self == .optional else {
-                return ""
-            }
-            switch symbol.type {
-            case .array: return "? = []"
-            case .bool:  return " = false"
-            case .optional: return " = nil"
-            default:     return "? = nil"
-            }
-        }
     }
 }
 
@@ -263,77 +241,53 @@ extension BlockProcessor {
         )
     }
 
-    func validateParameters(
-        _ symbols: [Symbol],
-        against validatedCode: Symbol
-    ) throws -> Symbol {
-        var context: Context = .normal
-        var parameters: [Symbol] = []
-        var symbols = symbols
-
-        while let param = symbols.shift() {
-            if case .paramSetContext(let newContext) = param.meta.first {
-                context = newContext
-                continue
-            }
-
-            var paramSymbol: Symbol
-            if case .array(var type) = param.type {
+    func validateParameters(_ symbols: [Symbol]) throws -> Symbol {
+        let parameters: [Symbol] = try symbols.map { param in
+            if case .array = param.type {
                 guard
                     param.children.count == 2,
                     let nameSymbol = param.children.first,
-                    let nameSymbolID = nameSymbol.id,
+                    nameSymbol.isIdentifiable,
                     let valueSymbol = param.children.last
                 else {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
-                if type.isUnknown {
-                    type = findRegistered(nameSymbolID)?.type ??
-                           findRegistered(valueSymbol.id)?.type ??
-                           .unknown
-                }
-                paramSymbol = param.with(
+
+//                if type.isUnknown, let nameSymbolType = findRegistered(nameSymbolID)?.type {
+//                    type = nameSymbolType
+//                }
+//                if type.isUnknown, let valueSymboltype = findRegistered(valueSymbol.id)?.type {
+//                    type = valueSymboltype
+//                }
+
+                return param.with(
                     code: { symbol in
-                        "\(nameSymbolID): \(type) = \(valueSymbol.code)"
+                        "\(nameSymbol.id): \(valueSymbol.type) = \(valueSymbol.code)"
                     }
                 )
-//                registry.register(nameSymbol.with(type: type))
-//                registry.register(valueSymbol.with(type: type))
 
-//            } else if let found = validatedCode.children.find(id: param.id) {
-//                paramSymbol = found.with(
-//                    code: { symbol in
-//                        "\(symbol): \(symbol.type)\(context.defaultValue(for: symbol))"
-//                    }
-//                )
+                //            switch context {
+                //            case .normal, .optional:
+                //                parameters.append(paramSymbol)
+                //                if paramSymbol.isMutating(in: validatedCode.children) == true {
+                //                    auxiliaries.append(Symbol(
+                //                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
+                //                        type: paramSymbol.type
+                //                    ))
+                //                }
+                //            case .local:
+                //                auxiliaries.append(paramSymbol)
+                //            }
+
             } else if let registered = findRegistered(param.id) {
-                paramSymbol = registered.with(
+                return registered.with(
                     code: { symbol in
                         "\(symbol): \(symbol.type)"
                     }
                 )
-            } else {
-                throw Error.unusedParameter(param)
             }
 
-            var metaData = paramSymbol.meta
-            metaData.insert(.paramContext(context))
-            parameters.append(paramSymbol.with(
-                meta: metaData
-            ))
-
-//            switch context {
-//            case .normal, .optional:
-//                parameters.append(paramSymbol)
-//                if paramSymbol.isMutating(in: validatedCode.children) == true {
-//                    auxiliaries.append(Symbol(
-//                        code: "\(paramSymbol.id) = \(paramSymbol.id)",
-//                        type: paramSymbol.type
-//                    ))
-//                }
-//            case .local:
-//                auxiliaries.append(paramSymbol)
-//            }
+            throw Error.unusedParameter(param)
         }
 
         return Symbol(

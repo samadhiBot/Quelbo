@@ -17,9 +17,9 @@ final class DecrementLessThanTests: QuelboTests {
     }
 
     func testDecrementLessThan() throws {
-        var registry: Set<Symbol> = [
+        registry.append(
             Symbol(id: "foo", type: .variable(.int))
-        ]
+        )
 
         let symbol = try factory.init([
             .local("FOO"),

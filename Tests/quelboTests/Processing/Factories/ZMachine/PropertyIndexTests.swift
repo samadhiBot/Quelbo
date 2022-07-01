@@ -38,7 +38,7 @@ final class PropertyIndexTests: QuelboTests {
     }
 
     func testPropertyIndexOfObjectInLocal() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "dir", type: .direction)
         )
 

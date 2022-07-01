@@ -58,7 +58,7 @@ final class FlagsTests: QuelboTests {
         ))
 
         try flagGlobals.forEach { flag in
-            let global = try Game.find(flag.id!, category: .flags)
+            let global = try Game.find(flag.id, category: .flags)
             XCTAssertEqual(flag, global)
         }
     }

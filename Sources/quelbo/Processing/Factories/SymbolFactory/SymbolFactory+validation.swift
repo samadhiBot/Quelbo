@@ -40,11 +40,9 @@ extension SymbolFactory {
         default: break
         }
 
-        for symbol in typedSymbols {
+        return try typedSymbols.map { symbol in
             try upsert(symbol)
         }
-
-        return typedSymbols
     }
 }
 

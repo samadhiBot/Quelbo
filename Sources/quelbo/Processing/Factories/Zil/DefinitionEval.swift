@@ -17,11 +17,11 @@ extension Factories {
         override func processTokens() throws {
             var callerParams = tokens
             self.nameSymbol = try findNameSymbol(in: &callerParams)
-            guard let definitionID = nameSymbol.id else {
+            guard nameSymbol.isIdentifiable else {
                 throw Error.missingDefinitionIdentifier(nameSymbol)
             }
 
-            let defSymbol = try Game.find(definitionID, category: .definitions)
+            let defSymbol = try Game.find(nameSymbol.id, category: .definitions)
             var definition = defSymbol.definition
 
             var activation: String?

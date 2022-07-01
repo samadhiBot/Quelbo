@@ -40,7 +40,9 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualAtomAndDecimal() throws {
-        var registry: Set<Symbol> = [Symbol(id: "n", type: .int)]
+        registry.append(
+            Symbol(id: "n", type: .int)
+        )
 
         let symbol = try factory.init([
             .local("N"),

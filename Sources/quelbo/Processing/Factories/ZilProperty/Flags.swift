@@ -29,7 +29,7 @@ extension Factories {
             try super.processTokens()
 
             symbols = symbols.map { symbol in
-                if let id = symbol.id, let flag = try? Game.find(id, category: .flags) {
+                if symbol.isIdentifiable, let flag = try? Game.find(symbol.id, category: .flags) {
                     return flag
                 } else {
                     let flag = Flag.find(symbol.code)

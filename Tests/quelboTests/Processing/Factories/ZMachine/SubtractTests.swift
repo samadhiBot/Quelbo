@@ -40,7 +40,7 @@ final class SubtractTests: QuelboTests {
     }
 
     func testSubtractOneAtom() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "foo", type: .int)
         )
 

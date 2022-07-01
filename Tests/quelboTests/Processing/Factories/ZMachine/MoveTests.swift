@@ -52,7 +52,7 @@ final class MoveTests: QuelboTests {
     }
 
     func testMoveLocalWeaponToHere() throws {
-        registry.insert(
+        registry.append(
             Symbol(
                 id: "dweapon",
                 type: .bool,

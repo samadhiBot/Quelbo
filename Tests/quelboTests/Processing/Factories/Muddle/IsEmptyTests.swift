@@ -17,7 +17,7 @@ final class IsEmptyTests: QuelboTests {
     }
 
     func testIsEmpty() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "atms", type: .variable(.bool))
         )
 

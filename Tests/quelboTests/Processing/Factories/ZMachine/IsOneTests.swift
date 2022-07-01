@@ -47,7 +47,7 @@ final class IsOneTests: QuelboTests {
     }
 
     func testIsOneLocal() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "bar", type: .variable(.int))
         )
 

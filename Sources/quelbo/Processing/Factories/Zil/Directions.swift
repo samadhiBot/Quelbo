@@ -28,11 +28,13 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             while let dir = try? findNameSymbol(in: &tokens) {
-                guard var name = dir.id?.stringLiteral else {
+                guard dir.isIdentifiable else {
                     throw Error.missingDirectionID(dir)
                 }
-                var code = ""
+
                 let zil = dir.zilName
+                var code = ""
+                var name = dir.id.stringLiteral
 
                 if let fizmoDirection = Direction.find(zil) {
                     name = fizmoDirection.id.description

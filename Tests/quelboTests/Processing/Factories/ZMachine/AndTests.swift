@@ -75,7 +75,7 @@ final class AndTests: QuelboTests {
     }
 
     func testAndTwoBooleanExpressions() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "rarg", type: .int)
         )
 

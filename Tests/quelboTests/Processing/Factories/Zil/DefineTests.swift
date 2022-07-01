@@ -488,7 +488,7 @@ final class DefineTests: QuelboTests {
 //    }
 
     func testMultifrob() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "prsa", type: .object)
         )
 

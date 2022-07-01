@@ -11,7 +11,7 @@ import Foundation
 /// A representation of a piece of Zil code and its Swift translation.
 class Symbol: Identifiable {
     /// The symbol's unique identifier.
-    let id: Symbol.Identifier?
+    let id: Symbol.Identifier
 
     /// The Swift translation of a piece of Zil code.
     let codeBlock: (Symbol) throws -> String
@@ -44,7 +44,7 @@ class Symbol: Identifiable {
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        self.id = id
+        self.id = id ?? ""
         self.codeBlock = codeBlock
         self.type = type
         self.category = category
@@ -68,7 +68,7 @@ class Symbol: Identifiable {
         children: [Symbol] = [],
         meta: Set<MetaData> = []
     ) {
-        self.id = id
+        self.id = id ?? ""
         self.codeBlock = { _ in code.rightTrimmed }
         self.type = type
         self.category = category
@@ -129,9 +129,9 @@ extension Symbol {
     }
 
     /// <#Description#>
-//    var identifiable: Bool {
-//        id != nil
-//    }
+    var isIdentifiable: Bool {
+        !id.stringLiteral.isEmpty
+    }
 
     /// Whether the symbol represents a closure.
     var isFunctionClosure: Bool {
@@ -163,7 +163,7 @@ extension Symbol {
     }
 
     /// Whether the symbol represents a return statement.
-    func isParamWith(context: BlockProcessor.Context) -> Bool {
+    func isParamWith(context: Symbol.ParamContext) -> Bool {
         for metaData in meta {
             if case .paramContext(let paramContext) = metaData { return paramContext == context }
         }
@@ -191,15 +191,16 @@ extension Symbol {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func reconcile(with revision: Symbol) {
-        guard revision.typeCertainty > typeCertainty else { return }
-
+    func reconcile(with revision: Symbol) -> Symbol {
         print("🥔 reconcile \(self) << \(revision)")
-        if case .variable = type {
-            self.type = revision.type.asVariable // TODO: still necessary?
-        } else {
-            self.type = revision.type
-        }
+//        if case .variable = type {
+//            self.type = revision.type.asVariable // TODO: still necessary?
+//        } else {
+//            self.type = revision.type
+//        }
+        guard revision.typeCertainty >= typeCertainty else { return revision }
+
+        self.type = revision.type
 
         self.children = revision.children
 
@@ -208,7 +209,8 @@ extension Symbol {
         }
 
         self.meta = revision.meta
-        customDump(self)
+
+        return revision
     }
 
     /// If a symbol represents a `return` statement with a return value, `returnValueType` provides
@@ -397,11 +399,11 @@ extension Symbol: CustomDumpReflectable {
         .init(
             self,
             children: [
-                "id": self.id == nil ? "none" : self.id!.stringLiteral,
+                "id": self.id,
+                "code": self.code,
                 "type": self.type,
                 "category": self.category?.rawValue ?? "none",
                 "meta": self.meta,
-                "code": self.code,
             ],
             displayStyle: .struct
         )
@@ -412,7 +414,7 @@ extension Symbol: CustomDebugStringConvertible {
     var debugDescription: String {
         """
         {
-            id: \(id?.stringLiteral ?? "none"),
+            id: \(id),
             code \(code),
             type: \(type),
             category: \(category?.rawValue ?? "none"),
@@ -420,17 +422,14 @@ extension Symbol: CustomDebugStringConvertible {
             meta: \(meta)
         }
         """
-
     }
 }
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        if let id = id {
-            return id.stringLiteral
-        } else {
-            return code
-        }
+        guard !id.stringLiteral.isEmpty else { return code }
+
+        return id.stringLiteral
     }
 }
 
@@ -446,10 +445,11 @@ extension Symbol: Equatable {
 
 extension Symbol: Hashable {
     func hash(into hasher: inout Hasher) {
-        guard let id = id else {
-            fatalError("Attempted to register a symbol without an id: \(code)")
-        }
         hasher.combine(id)
+        hasher.combine(code)
+        hasher.combine(type)
+        hasher.combine(category)
+        hasher.combine(meta)
     }
 }
 

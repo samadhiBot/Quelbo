@@ -22,7 +22,7 @@ class Game {
     var gameTokens: [Token] = []
 
     /// An array of ``Symbol`` values processed from the ``gameTokens``.
-    var gameSymbols: Set<Symbol> = []
+    var gameSymbols: [Symbol] = []
 
     /// The ZMachine version to emulate during processing.
     var zMachineVersion: Game.ZMachineVersion = .z3
@@ -98,45 +98,39 @@ extension Game {
         return symbol
     }
 
-    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
-    ///
-    /// - Parameter symbol: The symbol value to overwrite.
-    ///
-    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
-    static func overwrite(_ symbol: Symbol) throws {
-//        guard symbol.type.hasReturnValue && symbol.type != .bool else {
-//            return
+//    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
+//    ///
+//    /// - Parameter symbol: The symbol value to overwrite.
+//    ///
+//    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
+//    static func overwrite(_ symbol: Symbol) throws {
+////        guard symbol.type.hasReturnValue && symbol.type != .bool else {
+////            return
+////        }
+//        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
+//            let categories: [Symbol.Category]
+//            if let category = symbol.category {
+//                categories = [category]
+//            } else {
+//                categories = []
+//            }
+//            throw GameError.symbolNotFound(symbol.id ?? "Nil", categories: categories)
 //        }
-        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-            let categories: [Symbol.Category]
-            if let category = symbol.category {
-                categories = [category]
-            } else {
-                categories = []
-            }
-            throw GameError.symbolNotFound(symbol.id ?? "Nil", categories: categories)
-        }
-        shared.gameSymbols.remove(at: index)
-        shared.gameSymbols.insert(symbol)
-    }
+//        shared.gameSymbols.remove(at: index)
+//        shared.gameSymbols.insert(symbol)
+//    }
 
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     static func upsert(_ symbol: Symbol) -> Symbol {
-        switch shared.gameSymbols.insert(symbol) {
-        case (true, _):
-            return symbol
-        case (false, let existing):
-            existing.reconcile(with: symbol)
-            return existing
-        }
+        assert(symbol.isIdentifiable)
 
-//        guard var existing = shared.gameSymbols.first(where: { $0.id == symbol.id }) else {
-//            shared.gameSymbols.insert(symbol)
-//            return symbol
-//        }
-//
-//        return existing.reconcile(with: symbol)
+        if let existing = shared.gameSymbols.find(id: symbol.id) {
+            return existing.reconcile(with: symbol)
+        } else {
+            shared.gameSymbols.append(symbol)
+            return symbol
+        }
     }
 }

@@ -26,21 +26,24 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             let dirSymbol = try findNameSymbol(in: &tokens)
-            guard var dirString = dirSymbol.id?.stringLiteral else {
+
+            guard dirSymbol.isIdentifiable else {
                 throw Error.missingDirectionID(dirSymbol)
             }
 
+            var dirString = dirSymbol.id.stringLiteral
             if let predefined = Direction.find(dirSymbol.zilName) {
                 dirString = predefined.id.description
             }
+
             let foundDirection = try Game.find(
                 .id(dirString),
                 category: .properties
             )
-            guard let name = foundDirection.id?.stringLiteral else {
+            guard foundDirection.isIdentifiable else {
                 throw Error.missingDirectionID(foundDirection)
             }
-            self.name = name
+            self.name = foundDirection.id.stringLiteral
 
             while let token = tokens.shift() {
                 switch token {

@@ -32,14 +32,11 @@ extension Symbol {
         /// specified return type if it returns a value.
         case isReturnStatement(Symbol.DataType?)
 
-        ///
-        case paramContext(BlockProcessor.Context)
+        /// Specifies the type of parameter (`normal`, `local` or `optional`)
+        case paramContext(Symbol.ParamContext)
 
         /// Specifies special parameter declarations in certain block processing cases.
         case paramDeclarations(String)
-
-        ///
-        case paramSetContext(BlockProcessor.Context)
 
         /// Specifies a custom return value definition for the symbol.
         case type(String)

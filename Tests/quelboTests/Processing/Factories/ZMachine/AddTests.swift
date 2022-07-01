@@ -92,9 +92,9 @@ final class AddTests: QuelboTests {
     }
 
     func testAddOneToTableElement() throws {
-        var registry: Set<Symbol> = [
+        registry.append(
             Symbol(id: "src", code: "<table definition>", type: .table)
-        ]
+        )
 
         let symbol = try factory.init([
             .form([

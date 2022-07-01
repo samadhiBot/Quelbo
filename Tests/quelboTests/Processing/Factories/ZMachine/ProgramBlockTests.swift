@@ -190,7 +190,7 @@ final class ProgramBlockTests: QuelboTests {
     }
 
     func testProgRoutine3() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "x", type: .variable(.int))
         )
 

@@ -49,7 +49,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -75,7 +76,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -106,7 +108,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)

@@ -17,7 +17,7 @@ final class IsAssignedTests: QuelboTests {
     }
 
     func testIsAssigned() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "foo", type: .variable(.bool))
         )
 

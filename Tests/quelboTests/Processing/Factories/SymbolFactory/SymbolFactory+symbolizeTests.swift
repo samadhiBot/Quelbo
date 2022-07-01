@@ -124,7 +124,7 @@ final class SymbolFactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeLocal() throws {
-        registry.insert(
+        registry.append(
             Symbol(id: "fooBar", type: .object)
         )
 
