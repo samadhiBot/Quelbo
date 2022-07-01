@@ -31,7 +31,7 @@ final class BitwiseOrTests: QuelboTests {
             .decimal(0),
             .decimal(2),
             .global("SOME-INT"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".bitwiseOr(1, 0, 2, someInt)",
@@ -45,7 +45,7 @@ final class BitwiseOrTests: QuelboTests {
                 .decimal(1),
                 .decimal(0),
                 .string("three"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

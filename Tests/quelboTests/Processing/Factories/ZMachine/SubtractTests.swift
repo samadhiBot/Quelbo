@@ -31,7 +31,7 @@ final class SubtractTests: QuelboTests {
     func testSubtractOneDecimal() throws {
         let symbol = try factory.init([
             .decimal(42),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "-42",
@@ -40,11 +40,13 @@ final class SubtractTests: QuelboTests {
     }
 
     func testSubtractOneAtom() throws {
+        registry.insert(
+            Symbol(id: "foo", type: .int)
+        )
+
         let symbol = try factory.init([
             .local("FOO"),
-        ], with: [
-            Symbol(id: "foo", type: .int)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "-foo",
@@ -56,7 +58,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".subtract(9, 3)",
@@ -69,7 +71,7 @@ final class SubtractTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".subtract(20, 5, 2)",
@@ -81,7 +83,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "bigNumber.subtract(biggerNumber)",
@@ -93,7 +95,7 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "cyclowrath.subtract(1)",
@@ -107,7 +109,7 @@ final class SubtractTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "baseScore.subtract(otvalFrob())",

@@ -23,7 +23,7 @@
 //    func testEvaluateAtom() throws {
 ////        let symbol = try testFactory.init([
 ////            .atom("BOARDED-WINDOW")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(code: "boardedWindow", type: .object, category: .globals))
 //    }
@@ -55,7 +55,7 @@
 //    func testEvaluateCommented() throws {
 ////        let symbol = try testFactory.init([
 ////            .commented(.bool(true))
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(code: "/* true */", type: .comment))
 //    }
@@ -77,7 +77,7 @@
 ////                    .decimal(3),
 ////                ])
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            ".add(2, 3)",
@@ -96,7 +96,7 @@
 //    func testEvaluateGlobal() throws {
 ////        let symbol = try testFactory.init([
 ////            .global("BOARDED-WINDOW")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            "boardedWindow",
@@ -111,7 +111,7 @@
 ////                .atom("FLOATING?"),
 ////                .bool(false),
 ////            ])
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            id: "<List>",
@@ -126,7 +126,7 @@
 //    func testEvaluateLocal() throws {
 ////        let symbol = try testFactory.init([
 ////            .local("FOO-BAR")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(code: "fooBar"))
 //    }
@@ -134,7 +134,7 @@
 //    func testEvaluateProperty() throws {
 ////        let symbol = try testFactory.init([
 ////            .property("STRENGTH")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            "strength",
@@ -154,7 +154,7 @@
 ////                    ]
 ////                )
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            id: "<Quote>",
@@ -181,7 +181,7 @@
 ////                    .decimal(3),
 ////                ])
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(code: "5", type: .int, meta: [.isLiteral]))
 ////    }
@@ -190,7 +190,7 @@
 ////    func testEvaluateString() throws {
 ////        let symbol = try testFactory.init([
 ////            .string("Plants can talk")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            #""Plants can talk""#,

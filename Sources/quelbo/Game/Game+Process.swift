@@ -90,18 +90,18 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let registry: Set<Symbol> = []
+                    var registry: Set<Symbol> = []
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
                     let factory: SymbolFactory
                     if let zilSymbol = try Game.zilSymbolFactories
                         .find(zil)?
-                        .init(tokens, with: registry)
+                        .init(tokens, with: &registry)
                     {
                         factory = zilSymbol
                     } else {
-                        factory = try Factories.RoutineCall(formTokens, with: registry)
+                        factory = try Factories.RoutineCall(formTokens, with: &registry)
                     }
                     _ = try factory.process()
                 } catch {

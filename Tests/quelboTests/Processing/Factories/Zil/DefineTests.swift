@@ -39,7 +39,10 @@ final class DefineTests: QuelboTests {
                 ])
             ])
         ]
-        let symbol = try factory.init([.atom("INC-FORM")] + definition).process()
+        let symbol = try factory.init(
+            [.atom("INC-FORM")] + definition,
+            with: &registry
+        ).process()
 
         let expected = Symbol(
             id: "incForm",
@@ -57,7 +60,7 @@ final class DefineTests: QuelboTests {
                 .atom("INC-FORM"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             try Game.find("incForm(foo)", category: .functions),
@@ -88,7 +91,7 @@ final class DefineTests: QuelboTests {
                 .atom("INC-FORM"),
                 .atom("BAR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             try Game.find("incForm(bar)", category: .functions),
@@ -132,7 +135,7 @@ final class DefineTests: QuelboTests {
                 .local("X")
             ])
         ]
-        let symbol = try factory.init([.atom("DOUBLE")] + definition).process()
+        let symbol = try factory.init([.atom("DOUBLE")] + definition, with: &registry).process()
 
         let expected = Symbol(
             id: "double",
@@ -150,7 +153,7 @@ final class DefineTests: QuelboTests {
                 .atom("DOUBLE"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             fooCaller,
@@ -181,7 +184,7 @@ final class DefineTests: QuelboTests {
                 .atom("DOUBLE"),
                 .atom("BAR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             barCaller,
@@ -279,7 +282,7 @@ final class DefineTests: QuelboTests {
                 ])
             ])
         ]
-        let symbol = try factory.init([.atom("POWER-TO")] + definition).process()
+        let symbol = try factory.init([.atom("POWER-TO")] + definition, with: &registry).process()
 
         let expected = Symbol(
             id: "powerTo",
@@ -297,7 +300,7 @@ final class DefineTests: QuelboTests {
                 .atom("POWER-TO"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             fooCaller,
@@ -333,12 +336,10 @@ final class DefineTests: QuelboTests {
     }
 
     func testMakeReadbufDefine() throws {
-        let registry: Set<Symbol> = []
-
         let _ = try Factories.Constant([
             .atom("READBUF-SIZE"),
             .decimal(100)
-        ], with: registry).process()
+        ], with: &registry).process()
 
         let definition: [Token] = [
             .list([
@@ -352,7 +353,10 @@ final class DefineTests: QuelboTests {
                 ])
             ])
         ]
-        let symbol = try factory.init([.atom("MAKE-READBUF")] + definition, with: registry).process()
+        let symbol = try factory.init(
+            [.atom("MAKE-READBUF")] + definition,
+            with: &registry
+        ).process()
 
         let expected = Symbol(
             id: "makeReadbuf",
@@ -372,7 +376,7 @@ final class DefineTests: QuelboTests {
             .form([
                 .atom("MAKE-READBUF")
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(kbdReadbuf, Symbol(
             id: "kbdReadbuf",
@@ -405,7 +409,7 @@ final class DefineTests: QuelboTests {
             .form([
                 .atom("MAKE-READBUF")
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(editReadbuf, Symbol(
             id: "editReadbuf",
@@ -459,7 +463,7 @@ final class DefineTests: QuelboTests {
 //                ]),
 //                .local("STRUC")
 //            ])
-//        ]).process()
+//        ], with: &registry).process()
 //
 //        XCTAssertNoDifference(symbol, Symbol(
 //            id: "firstThree",
@@ -484,9 +488,9 @@ final class DefineTests: QuelboTests {
 //    }
 
     func testMultifrob() throws {
-        let registry: Set<Symbol> = [
-            Symbol(id: "prsa", type: .object),
-        ]
+        registry.insert(
+            Symbol(id: "prsa", type: .object)
+        )
 
         let definition: [Token] = [
             .list([
@@ -692,7 +696,7 @@ final class DefineTests: QuelboTests {
             ])
         ]
 
-        let symbol = try factory.init([.atom("MULTIFROB")] + definition, with: registry).process()
+        let symbol = try factory.init([.atom("MULTIFROB")] + definition, with: &registry).process()
 
         let expected = Symbol(
             id: "multifrob",
@@ -718,7 +722,7 @@ final class DefineTests: QuelboTests {
                 .atom("PRSA"),
                 .local("ATMS")
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(isVerb, Symbol(
             id: "isVerb",
@@ -910,7 +914,7 @@ final class DefineTests: QuelboTests {
 //                    ])
 //                ])
 //            ])
-//        ]).process()
+//        ], with: &registry).process()
 //
 //        let expected = Symbol(
 //            id: "multiBits",
@@ -931,7 +935,7 @@ final class DefineTests: QuelboTests {
 ////                .atom("DOUBLE"),
 ////                .atom("FOO")
 ////            ])
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(caller, Symbol(
 ////            "double(x: foo)",

@@ -26,7 +26,7 @@ final class MapStopTests: QuelboTests {
     func testMapStop() throws {
         let symbol = try factory.init([
             .local("ATMS")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "atms.mapStop",

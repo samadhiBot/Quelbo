@@ -30,7 +30,7 @@ final class PutTests: QuelboTests {
             .global("MYTABLE"),
             .decimal(1),
             .decimal(123)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "try mytable.put(element: 123, at: 1)",
@@ -43,7 +43,7 @@ final class PutTests: QuelboTests {
             .global("MYTABLE"),
             .decimal(1),
             .string("hello")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #"try mytable.put(element: "hello", at: 1)"#,
@@ -56,7 +56,7 @@ final class PutTests: QuelboTests {
             .local("RFROB"),
             .decimal(1),
             .local("MSG")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "try rfrob.put(element: msg, at: 1)",
@@ -70,7 +70,7 @@ final class PutTests: QuelboTests {
                 .string("TROLL"),
                 .decimal(1),
                 .decimal(123)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -80,7 +80,7 @@ final class PutTests: QuelboTests {
                 .global("MYTABLE"),
                 .string("1"),
                 .decimal(123)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

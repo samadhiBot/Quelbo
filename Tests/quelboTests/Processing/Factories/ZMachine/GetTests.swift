@@ -27,7 +27,7 @@ final class GetTests: QuelboTests {
         let symbol = try factory.init([
             .global("FOO"),
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "try foo.get(at: 2)",
@@ -40,7 +40,7 @@ final class GetTests: QuelboTests {
             try factory.init([
                 .string("FOO"),
                 .decimal(2)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -49,7 +49,7 @@ final class GetTests: QuelboTests {
             try factory.init([
                 .global("FOO"),
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -25,11 +25,11 @@ final class RestTests: QuelboTests {
                 .decimal(3),
                 .decimal(4)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT1"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "struct1.rest()",
@@ -46,11 +46,11 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT2"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             symbol,
@@ -70,18 +70,18 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT3"),
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             symbol,
             Symbol(
                 code: "struct3.rest(2)",
-                type: .variable(.array(.zilElement)) 
+                type: .variable(.array(.zilElement))
             )
         )
     }

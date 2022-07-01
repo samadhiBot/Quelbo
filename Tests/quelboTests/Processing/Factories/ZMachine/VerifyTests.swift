@@ -17,7 +17,7 @@ final class VerifyTests: QuelboTests {
     }
 
     func testVerify() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(code: "verify()", type: .void))
     }
@@ -26,7 +26,7 @@ final class VerifyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

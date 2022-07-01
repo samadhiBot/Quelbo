@@ -28,7 +28,7 @@ final class AndTests: QuelboTests {
     func testAndOneValue() throws {
         let symbol = try factory.init([
             .bool(true),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".and(true)",
@@ -40,7 +40,7 @@ final class AndTests: QuelboTests {
         let symbol = try factory.init([
             .bool(true),
             .bool(true),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".and(true, true)",
@@ -53,7 +53,7 @@ final class AndTests: QuelboTests {
             .bool(true),
             .bool(false),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".and(true, false, true)",
@@ -66,7 +66,7 @@ final class AndTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".and(1, 0, 2)",
@@ -75,7 +75,9 @@ final class AndTests: QuelboTests {
     }
 
     func testAndTwoBooleanExpressions() throws {
-        let registry: Set<Symbol> = [Symbol(id: "rarg", type: .int)]
+        registry.insert(
+            Symbol(id: "rarg", type: .int)
+        )
 
         let symbol = try factory.init([
             .form([
@@ -87,7 +89,7 @@ final class AndTests: QuelboTests {
                 .atom("NOT"),
                 .global("FOUND-TREASURE-CHEST"),
             ]),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

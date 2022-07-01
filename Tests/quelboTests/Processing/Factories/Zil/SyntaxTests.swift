@@ -21,7 +21,7 @@ final class SyntaxTests: QuelboTests {
             .atom("QUIT"),
             .atom("="),
             .atom("V-QUIT")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "quit",
@@ -44,7 +44,7 @@ final class SyntaxTests: QuelboTests {
             .atom("OBJECT"),
             .atom("="),
             .atom("V-THINK-ABOUT")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "contemplate",
@@ -77,7 +77,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-TAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "take",
@@ -110,7 +110,7 @@ final class SyntaxTests: QuelboTests {
             .atom("V-POUR-LIQUID"),
             .atom("PRE-WATER"),
             .atom("WATER")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "water",
@@ -150,7 +150,7 @@ final class SyntaxTests: QuelboTests {
             .atom("="),
             .atom("V-PUT-IN"),
             .atom("PRE-PUT-IN")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "put",
@@ -185,7 +185,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "wake",
@@ -216,7 +216,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "wake",
@@ -253,7 +253,7 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "wake",

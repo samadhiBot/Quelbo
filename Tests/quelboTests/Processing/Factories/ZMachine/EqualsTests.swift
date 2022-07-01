@@ -31,7 +31,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.equals(3)",
@@ -40,12 +40,12 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualAtomAndDecimal() throws {
-        let registry: Set<Symbol> = [Symbol(id: "n", type: .int)]
+        var registry: Set<Symbol> = [Symbol(id: "n", type: .int)]
 
         let symbol = try factory.init([
             .local("N"),
             .decimal(3),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "n.equals(3)",
@@ -58,7 +58,7 @@ final class EqualsTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.equals(3, 4)",
@@ -70,7 +70,7 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .string("hello"),
             .string("goodBye"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #""hello".equals("goodBye")"#,
@@ -79,13 +79,13 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualTwoGlobalBools() throws {
-        let _ = try Factories.Global([.atom("PLAYER-ALIVE?"), .bool(true)]).process()
-        let _ = try Factories.Global([.atom("WORLD-ALIVE?"), .bool(true)]).process()
+        let _ = try Factories.Global([.atom("PLAYER-ALIVE?"), .bool(true)], with: &registry).process()
+        let _ = try Factories.Global([.atom("WORLD-ALIVE?"), .bool(true)], with: &registry).process()
 
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),
             .global("WORLD-ALIVE?"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "isPlayerAlive.equals(isWorldAlive)",
@@ -97,7 +97,7 @@ final class EqualsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -106,7 +106,7 @@ final class EqualsTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .string("3"),
-            ])
+            ], with: &registry)
         )
     }
 }

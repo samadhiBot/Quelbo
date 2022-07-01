@@ -17,12 +17,14 @@ final class IncrementGreaterThanTests: QuelboTests {
     }
 
     func testIncrementGreaterThan() throws {
+        registry.insert(
+            Symbol(id: "foo", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .local("FOO"),
             .decimal(3),
-        ], with: [
-            Symbol(id: "foo", type: .variable(.int))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.increment().isGreaterThan(3)",
@@ -35,7 +37,7 @@ final class IncrementGreaterThanTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -44,7 +46,7 @@ final class IncrementGreaterThanTests: QuelboTests {
             try factory.init([
                 .local("FOO"),
                 .string("three"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

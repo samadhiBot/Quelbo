@@ -29,7 +29,7 @@ final class HasFlagTests: QuelboTests {
         let symbol = try factory.init([
             .global("KITCHEN-WINDOW"),
             .global("OPENBIT"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "kitchenWindow.hasFlag(openBit)",
@@ -42,7 +42,7 @@ final class HasFlagTests: QuelboTests {
             try factory.init([
                 .string("KITCHEN-WINDOW"),
                 .global("OPENBIT"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

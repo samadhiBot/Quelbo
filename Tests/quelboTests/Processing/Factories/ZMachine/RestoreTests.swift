@@ -17,7 +17,7 @@ final class RestoreTests: QuelboTests {
     }
 
     func testRestore() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(code: "restore()", type: .void))
     }
@@ -26,7 +26,7 @@ final class RestoreTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

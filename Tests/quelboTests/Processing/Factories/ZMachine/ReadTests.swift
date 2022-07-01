@@ -30,7 +30,7 @@ final class ReadTests: QuelboTests {
         let symbol = try factory.init([
             .global("READBUF"),
             .global("LEXBUF"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "read(readbuf lexbuf)",
@@ -43,7 +43,7 @@ final class ReadTests: QuelboTests {
             try factory.init([
                 .global("NOTBUF"),
                 .global("LEXBUF"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -226,23 +226,24 @@ extension SymbolFactory {
         func findFactory() throws -> SymbolFactory {
             if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
                 tokens,
-                with: registry
+                with: &registry
             ) {
                 return zMachine
             }
             let id = Symbol.Identifier.id(zil.lowerCamelCase)
             if let _ = try? Game.find(id, category: .routines) {
-                return try Factories.RoutineCall(formTokens, with: registry)
+                return try Factories.RoutineCall(formTokens, with: &registry)
             }
             if let _ = try? Game.find(id, category: .definitions) {
-                let _ = try Factories.DefinitionEval(formTokens, with: registry).process()
-                return try Factories.RoutineCall(formTokens, with: registry)
+                let _ = try Factories.DefinitionEval(formTokens, with: &registry).process()
+                return try Factories.RoutineCall(formTokens, with: &registry)
             }
             throw SymbolizationError.noRoutineOrDefinition(formTokens)
         }
 
         let factory = try findFactory()
         let symbol = try factory.process()
+
         return symbol
     }
 
@@ -271,7 +272,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        try Factories.List(listTokens, with: registry).process()
+        try Factories.List(listTokens, with: &registry).process()
     }
 
     /// Translates a Zil
@@ -289,6 +290,7 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let localName = zil.lowerCamelCase
         guard let found = findRegistered(.id(localName)) else {
+            print("// 🍇 \(registry)")
             throw SymbolizationError.unknownLocal(zil, at: index)
         }
 
@@ -342,7 +344,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil quote.
     func symbolizeQuote(_ token: Token) throws -> Symbol {
-        try Factories.Quote([token]).process()
+        try Factories.Quote([token], with: &registry).process()
     }
 
     /// Translates a Zil
@@ -353,7 +355,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil segment.
     func symbolizeSegment(_ token: Token) throws -> Symbol {
-        try Factories.Segment([token]).process()
+        try Factories.Segment([token], with: &registry).process()
     }
 
     /// Translates a Zil
@@ -376,7 +378,7 @@ extension SymbolFactory {
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return try Factories.DeclareType(tokens, with: registry).process()
+            return try Factories.DeclareType(tokens, with: &registry).process()
         case "SPLICE":
             return Symbol(code: "SPLICE (not yet implemented)")
         default:
@@ -392,7 +394,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil vector.
     func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
-        try Factories.Vector(vectorTokens, with: registry).process()
+        try Factories.Vector(vectorTokens, with: &registry).process()
     }
 }
 

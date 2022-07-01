@@ -32,7 +32,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".add(2, 3)",
@@ -45,7 +45,7 @@ final class AddTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".add(2, 3, 4)",
@@ -57,7 +57,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "bigNumber.add(biggerNumber)",
@@ -69,7 +69,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "cyclowrath.add(1)",
@@ -83,7 +83,7 @@ final class AddTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "baseScore.add(otvalFrob())",
@@ -92,7 +92,7 @@ final class AddTests: QuelboTests {
     }
 
     func testAddOneToTableElement() throws {
-        let registry: Set<Symbol> = [
+        var registry: Set<Symbol> = [
             Symbol(id: "src", code: "<table definition>", type: .table)
         ]
 
@@ -103,7 +103,7 @@ final class AddTests: QuelboTests {
                 .decimal(0)
             ]),
             .decimal(1)
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "try src.get(at: 0).add(1)",
@@ -115,7 +115,7 @@ final class AddTests: QuelboTests {
         let pAclause = try Factories.Global([
             .atom("P-ACLAUSE"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(pAclause, Symbol(
             id: "pAclause",
@@ -128,7 +128,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .global("P-ACLAUSE"),
             .decimal(1)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(pAclause, Symbol(
             id: "pAclause",
@@ -148,7 +148,7 @@ final class AddTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -157,7 +157,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .bool(true),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -166,7 +166,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .string("💣"),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -175,7 +175,7 @@ final class AddTests: QuelboTests {
             try factory.init([
                 .decimal(1),
                 .global("MY-BIKE"),
-            ])
+            ], with: &registry)
         )
     }
 }

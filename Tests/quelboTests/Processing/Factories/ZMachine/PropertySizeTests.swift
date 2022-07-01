@@ -28,7 +28,7 @@ final class PropertySizeTests: QuelboTests {
         let symbol = try factory.init([
             .global("TROLL"),
             .property("STRENGTH")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "troll.propertySize(of: .strength)",
@@ -41,7 +41,7 @@ final class PropertySizeTests: QuelboTests {
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -27,7 +27,7 @@ final class NextSiblingTests: QuelboTests {
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
             .global("EGG")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "egg.nextSibling",
@@ -39,7 +39,7 @@ final class NextSiblingTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("egg")
-            ])
+            ], with: &registry)
         )
     }
 }

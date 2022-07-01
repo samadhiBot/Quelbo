@@ -117,7 +117,7 @@ final class RoomTests: QuelboTests {
                 .atom("BOARD"),
                 .atom("FOREST")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "westOfHouse",
@@ -216,7 +216,7 @@ final class RoomTests: QuelboTests {
                 .string("CHASM"),
                 .atom("CHASM-PSEUDO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "reservoirSouth",
@@ -327,7 +327,7 @@ final class RoomTests: QuelboTests {
                 .atom("KITCHEN-WINDOW"),
                 .atom("FOREST")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "eastOfHouse",
@@ -410,7 +410,7 @@ final class RoomTests: QuelboTests {
                 .string("PAINT"),
                 .atom("PAINT-PSEUDO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "studio",
@@ -487,7 +487,7 @@ final class RoomTests: QuelboTests {
                 .atom("FLAGS"),
                 .atom("LIGHTBIT")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "foyer",
@@ -569,7 +569,7 @@ final class RoomTests: QuelboTests {
                 .string("STREAM"),
                 .atom("STREAM-PSEUDO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "inStream",

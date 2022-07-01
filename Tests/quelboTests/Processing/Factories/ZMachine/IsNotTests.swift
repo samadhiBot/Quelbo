@@ -32,7 +32,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotBool() throws {
         let symbol = try factory.init([
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(true)",
@@ -46,18 +46,18 @@ final class IsNotTests: QuelboTests {
                 .commented(
                     .string("RECOVER-STILETTO moved to DEMONS")
                 )
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
     func testIsNotDirection() throws {
-        let registry: Set<Symbol> = [
+        var registry: Set<Symbol> = [
             Symbol(id: "north", type: .direction, category: .directions)
         ]
 
         let symbol = try factory.init([
             .local("NORTH")
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(north)",
@@ -68,7 +68,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotInt() throws {
         let symbol = try factory.init([
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(42)",
@@ -79,7 +79,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotObject() throws {
         let symbol = try factory.init([
             .global("SWORD")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(sword)",
@@ -90,7 +90,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotRoutine() throws {
         let symbol = try factory.init([
             .atom("TROLL-MELEE")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(trollMelee)",
@@ -101,7 +101,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotString() throws {
         let symbol = try factory.init([
             .string("Forty-two")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #".isNot("Forty-two")"#,
@@ -112,7 +112,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotTable() throws {
         let symbol = try factory.init([
             .global("READBUF")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(readbuf)",
@@ -121,14 +121,14 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotThing() throws {
-        let registry: Set<Symbol> = [
+        var registry: Set<Symbol> = [
             Symbol(id: "prsa", type: .object),
             Symbol(id: "something", type: .thing)
         ]
 
         let symbol = try factory.init([
             .local("SOMETHING")
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(something)",
@@ -139,7 +139,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotUnknown() throws {
         let symbol = try factory.init([
             .atom("WHAT-AM-I")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(whatAmI)",
@@ -150,7 +150,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotVoid() throws {
         let symbol = try factory.init([
             .global("THE-VOID")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(theVoid)",
@@ -161,7 +161,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotZilElement() throws {
         let symbol = try factory.init([
             .global("ZILLY")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(zilly)",
@@ -176,7 +176,7 @@ final class IsNotTests: QuelboTests {
                 .decimal(2),
                 .decimal(3),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot([1, 2, 3])",
@@ -185,13 +185,13 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotOptional() throws {
-        let registry: Set<Symbol> = [
+        registry.insert(
             Symbol(id: "maybe", type: .optional(.object))
-        ]
+        )
 
         let symbol = try factory.init([
             .local("MAYBE")
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".isNot(maybe)",

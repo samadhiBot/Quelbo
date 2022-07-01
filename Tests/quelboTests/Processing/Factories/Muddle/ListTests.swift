@@ -21,7 +21,7 @@ final class ListTests: QuelboTests {
             .decimal(1),
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "[1, 2, 3]",
@@ -34,7 +34,7 @@ final class ListTests: QuelboTests {
             .string("AB"),
             .string("CD"),
             .string("EF"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #"["AB", "CD", "EF"]"#,
@@ -48,7 +48,7 @@ final class ListTests: QuelboTests {
             .decimal(2),
             .string("AB"),
             .character("C"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "[1, 2, \"AB\", \"C\"]",

@@ -15,7 +15,7 @@ final class IsInTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        let _ = try! Factories.Global([.atom("HERE"), .decimal(0)]).process()
+        let _ = try! Factories.Global([.atom("HERE"), .decimal(0)], with: &registry).process()
 
         Game.commit([
             Symbol(id: "kitchen", type: .object, category: .rooms),
@@ -33,7 +33,7 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "sandwich.isIn(paperBag)",
@@ -45,7 +45,7 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "paperBag.isIn(kitchen)",
@@ -54,6 +54,10 @@ final class IsInTests: QuelboTests {
     }
 
     func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
+        registry.insert(
+            Symbol(id: "oo", type: .variable(.table))
+        )
+
         let symbol = try factory.init([
             .form([
                 .atom("SET"),
@@ -65,9 +69,7 @@ final class IsInTests: QuelboTests {
                 ])
             ]),
             .global("HERE")
-        ], with: [
-            Symbol(id: "oo", type: .variable(.table))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",
@@ -80,7 +82,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -89,7 +91,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -20,7 +20,7 @@ final class PseudosTests: QuelboTests {
         let symbol = try factory.init([
             .string("CHASM"),
             .atom("CHASM-PSEUDO"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -43,7 +43,7 @@ final class PseudosTests: QuelboTests {
             .atom("DOOR-PSEUDO"),
             .string("PAINT"),
             .atom("PAINT-PSEUDO"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "things",
@@ -71,7 +71,7 @@ final class PseudosTests: QuelboTests {
                 .string("CHASM"),
                 .atom("CHASM-PSEUDO"),
                 .string("PAINT"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -80,7 +80,7 @@ final class PseudosTests: QuelboTests {
             try factory.init([
                 .atom("CHASM"),
                 .atom("CHASM-PSEUDO"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

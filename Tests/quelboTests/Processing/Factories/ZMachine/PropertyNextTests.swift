@@ -28,7 +28,7 @@ final class PropertyNextTests: QuelboTests {
         let symbol = try factory.init([
             .atom("TROLL"),
             .property("STRENGTH")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "troll.nextProperty(after: .strength)",
@@ -41,7 +41,7 @@ final class PropertyNextTests: QuelboTests {
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

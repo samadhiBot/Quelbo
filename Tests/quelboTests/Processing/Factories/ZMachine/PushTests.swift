@@ -19,7 +19,7 @@ final class PushTests: QuelboTests {
     func testPushDecimal() throws {
         let symbol = try factory.init([
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(code: "push(0)", type: .void))
     }
@@ -29,7 +29,7 @@ final class PushTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

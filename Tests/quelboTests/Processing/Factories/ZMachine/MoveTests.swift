@@ -31,7 +31,7 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "sandwich.move(to: paperBag)",
@@ -43,7 +43,7 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "paperBag.move(to: kitchen)",
@@ -52,7 +52,7 @@ final class MoveTests: QuelboTests {
     }
 
     func testMoveLocalWeaponToHere() throws {
-        let registry: Set<Symbol> = [
+        registry.insert(
             Symbol(
                 id: "dweapon",
                 type: .bool,
@@ -60,13 +60,13 @@ final class MoveTests: QuelboTests {
                     .isLiteral,
                     .typeCertainty(.booleanFalse),
                 ]
-            ),
-        ]
+            )
+        )
 
         let symbol = try factory.init([
             .local("DWEAPON"),
             .global("HERE"),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "dweapon.move(to: here)",
@@ -79,7 +79,7 @@ final class MoveTests: QuelboTests {
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -88,7 +88,7 @@ final class MoveTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

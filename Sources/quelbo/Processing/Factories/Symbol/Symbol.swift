@@ -191,23 +191,23 @@ extension Symbol {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
-    func reconcile(with other: Symbol) {
-        guard other.typeCertainty > typeCertainty else { return }
+    func reconcile(with revision: Symbol) {
+        guard revision.typeCertainty > typeCertainty else { return }
 
-        print("🥔 \(self) << \(other)")
+        print("🥔 reconcile \(self) << \(revision)")
         if case .variable = type {
-            self.type = other.type.asVariable
+            self.type = revision.type.asVariable // TODO: still necessary?
         } else {
-            self.type = other.type
+            self.type = revision.type
         }
 
-        self.children = other.children
+        self.children = revision.children
 
-        if let otherCategory = other.category, category != otherCategory {
-            self.category = otherCategory
+        if let revisedCategory = revision.category {
+            self.category = revisedCategory
         }
 
-        self.meta = other.meta
+        self.meta = revision.meta
         customDump(self)
     }
 

@@ -20,7 +20,7 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .atom("unexpected")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -38,7 +38,7 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ADJECTIVE"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "adjective",
@@ -56,7 +56,7 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SIZE"),
             .decimal(5)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "size",

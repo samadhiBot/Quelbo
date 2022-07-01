@@ -29,7 +29,7 @@ final class IsGreaterThanTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.isGreaterThan(3)",
@@ -41,7 +41,7 @@ final class IsGreaterThanTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .global("FOO"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.isGreaterThan(foo)",
@@ -53,7 +53,7 @@ final class IsGreaterThanTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .atom("BAR"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.isGreaterThan(bar)",
@@ -66,7 +66,7 @@ final class IsGreaterThanTests: QuelboTests {
             try factory.init([
                 .string("2"),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -75,7 +75,7 @@ final class IsGreaterThanTests: QuelboTests {
             try factory.init([
                 .string("2"),
                 .string("3"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

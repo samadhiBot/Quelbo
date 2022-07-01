@@ -59,7 +59,10 @@ extension SymbolFactory {
         print("// 🍓 \(declaredType) => \(symbol)(\(symbol.type))")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
-            return symbol.with(type: .bool)
+            return symbol.with(
+                type: .bool,
+                meta: symbol.meta.withoutTypeCertainty
+            )
 
         case (.property(let propertyType), _):
             if symbol.category == .properties || propertyType.isUnknown {
@@ -101,50 +104,47 @@ extension SymbolFactory {
             if declaredType == propertyType {
                 return symbol
             }
-//            fallthrough
 
         case (_, .variable(let variableType)):
             if declaredType == variableType {
                 return symbol
             }
-            fallthrough
 
         default:
             if [declaredType, .zilElement].contains(symbol.type) {
                 return symbol
             }
-            if symbol.typeCertainty == .certain {
-                break
-            }
+        }
 
-            print("// 🍌 \(declaredType) ==>> \(symbol)")
-
-            let childType = declaredType.isLiteral ? declaredType : .optional(declaredType)
-            var parentType = childType
-            if case .variable = symbol.type {
-                parentType = childType.asVariable
-            }
-
-            return symbol.with(
-                type: parentType,
-                children: symbol.children.map { child in
-                    guard child.typeCertainty < .certain else { return child }
-
-                    return child.with(
-                        type: childType,
-                        meta: child.meta.withoutTypeCertainty
-                    )
-                },
-                meta: symbol.meta.withoutTypeCertainty
+        guard symbol.typeCertainty < .certain else {
+            throw ValidationError.failedToDetermineType(
+                symbol,
+                expected: declaredType,
+                found: symbol.type,
+                siblings: siblings,
+                in: self
             )
         }
 
-        throw ValidationError.failedToDetermineType(
-            symbol,
-            expected: declaredType,
-            found: symbol.type,
-            siblings: siblings,
-            in: self
+        print("// 🍌 \(declaredType) ==>> \(symbol)")
+
+        let childType = declaredType.isLiteral ? declaredType : .optional(declaredType)
+        var parentType = childType
+        if case .variable = symbol.type {
+            parentType = childType.asVariable
+        }
+
+        return symbol.with(
+            type: parentType,
+            children: symbol.children.map { child in
+                guard child.typeCertainty < .certain else { return child }
+
+                return child.with(
+                    type: childType,
+                    meta: child.meta.withoutTypeCertainty
+                )
+            },
+            meta: symbol.meta.withoutTypeCertainty
         )
 
 //        switch (symbol.type.isLiteral, declaredType.isLiteral) {

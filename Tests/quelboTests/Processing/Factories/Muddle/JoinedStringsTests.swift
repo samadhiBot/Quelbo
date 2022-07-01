@@ -24,7 +24,7 @@ final class JoinedStringsTests: QuelboTests {
                 .decimal(66)
             ]),
             .string("CD")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

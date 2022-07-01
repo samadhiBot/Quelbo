@@ -28,7 +28,7 @@ final class ParentTests: QuelboTests {
     func testThiefsLocation() throws {
         let symbol = try factory.init([
             .global("THIEF")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "thief.parent",
@@ -40,7 +40,7 @@ final class ParentTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("thief")
-            ])
+            ], with: &registry)
         )
     }
 }

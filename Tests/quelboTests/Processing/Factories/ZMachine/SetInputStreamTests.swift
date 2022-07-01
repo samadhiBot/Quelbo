@@ -19,7 +19,7 @@ final class SetInputStreamTests: QuelboTests {
     func testSetInputStreamKeyboard() throws {
         let symbol = try factory.init([
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "setInputStream(.keyboard)",
@@ -30,7 +30,7 @@ final class SetInputStreamTests: QuelboTests {
     func testSetInputStreamFile() throws {
         let symbol = try factory.init([
             .decimal(1)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "setInputStream(.file)",
@@ -42,7 +42,7 @@ final class SetInputStreamTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("keyboard"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -50,7 +50,7 @@ final class SetInputStreamTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

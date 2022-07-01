@@ -45,7 +45,7 @@ final class ObjectTests: QuelboTests {
                 .atom("ACTION"),
                 .atom("WHITE-HOUSE-F")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "whiteHouse",
@@ -109,7 +109,7 @@ final class ObjectTests: QuelboTests {
                 .atom("LDESC"),
                 .string("There is a somewhat ruined egg here.")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "brokenEgg",
@@ -176,7 +176,7 @@ final class ObjectTests: QuelboTests {
                 .atom("ACTION"),
                 .atom("BAT-F")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "bat",
@@ -243,7 +243,7 @@ final class ObjectTests: QuelboTests {
                 .atom("TVALUE"),
                 .decimal(10)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "skull",
@@ -308,7 +308,7 @@ final class ObjectTests: QuelboTests {
                 .atom("SIZE"),
                 .decimal(4)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "water",
@@ -380,7 +380,7 @@ final class ObjectTests: QuelboTests {
                 .atom("STRENGTH"),
                 .decimal(2)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "troll",
@@ -458,7 +458,7 @@ final class ObjectTests: QuelboTests {
                 .atom("SIZE"),
                 .decimal(2)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "advertisement",
@@ -531,7 +531,7 @@ final class ObjectTests: QuelboTests {
                 .atom("CAPACITY"),
                 .decimal(10000)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "trophyCase",
@@ -577,7 +577,7 @@ final class ObjectTests: QuelboTests {
                 .atom("STAGGERED"),
                 .atom("WEARBIT")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "globalObjects",
@@ -661,7 +661,7 @@ final class ObjectTests: QuelboTests {
                 .atom("CAPACITY"),
                 .decimal(0)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "localGlobals",
@@ -722,7 +722,7 @@ final class ObjectTests: QuelboTests {
                 .atom("ACTION"),
                 .decimal(0)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "adventurer",

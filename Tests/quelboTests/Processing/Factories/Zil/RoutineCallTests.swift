@@ -52,7 +52,7 @@ final class RoutineCallTests: QuelboTests {
     func testProcessRoutineZeroParams() throws {
         let symbol = try Factories.RoutineCall([
             .atom("BAG-OF-COINS-F")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "bagOfCoinsFunc()",
@@ -64,7 +64,7 @@ final class RoutineCallTests: QuelboTests {
         let symbol = try Factories.RoutineCall([
             .atom("ONE-FCN"),
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "oneFunc(number: 42)",
@@ -77,7 +77,7 @@ final class RoutineCallTests: QuelboTests {
             .atom("TWO-F"),
             .string("Answer"),
             .decimal(42),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -99,7 +99,7 @@ final class RoutineCallTests: QuelboTests {
                 .atom("ONE-FCN"),
                 .decimal(42),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

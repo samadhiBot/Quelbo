@@ -17,11 +17,13 @@ final class IsAssignedTests: QuelboTests {
     }
 
     func testIsAssigned() throws {
+        registry.insert(
+            Symbol(id: "foo", type: .variable(.bool))
+        )
+
         let symbol = try factory.init([
             .local("FOO")
-        ], with: [
-            Symbol(id: "foo", type: .variable(.bool))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.isAssigned",
@@ -33,7 +35,7 @@ final class IsAssignedTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -37,7 +37,7 @@ final class SetVariableTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.set(to: 3)",
@@ -49,7 +49,7 @@ final class SetVariableTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Bar!"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #"foo.set(to: "Bar!")"#,
@@ -61,7 +61,7 @@ final class SetVariableTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ROBBED?"),
             .bool(true),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "isRobbed.set(to: true)",
@@ -77,7 +77,7 @@ final class SetVariableTests: QuelboTests {
                 .global("THIRTY"),
                 .decimal(3),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "t.set(to: thirty.add(3))",
@@ -86,14 +86,14 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToLocalVariable() throws {
-        let registry: Set<Symbol> = [
-            Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string),
-        ]
+        registry.insert(
+            Symbol(id: "n", code: "var n: String = \"Foo!\"", type: .string)
+        )
 
         let symbol = try factory.init([
             .atom("X"),
             .local("N"),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "x.set(to: n)",
@@ -102,15 +102,17 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToFunctionResult() throws {
+        registry.insert(
+            Symbol(id: "x", type: .object)
+        )
+
         let symbol = try factory.init([
             .atom("N"),
             .form([
                 .atom("NEXT?"),
                 .local("X")
             ]),
-        ], with: [
-            Symbol(id: "x", type: .object)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "n.set(to: x.nextSibling)",
@@ -119,6 +121,10 @@ final class SetVariableTests: QuelboTests {
     }
 
     func testSetVariableToModifiedSelf() throws {
+        registry.insert(
+            Symbol(id: "n", type: .int)
+        )
+
         let symbol = try factory.init([
             .atom("N"),
             .form([
@@ -126,9 +132,7 @@ final class SetVariableTests: QuelboTests {
                 .local("N"),
                 .decimal(1)
             ])
-        ], with: [
-            Symbol(id: "n", type: .int)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "n.set(to: n.subtract(1))",
@@ -141,7 +145,7 @@ final class SetVariableTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

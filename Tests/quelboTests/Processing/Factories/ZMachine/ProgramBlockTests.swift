@@ -76,7 +76,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg1",
@@ -160,7 +160,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg2",
@@ -190,6 +190,10 @@ final class ProgramBlockTests: QuelboTests {
     }
 
     func testProgRoutine3() throws {
+        registry.insert(
+            Symbol(id: "x", type: .variable(.int))
+        )
+
         let symbol = try routineFactory.init([
             .atom("TEST-PROG-3"),
             .list([
@@ -260,9 +264,7 @@ final class ProgramBlockTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ], with: [
-            Symbol(id: "x", type: .variable(.int))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testProg3",

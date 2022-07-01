@@ -76,7 +76,7 @@ final class BindTests: QuelboTests {
                 .string("END"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testBind1",
@@ -100,7 +100,8 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         ))
     }
 
@@ -158,7 +159,7 @@ final class BindTests: QuelboTests {
                 .atom("CR")
             ]),
             .commented(.string("Never reached"))
-        ]).process()
+        ], with: &registry).process()
 
         // "START 1 START 2 START 3 "
         XCTAssertNoDifference(symbol, Symbol(

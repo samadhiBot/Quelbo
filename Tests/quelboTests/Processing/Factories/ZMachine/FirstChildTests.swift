@@ -28,7 +28,7 @@ final class FirstChildTests: QuelboTests {
     func testThiefsFirstInventoryItem() throws {
         let symbol = try factory.init([
             .global("THIEF")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "thief.firstChild",
@@ -39,7 +39,7 @@ final class FirstChildTests: QuelboTests {
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
             .global("CLEARING")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "clearing.firstChild",
@@ -51,7 +51,7 @@ final class FirstChildTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("thief")
-            ])
+            ], with: &registry)
         )
     }
 }

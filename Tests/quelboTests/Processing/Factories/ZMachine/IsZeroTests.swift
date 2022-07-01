@@ -28,7 +28,7 @@ final class IsZeroTests: QuelboTests {
     func testIsZero() throws {
         let symbol = try factory.init([
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.isZero",
@@ -39,7 +39,7 @@ final class IsZeroTests: QuelboTests {
     func testIsZeroGlobal() throws {
         let symbol = try factory.init([
             .global("FOO")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.isZero",
@@ -48,11 +48,13 @@ final class IsZeroTests: QuelboTests {
     }
 
     func testIsZeroLocal() throws {
+        registry.insert(
+            Symbol(id: "bar", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .local("BAR")
-        ], with: [
-            Symbol(id: "bar", type: .variable(.int))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "bar.isZero",
@@ -64,7 +66,7 @@ final class IsZeroTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

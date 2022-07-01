@@ -41,7 +41,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .atom("unexpected")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -59,7 +59,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -76,7 +76,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PRSO"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "prso",
@@ -95,7 +95,7 @@ final class GlobalTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .commented(.string("BAR"))
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -103,7 +103,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -125,7 +125,7 @@ final class GlobalTests: QuelboTests {
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -159,7 +159,7 @@ final class GlobalTests: QuelboTests {
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -216,7 +216,7 @@ final class GlobalTests: QuelboTests {
                     .atom("CYCLOPS-MELEE")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "villains",
@@ -276,7 +276,7 @@ final class GlobalTests: QuelboTests {
                     .decimal(4)
                 ]))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "def1Res",
@@ -304,7 +304,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .list([.string("BAR")])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -326,7 +326,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .quote(.string("BAR"))
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -348,7 +348,7 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Forty Two!")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -380,7 +380,7 @@ final class GlobalTests: QuelboTests {
                     .local("X")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "square",
@@ -406,7 +406,7 @@ final class GlobalTests: QuelboTests {
         _ = try factory.init([
             .atom("PRSO"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         // `prso` is recorded as a boolean, but it's understood that `<>` might have been a
         // placeholder for another type (as noted in the meta property).
@@ -423,7 +423,7 @@ final class GlobalTests: QuelboTests {
         let move = try Factories.Move.init([
             .global("PRSO"),
             .global("CLEARING")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(move, Symbol(
             code: "prso.move(to: clearing)",
@@ -443,7 +443,7 @@ final class GlobalTests: QuelboTests {
         _ = try factory.init([
             .atom("KITCHEN-WINDOW-FLAG"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         // `kitchenWindowFlag` is recorded as a boolean, but it's understood that `<>` might have
         // been a placeholder for another type (as noted in the meta property).
@@ -460,7 +460,7 @@ final class GlobalTests: QuelboTests {
         let set = try Factories.SetVariable([
             .atom("KITCHEN-WINDOW-FLAG"),
             .atom("T")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(set, Symbol(
             code: "kitchenWindowFlag.set(to: true)",

@@ -27,7 +27,7 @@ final class IsOneTests: QuelboTests {
     func testIsOne() throws {
         let symbol = try factory.init([
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "2.isOne",
@@ -38,7 +38,7 @@ final class IsOneTests: QuelboTests {
     func testIsOneGlobal() throws {
         let symbol = try factory.init([
             .global("FOO")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "foo.isOne",
@@ -47,11 +47,13 @@ final class IsOneTests: QuelboTests {
     }
 
     func testIsOneLocal() throws {
+        registry.insert(
+            Symbol(id: "bar", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .local("BAR")
-        ], with: [
-            Symbol(id: "bar", type: .variable(.int))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "bar.isOne",
@@ -63,7 +65,7 @@ final class IsOneTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -38,7 +38,7 @@ final class RoutineTests: QuelboTests {
             .atom("BAG-OF-COINS-F"),
             .list([]),
             .commented(.atom("noop")),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "bagOfCoinsFunc",
@@ -64,7 +64,7 @@ final class RoutineTests: QuelboTests {
                 .atom("SING"),
                 .decimal(99),
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "go",
@@ -93,7 +93,7 @@ final class RoutineTests: QuelboTests {
                 .atom("RARG"),
                 .decimal(42)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "westHouse",
@@ -123,7 +123,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("MESSAGE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "printMessage",
@@ -159,7 +159,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PS"),
                 .string("Duck")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "isDucking",
@@ -196,7 +196,7 @@ final class RoutineTests: QuelboTests {
                 .atom("DUMMY?"),
                 .bool(true)
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "boomRoom",
@@ -227,7 +227,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "batD",
@@ -261,7 +261,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO"),
                 .atom("BAR")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "batBat",
@@ -297,7 +297,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "deadFunc",
@@ -411,7 +411,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("CRLF")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "remark",
@@ -483,7 +483,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("RTRUE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, bottlesRoutine)
         XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
@@ -563,7 +563,7 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, findWeaponRoutine)
         XCTAssertNoDifference(try Game.find("findWeapon", category: .routines), findWeaponRoutine)
@@ -575,12 +575,12 @@ final class RoutineTests: QuelboTests {
         let _ = try Factories.Global([
             .atom("HERE"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         let _ = try Factories.Global([
             .atom("WINNER"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("DWEAPON-MINI"),
@@ -601,7 +601,7 @@ final class RoutineTests: QuelboTests {
                 .local("DWEAPON"),
                 .global("HERE")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "dweaponMini",
@@ -627,17 +627,17 @@ final class RoutineTests: QuelboTests {
         let _ = try Factories.Global([
             .atom("LIT"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let _ = try Factories.Global([
             .atom("P-IT-OBJECT"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
 //        let _ = try Factories.Global([
 //            .atom("WINNER"),
 //            .decimal(0)
-//        ]).process()
+//        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("REMOVE-CAREFULLY"),
@@ -701,7 +701,7 @@ final class RoutineTests: QuelboTests {
                 ])
             ]),
             .atom("T")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "removeCarefully",
@@ -800,7 +800,7 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, singSymbol)
     }

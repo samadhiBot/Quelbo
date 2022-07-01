@@ -22,8 +22,11 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             self.nameSymbol = try findNameSymbol(in: &tokens)
-            self.blockProcessor = try BlockProcessor(tokens, with: registry)
-            blockProcessor.blockType = .blockWithDefaultActivation
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                in: .blockWithDefaultActivation,
+                with: &registry
+            )
         }
 
         var typeName: String {
@@ -36,7 +39,8 @@ extension Factories {
                 code: codeBlock,
                 type: blockProcessor.type,
                 category: .routines,
-                children: blockProcessor.children
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
             )
             Game.commit(symbol)
             return symbol

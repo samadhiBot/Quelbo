@@ -19,8 +19,11 @@ extension Factories {
         var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
-            self.blockProcessor = try BlockProcessor(tokens, with: registry)
-            blockProcessor.blockType = .blockWithDefaultActivation
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                in: .blockWithDefaultActivation,
+                with: &registry
+            )
         }
 
         override func process() throws -> Symbol {
@@ -28,10 +31,10 @@ extension Factories {
                 code: codeBlock,
                 type: blockProcessor.type,
                 children: blockProcessor.children,
-                meta: [
+                meta: blockProcessor.metaData.union([
                     .isImmutable,
                     .type("(\(blockProcessor.argumentTypes))\(blockProcessor.returnValue)"),
-                ]
+                ])
             )
         }
     }

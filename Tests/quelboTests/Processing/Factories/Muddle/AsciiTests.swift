@@ -26,7 +26,7 @@ final class AsciiTests: QuelboTests {
     func testAsciiCharacterToDecimal() throws {
         let symbol = try factory.init([
             .character("A")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "\"A\".ascii",
@@ -37,7 +37,7 @@ final class AsciiTests: QuelboTests {
     func testAsciiDecimalToCharacter() throws {
         let symbol = try factory.init([
             .decimal(65)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "65.ascii",

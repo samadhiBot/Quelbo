@@ -41,7 +41,7 @@ final class PureTableTests: QuelboTests {
             .atom("FOREST-1"),
             .atom("FOREST-2"),
             .atom("FOREST-3"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -64,7 +64,7 @@ final class PureTableTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .atom("TROLL-MELEE")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -93,7 +93,7 @@ final class PureTableTests: QuelboTests {
             .atom("PATH"),
             .atom("CLEARING"),
             .atom("FOREST-1"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -130,7 +130,7 @@ final class PureTableTests: QuelboTests {
                 .decimal(0),
                 .atom("THIEF-MELEE")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

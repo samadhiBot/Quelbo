@@ -37,7 +37,7 @@ final class TellTests: QuelboTests {
             .character("z"),
             .atom("C"),
             .decimal(65),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -54,7 +54,7 @@ final class TellTests: QuelboTests {
     func testThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -28,7 +28,7 @@ final class PrintCharacterTests: QuelboTests {
     func testProcessDecimal() throws {
         let symbol = try factory.init([
             .decimal(90)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #"output(utf8: 90)"#,
@@ -41,14 +41,14 @@ final class PrintCharacterTests: QuelboTests {
             try factory.init([
                 .decimal(89),
                 .decimal(90),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
     func testPrintCharacterBangEscaped() throws {
         let symbol = try factory.init([
             .character("s"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: #"output("s")"#,
@@ -59,7 +59,7 @@ final class PrintCharacterTests: QuelboTests {
     func testProcessAtom() throws {
         let symbol = try factory.init([
             .global("LETTER-Z")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "output(letterZ)",
@@ -74,7 +74,7 @@ final class PrintCharacterTests: QuelboTests {
                 .decimal(2),
                 .decimal(88),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "output(utf8: .add(2, 88))",

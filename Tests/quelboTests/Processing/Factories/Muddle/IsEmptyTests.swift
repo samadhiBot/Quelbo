@@ -17,11 +17,13 @@ final class IsEmptyTests: QuelboTests {
     }
 
     func testIsEmpty() throws {
+        registry.insert(
+            Symbol(id: "atms", type: .variable(.bool))
+        )
+
         let symbol = try factory.init([
             .local("ATMS")
-        ], with: [
-            Symbol(id: "atms", type: .variable(.bool))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "atms.isEmpty",

@@ -30,7 +30,7 @@ final class InitTableTests: QuelboTests {
     func testInitTableFourImpliedZeros() throws {
         let symbol = try factory.init([
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "Table(count: 4)",
@@ -42,7 +42,7 @@ final class InitTableTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(4),
             .decimal(0),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -63,7 +63,7 @@ final class InitTableTests: QuelboTests {
             ]),
             .decimal(4),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -82,7 +82,7 @@ final class InitTableTests: QuelboTests {
             .atom("BYTE"),
             .decimal(4),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -100,7 +100,7 @@ final class InitTableTests: QuelboTests {
         let symbol = try factory.init([
             .atom("NONE"),
             .decimal(100)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -120,7 +120,7 @@ final class InitTableTests: QuelboTests {
             .list([
                 .atom("BYTE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """
@@ -144,7 +144,7 @@ final class InitTableTests: QuelboTests {
             .decimal(0),
             .type("BYTE"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: """

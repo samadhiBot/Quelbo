@@ -20,7 +20,6 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
-    var blockType: SymbolFactory.ProgramBlockType?
     var codeSymbol = Symbol()
     var paramsSymbol = Symbol()
     
@@ -36,6 +35,7 @@ class BlockProcessor: SymbolFactory {
         }
 
         let paramSymbols = try findParameterSymbols(in: &tokens)
+        print("// 🍒 \(registry)")
         let codeSymbols = try symbolize(tokens)
 
         self.codeSymbol = try validateCode(codeSymbols)
@@ -300,13 +300,13 @@ extension BlockProcessor {
 //                registry.register(nameSymbol.with(type: type))
 //                registry.register(valueSymbol.with(type: type))
 
-            } else if let found = validatedCode.children.find(id: param.id) {
-                paramSymbol = found.with(
-                    code: { symbol in
-                        "\(symbol): \(symbol.type)\(context.defaultValue(for: symbol))"
-                    }
-                )
-            } else if let paramID = param.id, let registered = findRegistered(paramID) {
+//            } else if let found = validatedCode.children.find(id: param.id) {
+//                paramSymbol = found.with(
+//                    code: { symbol in
+//                        "\(symbol): \(symbol.type)\(context.defaultValue(for: symbol))"
+//                    }
+//                )
+            } else if let registered = findRegistered(param.id) {
                 paramSymbol = registered.with(
                     code: { symbol in
                         "\(symbol): \(symbol.type)"

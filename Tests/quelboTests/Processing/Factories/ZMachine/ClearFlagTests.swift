@@ -29,7 +29,7 @@ final class ClearFlagTests: QuelboTests {
         let symbol = try factory.init([
             .global("TRAP-DOOR"),
             .global("OPENBIT"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "trapDoor.openBit = false",
@@ -42,7 +42,7 @@ final class ClearFlagTests: QuelboTests {
             try factory.init([
                 .global("TRAP-DOOR"),
                 .string("11"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

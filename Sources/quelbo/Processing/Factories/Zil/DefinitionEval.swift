@@ -43,7 +43,7 @@ extension Factories {
                 definition.insert(.atom(activation), at: 0)
             }
 
-            self.blockProcessor = try BlockProcessor(definition, with: registry)
+            self.blockProcessor = try BlockProcessor(definition, with: &registry)
         }
 
         override func process() throws -> Symbol {
@@ -52,7 +52,8 @@ extension Factories {
                 code: codeBlock,
                 type: blockProcessor.type,
                 category: .functions,
-                children: blockProcessor.children
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
             )
             Game.commit(symbol)
             return symbol

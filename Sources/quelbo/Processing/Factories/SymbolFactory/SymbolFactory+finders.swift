@@ -111,7 +111,7 @@ extension SymbolFactory {
             // return existing.reconcile(with: symbol)
             global.reconcile(with: symbol)
 //            try Game.overwrite(updated)
-//            print("🥒 upsert global \(global)")
+            print("🥒 upsert global \(global)")
 //            return symbol //updated.with(code: symbol.code)
         }
 
@@ -122,7 +122,7 @@ extension SymbolFactory {
 
         // return local.reconcile(with: symbol)
         local.reconcile(with: symbol)
-//        print("🥒 upsert registry \(local)")
+        print("🥒 upsert registry \(local)")
 //        return symbol
     }
 }

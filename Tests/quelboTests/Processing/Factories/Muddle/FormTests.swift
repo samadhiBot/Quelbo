@@ -28,7 +28,7 @@ final class FormTests: QuelboTests {
             .atom("+"),
             .decimal(1),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: ".add(1, 2)",
@@ -37,12 +37,14 @@ final class FormTests: QuelboTests {
     }
 
     func testLocalValueForm() throws {
+        registry.insert(
+            Symbol(id: "a", type: .variable(.string))
+        )
+
         let symbol = try factory.init([
             .atom("LVAL"),
             .local("A"),
-        ], with: [
-            Symbol(id: "a", type: .variable(.string))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "a",
@@ -52,6 +54,10 @@ final class FormTests: QuelboTests {
     }
 
     func testNestedForms() throws {
+        registry.insert(
+            Symbol(id: "a", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .atom("SET"),
             .local("A"),
@@ -65,9 +71,7 @@ final class FormTests: QuelboTests {
                     .local("A")
                 ])
             ])
-        ], with: [
-            Symbol(id: "a", type: .variable(.int))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "a.set(to: .add(1, a))",

@@ -52,7 +52,7 @@ final class DefineMacroTests: QuelboTests {
                     .local("N")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "inc",
@@ -94,7 +94,7 @@ final class DefineMacroTests: QuelboTests {
                     .quote(.global("CONTBIT"))
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "isOpenable",
@@ -148,7 +148,7 @@ final class DefineMacroTests: QuelboTests {
                     .local("X")
                 ]))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "double",
@@ -209,7 +209,7 @@ final class DefineMacroTests: QuelboTests {
 //                    ])
 //                ])
 //            ])
-//        ]).process()
+//        ], with: &registry).process()
 //
 //        let expected = Symbol(
 //            id: "bottles",

@@ -31,7 +31,7 @@ final class DirectionsTests: QuelboTests {
             .atom("IN"),
             .atom("OUT"),
             .atom("LAND")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "<Directions>",
@@ -87,7 +87,7 @@ final class DirectionsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("NORTH"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

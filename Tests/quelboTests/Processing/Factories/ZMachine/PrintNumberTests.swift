@@ -19,7 +19,7 @@ final class PrintNumberTests: QuelboTests {
     func testProcessDecimal() throws {
         let symbol = try factory.init([
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "output(2)",
@@ -32,14 +32,14 @@ final class PrintNumberTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
     func testProcessAtom() throws {
         let symbol = try factory.init([
             .atom("INFINITY")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "output(infinity)",
@@ -54,7 +54,7 @@ final class PrintNumberTests: QuelboTests {
                 .decimal(2),
                 .decimal(3),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "output(.add(2, 3))",
