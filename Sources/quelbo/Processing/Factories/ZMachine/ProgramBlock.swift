@@ -43,6 +43,7 @@ extension Factories.ProgramBlock {
             var pro = Symbol.BlockPro(for: symbol)
 
             if pro.isRepeating() {
+                print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\
                     \(pro.activation)\

@@ -78,6 +78,7 @@ extension Symbol.BlockPro {
     /// - Returns: <#description#>
     mutating func codeBlock() -> String {
         if isRepeating() {
+            print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
                 \(deepParameters)\
                 \(activation)\

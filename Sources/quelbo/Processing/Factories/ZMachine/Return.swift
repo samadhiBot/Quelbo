@@ -21,7 +21,36 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            if var value = symbols.shift() {
+            var metaData: Set<Symbol.MetaData> = []
+            if let blockType = blockType {
+                metaData.insert(.blockType(blockType))
+            }
+
+            guard var value = symbols.shift() else {
+                metaData.insert(.isReturnStatement(nil))
+                return Symbol(
+                    code: { symbol in
+                        print("// 🥥 \(symbol.blockType)")
+                        switch symbol.blockType {
+                        case .blockWithoutActivation, .repeatingWithoutActivation, .none:
+                            return "break"
+                        case .blockWithActivation(let activation):
+                            if Game.shared.zMachineVersion.intValue <= 4 {
+                                return "break \(activation)"
+                            } else {
+                                return "return true"
+                            }
+                        case .repeatingWithActivation(let activation):
+                            if Game.shared.zMachineVersion.intValue <= 4 {
+                                return "break \(activation)"
+                            } else {
+                                return "return true"
+                            }
+                        }
+                    },
+                    meta: metaData
+                )
+            }
 //                if value.typeCertainty < .certain {
 //                    if value.id == "t" {
 //                        value = .trueSymbol
@@ -30,40 +59,22 @@ extension Factories {
 ////                        value = value.with(type: registered.type)
 //                    }
 //                }
-                if value.typeCertainty < .certain,
-                   value.isIdentifiable,
-                   let registered = findRegistered(value.id)
-                {
-                    value = registered
-                }
 
-                return Symbol(
-                    code: { symbol in
-                        "return \(symbol.children[0].code)"
-                    },
-                    type: value.type,
-                    children: [value],
-                    meta: [.isReturnStatement(value.type)]
-                )
+            if value.typeCertainty < .certain,
+               value.isIdentifiable,
+               let registered = findRegistered(value.id)
+            {
+                value = registered
             }
+            metaData.insert(.isReturnStatement(value.type))
 
             return Symbol(
                 code: { symbol in
-                    print("// 🥥 \(symbol.blockType)")
-                    switch symbol.blockType {
-                    case .blockWithActivation(let activation):
-                        if Game.shared.zMachineVersion.intValue <= 4 {
-                            return "break \(activation)"
-                        } else {
-                            return "return true"
-                        }
-                    case .blockWithoutActivation, .repeatingWithoutActivation, .none:
-                        return "break defaultAct"
-                    case .repeatingWithActivation(let activation):
-                        return "break \(activation)"
-                    }
+                    "return \(symbol.children[0].code)"
                 },
-                meta: [.isReturnStatement(nil)]
+                type: value.type,
+                children: [value],
+                meta: metaData
             )
 
 //            switch blockType {

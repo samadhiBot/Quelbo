@@ -22,9 +22,6 @@ class BlockProcessor: SymbolFactory {
 
     var codeSymbol = Symbol()
     var paramsSymbol = Symbol()
-    
-//    var auxiliaries: [Symbol] = []
-//    var warnings: [String] = []
 
     override func processTokens() throws {
         var tokens = tokens
@@ -220,8 +217,14 @@ extension BlockProcessor {
         if case .optional = returnType {
             codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
         }
-        var symbols = codeSymbols
 
+        symbols.forEach { symbol in
+            if symbol.meta.contains(.isAgainStatement) {
+                blockType?.makeRepeating()
+            }
+        }
+
+        var symbols = codeSymbols
         while let symbol = symbols.shift() {
             print("// 🍏 \(symbol)")
             if symbol.meta.contains(.isAgainStatement) {
@@ -229,7 +232,6 @@ extension BlockProcessor {
             }
             if symbol.isReturnStatement {
                 print("// 🍏 isReturnStatement \(symbol)")
-                
             }
 
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
