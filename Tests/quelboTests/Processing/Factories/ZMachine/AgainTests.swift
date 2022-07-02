@@ -153,7 +153,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.repeatingWithDefaultActivation)]
         ))
     }
 
@@ -226,7 +227,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         ))
     }
 
@@ -299,7 +301,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.blockType(.blockWithDefaultActivation)]
         ))
     }
 }

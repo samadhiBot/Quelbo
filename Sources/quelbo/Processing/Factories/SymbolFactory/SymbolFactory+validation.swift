@@ -26,23 +26,27 @@ extension SymbolFactory {
                 if symbol.type != .comment { index += 1 }
             }
 
-            return try assignType(
+            guard let typedSymbol = try assignType(
                 of: symbol,
                 to: Self.parameters.expectedType(at: index),
                 siblings: symbols
-            )
+            ) else {
+                return nil
+            }
+
+            return try upsert(typedSymbol)
         }
+
         switch Self.parameters {
         case .one, .oneOrMore, .twoOrMore:
             guard typedSymbols.map(\.type).common != nil else {
                 throw Symbol.Error.typeNotFound(typedSymbols)
             }
-        default: break
+        default:
+            break
         }
 
-        return try typedSymbols.map { symbol in
-            try upsert(symbol)
-        }
+        return try typedSymbols
     }
 }
 

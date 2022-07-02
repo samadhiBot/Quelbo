@@ -290,8 +290,9 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let localName = zil.lowerCamelCase
         guard let found = findRegistered(.id(localName)) else {
-            print("// 🍇 \(registry)")
-            throw SymbolizationError.unknownLocal(zil, at: index)
+//            print("// 🍇 \(registry)")
+//            throw SymbolizationError.unknownLocal(zil, at: index)
+            return Symbol(id: .id(localName), code: localName)
         }
 
         return found.with(code: localName)

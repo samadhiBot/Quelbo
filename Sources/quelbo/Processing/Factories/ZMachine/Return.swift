@@ -56,7 +56,7 @@ extension Factories {
                         } else {
                             return "return true"
                         }
-                    case .blockWithDefaultActivation, .repeatingWithDefaultActivation:
+                    case .blockWithDefaultActivation, .none, .repeatingWithDefaultActivation:
                         if Game.shared.zMachineVersion.intValue <= 4 {
                             return "break"
                         } else {
@@ -66,8 +66,6 @@ extension Factories {
                         return "break defaultAct"
                     case .repeatingWithActivation(let activation):
                         return "break \(activation)"
-                    case .none:
-                        return "return true"
                     }
                 },
                 meta: [.isReturnStatement(nil)]

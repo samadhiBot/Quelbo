@@ -192,7 +192,7 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with revision: Symbol) -> Symbol {
-        print("🥔 reconcile \(self)")
+        print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
 //        if case .variable = type {
 //            self.type = revision.type.asVariable // TODO: still necessary?
 //        } else {
