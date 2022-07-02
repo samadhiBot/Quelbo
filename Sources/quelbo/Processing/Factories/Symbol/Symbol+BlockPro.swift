@@ -77,7 +77,7 @@ extension Symbol.BlockPro {
     /// <#Description#>
     /// - Returns: <#description#>
     mutating func codeBlock() -> String {
-        if isRepeating {
+        if isRepeating() {
             return """
                 \(deepParameters)\
                 \(activation)\
@@ -130,11 +130,12 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-    var isRepeating: Bool {
+    mutating func isRepeating() -> Bool {
         if blockType?.isRepeating == true {
             return true
         }
         if [codeSymbol, paramsSymbol].deepRepeating == true {
+            blockType?.setActivation("defaultAct")
             return true
         }
         return false
@@ -145,7 +146,7 @@ extension Symbol.BlockPro {
         guard let type = blockType else { return [] }
 
         switch type {
-        case .repeatingWithoutDefaultActivation:
+        case .repeatingWithoutActivation:
             let params = paramsSymbol.children
                 .map { $0.localVariable }
                 .joined(separator: "\n")
@@ -162,7 +163,7 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
+        guard blockType != .repeatingWithoutActivation else { return "" }
 
         return emit(
             normalAndOptionalParams.map { $0.localVariable },

@@ -56,13 +56,13 @@ extension Factories {
                         } else {
                             return "return true"
                         }
-                    case .blockWithDefaultActivation, .none, .repeatingWithDefaultActivation:
+                    case .blockWithDefaultActivation, .repeatingWithDefaultActivation:
                         if Game.shared.zMachineVersion.intValue <= 4 {
                             return "break"
                         } else {
                             return "return true"
                         }
-                    case .blockWithoutDefaultActivation, .repeatingWithoutDefaultActivation:
+                    case .blockWithoutDefaultActivation, .none, .repeatingWithoutDefaultActivation:
                         return "break defaultAct"
                     case .repeatingWithActivation(let activation):
                         return "break \(activation)"

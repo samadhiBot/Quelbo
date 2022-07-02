@@ -14,7 +14,7 @@ extension SymbolFactory {
         case blockWithActivation(String)
 
         /// A program block with a default activation.
-        case blockWithDefaultActivation
+//        case blockWithDefaultActivation
 
         /// A program block without a default activation.
         case blockWithoutDefaultActivation
@@ -23,7 +23,7 @@ extension SymbolFactory {
         case repeatingWithActivation(String)
 
         /// A repeating program block with a default activation.
-        case repeatingWithDefaultActivation
+//        case repeatingWithDefaultActivation
 
         /// A repeating program block without a default activation.
         case repeatingWithoutDefaultActivation
