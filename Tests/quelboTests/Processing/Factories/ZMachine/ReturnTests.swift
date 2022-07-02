@@ -38,11 +38,11 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z3
 
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = [.blockType(.blockWithDefaultActivation)]
+        symbol.meta = [.blockType(.blockWithoutActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "break",
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         ))
     }
 
@@ -50,21 +50,21 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z5
 
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = [.blockType(.blockWithDefaultActivation)]
+        symbol.meta = [.blockType(.blockWithoutActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         ))
     }
 
     func testReturnNoValueBlockWithoutDefaultActivation() throws {
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = [.blockType(.blockWithoutDefaultActivation)]
+        symbol.meta = [.blockType(.blockWithoutActivation)]
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "break defaultAct",
-            meta: [.blockType(.blockWithoutDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         ))
     }
 

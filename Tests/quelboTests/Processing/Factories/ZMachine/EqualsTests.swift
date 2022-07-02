@@ -12,15 +12,6 @@ import XCTest
 final class EqualsTests: QuelboTests {
     let factory = Factories.Equals.self
 
-//    override func setUp() {
-//        super.setUp()
-//
-//        Game.commit(
-//            Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
-//            Symbol(id: "isWorldAlive", type: .bool, category: .globals)
-//        )
-//    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("=?"))
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("==?"))

@@ -70,7 +70,7 @@ final class AgainTests: QuelboTests {
                 /// The `testAgain1` (TEST-AGAIN-1) routine.
                 func testAgain1() {
                     var x: Int = 0
-                    while true {
+                    act_e75d: while true {
                         x.set(to: x.add(1))
                         output(x)
                         output(" ")
@@ -84,7 +84,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.repeatingWithDefaultActivation)]
+            meta: [.blockType(.repeatingWithoutActivation)]
         ))
     }
 
@@ -154,7 +154,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.repeatingWithDefaultActivation)]
+            meta: [.blockType(.repeatingWithoutActivation)]
         ))
     }
 
@@ -228,7 +228,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         ))
     }
 
@@ -302,7 +302,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         ))
     }
 }

@@ -49,6 +49,7 @@ extension Factories {
 
             return Symbol(
                 code: { symbol in
+                    print("// 🥥 \(symbol.blockType)")
                     switch symbol.blockType {
                     case .blockWithActivation(let activation):
                         if Game.shared.zMachineVersion.intValue <= 4 {
@@ -56,13 +57,7 @@ extension Factories {
                         } else {
                             return "return true"
                         }
-                    case .blockWithDefaultActivation, .repeatingWithDefaultActivation:
-                        if Game.shared.zMachineVersion.intValue <= 4 {
-                            return "break"
-                        } else {
-                            return "return true"
-                        }
-                    case .blockWithoutDefaultActivation, .none, .repeatingWithoutDefaultActivation:
+                    case .blockWithoutActivation, .repeatingWithoutActivation, .none:
                         return "break defaultAct"
                     case .repeatingWithActivation(let activation):
                         return "break \(activation)"

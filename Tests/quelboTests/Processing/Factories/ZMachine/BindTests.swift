@@ -101,7 +101,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithActivation(""))]
         ))
     }
 

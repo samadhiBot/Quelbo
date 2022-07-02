@@ -136,7 +136,7 @@ extension BlockProcessor {
         guard let type = blockType else { return [] }
 
         switch type {
-        case .repeatingWithoutDefaultActivation:
+        case .repeatingWithoutActivation:
             let params = paramsSymbol.children
                 .map { $0.localVariable }
                 .joined(separator: "\n")
@@ -223,9 +223,15 @@ extension BlockProcessor {
         var symbols = codeSymbols
 
         while let symbol = symbols.shift() {
+            print("// 🍏 \(symbol)")
             if symbol.meta.contains(.isAgainStatement) {
                 blockType?.makeRepeating()
             }
+            if symbol.isReturnStatement {
+                print("// 🍏 isReturnStatement \(symbol)")
+                
+            }
+
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
                 returnType = symbol.type
                 codeLines.append("return \(symbol.code)")

@@ -464,7 +464,7 @@ extension Symbol: CustomDebugStringConvertible {
 
 extension Symbol: CustomStringConvertible {
     var description: String {
-        guard !id.stringLiteral.isEmpty else { return code }
+//        guard !id.stringLiteral.isEmpty else { return code }
 
         return id.stringLiteral
     }
@@ -553,9 +553,7 @@ extension Array where Element == Symbol {
                 lineBreaks = 1
             }
         }
-        let codeValues = compactMap {
-            $0.code.isEmpty ? nil : $0.code
-        }
+        let codeValues = map(\.code)
         if lineBreaks == 0 && separator == "," {
             let code = codeValues.joined(separator: separator)
             if code.count > 20 || code.contains("\n") {
@@ -597,10 +595,10 @@ extension Array where Element == Symbol {
     }
 
     /// Deep-searches a ``Symbol`` array for a `"block"` metadata declaration with
-    /// `"repeatingWithoutDefaultActivation"` value, and returns `true` if one is found.
+    /// `"repeatingWithoutActivation"` value, and returns `true` if one is found.
     var deepRepeating: Bool? {
         for symbol in self {
-            if symbol.meta.contains(.blockType(.repeatingWithoutDefaultActivation)) {
+            if symbol.meta.contains(.blockType(.repeatingWithoutActivation)) {
                 return true
             }
             if let deepRepeatingChild = symbol.children.deepRepeating {

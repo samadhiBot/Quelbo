@@ -50,7 +50,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -77,7 +77,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -109,7 +109,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            meta: [.blockType(.blockWithDefaultActivation)]
+            meta: [.blockType(.blockWithoutActivation)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -184,7 +184,7 @@ final class RoutineTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("isDucking", category: .routines), expected)
     }
 
-    func testProcessWithAuxiliaryParamsWithDefaultValues() throws {
+    func testProcessWithAuxiliaryParamsWithoutValues() throws {
         let symbol = try factory.init([
             .atom("BOOM-ROOM"),
             .list([

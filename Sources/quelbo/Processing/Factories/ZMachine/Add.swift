@@ -51,7 +51,7 @@ extension Factories {
             if first.isLiteral {
                 mathFunction = ".\(function)(\(original.codeValues(.commaSeparated)))"
             } else {
-                mathFunction = "\(first).\(function)(\(symbols.codeValues(.commaSeparated)))"
+                mathFunction = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
             return Symbol(code: mathFunction, type: .int, children: original)
