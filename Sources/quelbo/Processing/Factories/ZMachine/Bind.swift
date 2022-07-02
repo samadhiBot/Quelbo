@@ -16,11 +16,14 @@ extension Factories {
             ["BIND"]
         }
 
+        /// <#Description#>
+        var bindRegistry: [Symbol] = []
+
         override func processTokens() throws {
             self.blockProcessor = try BlockProcessor(
                 tokens,
                 in: .blockWithoutDefaultActivation,
-                with: &registry
+                with: &bindRegistry
             )
         }
     }

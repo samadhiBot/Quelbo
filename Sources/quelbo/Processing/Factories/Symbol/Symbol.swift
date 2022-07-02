@@ -192,23 +192,60 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with revision: Symbol) -> Symbol {
-        print("🥔 reconcile \(self) << \(revision)")
+        print("🥔 reconcile \(self)")
 //        if case .variable = type {
 //            self.type = revision.type.asVariable // TODO: still necessary?
 //        } else {
 //            self.type = revision.type
 //        }
-        guard revision.typeCertainty >= typeCertainty else { return revision }
+        if revision.typeCertainty > typeCertainty {
+            self.meta = meta.withoutTypeCertainty
+            self.type = revision.type
+            print("// 🍊 type revised to \(self.type)")
+        }
 
-        self.type = revision.type
-
-        self.children = revision.children
+        if !revision.children.isEmpty {
+            self.children = revision.children
+            print("// 🍊 children revised to \(self.children)")
+        }
 
         if let revisedCategory = revision.category {
             self.category = revisedCategory
+            print("// 🍊 category revised to \(self.category)")
         }
 
-        self.meta = revision.meta
+        revision.meta.forEach { metaData in
+            switch metaData {
+            case .activation(let activation):
+                print("// 🥥 activation: \(activation)")
+            case .blockType(let blockType):
+                print("// 🥥 blockType: \(blockType)")
+            case .isAgainStatement:
+                print("// 🥥 isAgainStatement")
+            case .isImmutable:
+                print("// 🥥 isImmutable")
+            case .isLiteral:
+                print("// 🥥 isLiteral")
+            case .isReturnStatement(let isReturnStatement):
+                print("// 🥥 isReturnStatement: \(isReturnStatement)")
+            case .paramContext(let paramContext):
+                if !meta.contains(where: {
+                    if case .paramContext = $0 { return true } else { return false }
+                }) {
+                    meta.insert(metaData)
+                }
+            case .paramDeclarations(let paramDeclarations):
+                print("// 🥥 paramDeclarations: \(paramDeclarations)")
+            case .type(let type):
+                print("// 🥥 type: \(type)")
+            case .typeCertainty(let typeCertainty):
+                print("// 🥥 typeCertainty: \(typeCertainty)")
+            case .zil(let zil):
+                print("// 🥥 zil: \(zil)")
+            case .zilName(let zilName):
+                print("// 🥥 zilName: \(zilName)")
+            }
+        }
 
         return revision
     }

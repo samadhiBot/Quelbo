@@ -53,7 +53,6 @@ extension Symbol.BlockPro {
                 guard !$0.code.contains("=") else {
                     return nil
                 }
-//                print("// 🥥 \($0.localVariable)")
                 return $0.localVariable
             },
             shouldIndent: indented
