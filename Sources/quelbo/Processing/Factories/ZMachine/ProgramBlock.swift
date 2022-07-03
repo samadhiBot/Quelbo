@@ -43,12 +43,13 @@ extension Factories.ProgramBlock {
     var codeBlock: (Symbol) throws -> String {
         { symbol in
             var pro = Symbol.BlockPro(for: symbol)
+            let activationCode = pro.activationCode
 
-            if pro.isRepeating, !pro.activation.isEmpty {
+            if pro.isRepeating, !activationCode.isEmpty {
                 print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\
-                    \(pro.activation)\
+                    \(activationCode)\
                     while true {
                     \(pro.codeSymbol.code.indented)
                     }

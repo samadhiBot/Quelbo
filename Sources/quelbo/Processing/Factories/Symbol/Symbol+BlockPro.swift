@@ -23,12 +23,34 @@ extension Symbol {
 
 extension Symbol.BlockPro {
     /// The block activation, if one has been assigned.
-    var activation: String {
-        if let activation = [codeSymbol].deepActivation {
-            return "\(activation): "
-        } else {
-            return ""
+    var activation: String? {
+        if case .block(activation: let activation) = codeSymbol.controlflow {
+            return activation
         }
+        return [codeSymbol].deepActivation
+
+//        ,
+//            let activation = activation
+//        else {
+//            return ""
+//        }
+//        return "\(activation): "
+//        if case .block(activation: let activation) = codeSymbol.controlflow,
+//
+//            let activation = codeSymbol.meta. {
+//            return "\(activation): "
+//        }
+//        if let activation = [codeSymbol].deepActivation {
+//            return "\(activation): "
+//        } else {
+//            return ""
+//        }
+    }
+
+    var activationCode: String {
+        guard let activation = activation else { return "" }
+
+        return "\(activation): "
     }
 
     /// <#Description#>
@@ -78,7 +100,7 @@ extension Symbol.BlockPro {
             print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
                 \(deepParameters)\
-                \(activation)\
+                \(activationCode)\
                 while true {
                 \(auxiliaryDefsWithDefaultValues(indented: true))\
                 \(codeSymbol.code.indented)
@@ -130,7 +152,7 @@ extension Symbol.BlockPro {
 
     /// <#Description#>
     var isRepeating: Bool {
-        [codeSymbol].deepRepeating == true
+        codeSymbol.children.deepRepeating == true
 //        if case .again = codeSymbol.controlflow { return true }
 //
 //        if [codeSymbol].deepRepeating == true {
@@ -185,7 +207,7 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if isRepeating && activation.isEmpty {
+        if isRepeating && activationCode.isEmpty {
             return ""
         }
 //        guard blockType != .repeatingWithoutActivation else { return "" }

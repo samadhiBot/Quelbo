@@ -33,7 +33,6 @@ class BlockProcessor: SymbolFactory {
         }
 
         let paramSymbols = try findParameterSymbols(in: &tokens)
-        print("// 🍒 \(registry)")
         let codeSymbols = try symbolize(tokens)
 
         self.paramsSymbol = try validateParameters(paramSymbols)
@@ -122,7 +121,7 @@ extension BlockProcessor {
 //    }
 //
     var isRepeating: Bool {
-        [codeSymbol].deepRepeating == true
+        codeSymbol.children.deepRepeating == true
 //        if blockType?.isRepeating == true {
 //            return true
 //        }
@@ -272,12 +271,15 @@ extension BlockProcessor {
             print("// 🍏 code: \(symbol.code)")
             if case .again(activation: let activation) = symbol.controlflow {
                 isRepeating = true
-                print("// 🍋 \(symbol.controlflow)")
+                if let activation = activation {
+                    blockActivation = activation
+                }
+//                print("// 🍋 \(symbol.controlflow)")
 //                blockType?.makeRepeating()
             }
-            if symbol.isReturnStatement {
-                print("// 🍏 isReturnStatement \(symbol)")
-            }
+//            if symbol.isReturnStatement {
+//                print("// 🍏 isReturnStatement \(symbol)")
+//            }
 
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
                 returnType = symbol.type
@@ -290,7 +292,8 @@ extension BlockProcessor {
         return Symbol(
             code: codeLines.joined(separator: "\n"),
             type: returnType ?? .void,
-            children: codeSymbols
+            children: codeSymbols,
+            meta: [.controlFlow(.block(activation: activation))]
         )
     }
 
