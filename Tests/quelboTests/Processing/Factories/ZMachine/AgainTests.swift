@@ -297,7 +297,7 @@ final class AgainTests: QuelboTests {
                 /// The `testAgain4` (TEST-AGAIN-4) routine.
                 func testAgain4() {
                     var x: Int = 0
-                    while true {
+                    act_1378: while true {
                         /* PROG generates default activation */
                         x.set(to: x.add(1))
                         output(x)

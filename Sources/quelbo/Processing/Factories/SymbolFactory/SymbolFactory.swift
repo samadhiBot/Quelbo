@@ -38,13 +38,14 @@ class SymbolFactory {
 
     required init(
         _ tokens: [Token],
-//        in blockType: ProgramBlockType? = nil,
-        with registry: inout [Symbol]
+        with registry: inout [Symbol],
+        autoProcessTokens: Bool = true
     ) throws {
-//        self.blockType = blockType
         self.tokens = tokens
         self.registry = registry
-        try processTokens()
+        if autoProcessTokens {
+            try processTokens()
+        }
     }
 
     /// <#Description#>

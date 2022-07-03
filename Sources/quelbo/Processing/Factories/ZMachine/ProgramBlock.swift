@@ -24,8 +24,13 @@ extension Factories {
         }
 
         override func processTokens() throws {
-            self.blockProcessor = try BlockProcessor(tokens, with: &blockRegistry)
-            blockProcessor.blockActivation = defaultActivation
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                with: &blockRegistry,
+                autoProcessTokens: false
+            )
+            blockProcessor.blockActivation = self.defaultActivation
+            try blockProcessor.processTokens()
         }
 
         override func process() throws -> Symbol {
