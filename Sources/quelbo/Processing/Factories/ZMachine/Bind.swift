@@ -20,11 +20,8 @@ extension Factories {
         var bindRegistry: [Symbol] = []
 
         override func processTokens() throws {
-            self.blockProcessor = try BlockProcessor(
-                tokens,
-//                in: .blockWithoutActivation,
-                with: &bindRegistry
-            )
+            bindRegistry = registry.map { $0.with() }
+            self.blockProcessor = try BlockProcessor(tokens, with: &bindRegistry)
         }
     }
 }

@@ -23,23 +23,29 @@ extension Symbol {
 
 extension Symbol.BlockPro {
     /// The block activation, if one has been assigned.
-    var activation: String? {
-        switch codeSymbol.controlflow {
-//        case .blockWithActivation(let activation):
-//            return "\(activation): "
-//        case .repeatingWithActivation(let activation):
-//            return "\(activation): "
-//        default:
-//            return ""
-        case .again(activation: let activation):
-            return activation
-        case .block(activation: let activation):
-            return activation
-        case .return(activation: let activation):
-            return activation
-        default:
-            return nil
+    var activation: String {
+        if let activation = [codeSymbol].deepActivation {
+            return "\(activation): "
+        } else {
+            return ""
         }
+//
+//        switch codeSymbol.controlflow {
+////        case .blockWithActivation(let activation):
+////            return "\(activation): "
+////        case .repeatingWithActivation(let activation):
+////            return "\(activation): "
+////        default:
+////            return ""
+//        case .again(activation: let activation):
+//            return activation
+//        case .block(activation: let activation):
+//            return activation
+//        case .return(activation: let activation):
+//            return activation
+//        default:
+//            return nil
+//        }
     }
 
     /// <#Description#>
@@ -89,13 +95,14 @@ extension Symbol.BlockPro {
             print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
                 \(deepParameters)\
-                \(activation ?? "")\
+                \(activation)\
                 while true {
                 \(auxiliaryDefsWithDefaultValues(indented: true))\
                 \(codeSymbol.code.indented)
                 }
                 """
         } else {
+            print("// 🍊 Symbol.BlockPro (no-repeat): \(codeSymbol.code)")
             return """
                 \(auxiliaryDefsWithDefaultValues())\
                 \(codeSymbol.code)

@@ -128,7 +128,7 @@ extension BlockProcessor {
     }
 
     var metaData: Set<Symbol.MetaData> {
-        if let label = activation {
+        if let activation = [codeSymbol].deepActivation {
             return [.controlFlow(.block(activation: activation))]
         } else {
             return [.controlFlow(.block(activation: nil))]

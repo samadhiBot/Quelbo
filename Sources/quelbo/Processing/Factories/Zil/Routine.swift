@@ -22,11 +22,7 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
             self.nameSymbol = try findNameSymbol(in: &tokens)
-            self.blockProcessor = try BlockProcessor(
-                tokens,
-//                in: .blockWithActivation(tokens.hash),
-                with: &registry
-            )
+            self.blockProcessor = try BlockProcessor(tokens, with: &registry)
         }
 
         var typeName: String {
