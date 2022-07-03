@@ -24,7 +24,7 @@ class SymbolFactory {
     /// An array of ``Token`` values parsed from Zil source code.
     let tokens: [Token]
 
-    /// A dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
+    /// A registry dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
     var registry: [Symbol]
 
     /// An array of ``Symbol`` values processed from ``tokens``.

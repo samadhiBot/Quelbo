@@ -88,7 +88,10 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [
+                .controlFlow(.block(activation: nil)),
+                .paramDeclarations("var x: Int = 0"),
+            ]
         ))
     }
 
@@ -158,7 +161,10 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [
+                .controlFlow(.block(activation: nil)),
+                .paramDeclarations("var x: Int = 0"),
+            ]
         ))
     }
 

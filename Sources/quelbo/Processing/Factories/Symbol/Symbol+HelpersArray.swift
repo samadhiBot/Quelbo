@@ -73,12 +73,15 @@ extension Array where Element == Symbol {
             switch symbol.controlflow {
             case .again(activation: let activation):
                 return activation
-            case .block, .return, .returnValue:
+            case .block(activation: let activation):
+                if activation != nil { continue }
+            case .return, .returnValue:
                 continue
             case .none:
-                if let childActivation = symbol.children.deepActivation {
-                    return childActivation
-                }
+                break
+            }
+            if let childActivation = symbol.children.deepActivation {
+                return childActivation
             }
         }
         return nil
@@ -109,12 +112,15 @@ extension Array where Element == Symbol {
             switch symbol.controlflow {
             case .again:
                 return true
-            case .block, .return, .returnValue:
+            case .block(activation: let activation):
+                if activation != nil { continue }
+            case .return, .returnValue:
                 continue
             case .none:
-                if let childRepeating = symbol.children.deepRepeating {
-                    return childRepeating
-                }
+                break
+            }
+            if let childRepeating = symbol.children.deepRepeating {
+                return childRepeating
             }
         }
         return nil

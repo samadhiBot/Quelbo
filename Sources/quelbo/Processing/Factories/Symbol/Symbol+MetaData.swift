@@ -67,7 +67,7 @@ extension Symbol.MetaData {
         /// Specifies that the symbol represents an ``Factories/Again`` statement.
         case again(activation: String?)
 
-        /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
+        /// Specifies that the symbol represents a ``Factories/ProgramBlock`` statement.
         case block(activation: String?)
 
         /// Specifies that the symbol represents a ``Factories/Return`` statement, with the

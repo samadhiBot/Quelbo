@@ -29,23 +29,6 @@ extension Symbol.BlockPro {
         } else {
             return ""
         }
-//
-//        switch codeSymbol.controlflow {
-////        case .blockWithActivation(let activation):
-////            return "\(activation): "
-////        case .repeatingWithActivation(let activation):
-////            return "\(activation): "
-////        default:
-////            return ""
-//        case .again(activation: let activation):
-//            return activation
-//        case .block(activation: let activation):
-//            return activation
-//        case .return(activation: let activation):
-//            return activation
-//        default:
-//            return nil
-//        }
     }
 
     /// <#Description#>
@@ -179,29 +162,30 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-    var metaData: Set<Symbol.MetaData> {
-        return []
-//        guard let type = blockType else { return [] }
+//    var metaData: Set<Symbol.MetaData> {
 //
-//        switch type {
-//        case .repeatingWithoutActivation:
-//            let params = paramsSymbol.children
-//                .map { $0.localVariable }
-//                .joined(separator: "\n")
-//            return [
-//                .blockType(type),
-//                .paramDeclarations(params),
-//            ]
-//        default:
-//            return [.blockType(type)]
-//        }
-    }
+//        return []
+////        guard let type = blockType else { return [] }
+////
+////        switch type {
+////        case .repeatingWithoutActivation:
+////            let params = paramsSymbol.children
+////                .map { $0.localVariable }
+////                .joined(separator: "\n")
+////            return [
+////                .blockType(type),
+////                .paramDeclarations(params),
+////            ]
+////        default:
+////            return [.blockType(type)]
+////        }
+//    }
 
     /// <#Description#>
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if isRepeating && activation == nil {
+        if isRepeating && activation.isEmpty {
             return ""
         }
 //        guard blockType != .repeatingWithoutActivation else { return "" }

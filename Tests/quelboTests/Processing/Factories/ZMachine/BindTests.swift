@@ -101,7 +101,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: []
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -168,14 +168,14 @@ final class BindTests: QuelboTests {
                 /// The `testBind2` (TEST-BIND-2) routine.
                 func testBind2() {
                     var x: Int = 0
-                    act_6ccc: while true {
+                    while true {
                         output("START ")
                         do {
                             x.set(to: x.add(1))
                             output(x)
                             output(" ")
                             if x.equals(3) {
-                                break act_6ccc
+                                break
                             }
                             /* --> exit routine */
                             continue
@@ -188,7 +188,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: []
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 }

@@ -20,6 +20,7 @@ class BlockProcessor: SymbolFactory {
         ["<BlockProcessor>"]
     }
 
+    var blockActivation: String?
     var codeSymbol = Symbol()
     var paramsSymbol = Symbol()
 
@@ -27,7 +28,7 @@ class BlockProcessor: SymbolFactory {
         var tokens = tokens
 
         if case .atom(let activation) = tokens.first {
-//            blockType?.setActivation(activation.lowerCamelCase)
+            self.blockActivation = activation.lowerCamelCase
             tokens.removeFirst()
         }
 
@@ -50,8 +51,13 @@ extension BlockProcessor {
     }
 
     /// The block activation, if one has been assigned.
-    var activation: String {
-        if let activation = [codeSymbol].deepActivation {
+    var activation: String? {
+        blockActivation ?? [codeSymbol].deepActivation
+    }
+
+    /// <#Description#>
+    var activationCode: String {
+        if let activation = activation {
             return "\(activation): "
         } else {
             return ""
@@ -128,11 +134,12 @@ extension BlockProcessor {
     }
 
     var metaData: Set<Symbol.MetaData> {
-        if let activation = [codeSymbol].deepActivation {
-            return [.controlFlow(.block(activation: activation))]
-        } else {
-            return [.controlFlow(.block(activation: nil))]
-        }
+//        if let activation = [codeSymbol].deepActivation {
+//            return [.controlFlow(.block(activation: activation))]
+//        } else {
+//            return [.controlFlow(.block(activation: nil))]
+//        }
+
 //        [.controlFlow(.block(activation: activation))]
 //        if let activation = activation {
 //            return [.controlFlow(.b)]
@@ -147,6 +154,25 @@ extension BlockProcessor {
 //        return []
 //        guard let type = blockType else { return [] }
 //
+
+        if let activation = activation {
+            return [.controlFlow(.block(activation: activation))]
+        }
+
+        var meta: Set<Symbol.MetaData> = [.controlFlow(.block(activation: nil))]
+
+        if isRepeating {
+            let params = paramsSymbol.children
+                .map { $0.localVariable }
+                .joined(separator: "\n")
+            if !params.isEmpty {
+                meta.insert(.paramDeclarations(params))
+            }
+        }
+
+        return meta
+
+
 //        switch type {
 //        case .repeatingWithoutActivation:
 //            let params = paramsSymbol.children
