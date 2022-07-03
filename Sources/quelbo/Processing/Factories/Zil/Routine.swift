@@ -24,7 +24,7 @@ extension Factories {
             self.nameSymbol = try findNameSymbol(in: &tokens)
             self.blockProcessor = try BlockProcessor(
                 tokens,
-                in: .blockWithActivation(tokens.hash),
+//                in: .blockWithActivation(tokens.hash),
                 with: &registry
             )
         }

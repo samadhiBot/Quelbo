@@ -101,7 +101,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithActivation("act_1a3f"))]
+            meta: []
         ))
     }
 
@@ -188,7 +188,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.blockType(.blockWithActivation("act_6ccc"))]
+            meta: []
         ))
     }
 }

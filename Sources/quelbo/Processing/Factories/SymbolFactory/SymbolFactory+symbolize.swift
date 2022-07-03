@@ -225,7 +225,7 @@ extension SymbolFactory {
 
         func findFactory() throws -> SymbolFactory {
             if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
-                tokens, in: blockType, with: &registry
+                tokens, with: &registry
             ) {
                 return zMachine
             }

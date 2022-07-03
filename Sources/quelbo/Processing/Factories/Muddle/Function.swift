@@ -21,7 +21,7 @@ extension Factories {
         override func processTokens() throws {
             self.blockProcessor = try BlockProcessor(
                 tokens,
-                in: .blockWithActivation(tokens.hash),
+//                in: .blockWithActivation(tokens.hash),
                 with: &registry
             )
         }

@@ -9,12 +9,12 @@ import Foundation
 
 extension Symbol {
     /// Whether the symbol represents a literal value.
-    var blockType: SymbolFactory.ProgramBlockType? {
-        for metaData in meta {
-            if case .blockType(let blockType) = metaData { return blockType }
-        }
-        return nil
-    }
+//    var blockType: SymbolFactory.ProgramBlockType? {
+//        for metaData in meta {
+//            if case .blockType(let blockType) = metaData { return blockType }
+//        }
+//        return nil
+//    }
 
     /// Runs the ``Symbol/codeBlock`` and returns the resulting `String`.
     var code: String {
@@ -23,6 +23,14 @@ extension Symbol {
         } catch {
             return "Symbol.code error: \(error)"
         }
+    }
+
+    /// <#Description#>
+    var controlflow: MetaData.ControlFlow? {
+        for metaData in meta {
+            if case .controlFlow(let flow) = metaData { return flow }
+        }
+        return nil
     }
 
     /// Whether the symbol's children are ``Factories/Table`` definition flags.
@@ -51,8 +59,8 @@ extension Symbol {
     /// Whether the symbol represents a code block.
     var isCodeBlock: Bool {
         meta.contains { metaData in
-            guard case .blockType = metaData else { return false }
-            return true
+            if case .controlFlow(.block) = metaData { return true }
+            return false
         }
     }
 
@@ -101,10 +109,10 @@ extension Symbol {
 
     /// Whether the symbol represents a return statement.
     var isReturnStatement: Bool {
-        for metaData in meta {
-            if case .isReturnStatement = metaData { return true }
+        meta.contains { metaData in
+            if case .controlFlow(.returnValue) = metaData { return true }
+            return false
         }
-        return false
     }
 
     /// <#Description#>
@@ -120,7 +128,7 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with revision: Symbol) -> Symbol {
-        print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
+        // print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
 //        if case .variable = type {
 //            self.type = revision.type.asVariable // TODO: still necessary?
 //        } else {
@@ -129,49 +137,71 @@ extension Symbol {
         if revision.typeCertainty > typeCertainty {
             self.meta = meta.withoutTypeCertainty
             self.type = revision.type
-            print("// 🍊 type revised to \(self.type)")
+            // print("// 🍊 type revised to \(self.type)")
         }
 
         if !revision.children.isEmpty {
             self.children = revision.children
-            print("// 🍊 children revised to \(self.children)")
+            // print("// 🍊 children revised to \(self.children)")
         }
 
         if let revisedCategory = revision.category {
             self.category = revisedCategory
-            print("// 🍊 category revised to \(self.category)")
+            // print("// 🍊 category revised to \(self.category)")
         }
 
         revision.meta.forEach { metaData in
             switch metaData {
-            case .activation(let activation):
-                print("// 🥥 activation: \(activation)")
-            case .blockType(let blockType):
-                print("// 🥥 blockType: \(blockType)")
-            case .isAgainStatement:
-                print("// 🥥 isAgainStatement")
+//            case .activation(let activation):
+//                print("// 🥥 activation: \(activation)")
+//            case .blockType(let blockType):
+//                print("// 🥥 blockType: \(blockType)")
+//            case .isAgainStatement:
+//                print("// 🥥 isAgainStatement")
+//            case .isImmutable:
+//                print("// 🥥 isImmutable")
+//            case .isLiteral:
+//                print("// 🥥 isLiteral")
+//            case .isReturnStatement(let isReturnStatement):
+//                print("// 🥥 isReturnStatement: \(isReturnStatement)")
+//            case .paramContext(let paramContext):
+//                if !meta.contains(where: {
+//                    if case .paramContext = $0 { return true } else { return false }
+//                }) {
+//                    meta.insert(metaData)
+//                }
+//            case .paramDeclarations(let paramDeclarations):
+//                print("// 🥥 paramDeclarations: \(paramDeclarations)")
+//            case .type(let type):
+//                print("// 🥥 type: \(type)")
+//            case .typeCertainty(let typeCertainty):
+//                print("// 🥥 typeCertainty: \(typeCertainty)")
+//            case .zil(let zil):
+//                print("// 🥥 zil: \(zil)")
+//            case .zilName(let zilName):
+//                print("// 🥥 zilName: \(zilName)")
+            case .controlFlow(_):
+                break
             case .isImmutable:
-                print("// 🥥 isImmutable")
+                break
             case .isLiteral:
-                print("// 🥥 isLiteral")
-            case .isReturnStatement(let isReturnStatement):
-                print("// 🥥 isReturnStatement: \(isReturnStatement)")
-            case .paramContext(let paramContext):
+                break
+            case .paramContext:
                 if !meta.contains(where: {
                     if case .paramContext = $0 { return true } else { return false }
                 }) {
                     meta.insert(metaData)
                 }
-            case .paramDeclarations(let paramDeclarations):
-                print("// 🥥 paramDeclarations: \(paramDeclarations)")
-            case .type(let type):
-                print("// 🥥 type: \(type)")
-            case .typeCertainty(let typeCertainty):
-                print("// 🥥 typeCertainty: \(typeCertainty)")
-            case .zil(let zil):
-                print("// 🥥 zil: \(zil)")
-            case .zilName(let zilName):
-                print("// 🥥 zilName: \(zilName)")
+            case .paramDeclarations(_):
+                break
+            case .type(_):
+                break
+            case .typeCertainty(_):
+                break
+            case .zil(_):
+                break
+            case .zilName(_):
+                break
             }
         }
 
@@ -182,11 +212,10 @@ extension Symbol {
     /// the return value type. In all other cases, it returns `nil`.
     var returnValueType: Symbol.DataType? {
         for metaData in meta {
-            if case .isReturnStatement(let type) = metaData { return type }
+            if case .controlFlow(.returnValue(type: let type)) = metaData { return type }
         }
         return nil
     }
-
 
     /// The level of confidence in a symbol's stated ``Symbol/type``.
     ///

@@ -242,7 +242,7 @@ extension Game {
         }
 
         /// An integer representation of the ZMachine version.
-        var intValue: Int {
+        private var version: Int {
             switch self {
             case .z3:     return 3
             case .z3Time: return 3
@@ -253,5 +253,13 @@ extension Game {
             case .z8:     return 8
             }
         }
+    }
+}
+
+// MARK: - Conformances
+
+extension Game.ZMachineVersion: Comparable {
+    static func < (lhs: Game.ZMachineVersion, rhs: Game.ZMachineVersion) -> Bool {
+        lhs.version < rhs.version
     }
 }

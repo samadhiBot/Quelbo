@@ -27,7 +27,7 @@ class BlockProcessor: SymbolFactory {
         var tokens = tokens
 
         if case .atom(let activation) = tokens.first {
-            blockType?.setActivation(activation.lowerCamelCase)
+//            blockType?.setActivation(activation.lowerCamelCase)
             tokens.removeFirst()
         }
 
@@ -49,18 +49,15 @@ extension BlockProcessor {
             .joined(separator: ", ")
     }
 
-//    /// The block activation, if one has been assigned.
-//    var activation: String {
-//        switch blockType! {
-//        case .blockWithActivation(let activation):
-//            return "\(activation): "
-//        case .repeatingWithActivation(let activation):
-//            return "\(activation): "
-//        default:
-//            return ""
-//        }
-//    }
-//
+    /// The block activation, if one has been assigned.
+    var activation: String {
+        if let activation = [codeSymbol].deepActivation {
+            return "\(activation): "
+        } else {
+            return ""
+        }
+    }
+
 //    func auxiliaryDefs(indented: Bool = false) -> String {
 //        emit(
 //            auxiliaries.compactMap {
@@ -118,7 +115,8 @@ extension BlockProcessor {
 //        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
 //    }
 //
-//    var isRepeating: Bool {
+    var isRepeating: Bool {
+        [codeSymbol].deepRepeating == true
 //        if blockType?.isRepeating == true {
 //            return true
 //        }
@@ -127,23 +125,40 @@ extension BlockProcessor {
 //            return true
 //        }
 //        return false
-//    }
+    }
 
     var metaData: Set<Symbol.MetaData> {
-        guard let type = blockType else { return [] }
-
-        switch type {
-        case .repeatingWithoutActivation:
-            let params = paramsSymbol.children
-                .map { $0.localVariable }
-                .joined(separator: "\n")
-            return [
-                .blockType(type),
-                .paramDeclarations(params),
-            ]
-        default:
-            return [.blockType(type)]
+        if let label = activation {
+            return [.controlFlow(.block(activation: activation))]
+        } else {
+            return [.controlFlow(.block(activation: nil))]
         }
+//        [.controlFlow(.block(activation: activation))]
+//        if let activation = activation {
+//            return [.controlFlow(.b)]
+//        }
+//        switch (isRepeating, activation) {
+//        case (true, let activation):
+//            return [.controlFlow(.)]
+//        }
+//        if isRepeating && activation == nil {
+//            return [.controlFlow(.block(activation: nil))]
+//        }
+//        return []
+//        guard let type = blockType else { return [] }
+//
+//        switch type {
+//        case .repeatingWithoutActivation:
+//            let params = paramsSymbol.children
+//                .map { $0.localVariable }
+//                .joined(separator: "\n")
+//            return [
+//                .blockType(type),
+//                .paramDeclarations(params),
+//            ]
+//        default:
+//            return [.blockType(type)]
+//        }
     }
 
 //    func paramDeclarations(indented: Bool = false) -> String {
@@ -212,23 +227,27 @@ extension BlockProcessor {
 
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
         var codeLines: [String] = []
-        var codeSymbols = codeSymbols
+//        var codeSymbols = codeSymbols
         var returnType = try findReturnType(in: codeSymbols)
-        if case .optional = returnType {
-            codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
-        }
+        var isRepeating = codeSymbols.deepRepeating
 
-        symbols.forEach { symbol in
-            if symbol.meta.contains(.isAgainStatement) {
-                blockType?.makeRepeating()
-            }
-        }
+//        if case .optional = returnType {
+//            codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
+//        }
+
+//        symbols.forEach { symbol in
+//            if symbol.isReturnStatement {
+////                blockType?.makeRepeating()
+//            }
+//        }
 
         var symbols = codeSymbols
         while let symbol = symbols.shift() {
-            print("// 🍏 \(symbol)")
-            if symbol.meta.contains(.isAgainStatement) {
-                blockType?.makeRepeating()
+            print("// 🍏 code: \(symbol.code)")
+            if case .again(activation: let activation) = symbol.controlflow {
+                isRepeating = true
+                print("// 🍋 \(symbol.controlflow)")
+//                blockType?.makeRepeating()
             }
             if symbol.isReturnStatement {
                 print("// 🍏 isReturnStatement \(symbol)")

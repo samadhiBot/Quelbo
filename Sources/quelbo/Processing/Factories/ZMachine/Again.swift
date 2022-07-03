@@ -21,15 +21,18 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            var statement = ["continue"]
+            var statement = "continue"
+            var statementLabel: String?
+
             if let activation = symbols.first?.code {
-                statement.append(activation)
+                statement.append(" \(activation)")
+                statementLabel = activation
             }
 
             return Symbol(
-                code: statement.joined(separator: " "),
+                code: statement,
                 children: symbols,
-                meta: [.isAgainStatement]
+                meta: [.controlFlow(.again(activation: statementLabel))]
             )
         }
     }

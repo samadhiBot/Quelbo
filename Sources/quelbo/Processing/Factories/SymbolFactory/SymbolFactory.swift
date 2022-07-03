@@ -30,18 +30,18 @@ class SymbolFactory {
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []
 
-    /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
-    var blockType: ProgramBlockType?
+//    /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
+//    var blockType: ProgramBlockType?
 
 //    /// Whether the symbol representation is mutable.
 //    var isMutable: Bool = true
 
     required init(
         _ tokens: [Token],
-        in blockType: ProgramBlockType? = nil,
+//        in blockType: ProgramBlockType? = nil,
         with registry: inout [Symbol]
     ) throws {
-        self.blockType = blockType
+//        self.blockType = blockType
         self.tokens = tokens
         self.registry = registry
         try processTokens()

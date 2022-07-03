@@ -67,6 +67,23 @@ extension Array where Element == Symbol {
         return values
     }
 
+    /// <#Description#>
+    var deepActivation: String? {
+        for symbol in self {
+            switch symbol.controlflow {
+            case .again(activation: let activation):
+                return activation
+            case .block, .return, .returnValue:
+                continue
+            case .none:
+                if let childActivation = symbol.children.deepActivation {
+                    return childActivation
+                }
+            }
+        }
+        return nil
+    }
+
     /// Deep-searches a ``Symbol`` array for a `"paramDeclarations"` metadata declaration, and
     /// returns its value if one is found.
     var deepParamDeclarations: String? {
@@ -86,24 +103,19 @@ extension Array where Element == Symbol {
     /*
      💡 Can we lose `blockType` at factory level and just look within each block for `AGAIN` / `RETURN`?
      */
-    /// Deep-searches a ``Symbol`` array for a `"block"` metadata declaration with
-    /// `"repeatingWithoutActivation"` value, and returns `true` if one is found.
+    /// Deep-searches a ``Symbol`` array for a <#Description#>
     var deepRepeating: Bool? {
         for symbol in self {
-            switch symbol.blockType {
-            case .blockWithActivation, .blockWithoutActivation:
-                return nil
-            case .repeatingWithActivation(_), .repeatingWithoutActivation:
+            switch symbol.controlflow {
+            case .again:
                 return true
+            case .block, .return, .returnValue:
+                continue
             case .none:
-                if let deepRepeatingChild = symbol.children.deepRepeating {
-                    return deepRepeatingChild
+                if let childRepeating = symbol.children.deepRepeating {
+                    return childRepeating
                 }
             }
-//            if symbol.meta.contains(.blockType(.repeatingWithoutActivation)) {
-//                return true
-//            }
-
         }
         return nil
     }

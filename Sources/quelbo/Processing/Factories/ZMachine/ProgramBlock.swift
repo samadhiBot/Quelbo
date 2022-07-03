@@ -21,7 +21,7 @@ extension Factories {
         override func processTokens() throws {
             self.blockProcessor = try BlockProcessor(
                 tokens,
-                in: .blockWithActivation(tokens.hash),
+//                in: .blockWithActivation(tokens.hash),
                 with: &registry
             )
         }
@@ -42,7 +42,7 @@ extension Factories.ProgramBlock {
         { symbol in
             var pro = Symbol.BlockPro(for: symbol)
 
-            if pro.isRepeating() {
+            if pro.isRepeating {
                 print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\

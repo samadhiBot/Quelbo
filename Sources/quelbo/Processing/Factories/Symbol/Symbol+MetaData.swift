@@ -12,13 +12,16 @@ extension Symbol {
     enum MetaData: Hashable {
         /// Specifies an [activation](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2p2csry)
         /// for a program block symbol.
-        case activation(String)
+//        case activation(String)
 
-        /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
-        case blockType(SymbolFactory.ProgramBlockType)
+        ///
+//        case blockType(SymbolFactory.ProgramBlockType)
 
-        /// Specifies that the symbol represents an ``Factories/Again`` statement.
-        case isAgainStatement
+        ///
+//        case isAgainStatement
+
+        ///
+        case controlFlow(ControlFlow)
 
         /// Specifies that the symbol represents an immutable value.
         ///
@@ -28,11 +31,11 @@ extension Symbol {
         /// Specifies that the symbol represents a literal value.
         case isLiteral
 
-        /// Specifies that the symbol represents a ``Factories/Return`` statement, with the
-        /// specified return type if it returns a value.
-        case isReturnStatement(Symbol.DataType?)
+        ///
+//        case isReturnStatement(Symbol.DataType?)
 
-        /// Specifies the type of parameter (`normal`, `local` or `optional`)
+        /// For symbols representing parameters, this specifies the context (`normal`, `local` or
+        /// `optional`) in which the Zil parameter has been declared.
         case paramContext(Symbol.ParamContext)
 
         /// Specifies special parameter declarations in certain block processing cases.
@@ -53,6 +56,27 @@ extension Symbol {
 
         /// Specifies an original Zil name.
         case zilName(String)
+    }
+}
+
+// MARK: - Symbol.MetaData.ControlFlow
+
+extension Symbol.MetaData {
+    /// <#Description#>
+    enum ControlFlow: Hashable {
+        /// Specifies that the symbol represents an ``Factories/Again`` statement.
+        case again(activation: String?)
+
+        /// Specifies the ``SymbolFactory/ProgramBlockType`` for a program block symbol.
+        case block(activation: String?)
+
+        /// Specifies that the symbol represents a ``Factories/Return`` statement, with the
+        /// specified activation referring to the appropriate statement label.
+        case `return`(activation: String?)
+
+        /// Specifies that the symbol represents a ``Factories/Return`` statement, with the
+        /// specified return type if it returns a value.
+        case returnValue(type: Symbol.DataType?)
     }
 }
 
@@ -88,6 +112,8 @@ extension Symbol.MetaData.TypeCertainty: Comparable {
         lhs.rawValue < rhs.rawValue
     }
 }
+
+// MARK: - Set where Element == Symbol.MetaData
 
 extension Set where Element == Symbol.MetaData {
     /// <#Description#>

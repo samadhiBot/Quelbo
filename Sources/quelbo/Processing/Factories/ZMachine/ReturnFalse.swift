@@ -21,7 +21,7 @@ extension Factories {
                 code: "return false",
                 type: .bool,
                 children: [.falseSymbol],
-                meta: [.isReturnStatement(.bool)]
+                meta: [.controlFlow(.returnValue(type: .bool))]
             )
         }
     }

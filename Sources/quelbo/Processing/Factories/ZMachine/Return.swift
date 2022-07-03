@@ -22,31 +22,52 @@ extension Factories {
 
         override func process() throws -> Symbol {
             var metaData: Set<Symbol.MetaData> = []
-            if let blockType = blockType {
-                metaData.insert(.blockType(blockType))
-            }
+//            if let blockType = blockType {
+//                metaData.insert(.blockType(blockType))
+//            }
 
             guard var value = symbols.shift() else {
-                metaData.insert(.isReturnStatement(nil))
+                metaData.insert(.controlFlow(.return(activation: nil)))
                 return Symbol(
                     code: { symbol in
-                        print("// 🥥 \(symbol.blockType)")
-                        switch symbol.blockType {
-                        case .blockWithoutActivation, .repeatingWithoutActivation, .none:
-                            return "break"
-                        case .blockWithActivation(let activation):
-                            if Game.shared.zMachineVersion.intValue <= 4 {
-                                return "break \(activation)"
-                            } else {
-                                return "return true"
-                            }
-                        case .repeatingWithActivation(let activation):
-                            if Game.shared.zMachineVersion.intValue <= 4 {
-                                return "break \(activation)"
-                            } else {
-                                return "return true"
-                            }
+                        guard case .block(activation: let activation) = symbol.controlflow else {
+                            return "Not a code block"
                         }
+
+                        if Game.shared.zMachineVersion > .z3 {
+                            return "return true"
+                        }
+                        if let activation = activation {
+                            return "break \(activation)"
+                        }
+                        return "break"
+//                        print("// 🥥 \(symbol.blockType)")
+//                        if case .block(activation: let activation) = symbol.controlflow {
+//
+//                        }
+//                        case .blockWithoutActivation, .repeatingWithoutActivation, .none:
+//                            return "break"
+//                        case .blockWithActivation(let activation):
+//                            if Game.shared.zMachineVersion.intValue <= 4 {
+//                                return "break \(activation)"
+//                            } else {
+//                                return "return true"
+//                            }
+//                        case .repeatingWithActivation(let activation):
+//                            if Game.shared.zMachineVersion.intValue <= 4 {
+//                                return "break \(activation)"
+//                            } else {
+//                                return "return true"
+//                            }
+//                        }
+//                        case .again(activation: let activation):
+//                            <#code#>
+//                        case .block(activation: let activation):
+//                            <#code#>
+//                        case .return(activation: let activation):
+//                            <#code#>
+//                        case .returnValue(type: let type):
+//                            <#code#>
                     },
                     meta: metaData
                 )
@@ -66,7 +87,7 @@ extension Factories {
             {
                 value = registered
             }
-            metaData.insert(.isReturnStatement(value.type))
+            metaData.insert(.controlFlow(.returnValue(type: value.type)))
 
             return Symbol(
                 code: { symbol in
@@ -113,15 +134,15 @@ extension Factories.Return {
             code: "return true",
             type: .bool,
             children: [.trueSymbol],
-            meta: [.isReturnStatement(.bool)]
+            meta: [.controlFlow(.returnValue(type: .bool))]
         )
     }
 
-    func versioned(_ symbol: Symbol) -> Symbol {
-        if Game.shared.zMachineVersion.intValue <= 4 {
-            return symbol
-        } else {
-            return returnTrueSymbol
-        }
-    }
+//    func versioned(_ symbol: Symbol) -> Symbol {
+//        if Game.shared.zMachineVersion.intValue <= 4 {
+//            return symbol
+//        } else {
+//            return returnTrueSymbol
+//        }
+//    }
 }

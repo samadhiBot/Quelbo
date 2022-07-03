@@ -29,7 +29,7 @@ extension Factories {
                 code: "return true",
                 type: .bool,
                 children: [.trueSymbol],
-                meta: [.isReturnStatement(.bool)]
+                meta: [.controlFlow(.returnValue(type: .bool))]
             )
         }
     }

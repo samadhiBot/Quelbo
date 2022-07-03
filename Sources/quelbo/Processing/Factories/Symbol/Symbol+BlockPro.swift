@@ -11,26 +11,34 @@ extension Symbol {
     struct BlockPro: Equatable {
         var codeSymbol: Symbol
         var paramsSymbol: Symbol
-        var blockType: SymbolFactory.ProgramBlockType?
+//        var blockType: SymbolFactory.ProgramBlockType?
 
         init(for symbol: Symbol) {
             self.codeSymbol = symbol.children[0]
             self.paramsSymbol = symbol.children[1]
-            self.blockType = symbol.blockType
+//            self.blockType = symbol.blockType
         }
     }
 }
 
 extension Symbol.BlockPro {
     /// The block activation, if one has been assigned.
-    var activation: String {
-        switch blockType {
-        case .blockWithActivation(let activation):
-            return "\(activation): "
-        case .repeatingWithActivation(let activation):
-            return "\(activation): "
+    var activation: String? {
+        switch codeSymbol.controlflow {
+//        case .blockWithActivation(let activation):
+//            return "\(activation): "
+//        case .repeatingWithActivation(let activation):
+//            return "\(activation): "
+//        default:
+//            return ""
+        case .again(activation: let activation):
+            return activation
+        case .block(activation: let activation):
+            return activation
+        case .return(activation: let activation):
+            return activation
         default:
-            return ""
+            return nil
         }
     }
 
@@ -77,11 +85,11 @@ extension Symbol.BlockPro {
     /// <#Description#>
     /// - Returns: <#description#>
     mutating func codeBlock() -> String {
-        if isRepeating() {
+        if isRepeating {
             print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
                 \(deepParameters)\
-                \(activation)\
+                \(activation ?? "")\
                 while true {
                 \(auxiliaryDefsWithDefaultValues(indented: true))\
                 \(codeSymbol.code.indented)
@@ -131,40 +139,65 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-    mutating func isRepeating() -> Bool {
-        if blockType?.isRepeating == true {
-            return true
-        }
-        if [codeSymbol, paramsSymbol].deepRepeating == true {
-            blockType?.setActivation("defaultAct")
-            return true
-        }
-        return false
+    var isRepeating: Bool {
+        [codeSymbol].deepRepeating == true
+//        if case .again = codeSymbol.controlflow { return true }
+//
+//        if [codeSymbol].deepRepeating == true {
+////            blockType?.setActivation("defaultAct")
+//            return true
+//        }
+//        return false
+//
+//
+//
+//        switch codeSymbol.controlflow! {
+//        case .again(activation: let activation):
+//            <#code#>
+//        case .block(activation: let activation):
+//            <#code#>
+//        case .return(activation: let activation):
+//            <#code#>
+//        case .returnValue(type: let type):
+//            <#code#>
+//        }
+//        if blockType?.isRepeating == true {
+//            return true
+//        }
+//        if [codeSymbol, paramsSymbol].deepRepeating == true {
+//            blockType?.setActivation("defaultAct")
+//            return true
+//        }
+//        return false
     }
 
     /// <#Description#>
     var metaData: Set<Symbol.MetaData> {
-        guard let type = blockType else { return [] }
-
-        switch type {
-        case .repeatingWithoutActivation:
-            let params = paramsSymbol.children
-                .map { $0.localVariable }
-                .joined(separator: "\n")
-            return [
-                .blockType(type),
-                .paramDeclarations(params),
-            ]
-        default:
-            return [.blockType(type)]
-        }
+        return []
+//        guard let type = blockType else { return [] }
+//
+//        switch type {
+//        case .repeatingWithoutActivation:
+//            let params = paramsSymbol.children
+//                .map { $0.localVariable }
+//                .joined(separator: "\n")
+//            return [
+//                .blockType(type),
+//                .paramDeclarations(params),
+//            ]
+//        default:
+//            return [.blockType(type)]
+//        }
     }
 
     /// <#Description#>
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        guard blockType != .repeatingWithoutActivation else { return "" }
+        if isRepeating && activation == nil {
+            return ""
+        }
+//        guard blockType != .repeatingWithoutActivation else { return "" }
 
         return emit(
             normalAndOptionalParams.map { $0.localVariable },
