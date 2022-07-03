@@ -15,7 +15,7 @@ final class GetTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(fooTable)
+        Game.commit(fooTable)
     }
 
     func testFindFactory() throws {
@@ -27,10 +27,10 @@ final class GetTests: QuelboTests {
         let symbol = try factory.init([
             .global("FOO"),
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try foo.get(at: 2)",
+            code: "try foo.get(at: 2)",
             type: .zilElement
         ))
     }
@@ -40,7 +40,7 @@ final class GetTests: QuelboTests {
             try factory.init([
                 .string("FOO"),
                 .decimal(2)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -49,7 +49,7 @@ final class GetTests: QuelboTests {
             try factory.init([
                 .global("FOO"),
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

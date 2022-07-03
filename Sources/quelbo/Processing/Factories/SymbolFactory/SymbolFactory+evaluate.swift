@@ -86,13 +86,12 @@ extension SymbolFactory {
         }
 
         let factory: SymbolFactory
-        if let zMachine = try Game.zMachineSymbolFactories
-            .find(zil)?
-            .init(tokens, in: blockType)
-        {
+        if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
+            tokens, with: &registry
+        ) {
             factory = zMachine
         } else {
-            factory = try Factories.RoutineCall(formTokens)
+            factory = try Factories.RoutineCall(formTokens, with: &registry)
         }
         let token = try factory.eval()
         return token

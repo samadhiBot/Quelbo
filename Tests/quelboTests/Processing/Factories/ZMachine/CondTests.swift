@@ -15,7 +15,7 @@ final class CondTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "bottles", type: .int, category: .routines),
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "here", type: .object, category: .rooms),
@@ -49,10 +49,10 @@ final class CondTests: QuelboTests {
                     .string("Rarg equals mEnter")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if rarg.equals(mEnter) {
                 output("Rarg equals mEnter")
             }
@@ -85,10 +85,10 @@ final class CondTests: QuelboTests {
                     .global("TROLL")
                 ])
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if rarg.equals(mEnter) {
                 output("Rarg equals mEnter")
             } else if troll.isIn(here) {
@@ -108,10 +108,10 @@ final class CondTests: QuelboTests {
                     .string(" A secret path leads southwest into the forest.")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if wonFlag {
                 output(" A secret path leads southwest into the forest.")
             }
@@ -134,10 +134,10 @@ final class CondTests: QuelboTests {
                 .atom("T"),
                 .string("The grating opens to reveal trees above you.")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             if here.equals(clearing) {
                 "The grating opens."
             } else {
@@ -174,10 +174,10 @@ final class CondTests: QuelboTests {
                         """)
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 if n.decrement().isLessThan(1) {
                     output("No more bottles of beer on the wall!")
                     output("\n")
@@ -201,10 +201,10 @@ final class CondTests: QuelboTests {
                     .atom("CR")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"""
+            code: #"""
                 if isFunnyReturn {
                     output("RETURN EXIT ROUTINE")
                 }
@@ -245,10 +245,10 @@ final class CondTests: QuelboTests {
                     .atom("RTRUE")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 if .or(
                     prsi.hasFlag(openBit),
                     isOpenable(),

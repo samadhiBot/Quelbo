@@ -15,7 +15,7 @@ final class AdjectivesTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "west", type: .direction, category: .properties),
         ])
     }
@@ -29,7 +29,7 @@ final class AdjectivesTests: QuelboTests {
             .atom("WHITE"),
             .atom("BEAUTI"),
             .atom("COLONI")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "adjectives",
@@ -50,7 +50,7 @@ final class AdjectivesTests: QuelboTests {
             .atom("GOTHIC"),
             .atom("STRANGE"),
             .atom("WEST")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "adjectives",
@@ -69,7 +69,7 @@ final class AdjectivesTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -77,7 +77,7 @@ final class AdjectivesTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

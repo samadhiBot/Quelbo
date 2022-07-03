@@ -28,15 +28,15 @@ extension Factories {
             }
 
             switch stream.code {
-            case "0": symbols.insert(Symbol(".keyboard"), at: 0)
-            case "1": symbols.insert(Symbol(".file"), at: 0)
+            case "0": symbols.insert(Symbol(code: ".keyboard"), at: 0)
+            case "1": symbols.insert(Symbol(code: ".file"), at: 0)
             default: throw Error.invalidInputStream(stream.code)
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                "setInputStream(\(symbols.codeValues()))",
+                code: "setInputStream(\(symbols.codeValues()))",
                 type: .void
             )
         }

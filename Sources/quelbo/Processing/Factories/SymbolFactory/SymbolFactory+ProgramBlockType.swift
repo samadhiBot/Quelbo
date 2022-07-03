@@ -13,20 +13,14 @@ extension SymbolFactory {
         /// A program block with the specified activation.
         case blockWithActivation(String)
 
-        /// A program block with a default activation.
-        case blockWithDefaultActivation
-
         /// A program block without a default activation.
-        case blockWithoutDefaultActivation
+        case blockWithoutActivation
 
         /// A repeating program block with the specified activation.
         case repeatingWithActivation(String)
 
-        /// A repeating program block with a default activation.
-        case repeatingWithDefaultActivation
-
         /// A repeating program block without a default activation.
-        case repeatingWithoutDefaultActivation
+        case repeatingWithoutActivation
 
 
         var activation: String? {
@@ -42,16 +36,16 @@ extension SymbolFactory {
 
         var hasActivation: Bool {
             switch self {
-            case .blockWithoutDefaultActivation, .repeatingWithoutDefaultActivation:
-                return false
-            default:
+            case .blockWithActivation, .repeatingWithActivation:
                 return true
+            default:
+                return false
             }
         }
 
         var isRepeating: Bool {
             switch self {
-            case .repeatingWithActivation, .repeatingWithDefaultActivation:
+            case .repeatingWithActivation, .repeatingWithoutActivation:
                 return true
             default:
                 return false
@@ -62,10 +56,8 @@ extension SymbolFactory {
             switch self {
             case .blockWithActivation(let string):
                 self = .repeatingWithActivation(string)
-            case .blockWithDefaultActivation:
-                self = .repeatingWithDefaultActivation
-            case .blockWithoutDefaultActivation:
-                self = .repeatingWithoutDefaultActivation
+            case .blockWithoutActivation:
+                self = .repeatingWithoutActivation
             default:
                 break
             }
@@ -73,13 +65,9 @@ extension SymbolFactory {
 
         mutating func setActivation(_ string: String) {
             switch self {
-            case .blockWithActivation,
-                 .blockWithDefaultActivation,
-                 .blockWithoutDefaultActivation:
+            case .blockWithActivation, .blockWithoutActivation:
                 self = .blockWithActivation(string)
-            case .repeatingWithActivation,
-                 .repeatingWithDefaultActivation,
-                 .repeatingWithoutDefaultActivation:
+            case .repeatingWithActivation, .repeatingWithoutActivation:
                 self = .repeatingWithActivation(string)
             }
         }

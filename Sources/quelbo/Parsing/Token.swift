@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 /// The set of tokens that can be parsed from ZIL source code.
 indirect enum Token: Hashable {
@@ -115,5 +116,14 @@ extension Array where Element == Token {
             default: return token
             }
         }
+    }
+
+    var hash: String {
+        let tokenString = map(\.value).joined(separator: ".")
+        let tokenData = tokenString.data(using: .utf8)
+        let hashed = Insecure.MD5.hash(data: tokenData!)
+        let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+
+        return "act_\(hashString.suffix(4))"
     }
 }

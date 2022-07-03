@@ -18,10 +18,10 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let structure = try symbol(0)
-            let count = (try? symbol(1)) ?? Symbol("")
+            let count = (try? symbol(1)) ?? Symbol(code: "")
 
             return Symbol(
-                "\(structure.code).rest(\(count.code))",
+                code: "\(structure.code).rest(\(count.code))",
                 type: structure.type,
                 children: symbols
             )

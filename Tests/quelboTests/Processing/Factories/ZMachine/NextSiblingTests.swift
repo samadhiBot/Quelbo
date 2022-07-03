@@ -15,7 +15,7 @@ final class NextSiblingTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "egg", type: .object, category: .objects),
         ])
     }
@@ -27,10 +27,10 @@ final class NextSiblingTests: QuelboTests {
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
             .global("EGG")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "egg.nextSibling",
+            code: "egg.nextSibling",
             type: .object
         ))
     }
@@ -39,7 +39,7 @@ final class NextSiblingTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("egg")
-            ])
+            ], with: &registry)
         )
     }
 }

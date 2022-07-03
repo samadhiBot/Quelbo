@@ -28,16 +28,15 @@ extension Factories {
         override func processTokens() throws {
             try super.processTokens()
 
-            symbols = try symbols.map { symbol in
-                if let flag = try? Game.find(symbol.id, category: .flags) {
+            symbols = symbols.map { symbol in
+                if symbol.isIdentifiable, let flag = try? Game.find(symbol.id, category: .flags) {
                     return flag
                 } else {
                     let flag = Flag.find(symbol.code)
-                    let flagSymbol = symbol.with(
-                        code: flag.id.description,
-                        category: .flags
-                    )
-                    try Game.commit(flagSymbol)
+                    let flagSymbol = symbol
+                        .with(id: .id(flag.zil), category: .flags)
+                        .with(code: flag.id.description)
+                    Game.commit(flagSymbol)
                     return flagSymbol
                 }
             }

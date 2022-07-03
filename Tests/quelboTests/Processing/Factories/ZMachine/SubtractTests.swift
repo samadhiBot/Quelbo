@@ -15,7 +15,7 @@ final class SubtractTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "baseScore", type: .int, category: .globals),
             Symbol(id: "cyclowrath", type: .int, category: .globals),
             Symbol(id: "myBike", type: .string, category: .globals),
@@ -31,21 +31,25 @@ final class SubtractTests: QuelboTests {
     func testSubtractOneDecimal() throws {
         let symbol = try factory.init([
             .decimal(42),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "-42",
+            code: "-42",
             type: .int
         ))
     }
 
     func testSubtractOneAtom() throws {
+        registry.append(
+            Symbol(id: "foo", type: .int)
+        )
+
         let symbol = try factory.init([
             .local("FOO"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "-foo",
+            code: "-foo",
             type: .int
         ))
     }
@@ -54,10 +58,10 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".subtract(9, 3)",
+            code: ".subtract(9, 3)",
             type: .int
         ))
     }
@@ -67,10 +71,10 @@ final class SubtractTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".subtract(20, 5, 2)",
+            code: ".subtract(20, 5, 2)",
             type: .int
         ))
     }
@@ -79,10 +83,10 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.subtract(biggerNumber)",
+            code: "bigNumber.subtract(biggerNumber)",
             type: .int
         ))
     }
@@ -91,10 +95,10 @@ final class SubtractTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.subtract(1)",
+            code: "cyclowrath.subtract(1)",
             type: .int
         ))
     }
@@ -105,10 +109,10 @@ final class SubtractTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.subtract(otvalFrob())",
+            code: "baseScore.subtract(otvalFrob())",
             type: .int
         ))
     }

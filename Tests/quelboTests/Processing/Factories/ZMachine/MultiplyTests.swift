@@ -15,7 +15,7 @@ final class MultiplyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "baseScore", type: .int, category: .globals),
             Symbol(id: "cyclowrath", type: .int, category: .globals),
             Symbol(id: "myBike", type: .string, category: .globals),
@@ -32,10 +32,10 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".multiply(9, 3)",
+            code: ".multiply(9, 3)",
             type: .int
         ))
     }
@@ -45,10 +45,10 @@ final class MultiplyTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".multiply(20, 5, 2)",
+            code: ".multiply(20, 5, 2)",
             type: .int
         ))
     }
@@ -57,10 +57,10 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.multiply(biggerNumber)",
+            code: "bigNumber.multiply(biggerNumber)",
             type: .int
         ))
     }
@@ -69,10 +69,10 @@ final class MultiplyTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.multiply(1)",
+            code: "cyclowrath.multiply(1)",
             type: .int
         ))
     }
@@ -83,10 +83,10 @@ final class MultiplyTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.multiply(otvalFrob())",
+            code: "baseScore.multiply(otvalFrob())",
             type: .int
         ))
     }
@@ -95,7 +95,7 @@ final class MultiplyTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: &registry)
         )
     }
 }

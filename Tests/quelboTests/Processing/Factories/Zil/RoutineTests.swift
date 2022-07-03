@@ -15,7 +15,7 @@ final class RoutineTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "axe", type: .object, category: .objects),
             Symbol(id: "fDef", type: .int),
             Symbol(id: "fWep", type: .int),
@@ -38,7 +38,7 @@ final class RoutineTests: QuelboTests {
             .atom("BAG-OF-COINS-F"),
             .list([]),
             .commented(.atom("noop")),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "bagOfCoinsFunc",
@@ -49,7 +49,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: []
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -64,7 +65,7 @@ final class RoutineTests: QuelboTests {
                 .atom("SING"),
                 .decimal(99),
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "go",
@@ -75,7 +76,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: []
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -93,7 +95,7 @@ final class RoutineTests: QuelboTests {
                 .atom("RARG"),
                 .decimal(42)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "westHouse",
@@ -106,7 +108,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines
+            category: .routines,
+            meta: []
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -123,7 +126,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("MESSAGE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "printMessage",
@@ -159,7 +162,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PS"),
                 .string("Duck")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "isDucking",
@@ -181,7 +184,7 @@ final class RoutineTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("isDucking", category: .routines), expected)
     }
 
-    func testProcessWithAuxiliaryParamsWithDefaultValues() throws {
+    func testProcessWithAuxiliaryParamsWithoutValues() throws {
         let symbol = try factory.init([
             .atom("BOOM-ROOM"),
             .list([
@@ -196,7 +199,7 @@ final class RoutineTests: QuelboTests {
                 .atom("DUMMY?"),
                 .bool(true)
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "boomRoom",
@@ -227,7 +230,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "batD",
@@ -261,7 +264,7 @@ final class RoutineTests: QuelboTests {
                 .atom("FOO"),
                 .atom("BAR")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "batBat",
@@ -297,7 +300,7 @@ final class RoutineTests: QuelboTests {
                 .atom("PRINT"),
                 .atom("FOO")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "deadFunc",
@@ -411,7 +414,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("CRLF")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "remark",
@@ -483,7 +486,7 @@ final class RoutineTests: QuelboTests {
             .form([
                 .atom("RTRUE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, bottlesRoutine)
         XCTAssertNoDifference(try Game.find("bottles", category: .routines), bottlesRoutine)
@@ -563,24 +566,24 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, findWeaponRoutine)
         XCTAssertNoDifference(try Game.find("findWeapon", category: .routines), findWeaponRoutine)
     }
 
     func testDweaponMini() throws {
-        try! Game.commit(findWeaponRoutine)
+        Game.commit(findWeaponRoutine)
 
         let _ = try Factories.Global([
             .atom("HERE"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         let _ = try Factories.Global([
             .atom("WINNER"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("DWEAPON-MINI"),
@@ -601,7 +604,7 @@ final class RoutineTests: QuelboTests {
                 .local("DWEAPON"),
                 .global("HERE")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "dweaponMini",
@@ -622,22 +625,22 @@ final class RoutineTests: QuelboTests {
     }
 
     func testRemoveCarefully() throws {
-        try! Game.commit(findWeaponRoutine)
+        Game.commit(findWeaponRoutine)
 
         let _ = try Factories.Global([
             .atom("LIT"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let _ = try Factories.Global([
             .atom("P-IT-OBJECT"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
 //        let _ = try Factories.Global([
 //            .atom("WINNER"),
 //            .decimal(0)
-//        ]).process()
+//        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("REMOVE-CAREFULLY"),
@@ -701,7 +704,7 @@ final class RoutineTests: QuelboTests {
                 ])
             ]),
             .atom("T")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "removeCarefully",
@@ -734,7 +737,7 @@ final class RoutineTests: QuelboTests {
     }
 
     func testSingRoutine() throws {
-        try! Game.commit(bottlesRoutine)
+        Game.commit(bottlesRoutine)
 
         let symbol = try factory.init([
             .atom("SING"),
@@ -800,7 +803,7 @@ final class RoutineTests: QuelboTests {
                     ])
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, singSymbol)
     }

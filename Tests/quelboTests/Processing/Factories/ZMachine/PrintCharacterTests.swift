@@ -15,7 +15,7 @@ final class PrintCharacterTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "letterZ", type: .string, category: .globals)
         )
     }
@@ -28,10 +28,10 @@ final class PrintCharacterTests: QuelboTests {
     func testProcessDecimal() throws {
         let symbol = try factory.init([
             .decimal(90)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"output(utf8: 90)"#,
+            code: #"output(utf8: 90)"#,
             type: .void
         ))
     }
@@ -41,17 +41,17 @@ final class PrintCharacterTests: QuelboTests {
             try factory.init([
                 .decimal(89),
                 .decimal(90),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
     func testPrintCharacterBangEscaped() throws {
         let symbol = try factory.init([
             .character("s"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"output("s")"#,
+            code: #"output("s")"#,
             type: .void
         ))
     }
@@ -59,10 +59,10 @@ final class PrintCharacterTests: QuelboTests {
     func testProcessAtom() throws {
         let symbol = try factory.init([
             .global("LETTER-Z")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(letterZ)",
+            code: "output(letterZ)",
             type: .void
         ))
     }
@@ -74,10 +74,10 @@ final class PrintCharacterTests: QuelboTests {
                 .decimal(2),
                 .decimal(88),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(utf8: .add(2, 88))",
+            code: "output(utf8: .add(2, 88))",
             type: .void
         ))
     }

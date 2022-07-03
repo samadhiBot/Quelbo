@@ -21,51 +21,59 @@ extension Factories {
             .two(.variable(.unknown), .unknown)
         }
 
-        var metaData: Set<Symbol.MetaData> = []
-        var nameSymbol = Symbol("TBD")
-        var valueSymbol = Symbol("TBD")
+        var nameSymbol = Symbol()
+        var valueSymbol = Symbol()
 
         override func processTokens() throws {
             try super.processTokens()
 
             self.nameSymbol = try symbol(0)
             self.valueSymbol = try symbol(1)
-
-            for metaData in valueSymbol.meta {
-                switch metaData {
-                case .maybeEmptyValue: self.metaData = [.maybeEmptyValue]
-                case .mutating(true): self.isMutable = true
-                case .mutating(false): self.isMutable = false
-                default: break
-                }
-            }
         }
 
         var codeBlock: (Symbol) throws -> String {
-            let code = valueSymbol.code
-            let type = valueSymbol.dataType
+            { symbol in
+                let declare = symbol.meta.contains(.isImmutable) ? "let" : "var"
+                let value: String
 
-            return { symbol in
-                let declare = symbol.category == .globals ? "var" : "let"
-                return "\(declare) \(symbol.id): \(type) = \(code)"
+                switch symbol.typeCertainty {
+                case .certain, .unknown:
+                    value = " = \(symbol.children[0].code)"
+                default:
+                    value = symbol.type.emptyValueAssignment
+                }
+
+                return "\(declare) \(symbol): \(symbol.type)\(value)"
             }
         }
 
+        var metaData: Set<Symbol.MetaData> {
+            []
+        }
+
         override func process() throws -> Symbol {
+            var metaData = metaData
+            if valueSymbol.typeCertainty < .certain {
+                metaData.insert(.typeCertainty(valueSymbol.typeCertainty))
+            }
+            if valueSymbol.meta.contains(.isImmutable) {
+                metaData.insert(.isImmutable)
+            }
+
             let symbol = Symbol(
                 id: nameSymbol.id,
-                codeBlock: codeBlock,
-                type: valueSymbol.type,
-                category: isMutable ? .globals : .constants,
+                code: codeBlock,
+                type: metaData.contains(.isImmutable) ? valueSymbol.type : valueSymbol.type.asVariable,
+                category: metaData.contains(.isImmutable) ? .constants : .globals,
                 children: [valueSymbol],
                 meta: metaData
             )
-            try Game.commit(symbol)
+
+            Game.commit(symbol)
             return symbol
         }
     }
 }
-
 
 // MARK: - Errors
 

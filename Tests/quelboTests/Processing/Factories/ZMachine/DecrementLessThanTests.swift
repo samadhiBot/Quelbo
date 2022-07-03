@@ -17,13 +17,17 @@ final class DecrementLessThanTests: QuelboTests {
     }
 
     func testDecrementLessThan() throws {
+        registry.append(
+            Symbol(id: "foo", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .local("FOO"),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.decrement().isLessThan(3)",
+            code: "foo.decrement().isLessThan(3)",
             type: .bool
         ))
     }
@@ -33,7 +37,7 @@ final class DecrementLessThanTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -43,7 +47,7 @@ final class DecrementLessThanTests: QuelboTests {
             try factory.init([
                 .local("FOO"),
                 .string("three"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

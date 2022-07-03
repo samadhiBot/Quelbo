@@ -12,20 +12,11 @@ import XCTest
 final class RestTests: QuelboTests {
     let factory = Factories.Rest.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("REST"))
     }
 
     func testRestOfIntegerList() throws {
-        let registry = SymbolRegistry()
-
         _ = try Factories.Global([
             .atom("STRUCT1"),
             .vector([
@@ -34,21 +25,19 @@ final class RestTests: QuelboTests {
                 .decimal(3),
                 .decimal(4)
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT1"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "struct1.rest()",
-            type: .array(.int)
+            code: "struct1.rest()",
+            type: .variable(.array(.int))
         ))
     }
 
     func testRestOfMixedList() throws {
-        let registry = SymbolRegistry()
-
         _ = try Factories.Global([
             .atom("STRUCT2"),
             .vector([
@@ -57,21 +46,22 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT2"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             symbol,
-            Symbol("struct2.rest()", type: .array(.zilElement))
+            Symbol(
+                code: "struct2.rest()",
+                type: .variable(.array(.zilElement))
+            )
         )
     }
 
     func testRestOfMixedListAfterFirstTwo() throws {
-        let registry = SymbolRegistry()
-
         _ = try Factories.Global([
             .atom("STRUCT3"),
             .vector([
@@ -80,16 +70,19 @@ final class RestTests: QuelboTests {
                 .string("AB"),
                 .character("C"),
             ])
-        ], with: registry).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .atom("STRUCT3"),
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(
             symbol,
-            Symbol("struct3.rest(2)", type: .array(.zilElement))
+            Symbol(
+                code: "struct3.rest(2)",
+                type: .variable(.array(.zilElement))
+            )
         )
     }
 }

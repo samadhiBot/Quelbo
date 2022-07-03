@@ -20,39 +20,37 @@ final class GetValueTests: QuelboTests {
         _ = try Factories.Global([
             .atom("SANDWICH"),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         let symbol = try factory.init([
             .global("SANDWICH"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "sandwich",
             code: "sandwich",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals
         ))
     }
 
     func testGetLocalValue() throws {
-        let registry = SymbolRegistry([
+        registry.append(
             Symbol(
                 id: "sandwich",
                 code: "var sandwich: Bool = true",
-                type: .bool,
-                category: .globals
+                type: .bool
             )
-        ])
+        )
 
         let symbol = try factory.init([
             .local("SANDWICH"),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "sandwich",
             code: "sandwich",
-            type: .bool,
-            category: .globals
+            type: .bool
         ))
     }
 
@@ -60,7 +58,7 @@ final class GetValueTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -69,7 +67,7 @@ final class GetValueTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -15,7 +15,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
@@ -28,10 +28,10 @@ final class IsLessThanOrEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThanOrEqualTo(3)",
+            code: "2.isLessThanOrEqualTo(3)",
             type: .bool
         ))
     }
@@ -40,10 +40,10 @@ final class IsLessThanOrEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .global("FOO"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThanOrEqualTo(foo)",
+            code: "2.isLessThanOrEqualTo(foo)",
             type: .bool
         ))
     }
@@ -52,10 +52,10 @@ final class IsLessThanOrEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .atom("BAR"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isLessThanOrEqualTo(bar)",
+            code: "2.isLessThanOrEqualTo(bar)",
             type: .bool
         ))
     }
@@ -65,7 +65,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
             try factory.init([
                 .string("2"),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -74,7 +74,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
             try factory.init([
                 .string("2"),
                 .string("3"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

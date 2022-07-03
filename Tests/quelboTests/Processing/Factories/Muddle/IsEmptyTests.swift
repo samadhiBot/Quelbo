@@ -12,24 +12,21 @@ import XCTest
 final class IsEmptyTests: QuelboTests {
     let factory = Factories.IsEmpty.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("EMPTY?"))
     }
 
     func testIsEmpty() throws {
+        registry.append(
+            Symbol(id: "atms", type: .variable(.bool))
+        )
+
         let symbol = try factory.init([
             .local("ATMS")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "atms.isEmpty",
+            code: "atms.isEmpty",
             type: .bool
         ))
     }

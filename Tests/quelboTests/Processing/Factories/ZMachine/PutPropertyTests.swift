@@ -15,7 +15,7 @@ final class PutPropertyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects),
             Symbol(id: "winner", type: .object, category: .globals),
         ])
@@ -30,10 +30,10 @@ final class PutPropertyTests: QuelboTests {
             .atom("TROLL"),
             .property("STRENGTH"),
             .decimal(10),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.strength = 10",
+            code: "troll.strength = 10",
             type: .int
         ))
     }
@@ -43,10 +43,10 @@ final class PutPropertyTests: QuelboTests {
             .global("WINNER"),
             .property("ACTION"),
             .decimal(0),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "winner.action = 0",
+            code: "winner.action = 0",
             type: .int
         ))
     }
@@ -57,7 +57,7 @@ final class PutPropertyTests: QuelboTests {
                 .string("TROLL"),
                 .atom("STRENGTH"),
                 .decimal(10)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

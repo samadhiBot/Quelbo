@@ -22,7 +22,7 @@ final class GlobalsTests: QuelboTests {
             .atom("STREAM"),
             .atom("ROAD"),
             .atom("FOREST")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "globals",
@@ -41,7 +41,7 @@ final class GlobalsTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -49,7 +49,7 @@ final class GlobalsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("42"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

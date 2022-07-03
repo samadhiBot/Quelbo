@@ -25,11 +25,11 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let variable = try symbol(0).with(meta: [.mutating(true)])
+            let variable = try symbol(0)
             let value = try symbol(1)
             
             return Symbol(
-                "\(variable.code).decrement().isLessThan(\(value.code))",
+                code: "\(variable.code).decrement().isLessThan(\(value.code))",
                 type: .bool,
                 children: [variable, value]
             )

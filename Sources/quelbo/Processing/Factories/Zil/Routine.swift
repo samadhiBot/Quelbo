@@ -17,12 +17,12 @@ extension Factories {
         }
 
         var nameSymbol: Symbol!
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
             var tokens = tokens
             self.nameSymbol = try findNameSymbol(in: &tokens)
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
+            self.blockProcessor = try BlockProcessor(tokens, with: &registry)
         }
 
         var typeName: String {
@@ -32,21 +32,36 @@ extension Factories {
         override func process() throws -> Symbol {
             let symbol = Symbol(
                 id: nameSymbol.id,
-                code: """
-                    \(pro.discardableResult)\
-                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName).
-                    func \(nameSymbol.id)(\(pro.paramsSymbol.code))\(pro.returnValue) {
-                    \(pro.warningComments(indented: true))\
-                    \(pro.auxiliaryDefs(indented: true))\
-                    \(pro.codeBlock.indented)
-                    }
-                    """,
-                type: pro.type,
+                code: codeBlock,
+                type: blockProcessor.type,
                 category: .routines,
-                children: pro.paramsSymbol.children
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
+        }
+    }
+}
+
+extension Factories.Routine {
+    var codeBlock: (Symbol) throws -> String {
+        let nameSymbol = nameSymbol!
+        let typeName = typeName
+
+        return { symbol in
+            var pro = Symbol.BlockPro(for: symbol)
+
+            return """
+                \(pro.discardableResult)\
+                /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
+                func \(nameSymbol)\
+                (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
+                \(pro.returnValue) {
+                \(pro.auxiliaryDefs(indented: true))\
+                \(pro.codeBlock().indented)
+                }
+                """
         }
     }
 }

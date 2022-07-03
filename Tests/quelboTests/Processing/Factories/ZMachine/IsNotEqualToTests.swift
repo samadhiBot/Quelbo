@@ -15,7 +15,7 @@ final class IsNotEqualToTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
             Symbol(id: "isWorldAlive", type: .bool, category: .globals)
         )
@@ -30,10 +30,10 @@ final class IsNotEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isNotEqualTo(3)",
+            code: "2.isNotEqualTo(3)",
             type: .bool
         ))
     }
@@ -43,10 +43,10 @@ final class IsNotEqualToTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isNotEqualTo(3, 4)",
+            code: "2.isNotEqualTo(3, 4)",
             type: .bool
         ))
     }
@@ -55,10 +55,10 @@ final class IsNotEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .string("hello"),
             .string("goodBye"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #""hello".isNotEqualTo("goodBye")"#,
+            code: #""hello".isNotEqualTo("goodBye")"#,
             type: .bool
         ))
     }
@@ -67,10 +67,10 @@ final class IsNotEqualToTests: QuelboTests {
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),
             .global("WORLD-ALIVE?"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isPlayerAlive.isNotEqualTo(isWorldAlive)",
+            code: "isPlayerAlive.isNotEqualTo(isWorldAlive)",
             type: .bool
         ))
     }
@@ -79,7 +79,7 @@ final class IsNotEqualToTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -88,7 +88,7 @@ final class IsNotEqualToTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .string("3"),
-            ])
+            ], with: &registry)
         )
     }
 }

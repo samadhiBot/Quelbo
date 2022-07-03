@@ -15,7 +15,7 @@ final class DivideTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "baseScore", type: .int, category: .globals),
             Symbol(id: "cyclowrath", type: .int, category: .globals),
             Symbol(id: "myBike", type: .string, category: .globals),
@@ -32,10 +32,10 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(9),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".divide(9, 3)",
+            code: ".divide(9, 3)",
             type: .int
         ))
     }
@@ -45,10 +45,10 @@ final class DivideTests: QuelboTests {
             .decimal(20),
             .decimal(5),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".divide(20, 5, 2)",
+            code: ".divide(20, 5, 2)",
             type: .int
         ))
     }
@@ -57,10 +57,10 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .atom("BIG-NUMBER"),
             .atom("BIGGER-NUMBER"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bigNumber.divide(biggerNumber)",
+            code: "bigNumber.divide(biggerNumber)",
             type: .int
         ))
     }
@@ -69,10 +69,10 @@ final class DivideTests: QuelboTests {
         let symbol = try factory.init([
             .global("CYCLOWRATH"),
             .decimal(1),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "cyclowrath.divide(1)",
+            code: "cyclowrath.divide(1)",
             type: .int
         ))
     }
@@ -83,10 +83,10 @@ final class DivideTests: QuelboTests {
             .form([
                 .atom("OTVAL-FROB")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "baseScore.divide(otvalFrob())",
+            code: "baseScore.divide(otvalFrob())",
             type: .int
         ))
     }
@@ -95,7 +95,7 @@ final class DivideTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: &registry)
         )
     }
 }

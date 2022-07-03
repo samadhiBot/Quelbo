@@ -15,7 +15,7 @@ final class MoveTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "here", type: .object, category: .rooms),
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
@@ -31,10 +31,10 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.move(to: paperBag)",
+            code: "sandwich.move(to: paperBag)",
             type: .void
         ))
     }
@@ -43,26 +43,33 @@ final class MoveTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.move(to: kitchen)",
+            code: "paperBag.move(to: kitchen)",
             type: .void
         ))
     }
 
     func testMoveLocalWeaponToHere() throws {
-        let registry = SymbolRegistry([
-            Symbol("dweapon", type: .bool, meta: [.isLiteral, .maybeEmptyValue]),
-        ])
+        registry.append(
+            Symbol(
+                id: "dweapon",
+                type: .bool,
+                meta: [
+                    .isLiteral,
+                    .typeCertainty(.booleanFalse),
+                ]
+            )
+        )
 
         let symbol = try factory.init([
             .local("DWEAPON"),
             .global("HERE"),
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "dweapon.move(to: here)",
+            code: "dweapon.move(to: here)",
             type: .void
         ))
     }
@@ -72,7 +79,7 @@ final class MoveTests: QuelboTests {
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -81,7 +88,7 @@ final class MoveTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

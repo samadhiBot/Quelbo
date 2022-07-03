@@ -19,13 +19,14 @@ final class VersionTests: QuelboTests {
     func testAtom() throws {
         let symbol = try factory.init([
             .atom("ZIP")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -36,13 +37,14 @@ final class VersionTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ZIP"),
             .atom("TIME")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3Time""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -52,13 +54,14 @@ final class VersionTests: QuelboTests {
     func testDecimal() throws {
         let symbol = try factory.init([
             .decimal(3)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -69,7 +72,7 @@ final class VersionTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -77,7 +80,7 @@ final class VersionTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .atom("ZAP"),
-            ])
+            ], with: &registry)
         )
     }
 }

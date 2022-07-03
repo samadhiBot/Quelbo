@@ -12,7 +12,7 @@ extension Factories {
     ///
     class RoutineCall: SymbolFactory {
         /// The functions or routine defined in a game.
-        var routine = Symbol("TBD")
+        var routine = Symbol()
 
         /// The function or routine parameters.
         var params: [Symbol] = []
@@ -20,6 +20,10 @@ extension Factories {
         override func processTokens() throws {
             var routineTokens = tokens
             let nameSymbol = try findNameSymbol(in: &routineTokens)
+            guard nameSymbol.isIdentifiable else {
+                throw Error.missingRoutineIdentifier(nameSymbol)
+            }
+
             if let routine = try? Game.find(nameSymbol.id, category: .routines) {
                 self.routine = routine
             } else {
@@ -32,13 +36,13 @@ extension Factories {
                 guard let value = paramSymbols.shift() else {
                     return nil
                 }
-                return symbol.with(code: "\(symbol.id): \(value.code)")
+                return symbol.with(code: "\(symbol): \(value.code)")
             }
         }
 
         override func process() throws -> Symbol {
             Symbol(
-                "\(routine.id)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
+                code: "\(routine)(\(params.codeValues(.commaSeparatedNoTrailingComma)))",
                 type: routine.type,
                 children: params
             )
@@ -50,6 +54,7 @@ extension Factories {
 
 extension Factories.RoutineCall {
     enum Error: Swift.Error {
+        case missingRoutineIdentifier(Symbol)
         case missingRoutineParameter(Symbol)
     }
 }

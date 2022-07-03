@@ -24,10 +24,10 @@ final class JoinedStringsTests: QuelboTests {
                 .decimal(66)
             ]),
             .string("CD")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             ["A", 66.ascii, "CD"].joined()
             """,
             type: .string

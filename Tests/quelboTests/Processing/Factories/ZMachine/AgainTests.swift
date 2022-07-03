@@ -18,9 +18,13 @@ final class AgainTests: QuelboTests {
     }
 
     func testIsAgainStatement() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
-        XCTAssertTrue(symbol.isAgainStatement)
+        XCTAssertNoDifference(symbol.controlflow, .again(activation: nil))
+//
+//        XCTAssertEqual(<#T##expression1: [Equatable]##[Equatable]#>, <#T##expression2: [Equatable]##[Equatable]#>)
+//        XCTAssertTrue(symbol.controlflow == .again(activation: nil)
+//                      meta.contains(.isAgainStatement))
     }
 
     func testAgainRoutine1() throws {
@@ -62,7 +66,7 @@ final class AgainTests: QuelboTests {
                 .atom("AGAIN")
             ]),
             .commented(.string("Start routine again, X keeps value"))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain1",
@@ -83,7 +87,11 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [
+                .controlFlow(.block(activation: nil)),
+                .paramDeclarations("var x: Int = 0"),
+            ]
         ))
     }
 
@@ -130,7 +138,7 @@ final class AgainTests: QuelboTests {
                 .atom("AGAIN")
             ]),
             .commented(.string("Start routine again, X reinitialize to 0"))
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain2",
@@ -152,7 +160,11 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [
+                .controlFlow(.block(activation: nil)),
+                .paramDeclarations("var x: Int = 0"),
+            ]
         ))
     }
 
@@ -204,7 +216,7 @@ final class AgainTests: QuelboTests {
                 ]),
                 .commented(.string("Start block again from ACT1,"))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain3",
@@ -225,7 +237,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -276,7 +289,7 @@ final class AgainTests: QuelboTests {
                 ]),
                 .commented(.string("Start block again from PROG,"))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testAgain4",
@@ -284,7 +297,7 @@ final class AgainTests: QuelboTests {
                 /// The `testAgain4` (TEST-AGAIN-4) routine.
                 func testAgain4() {
                     var x: Int = 0
-                    while true {
+                    act_1378: while true {
                         /* PROG generates default activation */
                         x.set(to: x.add(1))
                         output(x)
@@ -298,7 +311,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 }

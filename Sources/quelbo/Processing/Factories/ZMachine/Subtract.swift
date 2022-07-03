@@ -30,7 +30,7 @@ extension Factories {
             }
 
             return Symbol(
-                "-\(try symbol(0).code)",
+                code: "-\(try symbol(0).code)",
                 type: .int,
                 children: symbols
             )

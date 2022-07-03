@@ -15,7 +15,7 @@ final class GlobalTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "cyclops", type: .object, category: .objects),
             Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
@@ -41,12 +41,14 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .atom("unexpected")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "var foo: <Unknown> = unexpected",
-            category: .globals
+            type: .variable(.unknown),
+            category: .globals,
+            meta: [.typeCertainty(.unknown)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -57,12 +59,12 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "var foo: Bool = true",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals
         )
 
@@ -74,14 +76,14 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PRSO"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "prso",
             code: "var prso: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -93,7 +95,7 @@ final class GlobalTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .commented(.string("BAR"))
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -101,12 +103,12 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "var foo: Int = 42",
-            type: .int,
+            type: .variable(.int),
             category: .globals
         )
 
@@ -123,7 +125,7 @@ final class GlobalTests: QuelboTests {
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -134,7 +136,7 @@ final class GlobalTests: QuelboTests {
                         .room(forest3)
                     )
                     """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -157,7 +159,7 @@ final class GlobalTests: QuelboTests {
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -173,7 +175,8 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -213,7 +216,7 @@ final class GlobalTests: QuelboTests {
                     .atom("CYCLOPS-MELEE")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "villains",
@@ -243,7 +246,7 @@ final class GlobalTests: QuelboTests {
                     flags: [.length]
                 )
                 """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -273,7 +276,7 @@ final class GlobalTests: QuelboTests {
                     .decimal(4)
                 ]))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "def1Res",
@@ -286,7 +289,7 @@ final class GlobalTests: QuelboTests {
                     // /* ["REST", "DEF1", "4"] */
                 )
                 """,
-            type: .table,
+            type: .variable(.table),
             category: .globals
         )
 
@@ -301,14 +304,14 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .list([.string("BAR")])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: """
                 var foo: [String] = ["BAR"]
                 """,
-            type: .array(.string),
+            type: .variable(.array(.string)),
             category: .globals
         )
 
@@ -323,14 +326,14 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .quote(.string("BAR"))
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: """
                 var foo: String = "BAR"
                 """,
-            type: .string,
+            type: .variable(.string),
             category: .globals
         )
 
@@ -345,14 +348,14 @@ final class GlobalTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Forty Two!")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: """
                 var foo: String = "Forty Two!"
                 """,
-            type: .string,
+            type: .variable(.string),
             category: .globals
         )
 
@@ -377,7 +380,7 @@ final class GlobalTests: QuelboTests {
                     .local("X")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "square",
@@ -388,7 +391,8 @@ final class GlobalTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -402,37 +406,36 @@ final class GlobalTests: QuelboTests {
         _ = try factory.init([
             .atom("PRSO"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         // `prso` is recorded as a boolean, but it's understood that `<>` might have been a
         // placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
-        // Move expects `prso` to be an object, not a boolean. This triggers an overwrite of the
+        // Move expects `prso` to be an object, not a boolean. This triggers an update of the
         // `prso` game symbol's type from boolean to object.
         let move = try Factories.Move.init([
             .global("PRSO"),
             .global("CLEARING")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(move, Symbol(
-            "prso.move(to: clearing)",
+            code: "prso.move(to: clearing)",
             type: .void
         ))
 
-        // Inspecting the `prso` game symbol confirms that the type overwrite took place.
+        // Inspecting the `prso` game symbol confirms that the type update took place.
         XCTAssertNoDifference(try Game.find("prso"), Symbol(
             id: "prso",
             code: "var prso: Object? = nil",
-            type: .optional(.object),
-            category: .globals,
-            meta: [.maybeEmptyValue]
+            type: .variable(.optional(.object)),
+            category: .globals
         ))
     }
 
@@ -440,16 +443,16 @@ final class GlobalTests: QuelboTests {
         _ = try factory.init([
             .atom("KITCHEN-WINDOW-FLAG"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         // `kitchenWindowFlag` is recorded as a boolean, but it's understood that `<>` might have
         // been a placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
             id: "kitchenWindowFlag",
             code: "var kitchenWindowFlag: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         ))
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
@@ -457,10 +460,10 @@ final class GlobalTests: QuelboTests {
         let set = try Factories.SetVariable([
             .atom("KITCHEN-WINDOW-FLAG"),
             .atom("T")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(set, Symbol(
-            "kitchenWindowFlag.set(to: true)",
+            code: "kitchenWindowFlag.set(to: true)",
             type: .bool
         ))
 
@@ -468,9 +471,9 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(try Game.find("kitchenWindowFlag"), Symbol(
             id: "kitchenWindowFlag",
             code: "var kitchenWindowFlag: Bool = false",
-            type: .bool,
+            type: .variable(.bool),
             category: .globals,
-            meta: [.maybeEmptyValue]
+            meta: [.typeCertainty(.booleanFalse)]
         ))
     }
 }

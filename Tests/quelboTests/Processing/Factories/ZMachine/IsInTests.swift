@@ -15,13 +15,9 @@ final class IsInTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            Symbol(
-                id: "here",
-                type: .object,
-                category: .globals,
-                meta: [.maybeEmptyValue, .mutating(true)]
-            ),
+        let _ = try! Factories.Global([.atom("HERE"), .decimal(0)], with: &registry).process()
+
+        Game.commit([
             Symbol(id: "kitchen", type: .object, category: .rooms),
             Symbol(id: "paperBag", type: .object, category: .objects),
             Symbol(id: "sandwich", type: .object, category: .objects),
@@ -37,10 +33,10 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SANDWICH"),
             .atom("PAPER-BAG"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.isIn(paperBag)",
+            code: "sandwich.isIn(paperBag)",
             type: .bool
         ))
     }
@@ -49,15 +45,19 @@ final class IsInTests: QuelboTests {
         let symbol = try factory.init([
             .atom("PAPER-BAG"),
             .atom("KITCHEN"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "paperBag.isIn(kitchen)",
+            code: "paperBag.isIn(kitchen)",
             type: .bool
         ))
     }
 
     func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
+        registry.append(
+            Symbol(id: "oo", type: .variable(.table))
+        )
+
         let symbol = try factory.init([
             .form([
                 .atom("SET"),
@@ -69,10 +69,10 @@ final class IsInTests: QuelboTests {
                 ])
             ]),
             .global("HERE")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "o.set(to: try oo.get(at: vVillain)).isIn(here)",
+            code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",
             type: .bool
         ))
     }
@@ -82,7 +82,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .atom("SANDWICH"),
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -91,7 +91,7 @@ final class IsInTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

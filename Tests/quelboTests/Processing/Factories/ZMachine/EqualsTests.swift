@@ -12,15 +12,6 @@ import XCTest
 final class EqualsTests: QuelboTests {
     let factory = Factories.Equals.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-            Symbol(id: "isPlayerAlive", type: .bool, category: .globals),
-            Symbol(id: "isWorldAlive", type: .bool, category: .globals)
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("=?"))
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("==?"))
@@ -31,22 +22,26 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(2),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.equals(3)",
+            code: "2.equals(3)",
             type: .bool
         ))
     }
 
     func testEqualAtomAndDecimal() throws {
+        registry.append(
+            Symbol(id: "n", type: .int)
+        )
+
         let symbol = try factory.init([
             .local("N"),
             .decimal(3),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "n.equals(3)",
+            code: "n.equals(3)",
             type: .bool
         ))
     }
@@ -56,10 +51,10 @@ final class EqualsTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.equals(3, 4)",
+            code: "2.equals(3, 4)",
             type: .bool
         ))
     }
@@ -68,22 +63,25 @@ final class EqualsTests: QuelboTests {
         let symbol = try factory.init([
             .string("hello"),
             .string("goodBye"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #""hello".equals("goodBye")"#,
+            code: #""hello".equals("goodBye")"#,
             type: .bool
         ))
     }
 
     func testEqualTwoGlobalBools() throws {
+        let _ = try Factories.Global([.atom("PLAYER-ALIVE?"), .bool(true)], with: &registry).process()
+        let _ = try Factories.Global([.atom("WORLD-ALIVE?"), .bool(true)], with: &registry).process()
+
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),
             .global("WORLD-ALIVE?"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "isPlayerAlive.equals(isWorldAlive)",
+            code: "isPlayerAlive.equals(isWorldAlive)",
             type: .bool
         ))
     }
@@ -92,7 +90,7 @@ final class EqualsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-            ])
+            ], with: &registry)
         )
     }
 
@@ -101,7 +99,7 @@ final class EqualsTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .string("3"),
-            ])
+            ], with: &registry)
         )
     }
 }

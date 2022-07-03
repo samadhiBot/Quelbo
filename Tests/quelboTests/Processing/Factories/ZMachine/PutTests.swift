@@ -15,7 +15,7 @@ final class PutTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "mytable", type: .table, category: .globals)
         ])
     }
@@ -30,10 +30,10 @@ final class PutTests: QuelboTests {
             .global("MYTABLE"),
             .decimal(1),
             .decimal(123)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try mytable.put(element: 123, at: 1)",
+            code: "try mytable.put(element: 123, at: 1)",
             type: .int
         ))
     }
@@ -43,10 +43,10 @@ final class PutTests: QuelboTests {
             .global("MYTABLE"),
             .decimal(1),
             .string("hello")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"try mytable.put(element: "hello", at: 1)"#,
+            code: #"try mytable.put(element: "hello", at: 1)"#,
             type: .string
         ))
     }
@@ -56,10 +56,10 @@ final class PutTests: QuelboTests {
             .local("RFROB"),
             .decimal(1),
             .local("MSG")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "try rfrob.put(element: msg, at: 1)",
+            code: "try rfrob.put(element: msg, at: 1)",
             type: .int
         ))
     }
@@ -70,7 +70,7 @@ final class PutTests: QuelboTests {
                 .string("TROLL"),
                 .decimal(1),
                 .decimal(123)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -80,7 +80,7 @@ final class PutTests: QuelboTests {
                 .global("MYTABLE"),
                 .string("1"),
                 .decimal(123)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

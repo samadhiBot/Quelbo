@@ -90,18 +90,18 @@ extension Game {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let registry = SymbolRegistry()
+                    var registry: [Symbol] = []
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
                     let factory: SymbolFactory
                     if let zilSymbol = try Game.zilSymbolFactories
                         .find(zil)?
-                        .init(tokens, with: registry)
+                        .init(tokens, with: &registry)
                     {
                         factory = zilSymbol
                     } else {
-                        factory = try Factories.RoutineCall(formTokens, with: registry)
+                        factory = try Factories.RoutineCall(formTokens, with: &registry)
                     }
                     _ = try factory.process()
                 } catch {
@@ -143,7 +143,7 @@ enum GameError: Swift.Error {
     case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
     case failedToProcessTokens([String])
     case invalidZMachineVersion([Token])
-    case symbolNotFound(Symbol.Identifier, category: Symbol.Category?)
+    case symbolNotFound(Symbol.Identifier, categories: [Symbol.Category])
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)
@@ -242,7 +242,7 @@ extension Game {
         }
 
         /// An integer representation of the ZMachine version.
-        var intValue: Int {
+        private var version: Int {
             switch self {
             case .z3:     return 3
             case .z3Time: return 3
@@ -253,5 +253,13 @@ extension Game {
             case .z8:     return 8
             }
         }
+    }
+}
+
+// MARK: - Conformances
+
+extension Game.ZMachineVersion: Comparable {
+    static func < (lhs: Game.ZMachineVersion, rhs: Game.ZMachineVersion) -> Bool {
+        lhs.version < rhs.version
     }
 }

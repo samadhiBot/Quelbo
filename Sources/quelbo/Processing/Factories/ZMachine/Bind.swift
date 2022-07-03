@@ -16,12 +16,8 @@ extension Factories {
             ["BIND"]
         }
 
-        override func processTokens() throws {
-            self.pro = try BlockProcessor(
-                tokens,
-                in: .blockWithoutDefaultActivation,
-                with: registry
-            )
+        override var defaultActivation: String? {
+            nil
         }
     }
 }

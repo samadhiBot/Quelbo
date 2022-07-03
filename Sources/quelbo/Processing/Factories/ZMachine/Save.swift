@@ -26,7 +26,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                "save()",
+                code: "save()",
                 type: .void
             )
         }

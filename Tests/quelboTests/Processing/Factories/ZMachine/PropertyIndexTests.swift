@@ -15,7 +15,7 @@ final class PropertyIndexTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "here", type: .object, category: .rooms),
             Symbol(id: "troll", type: .object, category: .objects),
         ])
@@ -29,26 +29,26 @@ final class PropertyIndexTests: QuelboTests {
         let symbol = try factory.init([
             .atom("TROLL"),
             .property("STRENGTH")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.propertyIndex(of: .strength)",
+            code: "troll.propertyIndex(of: .strength)",
             type: .int
         ))
     }
 
     func testPropertyIndexOfObjectInLocal() throws {
-        let registry = SymbolRegistry([
-            Symbol("dir", type: .direction),
-        ])
+        registry.append(
+            Symbol(id: "dir", type: .direction)
+        )
 
         let symbol = try factory.init([
             .global("HERE"),
             .local("DIR")
-        ], with: registry).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "here.propertyIndex(of: .dir)",
+            code: "here.propertyIndex(of: .dir)",
             type: .int
         ))
     }
@@ -58,7 +58,7 @@ final class PropertyIndexTests: QuelboTests {
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

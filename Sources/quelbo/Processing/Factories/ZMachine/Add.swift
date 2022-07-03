@@ -41,22 +41,20 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let original = symbols
+
             guard let first = symbols.shift() else {
-                throw Error.missingInitialArithmaticValue(tokens)
+                throw Error.missingInitialArithmeticValue(tokens)
             }
 
-            let code: String
-            let allSymbols: [Symbol]
-
+            let mathFunction: String
             if first.isLiteral {
-                allSymbols = [first] + symbols
-                code = ".\(function)(\(allSymbols.codeValues(.commaSeparated)))"
+                mathFunction = ".\(function)(\(original.codeValues(.commaSeparated)))"
             } else {
-                allSymbols = [first.with(meta: [.mutating(true)])] + symbols
-                code = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
+                mathFunction = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
             }
 
-            return Symbol(code, type: .int, children: allSymbols)
+            return Symbol(code: mathFunction, type: .int, children: original)
         }
     }
 }
@@ -65,6 +63,6 @@ extension Factories {
 
 extension Factories.Add {
     enum Error: Swift.Error {
-        case missingInitialArithmaticValue([Token])
+        case missingInitialArithmeticValue([Token])
     }
 }

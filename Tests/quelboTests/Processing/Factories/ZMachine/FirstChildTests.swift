@@ -15,7 +15,7 @@ final class FirstChildTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "thief", type: .object, category: .objects),
         ])
@@ -28,10 +28,10 @@ final class FirstChildTests: QuelboTests {
     func testThiefsFirstInventoryItem() throws {
         let symbol = try factory.init([
             .global("THIEF")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "thief.firstChild",
+            code: "thief.firstChild",
             type: .object
         ))
     }
@@ -39,10 +39,10 @@ final class FirstChildTests: QuelboTests {
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
             .global("CLEARING")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "clearing.firstChild",
+            code: "clearing.firstChild",
             type: .object
         ))
     }
@@ -51,7 +51,7 @@ final class FirstChildTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("thief")
-            ])
+            ], with: &registry)
         )
     }
 }

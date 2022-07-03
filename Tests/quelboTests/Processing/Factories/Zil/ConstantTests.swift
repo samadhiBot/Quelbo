@@ -15,7 +15,7 @@ final class ConstantTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "cyclops", type: .object, category: .objects),
             Symbol(id: "cyclopsMelee", type: .bool, category: .routines),
@@ -39,14 +39,15 @@ final class ConstantTests: QuelboTests {
     func testAtom() throws {
         let symbol = try factory.init([
             .atom("FOO"),
-            .atom("unexpected")
-        ]).process()
+            .atom("UNEXPECTED")
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "let foo: <Unknown> = unexpected",
             type: .unknown,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable, .typeCertainty(.unknown)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -57,13 +58,14 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "let foo: Bool = true",
             type: .bool,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -75,7 +77,7 @@ final class ConstantTests: QuelboTests {
             try factory.init([
                 .atom("FOO"),
                 .commented(.string("BAR"))
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -83,13 +85,14 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "let foo: Int = 42",
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -105,7 +108,7 @@ final class ConstantTests: QuelboTests {
                 .atom("FOREST-2"),
                 .atom("FOREST-3"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -117,7 +120,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -139,7 +143,7 @@ final class ConstantTests: QuelboTests {
                 .atom("CLEARING"),
                 .atom("FOREST-1"),
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -155,7 +159,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -195,7 +200,7 @@ final class ConstantTests: QuelboTests {
                     .atom("CYCLOPS-MELEE")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "villains",
@@ -226,7 +231,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -255,7 +261,7 @@ final class ConstantTests: QuelboTests {
                     .decimal(4)
                 ]))
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "def1Res",
@@ -269,7 +275,8 @@ final class ConstantTests: QuelboTests {
                 )
                 """,
             type: .table,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -283,7 +290,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .list([.string("BAR")])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -291,7 +298,8 @@ final class ConstantTests: QuelboTests {
                 let foo: [String] = ["BAR"]
                 """,
             type: .array(.string),
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -305,7 +313,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .quote(.string("BAR"))
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
@@ -313,7 +321,8 @@ final class ConstantTests: QuelboTests {
                 let foo: String = "BAR"
                 """,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -327,7 +336,7 @@ final class ConstantTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .string("Forty Two!")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
 
@@ -336,7 +345,8 @@ final class ConstantTests: QuelboTests {
                     let foo: String = "Forty Two!"
                     """,
             type: .string,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)

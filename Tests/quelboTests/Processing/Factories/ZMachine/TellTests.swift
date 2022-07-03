@@ -15,7 +15,7 @@ final class TellTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
@@ -37,10 +37,10 @@ final class TellTests: QuelboTests {
             .character("z"),
             .atom("C"),
             .decimal(65),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             output("You are in a large cavernous room")
             output(troll.description)
             output(42)
@@ -54,7 +54,7 @@ final class TellTests: QuelboTests {
     func testThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -15,7 +15,7 @@ final class MapFirstTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -37,10 +37,10 @@ final class MapFirstTests: QuelboTests {
                 .decimal(11),
                 .decimal(12)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 .add(1, 10),
                 .add(2, 11),
@@ -61,10 +61,10 @@ final class MapFirstTests: QuelboTests {
                 .string("lots of"),
                 .string("fun")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 "Zil".nthElement(1),
                 "is".nthElement(1),
@@ -95,10 +95,10 @@ final class MapFirstTests: QuelboTests {
                 .decimal(2),
                 .decimal(3)
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             [
                 { (n: Int) -> Int in
                     var n = n

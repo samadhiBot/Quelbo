@@ -15,7 +15,7 @@ final class FormTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -28,24 +28,36 @@ final class FormTests: QuelboTests {
             .atom("+"),
             .decimal(1),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".add(1, 2)",
+            code: ".add(1, 2)",
             type: .int
         ))
     }
 
     func testLocalValueForm() throws {
+        registry.append(
+            Symbol(id: "a", type: .variable(.string))
+        )
+
         let symbol = try factory.init([
             .atom("LVAL"),
             .local("A"),
-        ]).process()
+        ], with: &registry).process()
 
-        XCTAssertNoDifference(symbol, Symbol(id: "a", code: "a"))
+        XCTAssertNoDifference(symbol, Symbol(
+            id: "a",
+            code: "a",
+            type: .variable(.string)
+        ))
     }
 
     func testNestedForms() throws {
+        registry.append(
+            Symbol(id: "a", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .atom("SET"),
             .local("A"),
@@ -59,10 +71,10 @@ final class FormTests: QuelboTests {
                     .local("A")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "a.set(to: .add(1, a))",
+            code: "a.set(to: .add(1, a))",
             type: .int
         ))
     }

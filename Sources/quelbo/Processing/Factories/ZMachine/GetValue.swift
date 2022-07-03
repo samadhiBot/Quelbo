@@ -17,13 +17,25 @@ extension Factories {
         }
 
         override class var parameters: Parameters {
-            .one(.variable(.unknown))
+            .one(.unknown)
         }
 
         override func process() throws -> Symbol {
             let variable = try symbol(0)
 
-            return variable.with(code: variable.id.stringLiteral)
+            guard variable.isIdentifiable else {
+                throw Error.illegalGetValueOnNonIdentifiable(variable)
+            }
+
+            return variable.with(code: variable.description)
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.GetValue {
+    enum Error: Swift.Error {
+        case illegalGetValueOnNonIdentifiable(Symbol)
     }
 }

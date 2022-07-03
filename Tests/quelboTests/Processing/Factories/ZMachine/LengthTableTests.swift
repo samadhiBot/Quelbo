@@ -17,7 +17,7 @@ final class LengthTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "forest1", type: .object, category: .rooms),
             Symbol(id: "forest2", type: .object, category: .rooms),
@@ -41,10 +41,10 @@ final class LengthTableTests: QuelboTests {
             .atom("FOREST-1"),
             .atom("FOREST-2"),
             .atom("FOREST-3"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -63,10 +63,10 @@ final class LengthTableTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .atom("TROLL-MELEE")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .object(troll),
                     .object(sword),
@@ -91,10 +91,10 @@ final class LengthTableTests: QuelboTests {
             .atom("PATH"),
             .atom("CLEARING"),
             .atom("FOREST-1"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -105,7 +105,8 @@ final class LengthTableTests: QuelboTests {
                     flags: [.length, .pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -127,10 +128,10 @@ final class LengthTableTests: QuelboTests {
                 .decimal(0),
                 .atom("THIEF-MELEE")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .table(Table(
                         .object(troll),

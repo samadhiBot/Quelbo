@@ -32,10 +32,10 @@ extension SymbolFactory {
                 )
             case .character(let character):
                 symbols.append(
-                    Symbol(character.quoted, type: .string, meta: [.isLiteral])
+                    Symbol(code: character.quoted, type: .string, meta: [.isLiteral])
                 )
             case .commented(let token):
-                symbols.append(Symbol("/* \(token.value) */", type: .comment))
+                symbols.append(Symbol(code: "/* \(token.value) */", type: .comment))
             case .decimal(let int):
                 symbols.append(
                     symbolizeDecimal(int)
@@ -74,7 +74,7 @@ extension SymbolFactory {
                 )
             case .string(let string):
                 symbols.append(
-                    Symbol(string.quoted, type: .string, meta: [.isLiteral])
+                    Symbol(code: string.quoted, type: .string, meta: [.isLiteral])
                 )
             case .type(let token):
                 symbols.append(
@@ -121,16 +121,20 @@ extension SymbolFactory {
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
         let expectedType = try Self.parameters.expectedType(at: index)
+
+        if zil == "T" {
+            guard case .variable = expectedType else { return .trueSymbol }
+        }
+
         if let defined = try? Game.find(.id(name), type: expectedType) {
             return defined.with(code: name)
         }
-        if zil == "T" {
-            switch expectedType {
-            case .variable: break
-            default: return .trueSymbol
-            }
-        }
-        return Symbol(id: .id(name), code: name, type: expectedType)
+
+        return Symbol(
+            id: .id(name),
+            code: name,
+            type: expectedType
+        )
     }
 
     /// Translates a Zil
@@ -141,11 +145,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeBoolean(_ value: Bool) -> Symbol {
-        var metaData: Set<Symbol.MetaData> = [.isLiteral]
-        if value == false {
-            metaData.insert(.maybeEmptyValue)
-        }
-        return Symbol("\(value)", type: .bool, meta: metaData)
+        .booleanSymbol(value)
     }
 
     /// Translates a Zil
@@ -156,7 +156,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil character.
     func symbolizeCharacter(_ zil: String) throws -> Symbol {
-        Symbol(zil.quoted, type: .string, meta: [.isLiteral])
+        Symbol(code: zil.quoted, type: .string, meta: [.isLiteral])
     }
 
     /// Translates a Zil
@@ -167,7 +167,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil boolean.
     func symbolizeDecimal(_ value: Int) -> Symbol {
-        .intSymbol(value)
+        .integerSymbol(value)
     }
 
     /// Translates a Zil
@@ -211,7 +211,7 @@ extension SymbolFactory {
                 throw SymbolizationError.invalidZilForm(formTokens)
             }
             return Symbol(
-                "\(closure.code)(\(nested.codeValues(.commaSeparated)))",
+                code: "\(closure.code)(\(nested.codeValues(.commaSeparated)))",
                 type: closure.type,
                 children: nested
             )
@@ -225,26 +225,24 @@ extension SymbolFactory {
 
         func findFactory() throws -> SymbolFactory {
             if let zMachine = try Game.zMachineSymbolFactories.find(zil)?.init(
-                tokens,
-                in: blockType,
-                with: registry
+                tokens, with: &registry
             ) {
                 return zMachine
             }
             let id = Symbol.Identifier.id(zil.lowerCamelCase)
             if let _ = try? Game.find(id, category: .routines) {
-                return try Factories.RoutineCall(formTokens, with: registry)
+                return try Factories.RoutineCall(formTokens, with: &registry)
             }
             if let _ = try? Game.find(id, category: .definitions) {
-                let _ = try Factories.DefinitionEval(formTokens, with: registry).process()
-                return try Factories.RoutineCall(formTokens, with: registry)
+                let _ = try Factories.DefinitionEval(formTokens, with: &registry).process()
+                return try Factories.RoutineCall(formTokens, with: &registry)
             }
             throw SymbolizationError.noRoutineOrDefinition(formTokens)
         }
 
         let factory = try findFactory()
         let symbol = try factory.process()
-        self.isMutable = factory.isMutable
+
         return symbol
     }
 
@@ -262,7 +260,6 @@ extension SymbolFactory {
         at index: Int
     ) throws -> Symbol {
         let name = zil.lowerCamelCase
-
         return try Game.find(.id(name)).with(code: name)
     }
 
@@ -274,7 +271,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
     func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        try Factories.List(listTokens, in: blockType, with: registry).process()
+        try Factories.List(listTokens, with: &registry).process()
     }
 
     /// Translates a Zil
@@ -290,16 +287,31 @@ extension SymbolFactory {
         _ zil: String,
         at index: Int
     ) throws -> Symbol {
-        let name = zil.lowerCamelCase
+        let localName = zil.lowerCamelCase
+        guard let found = findRegistered(.id(localName)) else {
+//            print("// 🍇 \(registry)")
+//            throw SymbolizationError.unknownLocal(zil, at: index)
+            return Symbol(id: .id(localName), code: localName)
+        }
 
-        if let registered = registry[.id(name)] { return registered }
+        return found.with(code: localName)
+//        let name = zil.lowerCamelCase
+//        return findRegistered(.id(zil.lowerCamelCase))!
 
-        return Symbol(
-            id: .id(name),
-            code: name,
-            type: try Self.parameters.expectedType(at: index),
-            meta: [.maybeEmptyValue]
-        )
+//        try Game.find(.id(name)).with(code: name)
+
+//        let name = zil.lowerCamelCase
+//        let expectedType = try Self.parameters.expectedType(at: index)
+//        let metaData: Set<Symbol.MetaData> = [
+//            .typeCertainty(expectedType == .unknown ? .unknown : .localValue),
+//        ]
+//
+//        return Symbol(
+//            id: .id(name),
+//            code: name,
+//            type: expectedType,
+//            meta: metaData
+//        )
     }
 
     /// Translates a Zil Object
@@ -313,15 +325,12 @@ extension SymbolFactory {
         let propertyName = zil.lowerCamelCase
         if let factory = try? Game.zilPropertyFactories.find(zil) {
             return Symbol(
-                propertyName,
+                code: propertyName,
                 type: factory.returnType,
                 category: .properties
             )
         } else if let property = try? Game.find(.id(propertyName), category: .properties) {
-            return property.with(
-                code: propertyName,
-                category: .directions
-            )
+            return property.with(code: propertyName).with(category: .directions)
         } else {
             throw SymbolizationError.unknownZilProperty(zil)
         }
@@ -335,7 +344,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil quote.
     func symbolizeQuote(_ token: Token) throws -> Symbol {
-        try Factories.Quote([token]).process()
+        try Factories.Quote([token], with: &registry).process()
     }
 
     /// Translates a Zil
@@ -346,7 +355,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil segment.
     func symbolizeSegment(_ token: Token) throws -> Symbol {
-        try Factories.Segment([token]).process()
+        try Factories.Segment([token], with: &registry).process()
     }
 
     /// Translates a Zil
@@ -364,14 +373,14 @@ extension SymbolFactory {
             guard case .decimal(let value) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return Symbol("\(value)", type: .int8, meta: [.isLiteral])
+            return Symbol(code: "\(value)", type: .int8, meta: [.isLiteral])
         case "DECL":
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return try Factories.DeclareType(tokens, with: registry).process()
+            return try Factories.DeclareType(tokens, with: &registry).process()
         case "SPLICE":
-            return Symbol("SPLICE (not yet implemented)")
+            return Symbol(code: "SPLICE (not yet implemented)")
         default:
             throw SymbolizationError.unknownType(type)
         }
@@ -385,7 +394,7 @@ extension SymbolFactory {
     ///
     /// - Returns: A ``Symbol`` representation of the Zil vector.
     func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
-        try Factories.Vector(vectorTokens, with: registry).process()
+        try Factories.Vector(vectorTokens, with: &registry).process()
     }
 }
 
@@ -396,6 +405,7 @@ extension SymbolFactory {
         case invalidZilForm([Token])
         case noRoutineOrDefinition([Token])
         case singleTokenSymbolizationFailed(Token)
+        case unknownLocal(String, at: Int)
         case unknownZilProperty(String)
         case unknownType(String)
         case missingDeclarationValue([Token])

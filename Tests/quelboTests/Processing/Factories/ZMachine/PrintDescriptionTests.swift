@@ -15,7 +15,7 @@ final class PrintDescriptionTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
@@ -27,10 +27,10 @@ final class PrintDescriptionTests: QuelboTests {
     func testPrintDescription() throws {
         let symbol = try factory.init([
             .global("TROLL")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "output(troll.description)",
+            code: "output(troll.description)",
             type: .void
         ))
     }
@@ -39,7 +39,7 @@ final class PrintDescriptionTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("wat?")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

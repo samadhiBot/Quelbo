@@ -16,8 +16,13 @@ final class BindTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            Symbol("isFunnyReturn", type: .bool, category: .globals),
+        Game.commit([
+            Symbol(
+                id: "isFunnyReturn",
+                code: "isFunnyReturn",
+                type: .bool,
+                category: .globals
+            ),
         ])
     }
 
@@ -71,7 +76,7 @@ final class BindTests: QuelboTests {
                 .string("END"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testBind1",
@@ -95,7 +100,8 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -153,7 +159,7 @@ final class BindTests: QuelboTests {
                 .atom("CR")
             ]),
             .commented(.string("Never reached"))
-        ]).process()
+        ], with: &registry).process()
 
         // "START 1 START 2 START 3 "
         XCTAssertNoDifference(symbol, Symbol(
@@ -162,14 +168,14 @@ final class BindTests: QuelboTests {
                 /// The `testBind2` (TEST-BIND-2) routine.
                 func testBind2() {
                     var x: Int = 0
-                    defaultAct: while true {
+                    while true {
                         output("START ")
                         do {
                             x.set(to: x.add(1))
                             output(x)
                             output(" ")
                             if x.equals(3) {
-                                break defaultAct
+                                break
                             }
                             /* --> exit routine */
                             continue
@@ -181,7 +187,8 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 }

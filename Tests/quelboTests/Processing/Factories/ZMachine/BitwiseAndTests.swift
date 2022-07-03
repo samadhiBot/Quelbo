@@ -12,13 +12,13 @@ import XCTest
 final class BitwiseAndTests: QuelboTests {
     let factory = Factories.BitwiseAnd.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-            Symbol(id: "someInt", type: .int, category: .globals),
-        ])
-    }
+//    override func setUp() {
+//        super.setUp()
+//
+//        Game.commit([
+//            Symbol(id: "someInt", type: .int, category: .globals),
+//        ])
+//    }
 
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("BAND"))
@@ -26,15 +26,20 @@ final class BitwiseAndTests: QuelboTests {
     }
 
     func testBitwiseAnd() throws {
+        let _ = try Factories.Global([
+            .atom("SOME-INT"),
+            .decimal(42),
+        ], with: &registry).process()
+
         let symbol = try factory.init([
             .decimal(1),
             .decimal(0),
             .decimal(2),
             .global("SOME-INT"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".bitwiseAnd(1, 0, 2, someInt)",
+            code: ".bitwiseAnd(1, 0, 2, someInt)",
             type: .int
         ))
     }
@@ -45,7 +50,7 @@ final class BitwiseAndTests: QuelboTests {
                 .decimal(1),
                 .decimal(0),
                 .string("three"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

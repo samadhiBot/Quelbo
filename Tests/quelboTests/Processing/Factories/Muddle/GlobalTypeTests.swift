@@ -15,7 +15,7 @@ final class GlobalTypeTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -29,7 +29,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("BEACH-DIG")
             ]),
             .atom("FIX")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "<GlobalType>",
@@ -38,8 +38,7 @@ final class GlobalTypeTests: QuelboTests {
                     id: "beachDig",
                     code: "var beachDig: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 )
             ]
         )
@@ -56,7 +55,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("RS")
             ]),
             .atom("FIX")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "<GlobalType>",
@@ -65,22 +64,19 @@ final class GlobalTypeTests: QuelboTests {
                     id: "ms",
                     code: "var ms: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 ),
                 Symbol(
                     id: "wd",
                     code: "var wd: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 ),
                 Symbol(
                     id: "rs",
                     code: "var rs: Int = 0",
                     type: .int,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 ),
             ]
         )
@@ -102,7 +98,7 @@ final class GlobalTypeTests: QuelboTests {
                 .atom("ATOM"),
                 .atom("FALSE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "<GlobalType>",
@@ -111,15 +107,13 @@ final class GlobalTypeTests: QuelboTests {
                     id: "verbose",
                     code: "var verbose: Bool = false",
                     type: .bool,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 ),
                 Symbol(
                     id: "superBrief",
                     code: "var superBrief: Bool = false",
                     type: .bool,
-                    category: .globals,
-                    meta: [.isLiteral, .maybeEmptyValue]
+                    category: .globals
                 ),
             ]
         )

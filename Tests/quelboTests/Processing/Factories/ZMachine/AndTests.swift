@@ -15,7 +15,7 @@ final class AndTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foundTreasureChest", type: .bool, category: .globals),
             Symbol(id: "mEnter", type: .int, category: .globals),
         ])
@@ -28,10 +28,10 @@ final class AndTests: QuelboTests {
     func testAndOneValue() throws {
         let symbol = try factory.init([
             .bool(true),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true)",
+            code: ".and(true)",
             type: .bool
         ))
     }
@@ -40,10 +40,10 @@ final class AndTests: QuelboTests {
         let symbol = try factory.init([
             .bool(true),
             .bool(true),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true, true)",
+            code: ".and(true, true)",
             type: .bool
         ))
     }
@@ -53,10 +53,10 @@ final class AndTests: QuelboTests {
             .bool(true),
             .bool(false),
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(true, false, true)",
+            code: ".and(true, false, true)",
             type: .bool
         ))
     }
@@ -66,15 +66,19 @@ final class AndTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .decimal(2),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            ".and(1, 0, 2)",
+            code: ".and(1, 0, 2)",
             type: .int
         ))
     }
 
     func testAndTwoBooleanExpressions() throws {
+        registry.append(
+            Symbol(id: "rarg", type: .int)
+        )
+
         let symbol = try factory.init([
             .form([
                 .atom("=?"),
@@ -85,10 +89,10 @@ final class AndTests: QuelboTests {
                 .atom("NOT"),
                 .global("FOUND-TREASURE-CHEST"),
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             .and(
                 rarg.equals(mEnter),
                 .isNot(foundTreasureChest)

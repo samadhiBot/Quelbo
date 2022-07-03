@@ -21,10 +21,11 @@ final class SyntaxTests: QuelboTests {
             .atom("QUIT"),
             .atom("="),
             .atom("V-QUIT")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "quit",
+            code: """
                 Syntax(
                     verb: "quit",
                     actionRoutine: vQuit
@@ -43,10 +44,11 @@ final class SyntaxTests: QuelboTests {
             .atom("OBJECT"),
             .atom("="),
             .atom("V-THINK-ABOUT")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "contemplate",
+            code: """
                 Syntax(
                     verb: "contemplate",
                     directObject: Syntax.Object(),
@@ -75,10 +77,11 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-TAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "take",
+            code: """
                 Syntax(
                     verb: "take",
                     directObject: Syntax.Object(
@@ -107,10 +110,11 @@ final class SyntaxTests: QuelboTests {
             .atom("V-POUR-LIQUID"),
             .atom("PRE-WATER"),
             .atom("WATER")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "water",
+            code: """
                 Syntax(
                     verb: "water",
                     directObject: Syntax.Object(
@@ -146,10 +150,11 @@ final class SyntaxTests: QuelboTests {
             .atom("="),
             .atom("V-PUT-IN"),
             .atom("PRE-PUT-IN")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "put",
+            code: """
                 Syntax(
                     verb: "put",
                     directObject: Syntax.Object(
@@ -180,10 +185,11 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "wake",
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
@@ -210,10 +216,11 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "wake",
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
@@ -246,10 +253,11 @@ final class SyntaxTests: QuelboTests {
             ]),
             .atom("="),
             .atom("V-WAKE")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
-            """
+            id: "wake",
+            code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(

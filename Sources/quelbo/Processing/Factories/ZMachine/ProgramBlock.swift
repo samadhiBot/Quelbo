@@ -16,22 +16,51 @@ extension Factories {
             ["PROG"]
         }
 
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
+        var blockRegistry: [Symbol] = []
 
-        override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
+        var defaultActivation: String? {
+            tokens.hash
         }
 
-        var codeBlock: String {
-            if pro.isRepeating {
+        override func processTokens() throws {
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+                with: &blockRegistry,
+                autoProcessTokens: false
+            )
+            blockProcessor.blockActivation = self.defaultActivation
+            try blockProcessor.processTokens()
+        }
+
+        override func process() throws -> Symbol {
+            Symbol(
+                code: codeBlock,
+                type: blockProcessor.type,
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData
+            )
+        }
+    }
+}
+
+extension Factories.ProgramBlock {
+    var codeBlock: (Symbol) throws -> String {
+        { symbol in
+            var pro = Symbol.BlockPro(for: symbol)
+            let activationCode = pro.activationCode
+
+            if pro.isRepeating, !activationCode.isEmpty {
+                print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\
-                    \(pro.activation)\
+                    \(activationCode)\
                     while true {
                     \(pro.codeSymbol.code.indented)
                     }
                     """
             } else {
+                print("// 🍇 ProgramBlock: (no-repeat) \(pro.codeSymbol.code)")
                 return """
                     do {
                     \(pro.paramDeclarations(indented: true))\
@@ -39,15 +68,6 @@ extension Factories {
                     }
                     """
             }
-        }
-
-        override func process() throws -> Symbol {
-            Symbol(
-                codeBlock,
-                type: pro.type,
-                children: pro.children,
-                meta: pro.metaData
-            )
         }
     }
 }

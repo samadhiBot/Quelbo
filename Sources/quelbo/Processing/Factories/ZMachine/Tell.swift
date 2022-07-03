@@ -76,7 +76,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                symbols.codeValues(.singleLineBreak),
+                code: symbols.codeValues(.singleLineBreak),
                 type: .void,
                 children: symbols
             )

@@ -20,13 +20,14 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("FOO"),
             .atom("unexpected")
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "foo",
             code: "setPropertyDefault(foo, unexpected)",
             type: .unknown,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable, .typeCertainty(.unknown)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -37,14 +38,14 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("ADJECTIVE"),
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "adjective",
             code: "setPropertyDefault(adjective, false)",
             type: .bool,
             category: .constants,
-            meta: [.maybeEmptyValue]
+            meta: [.isImmutable, .typeCertainty(.booleanFalse)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -55,13 +56,14 @@ final class PropertyDefaultTests: QuelboTests {
         let symbol = try factory.init([
             .atom("SIZE"),
             .decimal(5)
-        ]).process()
+        ], with: &registry).process()
 
         let expected = Symbol(
             id: "size",
             code: "setPropertyDefault(size, 5)",
             type: .int,
-            category: .constants
+            category: .constants,
+            meta: [.isImmutable]
         )
 
         XCTAssertNoDifference(symbol, expected)

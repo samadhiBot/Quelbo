@@ -16,33 +16,42 @@ extension Factories {
             ["FUNCTION"]
         }
 
-        var pro: BlockProcessor!
+        var blockProcessor: BlockProcessor!
 
         override func processTokens() throws {
-            self.pro = try BlockProcessor(tokens, in: .blockWithDefaultActivation, with: registry)
+            self.blockProcessor = try BlockProcessor(
+                tokens,
+//                in: .blockWithActivation(tokens.hash),
+                with: &registry
+            )
         }
 
         override func process() throws -> Symbol {
-            let argNames = pro.paramsSymbol.children.codeValues(.commaSeparated)
-            let argTypes = pro.paramsSymbol.children
-                .map { $0.type.description }
-                .joined(separator: ", ")
-
-            return Symbol(
-                """
-                    {\(argNames.isEmpty ? "" : " (\(argNames))\(pro.returnValue) in")
-                    \(pro.warningComments(indented: true))\
-                    \(pro.auxiliaryDefs(indented: true))\
-                    \(pro.codeBlock.indented)
-                    }
-                    """,
-                type: pro.type,
-                children: pro.paramsSymbol.children,
-                meta: [
-                    .mutating(false),
-                    .type("(\(argTypes))\(pro.returnValue)"),
-                ]
+            Symbol(
+                code: codeBlock,
+                type: blockProcessor.type,
+                children: blockProcessor.children,
+                meta: blockProcessor.metaData.union([
+                    .isImmutable,
+                    .type("(\(blockProcessor.argumentTypes))\(blockProcessor.returnValue)"),
+                ])
             )
+        }
+    }
+}
+
+extension Factories.Function {
+    var codeBlock: (Symbol) throws -> String {
+        { symbol in
+            var pro = Symbol.BlockPro(for: symbol)
+            let argNames = pro.paramsSymbol.children.codeValues(.commaSeparated)
+
+            return """
+                {\(argNames.isEmpty ? "" : " (\(argNames))\(pro.returnValue) in")
+                \(pro.auxiliaryDefs(indented: true))\
+                \(pro.codeBlock().indented)
+                }
+                """
         }
     }
 }

@@ -59,30 +59,66 @@ extension SymbolFactory {
     ) throws -> [Symbol] {
         let original = tokens
         var substitutions = substituting
+        var context: Symbol.ParamContext = .normal
 
         while !tokens.isEmpty {
             guard case .list(let params) = tokens.shift() else {
                 throw FindError.parametersSymbolNotFound(tokens)
             }
-            return try params.map { token in
+            return try params.compactMap { token in
                 switch token {
                 case .string("ARGS"):
-                    return Symbol(id: "<Arguments>")
+                    context = .normal
                 case .string("AUX"), .string("EXTRA"):
-                    return Symbol(id: "<Locals>")
+                    context = .local
                 case .string("OPT"), .string("OPTIONAL"):
-                    return Symbol(id: "<Optionals>")
+                    context = .optional
                 default:
                     if let substitution = substitutions.shift() {
-                        return try symbolize(substitution)
+                        let symbol = try symbolize(substitution).with(
+                            meta: [.paramContext(context)]
+                        )
+                        return try upsert(symbol)
                     } else {
-                        return try symbolize(token)
+                        let symbol = try symbolize(token).with(
+                            meta: [.paramContext(context)]
+                        )
+                        return try upsert(symbol)
                     }
                 }
+                return nil
             }
         }
 
         throw FindError.parametersSymbolNotFound(original)
+    }
+
+    /// Searches the ``SymbolFactory/registry`` for a symbol whose `id` matches the one specified.
+    ///
+    /// - Parameter id: The symbol `id` to search for.
+    ///
+    /// - Returns: A symbol with the specified `id` if one has been registered.
+    func findRegistered(_ id: Symbol.Identifier?) -> Symbol? {
+        guard let id = id else { return nil }
+
+        return registry.first(where: { $0.id == id })
+    }
+
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    func upsert(_ symbol: Symbol) throws -> Symbol {
+        // print("// 🍈 upsert \(symbol)")
+        guard symbol.isIdentifiable else { return symbol }
+
+        guard symbol.category != .globals else { return Game.upsert(symbol) }
+
+        if let existing = registry.find(id: symbol.id) {
+            return existing.reconcile(with: symbol)
+        } else {
+            registry.append(symbol)
+            return symbol
+        }
     }
 }
 

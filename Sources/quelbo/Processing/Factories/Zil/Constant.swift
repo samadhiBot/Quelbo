@@ -16,13 +16,8 @@ extension Factories {
             ["CONSTANT"]
         }
 
-        required init(
-            _ tokens: [Token],
-            in blockType: SymbolFactory.ProgramBlockType? = nil,
-            with registry: SymbolRegistry? = nil
-        ) throws {
-            try super.init(tokens, with: registry)
-            isMutable = false
+        override var metaData: Set<Symbol.MetaData> {
+            [.isImmutable]
         }
     }
 }

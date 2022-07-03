@@ -15,7 +15,7 @@ final class VectorTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -29,10 +29,10 @@ final class VectorTests: QuelboTests {
             .decimal(2),
             .string("AB"),
             .character("C")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"[1, 2, "AB", "C"]"#,
+            code: #"[1, 2, "AB", "C"]"#,
             type: .array(.zilElement)
         ))
     }

@@ -37,11 +37,11 @@ extension Factories {
 
             let defaults = symbols.codeValues(.commaSeparated)
             self.symbols = [
-                Symbol("count: \(count.value.lowerCamelCase)"),
+                Symbol(code: "count: \(count.value.lowerCamelCase)"),
             ]
             if !defaults.isEmpty {
                 self.symbols.append(
-                    Symbol("defaults: [\(defaults)]")
+                    Symbol(code: "defaults: [\(defaults)]")
                 )
             }
         }

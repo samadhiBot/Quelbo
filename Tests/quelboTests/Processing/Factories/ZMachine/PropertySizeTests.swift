@@ -15,7 +15,7 @@ final class PropertySizeTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
@@ -28,10 +28,10 @@ final class PropertySizeTests: QuelboTests {
         let symbol = try factory.init([
             .global("TROLL"),
             .property("STRENGTH")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.propertySize(of: .strength)",
+            code: "troll.propertySize(of: .strength)",
             type: .int
         ))
     }
@@ -41,7 +41,7 @@ final class PropertySizeTests: QuelboTests {
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -15,7 +15,7 @@ final class AsciiTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
         )
     }
 
@@ -26,10 +26,10 @@ final class AsciiTests: QuelboTests {
     func testAsciiCharacterToDecimal() throws {
         let symbol = try factory.init([
             .character("A")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "\"A\".ascii",
+            code: "\"A\".ascii",
             type: .int
         ))
     }
@@ -37,10 +37,10 @@ final class AsciiTests: QuelboTests {
     func testAsciiDecimalToCharacter() throws {
         let symbol = try factory.init([
             .decimal(65)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "65.ascii",
+            code: "65.ascii",
             type: .string
         ))
     }

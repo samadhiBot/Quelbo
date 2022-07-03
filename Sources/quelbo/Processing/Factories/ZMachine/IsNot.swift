@@ -22,7 +22,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             Symbol(
-                ".isNot(\(try symbol(0).code))",
+                code: ".isNot(\(try symbol(0).code))",
                 type: .bool,
                 children: symbols
             )

@@ -15,7 +15,7 @@ final class RemoveTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "sandwich", type: .object, category: .objects),
         ])
     }
@@ -27,10 +27,10 @@ final class RemoveTests: QuelboTests {
     func testRemoveSandwich() throws {
         let symbol = try factory.init([
             .global("SANDWICH"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "sandwich.remove()",
+            code: "sandwich.remove()",
             type: .void
         ))
     }
@@ -39,7 +39,7 @@ final class RemoveTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -48,7 +48,7 @@ final class RemoveTests: QuelboTests {
             try factory.init([
                 .string("SANDWICH"),
                 .atom("PAPER-BAG"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

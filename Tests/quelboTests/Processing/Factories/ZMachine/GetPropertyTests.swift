@@ -15,7 +15,7 @@ final class GetPropertyTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "troll", type: .object, category: .objects)
         ])
     }
@@ -28,10 +28,10 @@ final class GetPropertyTests: QuelboTests {
         let symbol = try factory.init([
             .atom("TROLL"),
             .property("STRENGTH")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "troll.strength",
+            code: "troll.strength",
             type: .int
         ))
     }
@@ -41,7 +41,7 @@ final class GetPropertyTests: QuelboTests {
             try factory.init([
                 .string("TROLL"),
                 .global("P?STRENGTH")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

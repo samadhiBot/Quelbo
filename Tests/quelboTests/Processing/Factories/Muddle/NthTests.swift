@@ -12,13 +12,6 @@ import XCTest
 final class NthTests: QuelboTests {
     let factory = Factories.Nth.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("NTH"))
     }
@@ -32,10 +25,10 @@ final class NthTests: QuelboTests {
                 .string("EF")
             ]),
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"["AB", "CD", "EF"].nthElement(2)"#,
+            code: #"["AB", "CD", "EF"].nthElement(2)"#,
             type: .string
         ))
     }
@@ -52,10 +45,10 @@ final class NthTests: QuelboTests {
                     .string("EF")
                 ])
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
+            code: #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
             type: .string
         ))
     }

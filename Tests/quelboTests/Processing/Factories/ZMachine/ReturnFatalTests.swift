@@ -17,16 +17,16 @@ final class ReturnFatalTests: QuelboTests {
     }
 
     func testReturnFatal() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
-        XCTAssertNoDifference(symbol, Symbol("returnFatal()", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "returnFatal()", type: .void))
     }
 
     func testReturnFatalWithParameterThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

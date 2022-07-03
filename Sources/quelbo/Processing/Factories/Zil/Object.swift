@@ -51,11 +51,13 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let name = nameSymbol.description
+
             let symbol = Symbol(
                 id: nameSymbol.id,
                 code: """
-                    /// The `\(nameSymbol.id)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
-                    var \(nameSymbol.id) = \(typeName)(
+                    /// The `\(name)` (\(nameSymbol.zilName)) \(typeName.lowercased()).
+                    var \(name) = \(typeName)(
                     \(propertySymbols.sorted.codeValues(.commaLineBreakSeparated))
                     )
                     """,
@@ -63,7 +65,7 @@ extension Factories {
                 category: category,
                 children: propertySymbols
             )
-            try Game.commit(symbol)
+            Game.commit(symbol)
             return symbol
         }
     }
@@ -93,18 +95,18 @@ extension Factories.Object {
                 }
                 if let propertyFactory = try Game.zilPropertyFactories.find(zil) {
                     do {
-                        let factory = try propertyFactory.init(tokens, with: registry)
+                        let factory = try propertyFactory.init(tokens, with: &registry)
                         return try factory.process()
                     } catch {
                         guard zil == "IN" else { throw error }
                     }
                 }
                 if isDirection(zil) {
-                    let factory = try Factories.MoveDirection(listTokens, with: registry)
+                    let factory = try Factories.MoveDirection(listTokens, with: &registry)
                     directionSymbols.append(try factory.process())
                     return nil
                 }
-                let factory = try Factories.Other.init(listTokens, with: registry)
+                let factory = try Factories.Other.init(listTokens, with: &registry)
                 return try factory.process()
             default:
                 throw Error.invalidObjectProperty(token)
@@ -131,4 +133,3 @@ extension Factories.Object {
         case invalidObjectProperty(Token)
     }
 }
-

@@ -18,7 +18,7 @@ final class InitTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "readbufSize", type: .int, category: .constants)
         ])
     }
@@ -30,10 +30,10 @@ final class InitTableTests: QuelboTests {
     func testInitTableFourImpliedZeros() throws {
         let symbol = try factory.init([
             .decimal(4),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "Table(count: 4)",
+            code: "Table(count: 4)",
             type: .table
         ))
     }
@@ -42,10 +42,10 @@ final class InitTableTests: QuelboTests {
         let symbol = try factory.init([
             .decimal(4),
             .decimal(0),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: 4,
                     defaults: [.int(0)]
@@ -63,10 +63,10 @@ final class InitTableTests: QuelboTests {
             ]),
             .decimal(4),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: 4,
                     defaults: [.int(0)],
@@ -82,10 +82,10 @@ final class InitTableTests: QuelboTests {
             .atom("BYTE"),
             .decimal(4),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: 4,
                     defaults: [.int(0)],
@@ -100,10 +100,10 @@ final class InitTableTests: QuelboTests {
         let symbol = try factory.init([
             .atom("NONE"),
             .decimal(100)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: 100,
                     flags: [.none]
@@ -120,10 +120,10 @@ final class InitTableTests: QuelboTests {
             .list([
                 .atom("BYTE")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: readbufSize,
                     flags: [.byte, .none]
@@ -144,10 +144,10 @@ final class InitTableTests: QuelboTests {
             .decimal(0),
             .type("BYTE"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     count: 59,
                     defaults: [

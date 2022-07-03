@@ -1,5 +1,5 @@
 //
-//  Symbol.swift
+//  Symbol+DataType.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 3/26/22.
@@ -45,10 +45,10 @@ extension Symbol.DataType {
     }
 
     /// <#Description#>
-    var emptyMeta: Set<Symbol.MetaData> {
+    var asVariable: Self {
         switch self {
-        case .bool, .int: return [.isLiteral, .maybeEmptyValue]
-        default: return []
+        case .variable: return self
+        default: return .variable(self)
         }
     }
 
@@ -56,18 +56,15 @@ extension Symbol.DataType {
     var emptyValueAssignment: String {
         switch self {
         case .bool: return " = false"
-        case .comment: break
+        case .comment, .unknown, .void: return " = \(self)"
         case .direction, .object, .routine, .table, .thing: return "? = nil"
         case .int, .int8, .int16, .int32: return " = 0"
         case .optional, .property: return " = nil"
         case .string: return " = \"\""
-        case .unknown: break
-        case .void: break
         case .array: return " = []"
         case .variable(let type): return type.emptyValueAssignment
         case .zilElement: return " = .none"
         }
-        return " = <\(self)>"
     }
 
     /// An empty placeholder type for the data type.
@@ -156,22 +153,22 @@ extension Symbol.DataType {
     /// - Parameter symbol: A symbol with a conflicting type.
     ///
     /// - Returns: Whether the data type should supersede the one in the specified symbol.
-    func shouldReplaceType(in symbol: Symbol) -> Bool {
-        switch (self, symbol.type) {
-        case (.unknown, _):
-            return false
-        case (_, .zilElement):
-            return true
-        case (.bool, .int):
-            return true
-        case (.int, _),
-             (.object, _),
-             (.string, _),
-             (.table, _):
-            return symbol.meta.contains(.maybeEmptyValue)
-        default:
-            return false
+    func replacingType(in symbol: Symbol) -> Symbol? {
+        guard !self.isUnknown && symbol.typeCertainty < .certain else {
+            return nil
         }
+
+        let optionalType: Symbol.DataType
+        if case .optional = self {
+            optionalType = self
+        } else {
+            optionalType = .optional(self)
+        }
+
+        return symbol.with(
+            type: optionalType,
+            meta: symbol.meta.withoutTypeCertainty
+        )
     }
 }
 

@@ -17,17 +17,17 @@ final class ReturnTrueTests: QuelboTests {
     }
 
     func testReturnTrue() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            type: .bool,
+            meta: []
         ))
     }
 
     func testIsReturnStatement() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertTrue(symbol.isReturnStatement)
     }
@@ -36,7 +36,7 @@ final class ReturnTrueTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .bool(false)
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

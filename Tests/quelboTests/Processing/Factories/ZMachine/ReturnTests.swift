@@ -15,7 +15,7 @@ final class ReturnTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int),
             Symbol(id: "forest1", type: .object, category: .rooms),
         ])
@@ -26,134 +26,129 @@ final class ReturnTests: QuelboTests {
     }
 
     func testReturnNoValueNoBlock() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            meta: []
         ))
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ34() throws {
         Game.shared.zMachineVersion = .z3
 
-        let symbol = try factory
-            .init([], in: .blockWithDefaultActivation)
-            .process()
+        let symbol = try factory.init([], with: &registry).process()
+        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
-            code: "break"
+            code: "break",
+            meta: []
         ))
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ5Plus() throws {
         Game.shared.zMachineVersion = .z5
 
-        let symbol = try factory
-            .init([], in: .blockWithDefaultActivation)
-            .process()
+        let symbol = try factory.init([], with: &registry).process()
+        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            meta: []
         ))
     }
 
     func testReturnNoValueBlockWithoutDefaultActivation() throws {
-        let symbol = try factory
-            .init([], in: .blockWithoutDefaultActivation)
-            .process()
+        let symbol = try factory.init([], with: &registry).process()
+        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
-            code: "break defaultAct"
+            code: "break defaultAct",
+            meta: []
         ))
     }
 
     func testReturnTrue() throws {
         let symbol = try factory.init([
             .bool(true)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            type: .bool,
+            meta: []
         ))
     }
 
     func testReturnAtomT() throws {
         let symbol = try factory.init([
             .atom("T")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return true",
-            type: .bool
+            type: .bool,
+            meta: []
         ))
     }
 
     func testReturnFalse() throws {
         let symbol = try factory.init([
             .bool(false)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return false",
-            type: .bool
+            type: .bool,
+            meta: []
         ))
     }
 
     func testReturnDecimal() throws {
         let symbol = try factory.init([
             .decimal(42)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return 42",
-            type: .int
+            type: .int,
+            meta: []
         ))
     }
 
     func testReturnString() throws {
         let symbol = try factory.init([
             .string("grue")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: #"return "grue""#,
-            type: .string
+            type: .string,
+            meta: []
         ))
     }
 
     func testReturnGlobal() throws {
         let symbol = try factory.init([
             .global("FOO")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return foo",
-            type: .int
+            type: .int,
+            meta: []
         ))
     }
 
     func testReturnRoom() throws {
         let symbol = try factory.init([
             .atom("FOREST-1")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            id: "<Return>",
             code: "return forest1",
-            type: .object
+            type: .object,
+            meta: []
         ))
     }
 }

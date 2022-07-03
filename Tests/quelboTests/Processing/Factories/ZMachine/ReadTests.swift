@@ -15,7 +15,7 @@ final class ReadTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "lexbuf", type: .table, category: .globals),
             Symbol(id: "readbuf", type: .table, category: .globals),
             Symbol(id: "notbuf", type: .object, category: .objects),
@@ -30,10 +30,10 @@ final class ReadTests: QuelboTests {
         let symbol = try factory.init([
             .global("READBUF"),
             .global("LEXBUF"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "read(readbuf lexbuf)",
+            code: "read(readbuf lexbuf)",
             type: .void
         ))
     }
@@ -43,7 +43,7 @@ final class ReadTests: QuelboTests {
             try factory.init([
                 .global("NOTBUF"),
                 .global("LEXBUF"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

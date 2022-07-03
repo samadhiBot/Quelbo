@@ -16,7 +16,7 @@ final class RepeatTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "isFunnyReturn", type: .bool, category: .globals),
         ])
     }
@@ -78,7 +78,7 @@ final class RepeatTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testRepeat1",
@@ -183,7 +183,7 @@ final class RepeatTests: QuelboTests {
                 .atom("CR"),
                 .atom("CR")
             ])
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "testRepeat2",
@@ -220,7 +220,7 @@ final class RepeatTests: QuelboTests {
 //    func testThrows() throws {
 //        XCTAssertThrowsError(
 //            try factory.init([
-//            ]).process()
+//            ], with: &registry).process()
 //        )
 //    }
 }

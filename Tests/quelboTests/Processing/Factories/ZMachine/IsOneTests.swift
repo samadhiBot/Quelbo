@@ -15,7 +15,7 @@ final class IsOneTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
+        Game.commit([
             Symbol(id: "foo", type: .int, category: .globals)
         ])
     }
@@ -27,10 +27,10 @@ final class IsOneTests: QuelboTests {
     func testIsOne() throws {
         let symbol = try factory.init([
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "2.isOne",
+            code: "2.isOne",
             type: .bool
         ))
     }
@@ -38,21 +38,25 @@ final class IsOneTests: QuelboTests {
     func testIsOneGlobal() throws {
         let symbol = try factory.init([
             .global("FOO")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "foo.isOne",
+            code: "foo.isOne",
             type: .bool
         ))
     }
 
     func testIsOneLocal() throws {
+        registry.append(
+            Symbol(id: "bar", type: .variable(.int))
+        )
+
         let symbol = try factory.init([
             .local("BAR")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "bar.isOne",
+            code: "bar.isOne",
             type: .bool
         ))
     }
@@ -61,7 +65,7 @@ final class IsOneTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -19,10 +19,10 @@ final class ActionTests: QuelboTests {
     func testAction() throws {
         let symbol = try factory.init([
             .atom("WHITE-HOUSE-F")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            "action: whiteHouseFunc",
+            code: "action: whiteHouseFunc",
             type: .routine
         ))
     }
@@ -30,7 +30,7 @@ final class ActionTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -39,7 +39,7 @@ final class ActionTests: QuelboTests {
             try factory.init([
                 .atom("WHITE-HOUSE-F"),
                 .atom("RED-HOUSE-F"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

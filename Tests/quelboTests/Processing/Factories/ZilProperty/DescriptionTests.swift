@@ -19,7 +19,7 @@ final class DescriptionTests: QuelboTests {
     func testDescription() throws {
         let symbol = try factory.init([
             .string("bat")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "description",
@@ -31,7 +31,7 @@ final class DescriptionTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -40,7 +40,7 @@ final class DescriptionTests: QuelboTests {
             try factory.init([
                 .string("Bat"),
                 .string("Mouse"),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

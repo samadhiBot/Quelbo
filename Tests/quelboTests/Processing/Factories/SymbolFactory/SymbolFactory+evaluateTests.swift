@@ -15,17 +15,17 @@
 //    override func setUp() {
 //        super.setUp()
 //
-//        try! Game.commit(
-//            Symbol("boardedWindow", type: .object, category: .globals)
+//        Game.commit(
+//            Symbol(code: "boardedWindow", type: .object, category: .globals)
 //        )
 //    }
 //
 //    func testEvaluateAtom() throws {
 ////        let symbol = try testFactory.init([
 ////            .atom("BOARDED-WINDOW")
-////        ]).process()
+////        ], with: &registry).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("boardedWindow", type: .object, category: .globals))
+////        XCTAssertNoDifference(symbol, Symbol(code: "boardedWindow", type: .object, category: .globals))
 //    }
 //
 //    func testEvaluateBoolTrue() throws {
@@ -55,9 +55,9 @@
 //    func testEvaluateCommented() throws {
 ////        let symbol = try testFactory.init([
 ////            .commented(.bool(true))
-////        ]).process()
+////        ], with: &registry).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("/* true */", type: .comment))
+////        XCTAssertNoDifference(symbol, Symbol(code: "/* true */", type: .comment))
 //    }
 //
 //    func testEvaluateDecimal() throws {
@@ -77,14 +77,14 @@
 ////                    .decimal(3),
 ////                ])
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            ".add(2, 3)",
 ////            type: .int,
 ////            children: [
-////                Symbol("2", type: .int, meta: [.isLiteral]),
-////                Symbol("3", type: .int, meta: [.isLiteral]),
+////                Symbol(code: "2", type: .int, meta: [.isLiteral]),
+////                Symbol(code: "3", type: .int, meta: [.isLiteral]),
 ////            ]
 ////        ))
 //    }
@@ -96,7 +96,7 @@
 //    func testEvaluateGlobal() throws {
 ////        let symbol = try testFactory.init([
 ////            .global("BOARDED-WINDOW")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            "boardedWindow",
@@ -111,13 +111,13 @@
 ////                .atom("FLOATING?"),
 ////                .bool(false),
 ////            ])
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            id: "<List>",
 ////            type: .list,
 ////            children: [
-////                Symbol("isFloating", type: .bool),
+////                Symbol(code: "isFloating", type: .bool),
 ////                .falseSymbol
 ////            ]
 ////        ))
@@ -126,15 +126,15 @@
 //    func testEvaluateLocal() throws {
 ////        let symbol = try testFactory.init([
 ////            .local("FOO-BAR")
-////        ]).process()
+////        ], with: &registry).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("fooBar"))
+////        XCTAssertNoDifference(symbol, Symbol(code: "fooBar"))
 //    }
 //
 //    func testEvaluateProperty() throws {
 ////        let symbol = try testFactory.init([
 ////            .property("STRENGTH")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            "strength",
@@ -154,7 +154,7 @@
 ////                    ]
 ////                )
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            id: "<Quote>",
@@ -181,16 +181,16 @@
 ////                    .decimal(3),
 ////                ])
 ////            )
-////        ]).process()
+////        ], with: &registry).process()
 ////
-////        XCTAssertNoDifference(symbol, Symbol("5", type: .int, meta: [.isLiteral]))
+////        XCTAssertNoDifference(symbol, Symbol(code: "5", type: .int, meta: [.isLiteral]))
 ////    }
 ////
 ////
 ////    func testEvaluateString() throws {
 ////        let symbol = try testFactory.init([
 ////            .string("Plants can talk")
-////        ]).process()
+////        ], with: &registry).process()
 ////
 ////        XCTAssertNoDifference(symbol, Symbol(
 ////            #""Plants can talk""#,

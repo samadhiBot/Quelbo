@@ -17,7 +17,7 @@ final class TableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(
+        Game.commit(
             Symbol(id: "clearing", type: .object, category: .rooms),
             Symbol(id: "forest1", type: .object, category: .rooms),
             Symbol(id: "forest2", type: .object, category: .rooms),
@@ -41,10 +41,10 @@ final class TableTests: QuelboTests {
             .atom("FOREST-1"),
             .atom("FOREST-2"),
             .atom("FOREST-3"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -62,10 +62,10 @@ final class TableTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .atom("TROLL-MELEE")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .object(troll),
                     .object(sword),
@@ -88,10 +88,10 @@ final class TableTests: QuelboTests {
             .decimal(2),
             .decimal(3),
             .decimal(4)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .int(1),
                     .int(2),
@@ -111,10 +111,10 @@ final class TableTests: QuelboTests {
             .decimal(0),
             .type("BYTE"),
             .decimal(0)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
             Table(
                 .int(0),
                 .int8(0),
@@ -136,10 +136,10 @@ final class TableTests: QuelboTests {
             .atom("PATH"),
             .atom("CLEARING"),
             .atom("FOREST-1"),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .room(forest1),
                     .room(forest2),
@@ -150,7 +150,8 @@ final class TableTests: QuelboTests {
                     flags: [.pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -168,10 +169,10 @@ final class TableTests: QuelboTests {
             .string("up to your neck."),
             .string("over your head."),
             .string("high in your lungs.")
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .string("up to your ankles."),
                     .string("up to your shin."),
@@ -185,7 +186,8 @@ final class TableTests: QuelboTests {
                     flags: [.pure]
                 )
                 """,
-            type: .table
+            type: .table,
+            meta: [.isImmutable]
         ))
     }
 
@@ -207,10 +209,10 @@ final class TableTests: QuelboTests {
                 .decimal(0),
                 .atom("THIEF-MELEE")
             ]),
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
-            """
+            code: """
                 Table(
                     .table(Table(
                         .object(troll),

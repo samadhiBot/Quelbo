@@ -19,7 +19,7 @@ final class StrengthTests: QuelboTests {
     func testStrength() throws {
         let symbol = try factory.init([
             .decimal(2)
-        ]).process()
+        ], with: &registry).process()
 
         XCTAssertNoDifference(symbol, Symbol(
             id: "strength",
@@ -31,7 +31,7 @@ final class StrengthTests: QuelboTests {
     func testEmptyThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -40,7 +40,7 @@ final class StrengthTests: QuelboTests {
             try factory.init([
                 .decimal(2),
                 .decimal(3),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 
@@ -48,7 +48,7 @@ final class StrengthTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("2")
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

@@ -17,16 +17,16 @@ final class SaveTests: QuelboTests {
     }
 
     func testSave() throws {
-        let symbol = try factory.init([]).process()
+        let symbol = try factory.init([], with: &registry).process()
 
-        XCTAssertNoDifference(symbol, Symbol("save()", type: .void))
+        XCTAssertNoDifference(symbol, Symbol(code: "save()", type: .void))
     }
 
     func testSaveWithParameterThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(42),
-            ]).process()
+            ], with: &registry).process()
         )
     }
 }

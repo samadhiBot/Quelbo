@@ -53,35 +53,16 @@ extension Game {
     /// Commit one or more processed ``Symbol`` values to the known ``gameSymbols``.
     ///
     /// - Parameter symbols: One or more symbol values to commit.
-    static func commit(_ symbols: Symbol...) throws {
-        try commit(symbols)
+    static func commit(_ symbols: Symbol...) {
+        commit(symbols)
     }
 
     /// Commit an array of processed ``Symbol`` values to the known ``gameSymbols``.
     ///
     /// - Parameter symbols: An array of symbol values to commit.
-    static func commit(_ symbols: [Symbol]) throws {
-        try symbols.forEach { symbol in
-            if let existing = try? find(symbol.id, category: symbol.category) {
-                if symbol == existing {
-                    return
-                }
-                switch (symbol.category, existing.category) {
-                case (.constants, .globals): return
-                case (.globals, .constants): return try overwrite(symbol)
-                default:
-                    break
-                }
-                if symbol.type.shouldReplaceType(in: existing) {
-                    try overwrite(symbol)
-                }
-                return
-//                else if existing.type.shouldReplaceType(in: symbol) {
-//                    return
-//                }
-//                throw GameError.conflictingDuplicateSymbolCommit(old: existing, new: symbol)
-            }
-            shared.gameSymbols.append(symbol)
+    static func commit(_ symbols: [Symbol]) {
+        symbols.forEach { symbol in
+            _ = upsert(symbol)
         }
     }
 
@@ -98,40 +79,58 @@ extension Game {
     static func find(
         _ id: Symbol.Identifier,
         type: Symbol.DataType? = nil,
-        category: Symbol.Category? = nil
+        category categories: Symbol.Category...
     ) throws -> Symbol {
-        guard
-            let symbol = shared.gameSymbols.first(where: {
-                if $0.id != id {
-                    return false
-                }
-                if let type = type, type.isUnambiguous, $0.type != type {
-                    return false
-                }
-                if let category = category, $0.category != category {
-                    return false
-                }
-                return true
-            })
-        else {
-            throw GameError.symbolNotFound(id, category: category)
+        guard let symbol = shared.gameSymbols.first(where: {
+            if $0.id != id {
+                return false
+            }
+            if let type = type, type.isUnambiguous, $0.type != type {
+                return false
+            }
+            if let symbolCategory = $0.category, !categories.isEmpty {
+                return categories.contains(symbolCategory)
+            }
+            return true
+        }) else {
+            throw GameError.symbolNotFound(id, categories: categories)
         }
         return symbol
     }
 
-    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
-    ///
-    /// - Parameter symbol: The symbol value to overwrite.
-    ///
-    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
-    static func overwrite(_ symbol: Symbol) throws {
-        guard symbol.type.hasReturnValue && symbol.type != .bool else {
-            return
+//    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
+//    ///
+//    /// - Parameter symbol: The symbol value to overwrite.
+//    ///
+//    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
+//    static func overwrite(_ symbol: Symbol) throws {
+////        guard symbol.type.hasReturnValue && symbol.type != .bool else {
+////            return
+////        }
+//        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
+//            let categories: [Symbol.Category]
+//            if let category = symbol.category {
+//                categories = [category]
+//            } else {
+//                categories = []
+//            }
+//            throw GameError.symbolNotFound(symbol.id ?? "Nil", categories: categories)
+//        }
+//        shared.gameSymbols.remove(at: index)
+//        shared.gameSymbols.insert(symbol)
+//    }
+
+    /// <#Description#>
+    /// - Parameter symbol: <#symbol description#>
+    /// - Returns: <#description#>
+    static func upsert(_ symbol: Symbol) -> Symbol {
+        assert(symbol.isIdentifiable)
+
+        if let existing = shared.gameSymbols.find(id: symbol.id) {
+            return existing.reconcile(with: symbol)
+        } else {
+            shared.gameSymbols.append(symbol)
+            return symbol
         }
-        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-            throw GameError.symbolNotFound(symbol.id, category: symbol.category)
-        }
-        shared.gameSymbols.remove(at: index)
-        shared.gameSymbols.append(symbol)
     }
 }

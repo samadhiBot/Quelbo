@@ -24,27 +24,28 @@ class SymbolFactory {
     /// An array of ``Token`` values parsed from Zil source code.
     let tokens: [Token]
 
-    /// A dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
-    var registry: SymbolRegistry
+    /// A registry dictionary of saved ``Symbol/DataType-swift.enum`` keyed by symbol ``Symbol/id``.
+    var registry: [Symbol]
 
     /// An array of ``Symbol`` values processed from ``tokens``.
     var symbols: [Symbol] = []
 
-    /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
-    var blockType: ProgramBlockType?
+//    /// The symbol's ``ProgramBlockType``, or the block type in which the symbol exists.
+//    var blockType: ProgramBlockType?
 
-    /// Whether the symbol representation is mutable.
-    var isMutable: Bool = true
+//    /// Whether the symbol representation is mutable.
+//    var isMutable: Bool = true
 
     required init(
         _ tokens: [Token],
-        in blockType: ProgramBlockType? = nil,
-        with registry: SymbolRegistry? = nil
+        with registry: inout [Symbol],
+        autoProcessTokens: Bool = true
     ) throws {
-        self.blockType = blockType
         self.tokens = tokens
-        self.registry = registry ?? SymbolRegistry()
-        try processTokens()
+        self.registry = registry
+        if autoProcessTokens {
+            try processTokens()
+        }
     }
 
     /// <#Description#>
@@ -63,7 +64,7 @@ class SymbolFactory {
         let nameSymbol = try findNameSymbol(in: &tokens)
         let params = try symbolize(tokens).map(\.code).joined(separator: ":")
 
-        return .init(stringLiteral: "\(nameSymbol.id)(\(params))")
+        return .init(stringLiteral: "\(nameSymbol)(\(params))")
     }
 
     /// Processes the ``tokens`` array into a ``Symbol`` array.
