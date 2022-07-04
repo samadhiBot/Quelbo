@@ -30,9 +30,8 @@ extension Symbol {
         ///
         /// - Returns: <#description#>
         func defaultValue(for symbol: Symbol) -> String {
-            guard self == .optional else {
-                return ""
-            }
+            guard self == .optional else { return "" }
+
             switch symbol.type {
             case .array: return "? = []"
             case .bool: return " = false"

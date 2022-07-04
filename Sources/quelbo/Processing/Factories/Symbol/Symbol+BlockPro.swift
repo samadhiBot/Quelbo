@@ -59,11 +59,6 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-    var normalAndOptionalParams: [Symbol] {
-        paramsSymbol.children.filter { !$0.isParamWith(context: .local) }
-    }
-
-    /// <#Description#>
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func auxiliaryDefs(indented: Bool = false) -> String {
@@ -93,7 +88,7 @@ extension Symbol.BlockPro {
 
     /// <#Description#>
     /// - Returns: <#description#>
-    mutating func codeBlock() -> String {
+    func codeBlock() -> String {
         if isRepeating {
             print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
@@ -200,6 +195,13 @@ extension Symbol.BlockPro {
 ////            return [.blockType(type)]
 ////        }
 //    }
+
+    /// <#Description#>
+    var normalAndOptionalParams: [Symbol] {
+        paramsSymbol.children.filter {
+            $0.isParamWith(context: .normal) || $0.isParamWith(context: .normal)
+        }
+    }
 
     /// <#Description#>
     /// - Parameter indented: <#indented description#>
