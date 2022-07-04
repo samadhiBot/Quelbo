@@ -35,8 +35,8 @@ class BlockProcessor: SymbolFactory {
         let paramSymbols = try findParameterSymbols(in: &tokens)
         let codeSymbols = try symbolize(tokens)
 
-        self.paramsSymbol = try validateParameters(paramSymbols)
         self.codeSymbol = try validateCode(codeSymbols)
+        self.paramsSymbol = try validateParameters(paramSymbols)
     }
 }
 
@@ -163,8 +163,11 @@ extension BlockProcessor {
 
         if isRepeating {
             let params = paramsSymbol.children
+                .filter { !$0.isParamWith(context: .local) }
                 .map { $0.localVariable }
                 .joined(separator: "\n")
+
+            print("// 🍓 \(params)")
             if !params.isEmpty {
                 meta.insert(.paramDeclarations(params))
             }
@@ -299,7 +302,10 @@ extension BlockProcessor {
     }
 
     func validateParameters(_ symbols: [Symbol]) throws -> Symbol {
-        let parameters: [Symbol] = try symbols.map { param in
+        var parameters: [Symbol] = []
+        var paramSymbols = symbols
+
+        while let param = paramSymbols.shift() {
             if case .array = param.type {
                 guard
                     param.children.count == 2,
@@ -310,11 +316,37 @@ extension BlockProcessor {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
 
-                return param.with(
+                parameters.append(param.with(
                     code: { symbol in
                         "\(nameSymbol.id): \(valueSymbol.type) = \(valueSymbol.code)"
                     }
-                )
+                ))
+
+                continue
+            }
+
+            if let registered = findRegistered(param.id) {
+                parameters.append(registered.with(
+                    code: { symbol in
+                        "\(symbol): \(symbol.type)"
+                    }
+                ))
+
+                guard
+                    !param.isParamWith(context: .local),
+                    param.isMutating(in: codeSymbol.children) == true
+                else {
+                    continue
+                }
+
+                parameters.append(Symbol(
+                    code: "\(registered.id) = \(registered.id)",
+                    type: registered.type,
+                    meta: [.paramContext(.local)]
+                ))
+
+                continue
+            }
 
                 //            switch context {
                 //            case .normal, .optional:
@@ -329,13 +361,6 @@ extension BlockProcessor {
                 //                auxiliaries.append(paramSymbol)
                 //            }
 
-            } else if let registered = findRegistered(param.id) {
-                return registered.with(
-                    code: { symbol in
-                        "\(symbol): \(symbol.type)"
-                    }
-                )
-            }
 
             throw Error.unusedParameter(param)
         }

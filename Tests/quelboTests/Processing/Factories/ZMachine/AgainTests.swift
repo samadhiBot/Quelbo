@@ -21,10 +21,6 @@ final class AgainTests: QuelboTests {
         let symbol = try factory.init([], with: &registry).process()
 
         XCTAssertNoDifference(symbol.controlflow, .again(activation: nil))
-//
-//        XCTAssertEqual(<#T##expression1: [Equatable]##[Equatable]#>, <#T##expression2: [Equatable]##[Equatable]#>)
-//        XCTAssertTrue(symbol.controlflow == .again(activation: nil)
-//                      meta.contains(.isAgainStatement))
     }
 
     func testAgainRoutine1() throws {
@@ -88,10 +84,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [
-                .controlFlow(.block(activation: nil)),
-                .paramDeclarations("var x: Int = 0"),
-            ]
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -161,10 +154,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [
-                .controlFlow(.block(activation: nil)),
-                .paramDeclarations("var x: Int = 0"),
-            ]
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 

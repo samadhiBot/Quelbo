@@ -103,6 +103,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
+                .controlFlow(.block(activation: nil)),
                 .isImmutable,
                 .type("(Int, Int) -> Int"),
             ]
