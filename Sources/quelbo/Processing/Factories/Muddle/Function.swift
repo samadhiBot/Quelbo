@@ -21,7 +21,6 @@ extension Factories {
         override func processTokens() throws {
             self.blockProcessor = try BlockProcessor(
                 tokens,
-//                in: .blockWithActivation(tokens.hash),
                 with: &registry
             )
         }
@@ -44,7 +43,7 @@ extension Factories.Function {
     var codeBlock: (Symbol) throws -> String {
         { symbol in
             var pro = Symbol.BlockPro(for: symbol)
-            let argNames = pro.paramsSymbol.children.codeValues(.commaSeparated)
+            let argNames = pro.normalAndOptionalParams.codeValues(.commaSeparated)
 
             return """
                 {\(argNames.isEmpty ? "" : " (\(argNames))\(pro.returnValue) in")

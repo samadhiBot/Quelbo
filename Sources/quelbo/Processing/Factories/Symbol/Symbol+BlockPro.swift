@@ -69,9 +69,8 @@ extension Symbol.BlockPro {
     func auxiliaryDefs(indented: Bool = false) -> String {
         emit(
             auxiliaries.compactMap {
-                guard !$0.code.contains("=") else {
-                    return nil
-                }
+                guard !$0.code.contains("=") else { return nil }
+
                 return $0.localVariable
             },
             shouldIndent: indented
@@ -84,9 +83,8 @@ extension Symbol.BlockPro {
     func auxiliaryDefsWithDefaultValues(indented: Bool = false) -> String {
         emit(
             auxiliaries.compactMap {
-                guard $0.code.contains("=") else {
-                    return nil
-                }
+                guard $0.code.contains("=") else { return nil }
+
                 return $0.localVariable
             },
             shouldIndent: indented
@@ -207,10 +205,7 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if isRepeating && activationCode.isEmpty {
-            return ""
-        }
-//        guard blockType != .repeatingWithoutActivation else { return "" }
+        if isRepeating && activationCode.isEmpty { return "" }
 
         return emit(
             normalAndOptionalParams.map { $0.localVariable },

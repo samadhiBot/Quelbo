@@ -12,13 +12,6 @@ import XCTest
 final class FunctionTests: QuelboTests {
     let factory = Factories.Function.self
 
-    override func setUp() {
-        super.setUp()
-
-        Game.commit(
-        )
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, try Game.zMachineSymbolFactories.find("FUNCTION"))
     }
@@ -53,6 +46,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
+                .controlFlow(.block(activation: nil)),
                 .isImmutable,
                 .type("() -> Int"),
             ]
@@ -80,6 +74,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
+                .controlFlow(.block(activation: nil)),
                 .isImmutable,
                 .type("(Int) -> Int"),
             ]

@@ -45,6 +45,7 @@ class BlockProcessor: SymbolFactory {
 extension BlockProcessor {
     var argumentTypes: String {
         paramsSymbol.children
+            .filter { !$0.isParamWith(context: .local) }
             .map { $0.type.description }
             .joined(separator: ", ")
     }
@@ -308,13 +309,6 @@ extension BlockProcessor {
                 else {
                     throw Error.invalidNameValueParameterPair(param.children)
                 }
-
-//                if type.isUnknown, let nameSymbolType = findRegistered(nameSymbolID)?.type {
-//                    type = nameSymbolType
-//                }
-//                if type.isUnknown, let valueSymboltype = findRegistered(valueSymbol.id)?.type {
-//                    type = valueSymboltype
-//                }
 
                 return param.with(
                     code: { symbol in
