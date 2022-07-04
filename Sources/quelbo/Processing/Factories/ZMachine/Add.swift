@@ -52,9 +52,10 @@ extension Factories {
                 mathFunction = ".\(function)(\(original.codeValues(.commaSeparated)))"
             } else {
                 mathFunction = "\(first.code).\(function)(\(symbols.codeValues(.commaSeparated)))"
+                first.meta.insert(.isMutating)
             }
 
-            return Symbol(code: mathFunction, type: .int, children: original)
+            return Symbol(code: mathFunction, type: .int, children: [first] + symbols)
         }
     }
 }

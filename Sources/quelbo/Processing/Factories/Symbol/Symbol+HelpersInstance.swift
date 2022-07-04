@@ -88,7 +88,7 @@ extension Symbol {
     /// Whether the symbol represents a mutating variable.
     func isMutating(in symbols: [Symbol]) -> Bool? {
         for symbol in symbols {
-            if symbol.id == id && !symbol.meta.contains(.isImmutable) {
+            if symbol.id == id && symbol.meta.contains(.isMutating) {
                 return true
             }
             if let foundInChildren = isMutating(in: symbol.children) {
@@ -183,6 +183,9 @@ extension Symbol {
             case .controlFlow(_):
                 break
             case .isImmutable:
+                break
+            case .isMutating:
+//                meta.insert(metaData)
                 break
             case .isLiteral:
                 break

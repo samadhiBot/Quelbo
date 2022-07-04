@@ -241,9 +241,7 @@ extension SymbolFactory {
         }
 
         let factory = try findFactory()
-        let symbol = try factory.process()
-
-        return symbol
+        return try factory.process()
     }
 
     /// Translates a Zil

@@ -32,6 +32,9 @@ extension Symbol {
         case isLiteral
 
         ///
+        case isMutating
+
+        ///
 //        case isReturnStatement(Symbol.DataType?)
 
         /// For symbols representing parameters, this specifies the context (`normal`, `local` or

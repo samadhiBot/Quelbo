@@ -163,7 +163,10 @@ extension BlockProcessor {
 
         if isRepeating {
             let params = paramsSymbol.children
-                .filter { !$0.isParamWith(context: .local) }
+                .filter {
+                    !$0.isParamWith(context: .local) &&
+                    $0.isMutating(in: codeSymbol.children) == true
+                }
                 .map { $0.localVariable }
                 .joined(separator: "\n")
 
