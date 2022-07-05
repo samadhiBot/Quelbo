@@ -65,7 +65,8 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -101,7 +102,7 @@ final class DefineMacroTests: QuelboTests {
             code: """
                 @discardableResult
                 /// The `isOpenable` (OPENABLE?) macro.
-                func isOpenable(obj: Object) -> Bool {
+                func isOpenable(obj: Object?) -> Bool {
                     return .or(
                         obj.hasFlag(doorBit),
                         obj.hasFlag(contBit)
@@ -109,7 +110,8 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -163,7 +165,8 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .int,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: "zil2ab2"))]
         )
 
         XCTAssertNoDifference(symbol, expected)

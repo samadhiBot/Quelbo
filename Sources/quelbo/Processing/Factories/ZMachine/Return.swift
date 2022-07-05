@@ -34,7 +34,7 @@ extension Factories {
                             return "Not a code block"
                         }
 
-                        if Game.shared.zMachineVersion > .z3 {
+                        if Game.shared.zMachineVersion > .z4 {
                             return "return true"
                         }
                         if let activation = activation {
@@ -60,14 +60,6 @@ extension Factories {
 //                                return "return true"
 //                            }
 //                        }
-//                        case .again(activation: let activation):
-//                            <#code#>
-//                        case .block(activation: let activation):
-//                            <#code#>
-//                        case .return(activation: let activation):
-//                            <#code#>
-//                        case .returnValue(type: let type):
-//                            <#code#>
                     },
                     meta: metaData
                 )

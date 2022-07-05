@@ -121,17 +121,9 @@ extension BlockProcessor {
 //        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
 //    }
 //
-    var isRepeating: Bool {
-        codeSymbol.children.deepRepeating == true
-//        if blockType?.isRepeating == true {
-//            return true
-//        }
-//        if children.deepRepeating == true {
-//            blockType?.setActivation("defaultAct")
-//            return true
-//        }
-//        return false
-    }
+//    var isRepeating: Bool {
+//        codeSymbol.children.deepRepeating == true
+//    }
 
     var metaData: Set<Symbol.MetaData> {
 //        if let activation = [codeSymbol].deepActivation {
@@ -161,7 +153,7 @@ extension BlockProcessor {
 
         var meta: Set<Symbol.MetaData> = [.controlFlow(.block(activation: nil))]
 
-        if isRepeating {
+        if codeSymbol.children.deepRepeating == true {
             let params = paramsSymbol.children
                 .filter {
                     !$0.isParamWith(context: .local) &&
@@ -257,11 +249,21 @@ extension BlockProcessor {
         }
     }
 
+    func setBlockActivation(_ activation: String?) throws {
+        guard let activation = activation else { return }
+
+        if let blockActivation = blockActivation, activation != blockActivation {
+            throw Error.conflictingActivations(blockActivation, activation)
+        }
+
+        blockActivation = activation
+    }
+
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
         var codeLines: [String] = []
 //        var codeSymbols = codeSymbols
         var returnType = try findReturnType(in: codeSymbols)
-        var isRepeating = codeSymbols.deepRepeating
+//        var isRepeating = codeSymbols.deepRepeating
 
 //        if case .optional = returnType {
 //            codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
@@ -275,15 +277,25 @@ extension BlockProcessor {
 
         var symbols = codeSymbols
         while let symbol = symbols.shift() {
-            print("// 🍏 code: \(symbol.code)")
-            if case .again(activation: let activation) = symbol.controlflow {
-                isRepeating = true
-                if let activation = activation {
-                    blockActivation = activation
-                }
-//                print("// 🍋 \(symbol.controlflow)")
-//                blockType?.makeRepeating()
+            switch symbol.controlflow {
+            case .again(activation: let activation):
+                try setBlockActivation(activation)
+            case .block(activation: let activation):
+                try setBlockActivation(activation)
+            case .return(activation: let activation):
+                try setBlockActivation(activation)
+            case .returnValue, .none:
+                break
             }
+//            if case .again(activation: let activation) = symbol.controlflow {
+//                isRepeating = true
+//                if let activation = activation {
+//                    blockActivation = activation
+//                }
+////                print("// 🍋 \(symbol.controlflow)")
+////                blockType?.makeRepeating()
+//            }
+
 //            if symbol.isReturnStatement {
 //                print("// 🍏 isReturnStatement \(symbol)")
 //            }
@@ -379,6 +391,7 @@ extension BlockProcessor {
 
 extension BlockProcessor {
     enum Error: Swift.Error {
+        case conflictingActivations(String, String)
         case invalidNameValueParameterPair([Symbol])
         case unusedParameter(Symbol)
     }

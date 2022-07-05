@@ -99,7 +99,8 @@ final class ProgramBlockTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -169,7 +170,7 @@ final class ProgramBlockTests: QuelboTests {
                 func testProg2() {
                     output("START: ")
                     var x: Int = 0
-                    while true {
+                    zil7b42: while true {
                         /* X is not reinitialized between iterations. Default ACTIVATION created. */
                         x.set(to: x.add(1))
                         output(x)
@@ -185,7 +186,8 @@ final class ProgramBlockTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 

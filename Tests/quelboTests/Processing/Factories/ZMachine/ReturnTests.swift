@@ -30,7 +30,7 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
-            meta: []
+            meta: [.controlFlow(.return(activation: nil))]
         ))
     }
 
@@ -38,7 +38,7 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z3
 
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = []
+//        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "break",
@@ -50,7 +50,7 @@ final class ReturnTests: QuelboTests {
         Game.shared.zMachineVersion = .z5
 
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = []
+//        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
@@ -60,7 +60,7 @@ final class ReturnTests: QuelboTests {
 
     func testReturnNoValueBlockWithoutDefaultActivation() throws {
         let symbol = try factory.init([], with: &registry).process()
-        symbol.meta = []
+//        symbol.meta = []
 
         XCTAssertNoDifference(symbol, Symbol(
             code: "break defaultAct",
@@ -76,7 +76,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
             type: .bool,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .bool))]
         ))
     }
 
@@ -88,7 +88,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
             type: .bool,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .bool))]
         ))
     }
 
@@ -100,7 +100,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return false",
             type: .bool,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .bool))]
         ))
     }
 
@@ -112,7 +112,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return 42",
             type: .int,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .int))]
         ))
     }
 
@@ -124,7 +124,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: #"return "grue""#,
             type: .string,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .string))]
         ))
     }
 
@@ -136,7 +136,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return foo",
             type: .int,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .int))]
         ))
     }
 
@@ -148,7 +148,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return forest1",
             type: .object,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .object))]
         ))
     }
 }

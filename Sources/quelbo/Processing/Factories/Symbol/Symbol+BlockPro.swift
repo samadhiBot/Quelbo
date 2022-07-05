@@ -89,7 +89,7 @@ extension Symbol.BlockPro {
     /// <#Description#>
     /// - Returns: <#description#>
     func codeBlock() -> String {
-        if isRepeating {
+        if codeSymbol.children.deepRepeating == true {
             print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
             return """
                 \(deepParameters)\
@@ -144,37 +144,9 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-    var isRepeating: Bool {
-        codeSymbol.children.deepRepeating == true
-//        if case .again = codeSymbol.controlflow { return true }
-//
-//        if [codeSymbol].deepRepeating == true {
-////            blockType?.setActivation("defaultAct")
-//            return true
-//        }
-//        return false
-//
-//
-//
-//        switch codeSymbol.controlflow! {
-//        case .again(activation: let activation):
-//            <#code#>
-//        case .block(activation: let activation):
-//            <#code#>
-//        case .return(activation: let activation):
-//            <#code#>
-//        case .returnValue(type: let type):
-//            <#code#>
-//        }
-//        if blockType?.isRepeating == true {
-//            return true
-//        }
-//        if [codeSymbol, paramsSymbol].deepRepeating == true {
-//            blockType?.setActivation("defaultAct")
-//            return true
-//        }
-//        return false
-    }
+//    var isRepeating: Bool {
+//        codeSymbol.children.deepRepeating == true
+//    }
 
     /// <#Description#>
 //    var metaData: Set<Symbol.MetaData> {
@@ -207,7 +179,9 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if isRepeating && activationCode.isEmpty { return "" }
+        if codeSymbol.children.deepRepeating == true && activationCode.isEmpty {
+            return ""
+        }
 
         return emit(
             normalAndOptionalParams.map { $0.localVariable },

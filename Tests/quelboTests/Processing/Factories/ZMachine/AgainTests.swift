@@ -228,7 +228,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: "act1"))]
         ))
     }
 
@@ -287,7 +287,7 @@ final class AgainTests: QuelboTests {
                 /// The `testAgain4` (TEST-AGAIN-4) routine.
                 func testAgain4() {
                     var x: Int = 0
-                    act_1378: while true {
+                    zil1378: while true {
                         /* PROG generates default activation */
                         x.set(to: x.add(1))
                         output(x)
@@ -302,7 +302,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: "zil1378"))]
         ))
     }
 }

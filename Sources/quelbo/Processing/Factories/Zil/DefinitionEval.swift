@@ -66,7 +66,7 @@ extension Factories.DefinitionEval {
         let nameSymbol = nameSymbol!
 
         return { symbol in
-            var pro = Symbol.BlockPro(for: symbol)
+            let pro = Symbol.BlockPro(for: symbol)
 
             return """
                 \(pro.discardableResult)\

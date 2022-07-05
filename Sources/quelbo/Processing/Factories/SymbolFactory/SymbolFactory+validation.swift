@@ -46,7 +46,7 @@ extension SymbolFactory {
             break
         }
 
-        return try typedSymbols
+        return typedSymbols
     }
 }
 
@@ -58,7 +58,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        // print("// 🍓 \(declaredType) => \(symbol)(\(symbol.type))")
+        print("// 🍓 \(declaredType) => \(symbol)(\(symbol.type))")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(
@@ -101,6 +101,11 @@ extension SymbolFactory {
 
         case (.zilElement, _):
             return try assignZilElementType(on: symbol)
+
+        case (_, .optional(let optionalType)):
+            if declaredType == optionalType {
+                return symbol.with(type: optionalType)
+            }
 
         case (_, .property(let propertyType)):
             if declaredType == propertyType {

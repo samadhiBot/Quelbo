@@ -42,7 +42,7 @@ extension Factories {
 extension Factories.Function {
     var codeBlock: (Symbol) throws -> String {
         { symbol in
-            var pro = Symbol.BlockPro(for: symbol)
+            let pro = Symbol.BlockPro(for: symbol)
             let argNames = pro.normalAndOptionalParams.codeValues(.commaSeparated)
 
             return """

@@ -22,7 +22,7 @@ final class ReturnTrueTests: QuelboTests {
         XCTAssertNoDifference(symbol, Symbol(
             code: "return true",
             type: .bool,
-            meta: []
+            meta: [.controlFlow(.returnValue(type: .bool))]
         ))
     }
 

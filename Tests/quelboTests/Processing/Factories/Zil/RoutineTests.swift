@@ -50,7 +50,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: []
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -77,7 +77,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: []
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -109,7 +109,7 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            meta: []
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -137,7 +137,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -177,7 +178,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .string,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -212,7 +214,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -241,7 +244,8 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -280,7 +284,8 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .int,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -313,7 +318,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -445,7 +451,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         ))
     }
 
@@ -729,7 +736,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.block(activation: nil))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -807,9 +815,6 @@ final class RoutineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, singSymbol)
     }
-
-
-
 }
 
 // MARK: - Test helpers
@@ -834,7 +839,8 @@ extension RoutineTests {
             category: .routines,
             children: [
                 Symbol(id: "n", code: "n: Int", type: .int)
-            ]
+            ],
+            meta: [.controlFlow(.block(activation: nil))]
         )
     }
 
@@ -866,7 +872,8 @@ extension RoutineTests {
             category: .routines,
             children: [
                 Symbol(id: "o", code: "o: Object", type: .object)
-            ]
+            ],
+            meta: [.controlFlow(.block(activation: nil))]
         )
     }
 
@@ -907,7 +914,8 @@ extension RoutineTests {
                     code: "n: Int",
                     type: .int
                 )
-            ]
+            ],
+            meta: [.controlFlow(.block(activation: nil))]
         )
     }
 }

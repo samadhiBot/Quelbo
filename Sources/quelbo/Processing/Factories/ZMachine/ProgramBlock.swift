@@ -31,6 +31,10 @@ extension Factories {
             )
             blockProcessor.blockActivation = self.defaultActivation
             try blockProcessor.processTokens()
+
+            print("// 🌽 \(blockRegistry)")
+            print("// 🍈 \(registry)")
+            
         }
 
         override func process() throws -> Symbol {
@@ -47,10 +51,10 @@ extension Factories {
 extension Factories.ProgramBlock {
     var codeBlock: (Symbol) throws -> String {
         { symbol in
-            var pro = Symbol.BlockPro(for: symbol)
+            let pro = Symbol.BlockPro(for: symbol)
             let activationCode = pro.activationCode
 
-            if pro.isRepeating, !activationCode.isEmpty {
+            if pro.codeSymbol.children.deepRepeating == true, !activationCode.isEmpty {
                 print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\
