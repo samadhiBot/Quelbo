@@ -25,9 +25,12 @@ final class PropertyDefaultTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "setPropertyDefault(foo, unexpected)",
-            type: .unknown,
+            type: .variable(.unknown),
             category: .constants,
-            meta: [.isImmutable, .typeCertainty(.unknown)]
+            meta: [
+                .isImmutable,
+                .typeCertainty(.partiallyKnown),
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)

@@ -34,16 +34,17 @@ extension Factories {
         var codeBlock: (Symbol) throws -> String {
             { symbol in
                 let declare = symbol.meta.contains(.isImmutable) ? "let" : "var"
+                let type = symbol.metaType ?? symbol.type.description
                 let value: String
 
                 switch symbol.typeCertainty {
-                case .certain, .unknown:
+                case .certain, .partiallyKnown, .unknown:
                     value = " = \(symbol.children[0].code)"
                 default:
                     value = symbol.type.emptyValueAssignment
                 }
 
-                return "\(declare) \(symbol): \(symbol.type)\(value)"
+                return "\(declare) \(symbol): \(type)\(value)"
             }
         }
 
@@ -53,11 +54,14 @@ extension Factories {
 
         override func process() throws -> Symbol {
             var metaData = metaData
+            if valueSymbol.meta.contains(.isImmutable) {
+                metaData.insert(.isImmutable)
+            }
             if valueSymbol.typeCertainty < .certain {
                 metaData.insert(.typeCertainty(valueSymbol.typeCertainty))
             }
-            if valueSymbol.meta.contains(.isImmutable) {
-                metaData.insert(.isImmutable)
+            if let metaType = valueSymbol.metaType {
+                metaData.insert(.type(metaType))
             }
 
             let symbol = Symbol(

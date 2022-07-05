@@ -88,6 +88,10 @@ extension Symbol.MetaData {
         /// The stated `type` is unknown, which provides no certainty.
         case unknown
 
+        /// The symbol is declared as an array, optional, property or variable, but its  element
+        /// type is not yet known.
+        case partiallyKnown
+
         /// The symbol is declared as a boolean with a `false` value, which often represents a
         /// `nil` placeholder for an object.
         case booleanFalse

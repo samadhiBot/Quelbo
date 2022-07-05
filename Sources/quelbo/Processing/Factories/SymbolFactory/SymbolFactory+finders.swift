@@ -108,10 +108,11 @@ extension SymbolFactory {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func upsert(_ symbol: Symbol) throws -> Symbol {
-        // print("// 🍈 upsert \(symbol)")
         guard symbol.isIdentifiable else { return symbol }
 
         guard symbol.category != .globals else { return Game.upsert(symbol) }
+
+        print("// 🍈 upsert \(symbol)")
 
         if let existing = registry.find(id: symbol.id) {
             return existing.reconcile(with: symbol)

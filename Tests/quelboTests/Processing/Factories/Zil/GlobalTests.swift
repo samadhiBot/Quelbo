@@ -48,7 +48,7 @@ final class GlobalTests: QuelboTests {
             code: "var foo: <Unknown> = unexpected",
             type: .variable(.unknown),
             category: .globals,
-            meta: [.typeCertainty(.unknown)]
+            meta: [.typeCertainty(.partiallyKnown)]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -392,7 +392,10 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .int,
             category: .constants,
-            meta: [.isImmutable]
+            meta: [
+                .isImmutable,
+                .type("(Int) -> Int")
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)

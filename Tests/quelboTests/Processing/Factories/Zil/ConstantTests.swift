@@ -45,9 +45,12 @@ final class ConstantTests: QuelboTests {
         let expected = Symbol(
             id: "foo",
             code: "let foo: <Unknown> = unexpected",
-            type: .unknown,
+            type: .variable(.unknown),
             category: .constants,
-            meta: [.isImmutable, .typeCertainty(.unknown)]
+            meta: [
+                .isImmutable,
+                .typeCertainty(.partiallyKnown),
+            ]
         )
 
         XCTAssertNoDifference(symbol, expected)

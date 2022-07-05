@@ -41,11 +41,11 @@ extension Symbol {
     }
 
     /// Returns a description of the symbol's data type.
-    var dataType: String {
+    var metaType: String? {
         for metaData in meta {
             if case .type(let type) = metaData { return type }
         }
-        return type.description
+        return nil
     }
 
     /// Returns an unevaluated token stored by the symbol, if one exists.
@@ -128,7 +128,7 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with revision: Symbol) -> Symbol {
-        // print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
+         print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
 //        if case .variable = type {
 //            self.type = revision.type.asVariable // TODO: still necessary?
 //        } else {
@@ -137,17 +137,17 @@ extension Symbol {
         if revision.typeCertainty > typeCertainty {
             self.meta = meta.withoutTypeCertainty
             self.type = revision.type
-            // print("// 🍊 type revised to \(self.type)")
+             print("// 🍊 type revised to \(self.type)")
         }
 
         if !revision.children.isEmpty {
             self.children = revision.children
-            // print("// 🍊 children revised to \(self.children)")
+             print("// 🍊 children revised to \(self.children)")
         }
 
         if let revisedCategory = revision.category {
             self.category = revisedCategory
-            // print("// 🍊 category revised to \(self.category)")
+             print("// 🍊 category revised to \(self.category)")
         }
 
         revision.meta.forEach { metaData in
@@ -196,12 +196,19 @@ extension Symbol {
     /// Symbols only specify their ``Symbol/MetaData/typeCertainty(_:)`` when their type is in
     /// question.
     var typeCertainty: Symbol.MetaData.TypeCertainty {
-        guard !type.isUnknown else { return .unknown }
+        guard type != .unknown else { return .unknown }
 
         for metaData in meta {
             if case .typeCertainty(let value) = metaData { return value }
         }
-        return .certain
+
+        switch type {
+        case .array(.unknown),
+             .optional(.unknown),
+             .property(.unknown),
+             .variable(.unknown): return .partiallyKnown
+        default: return .certain
+        }
     }
 
     /// Whether the symbol represents a global variable with a placeholder value of unknown type.
