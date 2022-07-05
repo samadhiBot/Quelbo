@@ -124,6 +124,6 @@ extension Array where Element == Token {
         let hashed = Insecure.MD5.hash(data: tokenData!)
         let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
 
-        return "act_\(hashString.suffix(4))"
+        return "zil\(hashString.suffix(4))"
     }
 }

@@ -199,7 +199,7 @@ extension Symbol.BlockPro {
     /// <#Description#>
     var normalAndOptionalParams: [Symbol] {
         paramsSymbol.children.filter {
-            $0.isParamWith(context: .normal) || $0.isParamWith(context: .normal)
+            $0.isParamWith(context: .normal) || $0.isParamWith(context: .optional)
         }
     }
 

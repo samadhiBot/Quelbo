@@ -152,40 +152,11 @@ extension Symbol {
 
         revision.meta.forEach { metaData in
             switch metaData {
-//            case .activation(let activation):
-//                print("// 🥥 activation: \(activation)")
-//            case .blockType(let blockType):
-//                print("// 🥥 blockType: \(blockType)")
-//            case .isAgainStatement:
-//                print("// 🥥 isAgainStatement")
-//            case .isImmutable:
-//                print("// 🥥 isImmutable")
-//            case .isLiteral:
-//                print("// 🥥 isLiteral")
-//            case .isReturnStatement(let isReturnStatement):
-//                print("// 🥥 isReturnStatement: \(isReturnStatement)")
-//            case .paramContext(let paramContext):
-//                if !meta.contains(where: {
-//                    if case .paramContext = $0 { return true } else { return false }
-//                }) {
-//                    meta.insert(metaData)
-//                }
-//            case .paramDeclarations(let paramDeclarations):
-//                print("// 🥥 paramDeclarations: \(paramDeclarations)")
-//            case .type(let type):
-//                print("// 🥥 type: \(type)")
-//            case .typeCertainty(let typeCertainty):
-//                print("// 🥥 typeCertainty: \(typeCertainty)")
-//            case .zil(let zil):
-//                print("// 🥥 zil: \(zil)")
-//            case .zilName(let zilName):
-//                print("// 🥥 zilName: \(zilName)")
             case .controlFlow(_):
                 break
             case .isImmutable:
                 break
             case .isMutating:
-//                meta.insert(metaData)
                 break
             case .isLiteral:
                 break

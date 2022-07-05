@@ -31,11 +31,8 @@ extension Symbol {
         /// Specifies that the symbol represents a literal value.
         case isLiteral
 
-        ///
+        /// Specifies that the symbol represents a mutating variable.
         case isMutating
-
-        ///
-//        case isReturnStatement(Symbol.DataType?)
 
         /// For symbols representing parameters, this specifies the context (`normal`, `local` or
         /// `optional`) in which the Zil parameter has been declared.
