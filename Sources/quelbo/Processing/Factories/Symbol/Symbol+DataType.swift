@@ -174,6 +174,32 @@ extension Symbol.DataType {
 
 // MARK: - Conformances
 
+extension Symbol.DataType: CustomDebugStringConvertible {
+    var debugDescription: String {
+        switch self {
+        case .array(let type):    return "<Array<\(type)>>"
+        case .bool:               return "Bool"
+        case .comment:            return "<Comment>"
+        case .direction:          return "Direction"
+        case .int:                return "Int"
+        case .int8:               return "Int8"
+        case .int16:              return "Int16"
+        case .int32:              return "Int32"
+        case .object:             return "Object"
+        case .optional(let type): return "<Optional<\(type)>>"
+        case .property(let type): return "<Property<\(type)>>"
+        case .routine:            return "Routine"
+        case .string:             return "String"
+        case .table:              return "Table"
+        case .thing:              return "Thing"
+        case .unknown:            return "<Unknown>"
+        case .variable(let type): return "<Variable<\(type)>>"
+        case .void:               return "Void"
+        case .zilElement:         return "ZilElement"
+        }
+    }
+}
+
 extension Symbol.DataType: CustomStringConvertible {
     var description: String {
         switch self {

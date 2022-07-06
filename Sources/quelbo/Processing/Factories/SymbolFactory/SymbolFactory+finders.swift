@@ -112,8 +112,6 @@ extension SymbolFactory {
 
         guard symbol.category != .globals else { return Game.upsert(symbol) }
 
-        print("// 🍈 upsert \(symbol)")
-
         if let existing = registry.find(id: symbol.id) {
             return existing.reconcile(with: symbol)
         } else {

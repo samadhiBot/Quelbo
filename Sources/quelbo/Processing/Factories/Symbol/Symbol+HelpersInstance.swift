@@ -128,12 +128,13 @@ extension Symbol {
     /// - Parameter symbol: <#symbol description#>
     /// - Returns: <#description#>
     func reconcile(with revision: Symbol) -> Symbol {
-         print("🥔 reconcile \(self) \(ObjectIdentifier(self))")
+         print("// 🥔 reconcile '\(self)' (\(ObjectIdentifier(self)))")
 //        if case .variable = type {
 //            self.type = revision.type.asVariable // TODO: still necessary?
 //        } else {
 //            self.type = revision.type
 //        }
+        print("// 🍑 \(revision.type) versus \(type)")
         if revision.typeCertainty > typeCertainty {
             self.meta = meta.withoutTypeCertainty
             self.type = revision.type
@@ -147,7 +148,7 @@ extension Symbol {
 
         if let revisedCategory = revision.category {
             self.category = revisedCategory
-             print("// 🍊 category revised to \(self.category)")
+             print("// 🍊 category revised to \(revisedCategory)")
         }
 
         revision.meta.forEach { metaData in

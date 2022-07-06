@@ -58,7 +58,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("// 🍓 \(declaredType) => \(symbol)(\(symbol.type))")
+        print("// 🍓 declared: \(declaredType) => \(symbol.id)<\(symbol.type)>")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(
@@ -83,8 +83,11 @@ extension SymbolFactory {
             )
 
         case (.variable(let declaredVariableType), .variable):
+            guard declaredVariableType.isUnknown else {
+                return symbol.with(type: declaredType.asVariable)
+            }
+
             guard
-                declaredVariableType != .unknown,
                 siblings.count > 1,
                 let mostCertain = siblings.findByTypeCertainty()
             else {

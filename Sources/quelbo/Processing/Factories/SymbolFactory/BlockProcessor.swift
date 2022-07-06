@@ -162,7 +162,6 @@ extension BlockProcessor {
                 .map { $0.localVariable }
                 .joined(separator: "\n")
 
-            print("// 🍓 \(params)")
             if !params.isEmpty {
                 meta.insert(.paramDeclarations(params))
             }

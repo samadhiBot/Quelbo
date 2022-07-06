@@ -52,12 +52,29 @@ extension Factories.Routine {
         return { symbol in
             let pro = Symbol.BlockPro(for: symbol)
 
+            print(
+                """
+                // 🍒 Factories.Routine codeBlock:
+
+                \(pro.discardableResult)\
+                /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
+                func \(nameSymbol)\
+                (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
+                \(pro.returnValue) \
+                {
+                \(pro.auxiliaryDefs(indented: true))\
+                \(pro.codeBlock().indented)
+                }
+                
+                """
+            )
             return """
                 \(pro.discardableResult)\
                 /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
                 func \(nameSymbol)\
                 (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
-                \(pro.returnValue) {
+                \(pro.returnValue) \
+                {
                 \(pro.auxiliaryDefs(indented: true))\
                 \(pro.codeBlock().indented)
                 }

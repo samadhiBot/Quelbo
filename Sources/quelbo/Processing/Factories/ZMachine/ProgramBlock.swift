@@ -32,9 +32,7 @@ extension Factories {
             blockProcessor.blockActivation = self.defaultActivation
             try blockProcessor.processTokens()
 
-            print("// 🌽 \(blockRegistry)")
-            print("// 🍈 \(registry)")
-            
+            print("// 🌽 blockRegistry: \(blockRegistry)\nregistry: \(registry)")
         }
 
         override func process() throws -> Symbol {

@@ -11,12 +11,10 @@ extension Symbol {
     struct BlockPro: Equatable {
         var codeSymbol: Symbol
         var paramsSymbol: Symbol
-//        var blockType: SymbolFactory.ProgramBlockType?
 
         init(for symbol: Symbol) {
             self.codeSymbol = symbol.children[0]
             self.paramsSymbol = symbol.children[1]
-//            self.blockType = symbol.blockType
         }
     }
 }
@@ -28,23 +26,6 @@ extension Symbol.BlockPro {
             return activation
         }
         return [codeSymbol].deepActivation
-
-//        ,
-//            let activation = activation
-//        else {
-//            return ""
-//        }
-//        return "\(activation): "
-//        if case .block(activation: let activation) = codeSymbol.controlflow,
-//
-//            let activation = codeSymbol.meta. {
-//            return "\(activation): "
-//        }
-//        if let activation = [codeSymbol].deepActivation {
-//            return "\(activation): "
-//        } else {
-//            return ""
-//        }
     }
 
     var activationCode: String {
@@ -90,7 +71,19 @@ extension Symbol.BlockPro {
     /// - Returns: <#description#>
     func codeBlock() -> String {
         if codeSymbol.children.deepRepeating == true {
-            print("// 🍊 Symbol.BlockPro: \(codeSymbol.code)")
+            print(
+                """
+                // 🍊 Symbol.BlockPro (no-repeat):
+
+                \(deepParameters)\
+                \(activationCode)\
+                while true {
+                \(auxiliaryDefsWithDefaultValues(indented: true))\
+                \(codeSymbol.code.indented)
+                }
+
+                """
+            )
             return """
                 \(deepParameters)\
                 \(activationCode)\
@@ -100,7 +93,15 @@ extension Symbol.BlockPro {
                 }
                 """
         } else {
-            print("// 🍊 Symbol.BlockPro (no-repeat): \(codeSymbol.code)")
+            print(
+                """
+                // 🍊 Symbol.BlockPro (no-repeat):
+
+                \(auxiliaryDefsWithDefaultValues())\
+                \(codeSymbol.code)
+                
+                """
+            )
             return """
                 \(auxiliaryDefsWithDefaultValues())\
                 \(codeSymbol.code)
