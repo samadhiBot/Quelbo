@@ -22,6 +22,7 @@ class BlockProcessor: SymbolFactory {
 
     var blockActivation: String?
     var codeSymbol = Symbol()
+    var isRepeating = false
     var paramsSymbol = Symbol()
 
     override func processTokens() throws {
@@ -35,6 +36,14 @@ class BlockProcessor: SymbolFactory {
         let paramSymbols = try findParameterSymbols(in: &tokens)
         let codeSymbols = try symbolize(tokens)
 
+        if !isRepeating, let deepRepeating = codeSymbols.deepRepeating {
+            isRepeating = deepRepeating
+        }
+
+        if let deepActivation = codeSymbols.deepActivation {
+            try setBlockActivation(deepActivation)
+        }
+
         self.codeSymbol = try validateCode(codeSymbols)
         self.paramsSymbol = try validateParameters(paramSymbols)
     }
@@ -43,6 +52,7 @@ class BlockProcessor: SymbolFactory {
 // MARK: - Computed properties
 
 extension BlockProcessor {
+    /// <#Description#>
     var argumentTypes: String {
         paramsSymbol.children
             .filter { !$0.isParamWith(context: .local) }
@@ -50,77 +60,20 @@ extension BlockProcessor {
             .joined(separator: ", ")
     }
 
-    /// The block activation, if one has been assigned.
-    var activation: String? {
-        blockActivation ?? [codeSymbol].deepActivation
-    }
+    /// <#Description#>
+//    var activationCode: String {
+//        if let activation = blockActivation, !activation.isEmpty {
+//            return "\(activation): "
+//        } else {
+//            return ""
+//        }
+//    }
 
     /// <#Description#>
-    var activationCode: String {
-        if let activation = activation {
-            return "\(activation): "
-        } else {
-            return ""
-        }
-    }
-
-//    func auxiliaryDefs(indented: Bool = false) -> String {
-//        emit(
-//            auxiliaries.compactMap {
-//                guard !$0.code.contains("=") else {
-//                    return nil
-//                }
-//                return $0.localVariable
-//            },
-//            shouldIndent: indented
-//        )
-//    }
-//
-//    func auxiliaryDefsWithDefaultValues(indented: Bool = false) -> String {
-//        emit(
-//            auxiliaries.compactMap {
-//                guard $0.code.contains("=") else {
-//                    return nil
-//                }
-//                return $0.localVariable
-//            },
-//            shouldIndent: indented
-//        )
-//    }
-
     var children: [Symbol] {
         [codeSymbol, paramsSymbol]
     }
 
-//    var code: String {
-//        if isRepeating {
-//            return """
-//                \(deepParameters)\
-//                \(activation)\
-//                while true {
-//                \(auxiliaryDefsWithDefaultValues(indented: true))\
-//                \(codeSymbol.code.indented)
-//                }
-//                """
-//        } else {
-//            return """
-//                \(auxiliaryDefsWithDefaultValues())\
-//                \(codeSymbol.code)
-//                """
-//        }
-//    }
-//
-//    var deepParameters: String {
-//        guard let deepParams = codeSymbol.children.deepParamDeclarations else {
-//            return ""
-//        }
-//        return deepParams.appending("\n")
-//    }
-//
-//    var discardableResult: String {
-//        codeSymbol.type.hasReturnValue ? "@discardableResult\n" : ""
-//    }
-//
 //    var isRepeating: Bool {
 //        codeSymbol.children.deepRepeating == true
 //    }
@@ -129,7 +82,7 @@ extension BlockProcessor {
 //        if let activation = [codeSymbol].deepActivation {
 //            return [.controlFlow(.block(activation: activation))]
 //        } else {
-//            return [.controlFlow(.block(activation: nil))]
+//            return [.controlFlow(.block(activation: nil, repeating: false))]
 //        }
 
 //        [.controlFlow(.block(activation: activation))]
@@ -141,32 +94,30 @@ extension BlockProcessor {
 //            return [.controlFlow(.)]
 //        }
 //        if isRepeating && activation == nil {
-//            return [.controlFlow(.block(activation: nil))]
+//            return [.controlFlow(.block(activation: nil, repeating: false))]
 //        }
 //        return []
 //        guard let type = blockType else { return [] }
 //
 
-        if let activation = activation {
-            return [.controlFlow(.block(activation: activation))]
-        }
+//        let isRepeating = codeSymbol.isRepeating
 
-        var meta: Set<Symbol.MetaData> = [.controlFlow(.block(activation: nil))]
+        guard isRepeating else { return codeSymbol.meta }
 
-        if codeSymbol.isRepeating {
-            let params = paramsSymbol.children
-                .filter {
-                    !$0.isParamWith(context: .local) &&
-                    $0.isMutating(in: codeSymbol.children) == true
-                }
-                .map { $0.localVariable }
-                .joined(separator: "\n")
+        var meta: Set<Symbol.MetaData> = codeSymbol.meta
 
-            if !params.isEmpty {
-                meta.insert(.paramDeclarations(params))
+        let params = paramsSymbol.children
+            .filter {
+                !$0.isParamWith(context: .local) &&
+                $0.isMutating(in: codeSymbol.children) == true
             }
+            .map {
+                $0.localVariable
+            }
+            .joined(separator: "\n")
+        if !params.isEmpty {
+            meta.insert(.paramDeclarations(params))
         }
-
         return meta
 
 
@@ -184,47 +135,12 @@ extension BlockProcessor {
 //        }
     }
 
-//    func paramDeclarations(indented: Bool = false) -> String {
-//        guard blockType != .repeatingWithoutDefaultActivation else { return "" }
-//
-//        return emit(
-//            paramsSymbol.children.map { $0.localVariable },
-//            shouldIndent: indented
-//        )
-//    }
-
     var returnValue: String {
         codeSymbol.type.hasReturnValue ? " -> \(codeSymbol.type)" : ""
     }
 
     var type: Symbol.DataType {
         codeSymbol.type
-    }
-
-//    func warningComments(indented: Bool = false) -> String {
-//        emit(
-//            warnings,
-//            shouldIndent: indented
-//        )
-//    }
-}
-
-extension BlockProcessor {
-    private func emit(
-        _ values: [String],
-        shouldIndent: Bool
-    ) -> String {
-        guard !values.isEmpty else { return "" }
-        if shouldIndent {
-            return values
-                .joined(separator: "\n")
-                .indented
-                .appending("\n")
-        } else {
-            return values
-                .joined(separator: "\n")
-                .appending("\n")
-        }
     }
 }
 
@@ -251,7 +167,10 @@ extension BlockProcessor {
     func setBlockActivation(_ activation: String?) throws {
         guard let activation = activation else { return }
 
-        if let blockActivation = blockActivation, activation != blockActivation {
+        if let blockActivation = blockActivation,
+           !blockActivation.isEmpty,
+           activation != blockActivation
+        {
             throw Error.conflictingActivations(blockActivation, activation)
         }
 
@@ -260,47 +179,10 @@ extension BlockProcessor {
 
     func validateCode(_ codeSymbols: [Symbol]) throws -> Symbol {
         var codeLines: [String] = []
-//        var codeSymbols = codeSymbols
         var returnType = try findReturnType(in: codeSymbols)
-//        var isRepeating = codeSymbols.deepRepeating
-
-//        if case .optional = returnType {
-//            codeSymbols = codeSymbols.deepReplaceEmptyReturnValues
-//        }
-
-//        symbols.forEach { symbol in
-//            if symbol.isReturnStatement {
-////                blockType?.makeRepeating()
-//            }
-//        }
-
         var symbols = codeSymbols
+        
         while let symbol = symbols.shift() {
-            switch symbol.controlFlow {
-            case .again(activation: let activation):
-                try setBlockActivation(activation)
-            case .block(activation: let activation):
-                try setBlockActivation(activation)
-            case .repeating(activation: let activation):
-                try setBlockActivation(activation)
-            case .return(activation: let activation):
-                try setBlockActivation(activation)
-            case .returnValue, .none:
-                break
-            }
-//            if case .again(activation: let activation) = symbol.controlflow {
-//                isRepeating = true
-//                if let activation = activation {
-//                    blockActivation = activation
-//                }
-////                print("// 🍋 \(symbol.controlflow)")
-////                blockType?.makeRepeating()
-//            }
-
-//            if symbol.isReturnStatement {
-//                print("// 🍏 isReturnStatement \(symbol)")
-//            }
-
             if symbols.isEmpty && returnType == nil && symbol.type.hasReturnValue {
                 returnType = symbol.type
                 codeLines.append("return \(symbol.code)")
@@ -313,7 +195,10 @@ extension BlockProcessor {
             code: codeLines.joined(separator: "\n"),
             type: returnType ?? .void,
             children: codeSymbols,
-            meta: [.controlFlow(.block(activation: activation))]
+            meta: [.controlFlow(.block(
+                activation: blockActivation,
+                repeating: isRepeating
+            ))]
         )
     }
 

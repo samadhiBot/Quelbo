@@ -58,7 +58,7 @@ extension SymbolFactory {
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
     ) throws -> Symbol? {
-        print("// 🍓 declared: \(declaredType) => \(symbol.id)<\(symbol.type)>")
+        // print("// 🍓 declared: \(declaredType) => \(symbol.id)<\(symbol.type)>")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(

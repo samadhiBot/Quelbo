@@ -46,7 +46,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .controlFlow(.block(activation: nil)),
+                .controlFlow(.block(activation: nil, repeating: false)),
                 .isImmutable,
                 .type("() -> Int"),
             ]
@@ -74,7 +74,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .controlFlow(.block(activation: nil)),
+                .controlFlow(.block(activation: nil, repeating: false)),
                 .isImmutable,
                 .type("(Int) -> Int"),
             ]
@@ -103,7 +103,7 @@ final class FunctionTests: QuelboTests {
                 """,
             type: .int,
             meta: [
-                .controlFlow(.block(activation: nil)),
+                .controlFlow(.block(activation: nil, repeating: false)),
                 .isImmutable,
                 .type("(Int, Int) -> Int"),
             ]

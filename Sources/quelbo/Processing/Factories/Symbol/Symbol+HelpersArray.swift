@@ -73,9 +73,7 @@ extension Array where Element == Symbol {
             switch symbol.controlFlow {
             case .again(activation: let activation):
                 return activation
-            case .block(activation: let activation):
-                if activation != nil { continue }
-            case .repeating(activation: let activation):
+            case .block(activation: let activation, repeating: _):
                 if activation != nil { continue }
             case .return, .returnValue:
                 continue
@@ -114,9 +112,7 @@ extension Array where Element == Symbol {
             switch symbol.controlFlow {
             case .again:
                 return true
-            case .block(activation: let activation):
-                if activation != nil { continue }
-            case .repeating(activation: let activation):
+            case .block(activation: let activation, repeating: _):
                 if activation != nil { continue }
             case .return, .returnValue:
                 continue

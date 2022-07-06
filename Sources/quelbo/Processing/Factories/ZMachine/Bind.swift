@@ -17,11 +17,7 @@ extension Factories {
         }
 
         override var controlFlow: Symbol.MetaData.ControlFlow {
-            .block(activation: nil)
-        }
-
-        override var defaultActivation: String? {
-            nil
+            .block(activation: nil, repeating: false)
         }
     }
 }

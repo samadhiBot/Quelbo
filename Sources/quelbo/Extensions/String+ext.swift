@@ -46,7 +46,9 @@ extension String {
     ///
     /// - Returns: The indented `String`.
     var indented: String {
-        "    \(self.replacingOccurrences(of: "\n", with: "\n    "))"
+        guard !isEmpty else { return "" }
+
+        return "    \(self.replacingOccurrences(of: "\n", with: "\n    "))"
     }
 
     /// Translates a ZIL name `String` from dash-separated ALL-CAPS to camel case with a lowercase

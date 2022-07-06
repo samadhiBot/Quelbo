@@ -100,7 +100,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "zil584f"))]
+            meta: [.controlFlow(.block(activation: "zil584f", repeating: false))]
         ))
     }
 
@@ -187,7 +187,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "zil7b42"))]
+            meta: [.controlFlow(.block(activation: "zil7b42", repeating: false))]
         ))
     }
 
@@ -296,7 +296,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .bool,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "ziledc4"))]
+            meta: [.controlFlow(.block(activation: "ziledc4", repeating: false))]
         ))
     }
 }

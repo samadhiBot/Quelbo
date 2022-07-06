@@ -101,7 +101,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         ))
     }
 
@@ -188,7 +188,7 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: nil, repeating: true))]
         ))
     }
 }

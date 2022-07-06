@@ -66,7 +66,7 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -111,7 +111,7 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .bool,
             category: .routines,
-            meta: [.controlFlow(.block(activation: nil))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         )
 
         XCTAssertNoDifference(symbol, expected)
@@ -166,7 +166,7 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "zil2ab2"))]
+            meta: [.controlFlow(.block(activation: "zil2ab2", repeating: false))]
         )
 
         XCTAssertNoDifference(symbol, expected)

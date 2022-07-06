@@ -20,11 +20,7 @@ extension Factories {
         var blockRegistry: [Symbol] = []
 
         var controlFlow: Symbol.MetaData.ControlFlow {
-            .block(activation: tokens.hash)
-        }
-
-        var defaultActivation: String? {
-            tokens.hash
+            .block(activation: "", repeating: false)
         }
 
         override func processTokens() throws {
@@ -33,10 +29,13 @@ extension Factories {
                 with: &blockRegistry,
                 autoProcessTokens: false
             )
-            blockProcessor.blockActivation = self.defaultActivation
-            try blockProcessor.processTokens()
 
-            print("// 🌽 blockRegistry: \(blockRegistry)\nregistry: \(registry)")
+            if case .block(activation: let activation, repeating: let repeating) = controlFlow {
+                blockProcessor.blockActivation = activation
+                blockProcessor.isRepeating = repeating
+            }
+            
+            try blockProcessor.processTokens()
         }
 
         override func process() throws -> Symbol {
@@ -44,9 +43,7 @@ extension Factories {
                 code: codeBlock,
                 type: blockProcessor.type,
                 children: blockProcessor.children,
-                meta: blockProcessor.metaData.union([
-                    .controlFlow(controlFlow)
-                ])
+                meta: blockProcessor.metaData
             )
         }
     }
@@ -58,7 +55,7 @@ extension Factories.ProgramBlock {
             let pro = Symbol.BlockPro(for: symbol)
             let activationCode = pro.activationCode
 
-            if pro.codeSymbol.isRepeating, !activationCode.isEmpty {
+            if pro.codeSymbol.isRepeating, pro.activation != nil {
                 print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\

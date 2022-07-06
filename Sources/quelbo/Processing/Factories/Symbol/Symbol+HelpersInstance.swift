@@ -108,7 +108,7 @@ extension Symbol {
 
     /// <#Description#>
     var isRepeating: Bool {
-        if case .repeating = controlFlow {
+        if case .block(activation: _, repeating: true) = controlFlow {
             return true
         } else {
             return children.deepRepeating == true

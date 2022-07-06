@@ -22,14 +22,14 @@ extension Symbol {
 extension Symbol.BlockPro {
     /// The block activation, if one has been assigned.
     var activation: String? {
-        if case .block(activation: let activation) = codeSymbol.controlFlow {
+        if case .block(activation: let activation, repeating: _) = codeSymbol.controlFlow {
             return activation
         }
         return [codeSymbol].deepActivation
     }
 
     var activationCode: String {
-        guard let activation = activation else { return "" }
+        guard let activation = activation, !activation.isEmpty else { return "" }
 
         return "\(activation): "
     }
@@ -154,7 +154,7 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if codeSymbol.isRepeating && activationCode.isEmpty {
+        if codeSymbol.isRepeating && activation == nil {
             return ""
         }
 
