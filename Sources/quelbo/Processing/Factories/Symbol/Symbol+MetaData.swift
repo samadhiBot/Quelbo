@@ -139,4 +139,15 @@ extension Set where Element == Symbol.MetaData {
             if case .typeCertainty = $0 { return false } else { return true }
         }
     }
+
+    /// <#Description#>
+    var erasingLocalParamContext: Self {
+        guard contains(.paramContext(.local)) else { return self }
+
+        return filter {
+            if case .paramContext(.local) = $0 { return false } else { return true }
+        }.union([
+            .paramContext(.normal)
+        ])
+    }
 }

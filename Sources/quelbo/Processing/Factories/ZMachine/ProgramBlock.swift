@@ -17,13 +17,17 @@ extension Factories {
         }
 
         var blockProcessor: BlockProcessor!
-        var blockRegistry: [Symbol] = []
+        var blockRegistry: [Symbol]!
 
         var controlFlow: Symbol.MetaData.ControlFlow {
             .block(activation: "", repeating: false)
         }
 
         override func processTokens() throws {
+            blockRegistry = registry.map { symbol in
+                symbol.with(meta: symbol.meta.erasingLocalParamContext)
+            }
+
             self.blockProcessor = try BlockProcessor(
                 tokens,
                 with: &blockRegistry,
