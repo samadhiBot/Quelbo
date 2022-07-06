@@ -153,7 +153,7 @@ extension BlockProcessor {
 
         var meta: Set<Symbol.MetaData> = [.controlFlow(.block(activation: nil))]
 
-        if codeSymbol.children.deepRepeating == true {
+        if codeSymbol.isRepeating {
             let params = paramsSymbol.children
                 .filter {
                     !$0.isParamWith(context: .local) &&
@@ -276,10 +276,12 @@ extension BlockProcessor {
 
         var symbols = codeSymbols
         while let symbol = symbols.shift() {
-            switch symbol.controlflow {
+            switch symbol.controlFlow {
             case .again(activation: let activation):
                 try setBlockActivation(activation)
             case .block(activation: let activation):
+                try setBlockActivation(activation)
+            case .repeating(activation: let activation):
                 try setBlockActivation(activation)
             case .return(activation: let activation):
                 try setBlockActivation(activation)
@@ -342,7 +344,8 @@ extension BlockProcessor {
             if let registered = findRegistered(param.id) {
                 parameters.append(registered.with(
                     code: { symbol in
-                        "\(symbol): \(symbol.type)"
+                        let defaultValue = symbol.paramContext?.defaultValue(for: symbol.type)
+                        return "\(symbol): \(symbol.type)\(defaultValue ?? "")"
                     }
                 ))
 

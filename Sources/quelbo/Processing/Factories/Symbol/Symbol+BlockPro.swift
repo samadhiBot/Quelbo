@@ -22,7 +22,7 @@ extension Symbol {
 extension Symbol.BlockPro {
     /// The block activation, if one has been assigned.
     var activation: String? {
-        if case .block(activation: let activation) = codeSymbol.controlflow {
+        if case .block(activation: let activation) = codeSymbol.controlFlow {
             return activation
         }
         return [codeSymbol].deepActivation
@@ -70,7 +70,7 @@ extension Symbol.BlockPro {
     /// <#Description#>
     /// - Returns: <#description#>
     func codeBlock() -> String {
-        if codeSymbol.children.deepRepeating == true {
+        if codeSymbol.isRepeating {
             print(
                 """
                 // 🍊 Symbol.BlockPro (no-repeat):
@@ -131,7 +131,6 @@ extension Symbol.BlockPro {
         shouldIndent: Bool
     ) -> String {
         guard !values.isEmpty else { return "" }
-//        print("// 🫐 \(values)")
         if shouldIndent {
             return values
                 .joined(separator: "\n")
@@ -145,31 +144,6 @@ extension Symbol.BlockPro {
     }
 
     /// <#Description#>
-//    var isRepeating: Bool {
-//        codeSymbol.children.deepRepeating == true
-//    }
-
-    /// <#Description#>
-//    var metaData: Set<Symbol.MetaData> {
-//
-//        return []
-////        guard let type = blockType else { return [] }
-////
-////        switch type {
-////        case .repeatingWithoutActivation:
-////            let params = paramsSymbol.children
-////                .map { $0.localVariable }
-////                .joined(separator: "\n")
-////            return [
-////                .blockType(type),
-////                .paramDeclarations(params),
-////            ]
-////        default:
-////            return [.blockType(type)]
-////        }
-//    }
-
-    /// <#Description#>
     var normalAndOptionalParams: [Symbol] {
         paramsSymbol.children.filter {
             $0.isParamWith(context: .normal) || $0.isParamWith(context: .optional)
@@ -180,7 +154,7 @@ extension Symbol.BlockPro {
     /// - Parameter indented: <#indented description#>
     /// - Returns: <#description#>
     func paramDeclarations(indented: Bool = false) -> String {
-        if codeSymbol.children.deepRepeating == true && activationCode.isEmpty {
+        if codeSymbol.isRepeating && activationCode.isEmpty {
             return ""
         }
 

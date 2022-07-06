@@ -20,7 +20,7 @@ final class AgainTests: QuelboTests {
     func testIsAgainStatement() throws {
         let symbol = try factory.init([], with: &registry).process()
 
-        XCTAssertNoDifference(symbol.controlflow, .again(activation: nil))
+        XCTAssertNoDifference(symbol.controlFlow, .again(activation: nil))
     }
 
     func testAgainRoutine1() throws {

@@ -59,7 +59,7 @@ extension Factories.Routine {
                 \(pro.discardableResult)\
                 /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
                 func \(nameSymbol)\
-                (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
+                (\(pro.normalAndOptionalParams.codeValues(.commaSeparatedNoTrailingComma)))\
                 \(pro.returnValue) \
                 {
                 \(pro.auxiliaryDefs(indented: true))\
@@ -72,7 +72,7 @@ extension Factories.Routine {
                 \(pro.discardableResult)\
                 /// The `\(nameSymbol)` (\(nameSymbol.zilName)) \(typeName).
                 func \(nameSymbol)\
-                (\(pro.normalAndOptionalParams.codeValues(.commaSeparated)))\
+                (\(pro.normalAndOptionalParams.codeValues(.commaSeparatedNoTrailingComma)))\
                 \(pro.returnValue) \
                 {
                 \(pro.auxiliaryDefs(indented: true))\

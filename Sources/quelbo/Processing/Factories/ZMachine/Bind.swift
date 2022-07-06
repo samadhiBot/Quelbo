@@ -16,6 +16,10 @@ extension Factories {
             ["BIND"]
         }
 
+        override var controlFlow: Symbol.MetaData.ControlFlow {
+            .block(activation: nil)
+        }
+
         override var defaultActivation: String? {
             nil
         }

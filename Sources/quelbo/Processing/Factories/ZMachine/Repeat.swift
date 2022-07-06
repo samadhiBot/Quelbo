@@ -16,12 +16,8 @@ extension Factories {
             ["REPEAT"]
         }
 
-        override func processTokens() throws {
-            self.blockProcessor = try BlockProcessor(
-                tokens,
-//                in: .repeatingWithActivation(tokens.hash),
-                with: &registry
-            )
+        override var controlFlow: Symbol.MetaData.ControlFlow {
+            .repeating(activation: "")
         }
     }
 }

@@ -34,7 +34,7 @@ extension Factories {
             return Symbol(
                 code: { symbol in
                     guard
-                        case .again(activation: let activation) = symbol.controlflow,
+                        case .again(activation: let activation) = symbol.controlFlow,
                         let activation = activation
                     else {
                         return "continue"

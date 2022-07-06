@@ -29,10 +29,10 @@ extension Symbol {
         /// - Parameter symbol: <#symbol description#>
         ///
         /// - Returns: <#description#>
-        func defaultValue(for symbol: Symbol) -> String {
-            guard self == .optional else { return "" }
+        func defaultValue(for type: Symbol.DataType) -> String? {
+            guard self == .optional else { return nil }
 
-            switch symbol.type {
+            switch type {
             case .array: return "? = []"
             case .bool: return " = false"
             case .optional: return " = nil"

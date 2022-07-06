@@ -26,7 +26,7 @@ extension Symbol {
     }
 
     /// <#Description#>
-    var controlflow: MetaData.ControlFlow? {
+    var controlFlow: MetaData.ControlFlow? {
         for metaData in meta {
             if case .controlFlow(let flow) = metaData { return flow }
         }
@@ -106,6 +106,14 @@ extension Symbol {
         return false
     }
 
+    /// <#Description#>
+    var isRepeating: Bool {
+        if case .repeating = controlFlow {
+            return true
+        } else {
+            return children.deepRepeating == true
+        }
+    }
 
     /// Whether the symbol represents a return statement.
     var isReturnStatement: Bool {
@@ -122,6 +130,14 @@ extension Symbol {
         } else {
             return "var \(code)\(type.emptyValueAssignment)"
         }
+    }
+
+    /// <#Description#>
+    var paramContext: Symbol.ParamContext? {
+        for metaData in meta {
+            if case .paramContext(let paramContext) = metaData { return paramContext }
+        }
+        return nil
     }
 
     /// <#Description#>

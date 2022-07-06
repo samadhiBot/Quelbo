@@ -213,7 +213,8 @@ final class RepeatTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            category: .routines
+            category: .routines,
+            meta: [.controlFlow(.repeating(activation: nil))]
         ))
     }
 

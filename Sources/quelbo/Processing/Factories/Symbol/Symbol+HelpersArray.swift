@@ -70,10 +70,12 @@ extension Array where Element == Symbol {
     /// <#Description#>
     var deepActivation: String? {
         for symbol in self {
-            switch symbol.controlflow {
+            switch symbol.controlFlow {
             case .again(activation: let activation):
                 return activation
             case .block(activation: let activation):
+                if activation != nil { continue }
+            case .repeating(activation: let activation):
                 if activation != nil { continue }
             case .return, .returnValue:
                 continue
@@ -109,10 +111,12 @@ extension Array where Element == Symbol {
     /// Deep-searches a ``Symbol`` array for a <#Description#>
     var deepRepeating: Bool? {
         for symbol in self {
-            switch symbol.controlflow {
+            switch symbol.controlFlow {
             case .again:
                 return true
             case .block(activation: let activation):
+                if activation != nil { continue }
+            case .repeating(activation: let activation):
                 if activation != nil { continue }
             case .return, .returnValue:
                 continue

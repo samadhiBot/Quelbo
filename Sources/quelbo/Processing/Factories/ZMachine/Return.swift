@@ -30,7 +30,7 @@ extension Factories {
                 metaData.insert(.controlFlow(.return(activation: nil)))
                 return Symbol(
                     code: { symbol in
-                        guard case .return(activation: let activation) = symbol.controlflow else {
+                        guard case .return(activation: let activation) = symbol.controlFlow else {
                             return "Not a code block"
                         }
 

@@ -19,6 +19,10 @@ extension Factories {
         var blockProcessor: BlockProcessor!
         var blockRegistry: [Symbol] = []
 
+        var controlFlow: Symbol.MetaData.ControlFlow {
+            .block(activation: tokens.hash)
+        }
+
         var defaultActivation: String? {
             tokens.hash
         }
@@ -40,7 +44,9 @@ extension Factories {
                 code: codeBlock,
                 type: blockProcessor.type,
                 children: blockProcessor.children,
-                meta: blockProcessor.metaData
+                meta: blockProcessor.metaData.union([
+                    .controlFlow(controlFlow)
+                ])
             )
         }
     }
@@ -52,7 +58,7 @@ extension Factories.ProgramBlock {
             let pro = Symbol.BlockPro(for: symbol)
             let activationCode = pro.activationCode
 
-            if pro.codeSymbol.children.deepRepeating == true, !activationCode.isEmpty {
+            if pro.codeSymbol.isRepeating, !activationCode.isEmpty {
                 print("// 🍇 ProgramBlock: \(pro.codeSymbol.code)")
                 return """
                     \(pro.paramDeclarations())\
