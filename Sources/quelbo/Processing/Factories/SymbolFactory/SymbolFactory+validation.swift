@@ -26,15 +26,13 @@ extension SymbolFactory {
                 if symbol.type != .comment { index += 1 }
             }
 
-            guard let typedSymbol = try assignType(
-                of: symbol,
-                to: Self.parameters.expectedType(at: index),
-                siblings: symbols
-            ) else {
-                return nil
-            }
-
-            return try upsert(typedSymbol)
+            return try upsert(
+                try assignType(
+                    of: symbol,
+                    to: Self.parameters.expectedType(at: index),
+                    siblings: symbols
+                )
+            )
         }
 
         switch Self.parameters {
@@ -57,8 +55,8 @@ extension SymbolFactory {
         of symbol: Symbol,
         to declaredType: Symbol.DataType,
         siblings: [Symbol]
-    ) throws -> Symbol? {
-        // print("// 🍓 declared: \(declaredType) => \(symbol.id)<\(symbol.type)>")
+    ) throws -> Symbol {
+        print("// 🍓 \(declaredType), \(symbol.id): \(symbol.type)")
         switch (declaredType, symbol.type) {
         case (.bool, .int):
             return symbol.with(
@@ -115,13 +113,18 @@ extension SymbolFactory {
                 return symbol
             }
 
+        case (_, .zilElement), (_, .variable(.zilElement)):
+            if declaredType.canBeZilElement {
+                return symbol
+            }
+
         case (_, .variable(let variableType)):
             if declaredType == variableType {
                 return symbol
             }
 
-        default:
-            if [declaredType, .zilElement].contains(symbol.type) {
+        case (_, _):
+            if symbol.type == declaredType {
                 return symbol
             }
         }
@@ -138,7 +141,13 @@ extension SymbolFactory {
 
         print("// 🍌 \(declaredType) ==>> \(symbol)")
 
-        let childType = declaredType.isLiteral ? declaredType : .optional(declaredType)
+        // `remark`: type is unknown, declaredType.isLiteral is false, typeCertainty is .unknown, should NOT be optional
+        // `prso`: type is variable<Bool>, declaredType.isLiteral is false, typeCertainty is .booleanFalse, should be optional
+//        let childType = declaredType
+        let childType = declaredType.isLiteral || symbol.type.isUnknown ?
+//        let childType = symbol.isParamWith(context: .l) ?
+            declaredType :
+            .optional(declaredType)
         var parentType = childType
         if case .variable = symbol.type {
             parentType = childType.asVariable
@@ -197,7 +206,7 @@ extension SymbolFactory {
 //        }
     }
 
-    func assignZilElementType(on symbol: Symbol) throws -> Symbol? {
+    func assignZilElementType(on symbol: Symbol) throws -> Symbol {
         switch symbol.type {
         case .array:
             if symbol.containsTableFlags {

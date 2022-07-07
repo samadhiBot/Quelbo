@@ -36,19 +36,37 @@ extension Symbol {
 // MARK: - Helper methods
 
 extension Symbol.DataType {
-    /// Whether the data type can be a literal value.
-    var acceptsLiteral: Bool {
+    /// <#Description#>
+    var asVariable: Self {
+        switch self {
+        case .variable: return self
+        default: return .variable(self)
+        }
+    }
+
+    /// <#Description#>
+//    var baseType: Self {
+//        switch self {
+//        case .variable(let type): return type
+//        default: return self
+//        }
+//    }
+
+    /// Whether the symbol with this data type can take a literal value.
+    var canBeLiteral: Bool {
         switch self {
         case .object, .property, .table, .variable: return false
         default: return true
         }
     }
 
-    /// <#Description#>
-    var asVariable: Self {
+    /// Whether the symbol with this data type can take a `.zilElement` value.
+    var canBeZilElement: Bool {
         switch self {
-        case .variable: return self
-        default: return .variable(self)
+        case .direction, .optional, .property, .routine, .thing, .unknown, .void, .variable:
+            return false
+        default:
+            return true
         }
     }
 
@@ -248,6 +266,11 @@ extension Array where Element == Symbol.DataType {
         let unambiguousTypes = uniqueTypes.filter { !$0.isUnambiguous }
         if unambiguousTypes.count == 1 {
             return unambiguousTypes[0]
+        }
+
+        let varTypes = uniqueTypes.map(\.asVariable).unique
+        if varTypes.count == 1 {
+            return varTypes[0]
         }
 
         return nil

@@ -475,8 +475,7 @@ final class GlobalTests: QuelboTests {
             id: "kitchenWindowFlag",
             code: "var kitchenWindowFlag: Bool = false",
             type: .variable(.bool),
-            category: .globals,
-            meta: [.typeCertainty(.booleanFalse)]
+            category: .globals
         ))
     }
 }

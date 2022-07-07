@@ -100,7 +100,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "zil584f", repeating: false))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         ))
     }
 
@@ -170,7 +170,7 @@ final class ProgramBlockTests: QuelboTests {
                 func testProg2() {
                     output("START: ")
                     var x: Int = 0
-                    zil7b42: while true {
+                    while true {
                         /* X is not reinitialized between iterations. Default ACTIVATION created. */
                         x.set(to: x.add(1))
                         output(x)
@@ -187,7 +187,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "zil7b42", repeating: false))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         ))
     }
 
@@ -276,7 +276,7 @@ final class ProgramBlockTests: QuelboTests {
                 func testProg3() -> Bool {
                     output("START: ")
                     var x: Int = 0
-                    ziledc4: while true {
+                    while true {
                         /* X is not reinitialized between iterations. Default ACTIVATION created. */
                         x.set(to: x.add(1))
                         output(x)
@@ -296,7 +296,7 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .bool,
             category: .routines,
-            meta: [.controlFlow(.block(activation: "ziledc4", repeating: false))]
+            meta: [.controlFlow(.block(activation: nil, repeating: false))]
         ))
     }
 }

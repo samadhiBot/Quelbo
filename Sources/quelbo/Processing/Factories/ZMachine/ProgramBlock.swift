@@ -38,8 +38,12 @@ extension Factories {
                 blockProcessor.blockActivation = activation
                 blockProcessor.isRepeating = repeating
             }
-            
+
             try blockProcessor.processTokens()
+
+            try blockRegistry.forEach {
+                _ = try upsert($0)
+            }
         }
 
         override func process() throws -> Symbol {

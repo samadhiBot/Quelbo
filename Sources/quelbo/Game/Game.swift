@@ -66,14 +66,15 @@ extension Game {
         }
     }
 
-    /// Find a ``Symbol`` in the committed ``gameSymbols`` whose ``Symbol/id`` and
-    /// ``Symbol/category-swift.property`` match the ones specified.
+    /// Find a ``Symbol`` in the committed ``gameSymbols`` whose ``Symbol/id``, ``Symbol/type`` and
+    /// ``Symbol/category-swift.property`` match those specified.
     ///
     /// - Parameters:
-    ///   - id: The symbol `id` to match.
-    ///   - category: The symbol `category` to match.
+    ///   - id: The symbol id to match.
+    ///   - type: The symbol type to match.
+    ///   - category: One or more categories, any of which the symbol should belong.
     ///
-    /// - Returns: A symbol that matches the specified `id` and `category`.
+    /// - Returns: A symbol that matches the specified `id`, `type` and `category`.
     ///
     /// - Throws: When a matching symbol does not currently exist in the ``gameSymbols``.
     static func find(
@@ -98,31 +99,11 @@ extension Game {
         return symbol
     }
 
-//    /// Overwrite a previously committed ``Symbol`` value in the known ``gameSymbols``.
-//    ///
-//    /// - Parameter symbol: The symbol value to overwrite.
-//    ///
-//    /// - Throws: When no symbol with the specified symbol's `id` exists in the known `gameSymbols`.
-//    static func overwrite(_ symbol: Symbol) throws {
-////        guard symbol.type.hasReturnValue && symbol.type != .bool else {
-////            return
-////        }
-//        guard let index = shared.gameSymbols.firstIndex(where: { $0.id == symbol.id }) else {
-//            let categories: [Symbol.Category]
-//            if let category = symbol.category {
-//                categories = [category]
-//            } else {
-//                categories = []
-//            }
-//            throw GameError.symbolNotFound(symbol.id ?? "Nil", categories: categories)
-//        }
-//        shared.gameSymbols.remove(at: index)
-//        shared.gameSymbols.insert(symbol)
-//    }
-
-    /// <#Description#>
-    /// - Parameter symbol: <#symbol description#>
-    /// - Returns: <#description#>
+    /// Inserts or updates a ``Symbol`` in the known ``gameSymbols``.
+    ///
+    /// - Parameter symbol: The revised symbol to insert or reconcile with a committed symbol.
+    ///
+    /// - Returns: The reconciled and committed symbol.
     static func upsert(_ symbol: Symbol) -> Symbol {
         assert(symbol.isIdentifiable)
 
@@ -133,4 +114,16 @@ extension Game {
             return symbol
         }
     }
+}
+
+// MARK: - GameError
+
+enum GameError: Swift.Error {
+    case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
+    case failedToProcessTokens([String])
+    case invalidZMachineVersion([Token])
+    case symbolNotFound(Symbol.Identifier, categories: [Symbol.Category])
+    case unexpectedAtRootLevel(Token)
+    case unknownDirective([Token])
+    case unknownOperation(String)
 }
