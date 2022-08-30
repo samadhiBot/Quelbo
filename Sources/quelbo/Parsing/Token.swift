@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 3/7/22.
 //
 
+import CryptoKit
 import Foundation
 
 /// The set of tokens that can be parsed from ZIL source code.
@@ -82,6 +83,8 @@ extension Token {
     }
 }
 
+// MARK: - Conformances
+
 extension Array where Element == Token {
     enum ReplacementError: Error {
         case invalidReplacementTokens(original: Token, replacement: Token)
@@ -94,26 +97,34 @@ extension Array where Element == Token {
     /// - Returns: <#description#>
     func deepReplacing(_ originalToken: Token, with replacementToken: Token) throws -> [Token] {
         let original = originalToken.value
-        let replacement = replacementToken.value
 
         return try map { (token: Token) -> Token in
             switch token {
             case .atom(let string):
-                return .atom(string == original ? replacement : string)
+                return string == original ? replacementToken : token
             case .form(let tokens):
                 return try .form(tokens.deepReplacing(originalToken, with: replacementToken))
             case .global(let string):
-                return .global(string == original ? replacement : string)
+                return string == original ? replacementToken : token
             case .list(let tokens):
                 return try .list(tokens.deepReplacing(originalToken, with: replacementToken))
             case .local(let string):
-                return .local(string == original ? replacement : string)
+                return string == original ? replacementToken : token
             case .property(let string):
-                return .property(string == original ? replacement : string)
+                return string == original ? replacementToken : token
             case .vector(let tokens):
-                return try  .vector(tokens.deepReplacing(originalToken, with: replacementToken))
+                return try .vector(tokens.deepReplacing(originalToken, with: replacementToken))
             default: return token
             }
         }
+    }
+
+    var hash: String {
+        let tokenString = map(\.value).joined(separator: ".")
+        let tokenData = tokenString.data(using: .utf8)
+        let hashed = Insecure.MD5.hash(data: tokenData!)
+        let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+
+        return "zil\(hashString.suffix(4))"
     }
 }

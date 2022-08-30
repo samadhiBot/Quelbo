@@ -5,8 +5,8 @@
 //  Created by Chris Sessions on 3/25/22.
 //
 
-import CustomDump
 import Foundation
+import SwiftPrettyPrint
 
 extension Game {
     func comment(_ title: String, _ code: String) -> String {
@@ -41,7 +41,7 @@ extension Game {
             output.append(comment("Globals", Game.globals.codeValues(.singleLineBreak)))
         }
         if !Game.objects.isEmpty {
-            output.append(comment("Objects", Game.objects.sorted.codeValues(.doubleLineBreak)))
+            output.append(comment("Objects", Game.objects.sorted(by: { $0.code < $1.code }).codeValues(.doubleLineBreak)))
         }
         if !Game.rooms.isEmpty {
             output.append(comment("Rooms", Game.rooms.codeValues(.doubleLineBreak)))
@@ -49,9 +49,9 @@ extension Game {
         if !Game.routines.isEmpty {
             output.append(comment("Routines", Game.routines.codeValues(.doubleLineBreak)))
         }
-        if !Game.functions.isEmpty {
-            output.append(comment("Functions", Game.functions.codeValues(.doubleLineBreak)))
-        }
+//        if !Game.functions.isEmpty {
+//            output.append(comment("Functions", Game.functions.codeValues(.doubleLineBreak)))
+//        }
 
         return output.joined(separator: "\n\n")
     }
@@ -67,6 +67,6 @@ extension Game {
             🎟  Zil tokens
             """
         )
-        customDump(gameTokens)
+        Pretty.prettyPrint(tokens)
     }
 }

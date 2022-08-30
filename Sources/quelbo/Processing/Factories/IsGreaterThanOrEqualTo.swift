@@ -1,0 +1,30 @@
+//
+//  IsGreaterThanOrEqualTo.swift
+//  Quelbo
+//
+//  Created by Chris Sessions on 4/9/22.
+//
+
+import Foundation
+
+extension Factories {
+    /// A symbol factory for the Zil
+    /// [G=?](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2bxgwvm)
+    /// function.
+    class IsGreaterThanOrEqualTo: Equals {
+        override class var zilNames: [String] {
+            ["G=?"]
+        }
+
+        override var function: String {
+            "isGreaterThanOrEqualTo"
+        }
+
+        override func processSymbols() throws {
+            try symbols.assert([
+                .haveCount(.atLeast(2)),
+                .haveType(.int)
+            ])
+        }
+    }
+}

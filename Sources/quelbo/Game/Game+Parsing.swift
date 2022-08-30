@@ -46,6 +46,6 @@ extension Game {
 
     func parse(_ source: String) throws {
         let fileTokens = try parser.parse(source)
-        gameTokens.append(contentsOf: fileTokens)
+        tokens.append(contentsOf: fileTokens)
     }
 }

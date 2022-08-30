@@ -1,6 +1,24 @@
 {
   "pins" : [
     {
+      "identity" : "colorizeswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mtynior/ColorizeSwift.git",
+      "state" : {
+        "revision" : "2a354639173d021f4648cf1912b2b00a3a7cd83c",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "curry",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/thoughtbot/Curry.git",
+      "state" : {
+        "revision" : "4331dd50bc1db007db664a23f32e6f3df93d4e1a",
+        "version" : "4.0.2"
+      }
+    },
+    {
       "identity" : "files",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/JohnSundell/Files",
@@ -10,12 +28,30 @@
       }
     },
     {
+      "identity" : "flatten",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/YusukeHosonuma/Flatten.git",
+      "state" : {
+        "revision" : "5286148aa255f57863e0d7e2b827ca6b91677051",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "progress.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jkandzi/Progress.swift",
       "state" : {
         "revision" : "fed6598735d7982058690acf8f52a0a5fdaeb3e0",
         "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "shlist",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/YusukeHosonuma/SHList.git",
+      "state" : {
+        "revision" : "6c61f5382dd07a64d76bc8b7fad8cec0d8a4ff7a",
+        "version" : "0.1.0"
       }
     },
     {
@@ -32,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "b4a872984463070c71e2e97e5c02c73a07d0fe36",
-        "version" : "0.9.0"
+        "revision" : "a09839348486db8866f85a727b8550be1d671c50",
+        "version" : "0.9.1"
       }
     },
     {
@@ -48,10 +84,28 @@
     {
       "identity" : "swift-parsing",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-parsing.git",
+      "location" : "https://github.com/pointfreeco/swift-parsing",
       "state" : {
-        "revision" : "28d32e9ace1c4c43f5e5a177be837a202494c2d5",
-        "version" : "0.9.2"
+        "revision" : "bc92e84968990b41640214b636667f35b6e5d44c",
+        "version" : "0.10.0"
+      }
+    },
+    {
+      "identity" : "swiftparamtest",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/YusukeHosonuma/SwiftParamTest.git",
+      "state" : {
+        "revision" : "f513e1dbbdd86e2ca2b672537f4bcb4417f94c27",
+        "version" : "2.2.1"
+      }
+    },
+    {
+      "identity" : "swiftprettyprint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/YusukeHosonuma/SwiftPrettyPrint.git",
+      "state" : {
+        "revision" : "1ad0d60150ae89c95846a736cb71cf322c8c8610",
+        "version" : "1.4.0"
       }
     },
     {
@@ -59,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "50a70a9d3583fe228ce672e8923010c8df2deddd",
-        "version" : "0.2.1"
+        "revision" : "38bc9242e4388b80bd23ddfdf3071428859e3260",
+        "version" : "0.4.0"
       }
     }
   ],

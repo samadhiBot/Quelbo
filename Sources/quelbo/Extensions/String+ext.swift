@@ -8,6 +8,13 @@
 import AppKit
 
 extension String {
+    /// <#Description#>
+    var commented: String {
+        split(separator: "\n")
+            .map { "// \($0)" }
+            .joined(separator: "\n")
+    }
+
     /// Returns the `String` split into multiple lines if its length exceeds the specified `limit`.
     ///
     /// - Parameter limit: The maximum line length before splitting into multiple lines.
@@ -46,7 +53,9 @@ extension String {
     ///
     /// - Returns: The indented `String`.
     var indented: String {
-        "    \(self.replacingOccurrences(of: "\n", with: "\n    "))"
+        guard !isEmpty else { return "" }
+
+        return "    \(self.replacingOccurrences(of: "\n", with: "\n    "))".rightTrimmed
     }
 
     /// Translates a ZIL name `String` from dash-separated ALL-CAPS to camel case with a lowercase

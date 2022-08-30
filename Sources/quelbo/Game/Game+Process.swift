@@ -8,13 +8,15 @@
 import CustomDump
 import Foundation
 import Progress
+import os.log
+import SwiftPrettyPrint
 
 extension Game {
     func processTokens(
         to target: String? = nil,
         with printSymbolsOnFail: Bool = false
     ) throws {
-        let total: Int = gameTokens.count
+        let total: Int = tokens.count
         var progressBar = ProgressBar(
             count: total,
             configuration: [
@@ -24,6 +26,7 @@ extension Game {
         )
 
         printHeading("⚙️  Processing Zil Tokens")
+
         do {
             try process(
                 bar: &progressBar,
@@ -42,14 +45,17 @@ extension Game {
                 printSymbols()
             }
 
-            let percentage = Int(100 * Double(total - gameTokens.count) / Double(total))
+            let percentage = Int(100 * Double(total - tokens.count) / Double(total))
             let result = """
 
-                💀 Processing failed with \(gameTokens.count) of \(total) tokens unprocessed \
+                💀 Processing failed with \(tokens.count) of \(total) tokens unprocessed \
                 (\(percentage)% complete)
                 """
+
             printHeading(result)
-            customDump(error)
+
+            Pretty.prettyPrint(error)
+
             print("\(result)\n")
         }
     }
@@ -61,62 +67,74 @@ extension Game {
         total: Int,
         remaining: Int
     ) throws {
-        try processZilTokens()
-        progressBar.setValue(total - gameTokens.count)
+        Logger.process.info("Processing tokens: \(remaining) of \(total) remaining")
 
-        if gameTokens.isEmpty {
-            return print("\nProcessing complete!\n")
+        try processZilTokens(bar: &progressBar)
+
+        if tokens.isEmpty {
+            return print("\n🏆 Processing complete!\n")
         }
-        if gameTokens.count == remaining {
+
+        if tokens.count == remaining {
             throw GameError.failedToProcessTokens(
-                processingErrors.sorted().unique
+                errors.sorted().unique
             )
         }
+
         try process(
             bar: &progressBar,
             total: total,
-            remaining: gameTokens.count
+            remaining: tokens.count
         )
     }
 
-    func processZilTokens() throws {
+    func processZilTokens(bar progressBar: inout ProgressBar) throws {
         var unprocessedTokens: [Token] = []
-        processingErrors = []
+        errors = []
 
-        try gameTokens.forEach { token in
+        try tokens.forEach { token in
             switch token {
             case .bool, .character, .decimal, .global, .list, .local, .quote, .vector:
                 throw GameError.unexpectedAtRootLevel(token)
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    let registry = SymbolRegistry()
+                    var localVariables: [Variable] = []
+
                     guard case .atom(let zil) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
-                    let factory: SymbolFactory
-                    if let zilSymbol = try Game.zilSymbolFactories
-                        .find(zil)?
-                        .init(tokens, with: registry)
-                    {
-                        factory = zilSymbol
+
+                    if let factory = try Game.findFactory(zil, root: true)?.init(
+                        tokens, with: &localVariables
+                    ) {
+                        _ = try factory.process()
                     } else {
-                        factory = try Factories.RoutineCall(formTokens, with: registry)
+                        let factory = try Factories.RoutineCall(formTokens, with: &localVariables)
+                        _ = try factory.process()
                     }
-                    _ = try factory.process()
+
+                    progressBar.next()
+
                 } catch {
-                    processingErrors.append("\(error)")
+                    var description = ""
+                    customDump(error, to: &description)
+
+                    Logger.process.warning("\(description, privacy: .public)")
+
+                    errors.append("\(description)")
+
                     unprocessedTokens.append(token)
                 }
             default:
                 break // ignored
             }
         }
-        self.gameTokens = unprocessedTokens
+        self.tokens = unprocessedTokens
     }
 
     func setZMachineVersion() throws {
-        for token in gameTokens {
+        for token in tokens {
             guard
                 case .form(var formTokens) = token,
                 case .atom("VERSION") = formTokens.shift()
@@ -134,124 +152,5 @@ extension Game {
             """,
             zMachineVersion.rawValue
         )
-    }
-}
-
-// MARK: - GameError
-
-enum GameError: Swift.Error {
-    case conflictingDuplicateSymbolCommit(old: Symbol, new: Symbol)
-    case failedToProcessTokens([String])
-    case invalidZMachineVersion([Token])
-    case symbolNotFound(Symbol.Identifier, category: Symbol.Category?)
-    case unexpectedAtRootLevel(Token)
-    case unknownDirective([Token])
-    case unknownOperation(String)
-}
-
-// MARK: - Symbol Categories
-
-extension Game {
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/directions`` category.
-    static var directions: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .directions }
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/constants`` category.
-    static var constants: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .constants }
-            .sorted
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/globals`` category.
-    static var globals: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .globals }
-            .sorted
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/functions`` category.
-    static var functions: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .functions }
-            .sorted
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/objects`` category.
-    static var objects: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .objects }
-            .sorted
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/rooms`` category.
-    static var rooms: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .rooms }
-            .sorted
-    }
-
-    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/routines`` category.
-    static var routines: [Symbol] {
-        shared.gameSymbols
-            .filter { $0.category == .routines }
-            .sorted
-    }
-}
-
-// MARK: - Game.ZMachineVersion
-
-extension Game {
-    /// The ZMachine version to emulate during processing.
-    ///
-    enum ZMachineVersion: String {
-        case z3
-        case z3Time
-        case z4
-        case z5
-        case z6
-        case z7
-        case z8
-
-        init(tokens: [Token]) throws {
-            guard (1...2).contains(tokens.count) else {
-                throw GameError.invalidZMachineVersion(tokens)
-            }
-            switch tokens[0] {
-            case .atom("ZIP"), .decimal(3):
-                if case .atom("TIME") = tokens.last {
-                    self = .z3Time
-                } else {
-                    self = .z3
-                }
-            case .atom("EZIP"), .decimal(4):
-                self = .z4
-            case .atom("XZIP"), .decimal(5):
-                self = .z5
-            case .atom("YZIP"), .decimal(6):
-                self = .z6
-            case .decimal(7):
-                self = .z7
-            case .decimal(8):
-                self = .z8
-            default:
-                throw GameError.invalidZMachineVersion(tokens)
-            }
-        }
-
-        /// An integer representation of the ZMachine version.
-        var intValue: Int {
-            switch self {
-            case .z3:     return 3
-            case .z3Time: return 3
-            case .z4:     return 4
-            case .z5:     return 5
-            case .z6:     return 6
-            case .z7:     return 7
-            case .z8:     return 8
-            }
-        }
     }
 }

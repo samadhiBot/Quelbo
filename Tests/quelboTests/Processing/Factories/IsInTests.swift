@@ -1,0 +1,103 @@
+//
+//  IsInTests.swift
+//  Quelbo
+//
+//  Created by Chris Sessions on 4/9/22.
+//
+
+import CustomDump
+import XCTest
+@testable import quelbo
+
+final class IsInTests: QuelboTests {
+    let factory = Factories.IsIn.self
+
+    override func setUp() {
+        super.setUp()
+
+        try! Game.commit([
+            .variable(id: "kitchen", type: .object, category: .rooms),
+            .variable(id: "paperBag", type: .object, category: .objects),
+            .variable(id: "sandwich", type: .object, category: .objects),
+            .variable(id: "vVillain", type: .int, category: .constants),
+        ])
+    }
+
+    func testFindFactory() throws {
+        AssertSameFactory(factory, Game.findFactory("IN?"))
+    }
+
+    func testSandwichIsInPaperBag() throws {
+        let symbol = try factory.init([
+            .atom("SANDWICH"),
+            .atom("PAPER-BAG"),
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "sandwich.isIn(paperBag)",
+            type: .bool,
+            confidence: .certain
+        ))
+    }
+
+    func testPaperBagIsInKitchen() throws {
+        let symbol = try factory.init([
+            .atom("PAPER-BAG"),
+            .atom("KITCHEN"),
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "paperBag.isIn(kitchen)",
+            type: .bool,
+            confidence: .certain
+        ))
+    }
+
+    func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
+        let _ = try! Factories.Global([
+            .atom("HERE"),
+            .decimal(0)
+        ], with: &localVariables).process()
+
+        localVariables.append(
+            Variable(id: "oo", type: .table)
+        )
+
+        let symbol = try factory.init([
+            .form([
+                .atom("SET"),
+                .atom("O"),
+                .form([
+                    .atom("GET"),
+                    .local("OO"),
+                    .global("V-VILLAIN")
+                ])
+            ]),
+            .global("HERE")
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",
+            type: .bool,
+            confidence: .certain
+        ))
+    }
+
+    func testSandwichIsInDecimal() throws {
+        XCTAssertThrowsError(
+            try factory.init([
+                .atom("SANDWICH"),
+                .decimal(42),
+            ], with: &localVariables).process()
+        )
+    }
+
+    func testStringIsInPaperBag() throws {
+        XCTAssertThrowsError(
+            try factory.init([
+                .string("SANDWICH"),
+                .atom("PAPER-BAG"),
+            ], with: &localVariables).process()
+        )
+    }
+}
