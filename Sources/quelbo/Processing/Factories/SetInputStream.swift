@@ -38,8 +38,7 @@ extension Factories {
             symbols.insert(
                 .statement(
                     code: { _ in flag },
-                    type: .int,
-                    confidence: .certain
+                    type: .int
                 ),
                 at: 0
             )
@@ -59,8 +58,7 @@ extension Factories {
                 code: { _ in
                     "setInputStream(\(stream))"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

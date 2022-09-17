@@ -47,8 +47,7 @@ extension Factories {
                     }
                     return "\(first.code).\(function)(\(arguments.codeValues(.commaSeparated)))"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

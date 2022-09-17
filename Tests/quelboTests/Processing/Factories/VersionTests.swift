@@ -25,7 +25,6 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            confidence: .certain,
             category: .constants
         )
 
@@ -43,7 +42,6 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3Time""#,
             type: .string,
-            confidence: .certain,
             category: .constants
         )
 
@@ -60,7 +58,6 @@ final class VersionTests: QuelboTests {
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            confidence: .certain,
             category: .constants
         )
 

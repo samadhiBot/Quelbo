@@ -27,7 +27,6 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let pro = blockProcessor!
-            let (_, confidence) = try pro.returnType()
 
             return .statement(
                 code: { _ in
@@ -41,7 +40,6 @@ extension Factories {
                         """
                 },
                 type: try pro.functionType(),
-                confidence: confidence,
                 isMutable: false
             )
         }

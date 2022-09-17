@@ -21,8 +21,7 @@ final class RestoreTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "restore()",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 

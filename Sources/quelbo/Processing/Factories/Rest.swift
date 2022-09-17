@@ -22,25 +22,29 @@ extension Factories {
             if symbols.count == 1 {
                 symbols.append(.statement(
                     code: { _ in "" },
-                    type: .int,
-                    confidence: .certain
+                    type: .int
                 ))
             }
 
-            try? symbols[0].assert(.hasType(.array(.unknown)))
-            try symbols[1].assert(.hasType(.int))
+            try? symbols[0].assert(
+                .hasType(.oneOf([.array(.zilElement), .table]))
+            )
+
+            try symbols[1].assert(
+                .hasType(.int)
+            )
         }
 
         override func process() throws -> Symbol {
             let structure = symbols[0]
             let count = symbols[1]
+//            let structureType = structure.type.dataType == .table ? .array(.zilElement) : structure.type
 
             return .statement(
                 code: { _ in
                     "\(structure.code).rest(\(count.code))"
                 },
-                type: structure.type,
-                confidence: structure.confidence
+                type: structure.type
             )
         }
     }

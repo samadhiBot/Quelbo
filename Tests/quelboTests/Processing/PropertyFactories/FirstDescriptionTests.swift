@@ -33,8 +33,7 @@ final class FirstDescriptionTests: QuelboTests {
                     nastily.
                     """
                 """#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -43,8 +42,7 @@ final class FirstDescriptionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "firstDescription",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 

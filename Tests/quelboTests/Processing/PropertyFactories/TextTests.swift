@@ -29,8 +29,7 @@ final class TextTests: QuelboTests {
                     blank."
                     """
                 """#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -39,8 +38,7 @@ final class TextTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "text",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 

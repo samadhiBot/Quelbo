@@ -40,8 +40,7 @@ final class MapFirstTests: QuelboTests {
                 .add(3, 12),
             ]
             """,
-            type: .array(.int),
-            confidence: .certain
+            type: .array(.int)
         ))
     }
 
@@ -66,8 +65,7 @@ final class MapFirstTests: QuelboTests {
                 "fun".nthElement(1),
             ].joined()
             """,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -109,8 +107,7 @@ final class MapFirstTests: QuelboTests {
                 }(3),
             ]
             """,
-            type: .array(.function([.int], .int)),
-            confidence: .certain
+            type: .array(.function([.int], .int))
         ))
     }
 }

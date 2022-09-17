@@ -24,8 +24,7 @@ final class ValueTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "value",
             code: "value: 10",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -34,8 +33,7 @@ final class ValueTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "value",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

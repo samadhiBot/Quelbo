@@ -26,7 +26,7 @@ final class ReturnTests: QuelboTests {
     }
 
     func testReturnNoValueNoBlock() throws {
-        localVariables.append(Variable(id: "n"))
+        localVariables.append(Variable(id: "n", type: .int))
 
         let symbol = try Factories.Condition([
             .list([
@@ -47,8 +47,7 @@ final class ReturnTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
@@ -59,9 +58,7 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "break",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -73,9 +70,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
             type: .bool,
-            confidence: .certain,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         ))
     }
 
@@ -84,9 +79,7 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "break",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -97,10 +90,8 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
-            type: .bool,
-            confidence: .booleanTrue,
-            quirk: .returnStatement,
-            returnable: .explicit
+            type: .booleanTrue,
+            isReturnStatement: true
         ))
     }
 
@@ -111,10 +102,8 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
-            type: .bool,
-            confidence: .booleanTrue,
-            quirk: .returnStatement,
-            returnable: .explicit
+            type: .booleanTrue,
+            isReturnStatement: true
         ))
     }
 
@@ -125,10 +114,8 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return false",
-            type: .bool,
-            confidence: .booleanFalse,
-            quirk: .returnStatement,
-            returnable: .explicit
+            type: .booleanFalse,
+            isReturnStatement: true
         ))
     }
 
@@ -140,9 +127,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return 42",
             type: .int,
-            confidence: .certain,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         ))
     }
 
@@ -154,9 +139,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: #"return "grue""#,
             type: .string,
-            confidence: .certain,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         ))
     }
 
@@ -168,9 +151,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return foo",
             type: .int,
-            confidence: .integerZero,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         ))
     }
 
@@ -182,9 +163,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return forest1",
             type: .object,
-            confidence: .certain,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         ))
     }
 }

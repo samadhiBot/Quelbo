@@ -23,7 +23,6 @@ final class SubtractTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                confidence: .certain,
                 category: .routines
             )
         ])
@@ -41,8 +40,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "-42",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -57,8 +55,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "-foo",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -70,8 +67,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".subtract(9, 3)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -84,8 +80,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".subtract(20, 5, 2)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -97,8 +92,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bigNumber.subtract(biggerNumber)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -110,8 +104,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "cyclowrath.subtract(1)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -125,8 +118,7 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "baseScore.subtract(otvalFrob())",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 }

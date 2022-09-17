@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).nextSibling"
                 },
-                type: .object,
-                confidence: .certain
+                type: .object
             )
         }
     }

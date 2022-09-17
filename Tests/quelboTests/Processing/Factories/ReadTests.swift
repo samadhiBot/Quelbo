@@ -34,8 +34,7 @@ final class ReadTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "read(&readbuf, &lexbuf)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 

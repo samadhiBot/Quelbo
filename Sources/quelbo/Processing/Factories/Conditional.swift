@@ -41,18 +41,17 @@ extension Factories {
         override func process() throws -> Symbol {
             let ifStatement = ifStatement(for: predicate.code)
             let pro = blockProcessor!
-            let (type, confidence) = try pro.returnType()
+            let type = try pro.returnType() ?? .void
 
             return .statement(
                 code: { _ in
                     """
-                        \(ifStatement){
-                        \(pro.code.indented)
-                        }
-                        """
+                    \(ifStatement){
+                    \(pro.code.indented)
+                    }
+                    """
                 },
                 type: type,
-                confidence: confidence,
                 children: pro.symbols
             )
         }

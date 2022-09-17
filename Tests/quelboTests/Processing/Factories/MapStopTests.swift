@@ -18,7 +18,7 @@ final class MapStopTests: QuelboTests {
 
     func testMapStop() throws {
         localVariables.append(
-            Variable(id: "atms", type: .array(.string), confidence: .certain)
+            Variable(id: "atms", type: .array(.string))
         )
 
         let symbol = try factory.init([
@@ -28,7 +28,7 @@ final class MapStopTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return atms",
             type: .array(.string),
-            confidence: .certain
+            isReturnStatement: true
         ))
     }
 }

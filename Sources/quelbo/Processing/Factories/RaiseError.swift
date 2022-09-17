@@ -23,8 +23,7 @@ extension Factories {
                 code: { _ in
                     "throw FizmoError.mdlError(\(values.codeValues(.commaSeparated)))"
                 },
-                type: .void,
-                confidence: .void
+                type: .void
             )
         }
     }

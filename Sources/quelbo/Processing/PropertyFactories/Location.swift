@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "location" },
-                    type: .object,
-                    confidence: .certain
+                    type: .object
                 )
             }
             let room = symbols[0]
@@ -39,7 +38,6 @@ extension Factories {
                     "location: \(room.code)"
                 },
                 type: .object,
-                confidence: .certain,
                 category: .rooms
             )
         }

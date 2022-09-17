@@ -99,9 +99,13 @@ final class IsVersionTests: QuelboTests {
                    }
                }
                """,
-            type: .int,
-            confidence: .integerZero,
-            returnable: .void
+            type: .init(
+                dataType: .int,
+                confidence: .integerZero,
+                isOptional: true,
+                isZilElement: true
+            ),
+            suppressesReturns: true
         ))
     }
 }

@@ -32,9 +32,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"output(utf8: 90)"#,
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -52,7 +50,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertThrowsError(
             try factory.init([
-                .local("troll"),
+//                .local("troll"),
             ], with: &localVariables).process()
         )
     }
@@ -64,9 +62,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"output("s")"#,
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -77,9 +73,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "output(letterZ)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -94,9 +88,7 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "output(utf8: .add(2, 88))",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 }

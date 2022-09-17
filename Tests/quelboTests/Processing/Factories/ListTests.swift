@@ -25,8 +25,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[1, 2, 3]",
-            type: .array(.int),
-            confidence: .certain
+            type: .array(.int)
         ))
     }
 
@@ -39,8 +38,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"["AB", "CD", "EF"]"#,
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 
@@ -54,8 +52,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[1, 2, \"AB\", \"C\"]",
-            type: .array(.zilElement),
-            confidence: .certain
+            type: .array(.zilElement)
         ))
     }
 }

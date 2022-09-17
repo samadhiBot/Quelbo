@@ -24,8 +24,7 @@ final class VehicleTypeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "vehicleType",
             code: "vehicleType: true",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -37,8 +36,7 @@ final class VehicleTypeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "vehicleType",
             code: "vehicleType: true",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -50,8 +48,7 @@ final class VehicleTypeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "vehicleType",
             code: "vehicleType: false",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -60,8 +57,7 @@ final class VehicleTypeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "vehicleType",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

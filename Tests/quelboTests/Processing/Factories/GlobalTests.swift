@@ -56,8 +56,7 @@ final class GlobalTests: QuelboTests {
 
         XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
             id: "foo",
-            type: .bool,
-            confidence: .booleanTrue,
+            type: .booleanTrue,
             category: .globals,
             isMutable: true
         ))
@@ -65,8 +64,7 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "foo",
             code: "var foo: Bool = true",
-            type: .bool,
-            confidence: .booleanTrue,
+            type: .booleanTrue,
             category: .globals
         ))
     }
@@ -79,8 +77,7 @@ final class GlobalTests: QuelboTests {
 
         XCTAssertNoDifference(Game.findGlobal("prso"), Variable(
             id: "prso",
-            type: .bool,
-            confidence: .booleanFalse,
+            type: .booleanFalse,
             category: .globals,
             isMutable: true
         ))
@@ -88,8 +85,7 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "prso",
             code: "var prso: Bool = false",
-            type: .bool,
-            confidence: .booleanFalse,
+            type: .booleanFalse,
             category: .globals
         ))
     }
@@ -112,7 +108,6 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
             id: "foo",
             type: .int,
-            confidence: .certain,
             category: .globals,
             isMutable: true
         ))
@@ -121,7 +116,6 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: "var foo: Int = 42",
             type: .int,
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -140,7 +134,6 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
             id: "foo",
             type: .table,
-            confidence: .certain,
             category: .globals,
             isMutable: true
         ))
@@ -155,7 +148,6 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -198,7 +190,6 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             category: .constants
         ))
     }
@@ -270,7 +261,6 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -314,7 +304,6 @@ final class GlobalTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -331,7 +320,6 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
             id: "foo",
             type: .array(.string),
-            confidence: .certain,
             category: .globals,
             isMutable: true
         ))
@@ -342,7 +330,6 @@ final class GlobalTests: QuelboTests {
                 var foo: [String] = ["BAR", "BAT"]
                 """,
             type: .array(.string),
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -356,7 +343,6 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
             id: "foo",
             type: .string,
-            confidence: .certain,
             category: .globals,
             isMutable: true
         ))
@@ -367,7 +353,6 @@ final class GlobalTests: QuelboTests {
                 var foo: String = "Forty Two!"
                 """,
             type: .string,
-            confidence: .certain,
             category: .globals
         ))
     }
@@ -391,7 +376,6 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findGlobal("square"), Variable(
             id: "square",
             type: .function([.int], .int),
-            confidence: .certain,
             category: .constants,
             isMutable: false
         ))
@@ -405,7 +389,6 @@ final class GlobalTests: QuelboTests {
                 }
                 """,
             type: .function([.int], .int),
-            confidence: .certain,
             category: .constants
         ))
     }
@@ -420,8 +403,9 @@ final class GlobalTests: QuelboTests {
         // placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(Game.findGlobal("prso"), Variable(
             id: "prso",
-            type: .bool,
-            category: .globals
+            type: .booleanFalse,
+            category: .globals,
+            isMutable: true
         ))
 
         // Move expects `prso` to be an object, not a boolean. This triggers an update of the
@@ -433,16 +417,13 @@ final class GlobalTests: QuelboTests {
 
         XCTAssertNoDifference(move, .statement(
             code: "prso.move(to: clearing)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
 
         // Inspecting the `prso` game symbol confirms that the type update took place.
         XCTAssertNoDifference(Game.findGlobal("prso"), Variable(
             id: "prso",
             type: .object,
-            confidence: .certain,
             category: .globals,
             isMutable: true
         ))
@@ -458,8 +439,9 @@ final class GlobalTests: QuelboTests {
         // been a placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(Game.findGlobal("kitchenWindowFlag"), Variable(
             id: "kitchenWindowFlag",
-            type: .bool,
-            category: .globals
+            type: .booleanFalse,
+            category: .globals,
+            isMutable: true
         ))
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
@@ -471,15 +453,15 @@ final class GlobalTests: QuelboTests {
 
         XCTAssertNoDifference(set, .statement(
             code: "kitchenWindowFlag.set(to: true)",
-            type: .bool,
-            confidence: .booleanTrue
+            type: .booleanTrue
         ))
 
         // Inspecting the `kitchenWindowFlag` game symbol confirms that the type remains boolean.
         XCTAssertNoDifference(Game.findGlobal("kitchenWindowFlag"), Variable(
             id: "kitchenWindowFlag",
-            type: .bool,
-            category: .globals
+            type: .booleanTrue,
+            category: .globals,
+            isMutable: true
         ))
     }
 }

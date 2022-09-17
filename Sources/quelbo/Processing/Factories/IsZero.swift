@@ -35,8 +35,7 @@ extension Factories {
                 code: { _ in
                     "\(value.code).\(function)"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

@@ -28,8 +28,7 @@ final class IncrementGreaterThanTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.increment().isGreaterThan(3)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

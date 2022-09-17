@@ -23,7 +23,6 @@ final class MultiplyTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                confidence: .certain,
                 category: .routines
             )
         ])
@@ -42,8 +41,7 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".multiply(9, 3)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -56,8 +54,7 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".multiply(20, 5, 2)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -69,8 +66,7 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bigNumber.multiply(biggerNumber)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -82,8 +78,7 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "cyclowrath.multiply(1)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -97,8 +92,7 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "baseScore.multiply(otvalFrob())",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

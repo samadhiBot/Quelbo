@@ -27,8 +27,7 @@ final class IsAssignedTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.isAssigned",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

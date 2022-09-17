@@ -30,7 +30,7 @@ extension Factories {
                     "return \(value.code)"
                 },
                 type: value.type,
-                confidence: value.confidence
+                isReturnStatement: true
             )
         }
     }

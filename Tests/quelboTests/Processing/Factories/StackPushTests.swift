@@ -23,8 +23,7 @@ final class StackPushTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "Stack.push(0)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 

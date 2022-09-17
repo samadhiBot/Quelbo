@@ -22,8 +22,7 @@ extension Factories {
             symbols = [
                 .variable(
                     id: "zMachineVersion",
-                    type: .string,
-                    confidence: .certain
+                    type: .string
                 ),
                 .literal(zMachineVersion.rawValue)
             ]

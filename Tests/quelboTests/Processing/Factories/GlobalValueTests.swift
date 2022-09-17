@@ -21,6 +21,6 @@ final class GlobalValueTests: QuelboTests {
             .atom("FOO")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "foo"))
+        XCTAssertNoDifference(symbol, .variable(id: "foo", type: .unknown))
     }
 }

@@ -41,7 +41,7 @@ extension Factories {
         override func process() throws -> Symbol {
             let pro = blockProcessor!
             let repeating = repeating || pro.repeating
-            let (type, confidence) = try pro.returnType()
+            let type = try pro.returnType() ?? .void
 
             var activationDeclaration: String {
                 guard
@@ -52,19 +52,17 @@ extension Factories {
                 return "\(activation): "
             }
 
+            let isBindWithAgain = activation == nil && pro.isRepeating
+
             var isRepeating: Bool {
                 if repeating { return true }
                 if activation == nil { return false }
                 return pro.isRepeating
             }
 
-            var quirk: Statement.Quirk? {
-                activation == nil && pro.isRepeating ? .bindWithAgain : nil
-            }
-
             return .statement(
                 code: { _ in
-                    switch (pro.isRepeating, activationDeclaration.isEmpty, quirk) {
+                    switch (pro.isRepeating, activationDeclaration.isEmpty, isBindWithAgain) {
                     case (true, false, _):
                         return """
                             \(activationDeclaration)\
@@ -72,14 +70,14 @@ extension Factories {
                             \(pro.code.indented)
                             }
                             """
-                    case (true, true, nil):
+                    case (true, true, false):
                         return """
                             \(pro.auxiliaryDefsWithDefaultValues)\
                             while true {
                             \(pro.code.indented)
                             }
                             """
-                    case (true, true, .bindWithAgain):
+                    case (true, true, true):
                         return """
                             do {
                             \(pro.code.indented)
@@ -95,13 +93,12 @@ extension Factories {
                     }
                 },
                 type: type,
-                confidence: confidence,
                 parameters: pro.paramSymbols,
                 children: pro.symbols,
                 activation: pro.activation,
+                isBindWithAgainStatement: isBindWithAgain,
                 isRepeating: isRepeating,
-                quirk: quirk,
-                returnable: .void
+                suppressesReturns: true
             )
         }
     }

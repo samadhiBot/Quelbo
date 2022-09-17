@@ -11,19 +11,16 @@ import Foundation
 final class Variable: SymbolType, Identifiable {
     let id: String
     private(set) var category: Category?
-    private(set) var confidence: DataType.Confidence?
     private(set) var isMutable: Bool?
-    private(set) var type: DataType?
+    private(set) var type: TypeInfo
 
     init(
         id: String,
-        type: DataType? = nil,
-        confidence: DataType.Confidence? = nil,
+        type: TypeInfo,
         category: Category? = nil,
         isMutable: Bool? = nil
     ) {
         self.category = category
-        self.confidence = confidence ?? type?.baseConfidence ?? .unknown
         self.id = id
         self.isMutable = isMutable
         self.type = type
@@ -39,15 +36,13 @@ final class Variable: SymbolType, Identifiable {
 extension Symbol {
     static func variable(
         id: String,
-        type: DataType? = nil,
+        type: TypeInfo,
         category: Category? = nil,
-        confidence: DataType.Confidence? = nil,
         isMutable: Bool? = nil
     ) -> Symbol {
         .variable(Variable(
             id: id,
             type: type,
-            confidence: confidence ?? type?.baseConfidence,
             category: category,
             isMutable: isMutable
         ))
@@ -77,34 +72,48 @@ extension Variable {
         self.category = assertionCategory
     }
 
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        guard
-            let dataType = dataType,
-            let assertionConfidence = assertionConfidence,
-            type != dataType,
-            dataType != .zilElement
-        else { return }
-
-        if type == .optional(dataType) || type == .property(dataType) { return }
-
-        if confidence == .certain && assertionConfidence == .certain {
-            throw Symbol.AssertionError.hasTypeAssertionFailed(
-                for: "Variable: \(id)",
-                asserted: dataType,
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        guard let reconciled = type.reconcile(with: assertedType) else {
+            throw Symbol.AssertionError.hasTypeAssertionVariableFailed(
+                for: id,
+                asserted: assertedType,
                 actual: type
             )
         }
-        guard assertionConfidence > confidence ?? .unknown else { return }
 
-        type = dataType
-        confidence = assertionConfidence
+        self.type = reconciled.withOptional(false)
 
         if let global = Game.globals.find(id) {
-            try global.assertHasType(dataType, confidence: assertionConfidence)
+            try global.assertHasType(assertedType)
         }
+
+        /*
+         guard
+             let dataType = dataType,
+             let assertionConfidence = assertionConfidence,
+             !dataType.isCompatible(with: type),
+             !dataType.isZilElementCompatible(with: type)
+         else { return }
+
+         if type == .optional(dataType) || type == .property(dataType) { return }
+
+         if confidence == .certain && assertionConfidence == .certain {
+             throw Symbol.AssertionError.hasTypeAssertionFailed(
+                 for: "Variable: \(id)",
+                 asserted: dataType,
+                 actual: type
+             )
+         }
+         guard assertionConfidence > confidence ?? .unknown else { return }
+
+         type = dataType
+         confidence = assertionConfidence
+
+         if let global = Game.globals.find(id) {
+             try global.assertHasType(dataType, confidence: assertionConfidence)
+         }
+
+         */
     }
 
     func assertHasMutability(_ mutability: Bool) throws {
@@ -154,7 +163,6 @@ extension Variable: CustomDumpReflectable {
             children: [
                 "id": self.id,
                 "type": self.type as Any,
-                "confidence": self.confidence as Any,
                 "category": self.category as Any,
                 "isMutable": self.isMutable as Any,
             ],
@@ -167,7 +175,6 @@ extension Variable: Equatable {
     static func == (lhs: Variable, rhs: Variable) -> Bool {
         lhs.category == rhs.category &&
         lhs.code == rhs.code &&
-        lhs.confidence == rhs.confidence &&
         lhs.id == rhs.id &&
         lhs.type == rhs.type
     }
@@ -187,10 +194,8 @@ extension Array where Element == Variable {
             .hasSameCategory(as: newVariable)
         )
 
-        if let newVariableType = newVariable.type {
-            try oldVariable.assert(
-                .hasType(newVariableType)
-            )
-        }
+        try oldVariable.assert(
+            .hasType(newVariable.type)
+        )
     }
 }

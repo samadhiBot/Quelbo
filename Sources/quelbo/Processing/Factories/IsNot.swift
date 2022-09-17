@@ -29,8 +29,7 @@ extension Factories {
                 code: { _ in
                     ".isNot(\(other.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

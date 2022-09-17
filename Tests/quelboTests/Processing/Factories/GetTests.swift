@@ -15,7 +15,12 @@ final class GetTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit(.variable(id: "foo", type: .table, category: .globals))
+        try! Game.commit([
+            .variable(id: "foo", type: .table, category: .globals),
+            .variable(id: "pItbl", type: .table, category: .globals),
+            .variable(id: "pVerbn", type: .int, category: .constants),
+
+        ])
     }
 
     func testFindFactory() throws {
@@ -31,8 +36,19 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try foo.get(at: 2)",
-            type: .zilElement,
-            confidence: .certain
+            type: .zilElement
+        ))
+    }
+
+    func testNestedGet() throws {
+        let symbol = try factory.init(
+            try parse("<GET <GET ,P-ITBL ,P-VERBN> 0>").droppingFirst,
+            with: &localVariables
+        ).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "try pItbl.get(at: pVerbn).get(at: 0)",
+            type: .zilElement
         ))
     }
 

@@ -20,10 +20,6 @@ class QuelboTests: XCTestCase {
         self.localVariables = []
     }
 
-    func findLocalVariable(_ id: String) -> Variable? {
-        localVariables.first { $0.id == id }
-    }
-
     func AssertSameFactory(
         _ factory1: FactoryType.Type?,
         _ factory2: FactoryType.Type?,
@@ -43,35 +39,17 @@ class QuelboTests: XCTestCase {
             line: line
         )
     }
-}
 
-// MARK: - Test helpers
+    func findLocalVariable(_ id: String) -> Variable? {
+        localVariables.first { $0.id == id }
+    }
 
-class TestFactory: Factory {
-    override func process() throws -> Symbol {
-        let symbols = try symbolize(tokens)
-        return symbols[0]
+    func parse(_ source: String) throws -> [Token] {
+        let parsed = try Game.shared.parser.parse(source)
+        if parsed.count == 1, case .form(let tokens) = parsed[0] {
+            return tokens
+        }
+
+        return parsed
     }
 }
-
-//extension QuelboTests {
-//    var fooTable: Symbol {
-//        Symbol(
-//            id: "foo",
-//            code: """
-//                let foo: Table = Table(
-//                    .room(forest1),
-//                    .room(forest2),
-//                    .room(forest3)
-//                )
-//                """,
-//            type: .table,
-//            category: .globals,
-//            children: [
-//                .variable(id: "forest1", code: ".room(forest1)", type: .zilElement, category: .rooms),
-//                .variable(id: "forest2", code: ".room(forest2)", type: .zilElement, category: .rooms),
-//                .variable(id: "forest3", code: ".room(forest3)", type: .zilElement, category: .rooms),
-//            ]
-//        )
-//    }
-//}

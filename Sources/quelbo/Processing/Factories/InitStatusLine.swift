@@ -27,8 +27,7 @@ extension Factories {
                 code: { _ in
                     "initStatusLine()"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

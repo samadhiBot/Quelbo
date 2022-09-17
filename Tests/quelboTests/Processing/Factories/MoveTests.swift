@@ -35,9 +35,7 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "sandwich.move(to: paperBag)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -49,15 +47,13 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "paperBag.move(to: kitchen)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
     func testMoveLocalWeaponToHere() throws {
         localVariables.append(
-            Variable(id: "dweapon", type: .bool)
+            Variable(id: "dweapon", type: .booleanFalse)
         )
 
         let symbol = try factory.init([
@@ -67,15 +63,12 @@ final class MoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "dweapon.move(to: here)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
 
         XCTAssertNoDifference(findLocalVariable("dweapon"), Variable(
             id: "dweapon",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 

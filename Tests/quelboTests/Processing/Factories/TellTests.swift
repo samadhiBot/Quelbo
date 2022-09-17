@@ -47,9 +47,7 @@ final class TellTests: QuelboTests {
             output("z")
             output(utf8: 65)
             """,
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 

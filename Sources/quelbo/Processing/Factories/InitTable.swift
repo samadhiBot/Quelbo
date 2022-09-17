@@ -36,19 +36,16 @@ extension Factories {
                 code: { _ in
                     "count: \(count.value.lowerCamelCase)"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             ))
 
             if !defaults.isEmpty {
                 self.symbols.append(
                     .statement(
                         code: { statement in
-                            print("▶️", statement.children)
                             return "defaults: [\(statement.children.codeValues(.commaSeparated))]"
                         },
                         type: .zilElement,
-                        confidence: .certain,
                         children: defaults
                     )
                 )

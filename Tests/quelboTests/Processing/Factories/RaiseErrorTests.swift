@@ -29,8 +29,7 @@ final class RaiseErrorTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "throw FizmoError.mdlError(atms, 5, \"Warning\")",
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 }

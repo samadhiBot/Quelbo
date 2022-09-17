@@ -23,11 +23,15 @@ extension Factories {
             )
 
             try symbols[0].assert(
-                .hasType(.table)
+                .hasType(.oneOf([.array(.zilElement), .table]))
             )
 
             try symbols[1].assert(
                 .hasType(.int)
+            )
+
+            try symbols[2].assert(
+                .hasType(.zilElement)
             )
         }
 
@@ -40,8 +44,7 @@ extension Factories {
                 code: { _ in
                     "try \(table.code).put(element: \(value.code), at: \(offset.code))"
                 },
-                type: value.type,
-                confidence: value.confidence
+                type: value.type
             )
         }
     }

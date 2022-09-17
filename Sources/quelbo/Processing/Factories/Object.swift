@@ -43,7 +43,6 @@ extension Factories {
                     "directions: [\(statement.children.codeValues(.commaSeparated))]"
                 },
                 type: .array(.direction),
-                confidence: .certain,
                 children: directionSymbols
             ))
         }
@@ -65,7 +64,6 @@ extension Factories {
                     """
                 },
                 type: .object,
-                confidence: .certain,
                 category: category
             )
 

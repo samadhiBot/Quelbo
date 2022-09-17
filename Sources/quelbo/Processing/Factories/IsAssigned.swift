@@ -33,8 +33,7 @@ extension Factories {
                 code: { _ in
                     "\(argument.code).isAssigned"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

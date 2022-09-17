@@ -25,15 +25,8 @@ final class DeclareTypeTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "// DeclareType beachDig: Int",
-            type: .comment,
-            confidence: .certain
-        ))
-
-        XCTAssertNoDifference(findLocalVariable("beachDig"), Variable(
-            id: "beachDig",
-            type: .int,
-            confidence: .certain
+            code: "// Declare(beachDig: Int)",
+            type: .comment
         ))
     }
 
@@ -49,30 +42,13 @@ final class DeclareTypeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                // DeclareType ms: Int
-                // DeclareType wd: Int
-                // DeclareType rs: Int
+                // Declare(
+                //     ms: Int,
+                //     wd: Int,
+                //     rs: Int
+                // )
                 """,
-            type: .comment,
-            confidence: .certain
-        ))
-
-        XCTAssertNoDifference(findLocalVariable("ms"), Variable(
-            id: "ms",
-            type: .int,
-            confidence: .certain
-        ))
-
-        XCTAssertNoDifference(findLocalVariable("wd"), Variable(
-            id: "wd",
-            type: .int,
-            confidence: .certain
-        ))
-
-        XCTAssertNoDifference(findLocalVariable("rs"), Variable(
-            id: "rs",
-            type: .int,
-            confidence: .certain
+            type: .comment
         ))
     }
 
@@ -91,23 +67,40 @@ final class DeclareTypeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                // DeclareType verbose: Bool
-                // DeclareType superBrief: Bool
+                // Declare(
+                //     verbose: .or(atom, false),
+                //     superBrief: .or(atom, false)
+                // )
                 """,
-            type: .comment,
-            confidence: .certain
+            type: .comment
         ))
+    }
 
-        XCTAssertNoDifference(findLocalVariable("verbose"), Variable(
-            id: "verbose",
-            type: .bool,
-            confidence: .certain
+    func testDeclareTypePrimType() throws {
+        let symbol = try factory.init(
+            try parse("(C E) <PRIMTYPE VECTOR>"),
+            with: &localVariables
+        ).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "// Declare(c: Array, e: Array)",
+            type: .comment
         ))
+    }
 
-        XCTAssertNoDifference(findLocalVariable("superBrief"), Variable(
-            id: "superBrief",
-            type: .bool,
-            confidence: .certain
+    func testDeclareTypeOrFalseAtom() throws {
+        let symbol = try factory.init(
+            try parse("(FLG) <OR FALSE ATOM>"),
+            with: &localVariables
+        ).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: """
+                  // Declare(
+                  //     flg: .or(false, atom)
+                  // )
+                  """,
+            type: .comment
         ))
     }
 }

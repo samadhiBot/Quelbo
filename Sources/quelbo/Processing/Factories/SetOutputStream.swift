@@ -51,8 +51,7 @@ extension Factories {
                 code: { _ in
                     "setOutputStream(\(arguments.values(.commaSeparatedNoTrailingComma)))"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

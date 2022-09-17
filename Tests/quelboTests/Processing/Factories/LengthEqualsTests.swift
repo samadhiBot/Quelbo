@@ -28,8 +28,7 @@ final class LengthEqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "atms.count == 5",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 }

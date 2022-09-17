@@ -99,9 +99,7 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 
@@ -187,9 +185,7 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 }

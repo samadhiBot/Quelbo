@@ -29,7 +29,7 @@ extension Factories {
 
             if case .atom(let tokenActivation) = tokens.first {
                 let activationName = tokenActivation.lowerCamelCase
-                localVariables.append(Variable(id: activationName))
+                localVariables.append(Variable(id: activationName, type: .unknown))
                 activation = activationName
                 tokens.removeFirst()
             }
@@ -55,7 +55,7 @@ extension Factories {
             for symbol in symbols {
                 guard
                     case .statement(let statement) = symbol,
-                    statement.quirk == .bindWithAgain
+                    statement.isBindWithAgainStatement
                 else { continue }
 
                 for instance in statement.parameters {
@@ -105,20 +105,19 @@ extension Factories.BlockProcessor {
         }
 
         var emptyValueAssignment: String {
-            let type = nameSymbol.type ?? .unknown
-            var value: String {
-                if let value = defaultValue?.code { return " = \(value)" }
-
-                return type.emptyValueAssignment
-            }
-
-            return "var \(nameSymbol.code): \(type)\(value)"
+            let value = {
+                if let value = defaultValue?.code {
+                    return " = \(value)"
+                } else {
+                    return nameSymbol.type.emptyValueAssignment
+                }
+            }()
+            return "var \(nameSymbol.code): \(nameSymbol.type)\(value)"
         }
 
         var initialization: String {
             if let defaultValue = defaultValue {
-                let type = defaultValue.type ?? .unknown
-                return "var \(nameSymbol.code): \(type) = \(defaultValue.code)"
+                return "var \(nameSymbol.code): \(defaultValue.type) = \(defaultValue.code)"
             }
 
             switch context {
@@ -136,8 +135,8 @@ extension Factories.BlockProcessor {
             return nameSymbol.variable.isMutable ?? false
         }
 
-        var type: DataType {
-            nameSymbol.type ?? .unknown
+        var type: TypeInfo {
+            nameSymbol.type
         }
     }
 }
@@ -271,25 +270,32 @@ extension Factories.BlockProcessor {
 
     var code: String {
         var lines = symbols.filter { !$0.code.isEmpty }
-
-        guard let last = lines.last else { return "" }
-        lines.removeLast()
-
-        var codeLines = lines.map(\.code)
-
-        var lastLine: String {
-            switch last.returnable {
-            case .always:
-                return "return \(last.code)"
-            case .implicit:
-                return implicitReturns ? "return \(last.code)" : last.code
-            case .explicit, .void:
-                return last.code
-            }
+        guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
+            return lines
+                .map(\.code)
+                .joined(separator: "\n")
         }
 
-        codeLines.append(lastLine)
-
+        let last = lines.remove(at: lastIndex)
+        var codeLines = lines.map(\.code)
+        var lastLine: String {
+            switch last {
+            case .definition:
+                return last.code
+            case .literal, .instance, .variable:
+                return "return \(last.code)"
+            case .statement(let statement):
+                if statement.isReturnStatement ||
+                   statement.type == .void ||
+                   statement.suppressesReturns ||
+                   !implicitReturns {
+                    return last.code
+                } else {
+                    return "return \(last.code)"
+                }
+            }
+        }
+        codeLines.insert(lastLine, at: lastIndex)
         return codeLines.joined(separator: "\n")
     }
 
@@ -317,7 +323,7 @@ extension Factories.BlockProcessor {
     }
 
     func discardableResult() throws -> String {
-        let (type, _) = try returnType()
+        let type = try returnType()
         guard let type = type else { return "" }
 
         switch type {
@@ -326,13 +332,13 @@ extension Factories.BlockProcessor {
         }
     }
 
-    func functionType() throws -> DataType {
-        let (type, _) = try returnType()
+    func functionType() throws -> TypeInfo {
+        let type = try returnType() ?? .void
 //        guard let type = type else {
 //            throw Error.missingFunctionType
 //        }
 
-        return .function(parameters.map(\.type), type ?? .unknown)
+        return .function(parameters.map(\.type.dataType), type.dataType)
     }
 
     var hasActivation: Bool {
@@ -348,7 +354,7 @@ extension Factories.BlockProcessor {
         for child in symbols {
             guard case .statement(let statement) = child else { continue }
 
-            if statement.quirk == .bindWithAgain {
+            if statement.isBindWithAgainStatement {
                 return statement
             }
         }
@@ -359,7 +365,7 @@ extension Factories.BlockProcessor {
         repeating || symbols.contains {
             guard case .statement(let statement) = $0 else { return false }
 
-            return [.againStatement, .bindWithAgain].contains(statement.quirk)
+            return statement.isAgainStatement || statement.isBindWithAgainStatement
         }
     }
 
@@ -374,8 +380,7 @@ extension Factories.BlockProcessor {
     }
 
     func returnDeclaration() throws -> String {
-        let (type, _) = try returnType()
-        guard let type = type else { return "" }
+        guard let type = try returnType() else { return "" }
 
         switch type {
         case .comment, .void: return ""
@@ -383,8 +388,8 @@ extension Factories.BlockProcessor {
         }
     }
 
-    func returnType() throws -> (DataType?, DataType.Confidence?) {
-        try symbols.returnType() ?? (.void, .void)
+    func returnType() throws -> TypeInfo? {
+        try symbols.returnType()
     }
 }
 

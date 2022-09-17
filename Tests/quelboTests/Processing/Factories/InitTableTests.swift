@@ -26,7 +26,6 @@ final class InitTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "Table(count: 4)",
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -45,7 +44,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -69,7 +67,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -90,7 +87,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -109,7 +105,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -131,7 +126,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -162,7 +156,6 @@ final class InitTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }

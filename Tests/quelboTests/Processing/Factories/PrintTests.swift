@@ -33,9 +33,7 @@ final class PrintTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"output("Hello World")"#,
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 
@@ -46,9 +44,7 @@ final class PrintTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "output(message)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 }

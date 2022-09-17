@@ -34,8 +34,7 @@ final class PrintCarriageReturnTests: QuelboTests {
                 output("Hello World")
                 output("\n")
                 """#,
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 
@@ -49,8 +48,7 @@ final class PrintCarriageReturnTests: QuelboTests {
                 output(message)
                 output("\n")
                 """#,
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 

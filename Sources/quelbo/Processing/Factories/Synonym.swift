@@ -47,7 +47,6 @@ extension Factories {
                     """
                 },
                 type: .string,
-                confidence: .certain,
                 category: .syntax
             )
 

@@ -19,7 +19,7 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.exactly(1)),
-                .haveTypeIn([.int, .string]),
+                .haveType(.oneOf([.int, .string])),
             ])
         }
 
@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "\(value.code).ascii"
                 },
-                type: value.type == .int ? .string : .int,
-                confidence: .certain
+                type: value.type == .int ? .string : .int
             )
         }
     }

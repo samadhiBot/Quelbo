@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "[\(elements.codeValues(.commaSeparated))].joined()"
                 },
-                type: .string,
-                confidence: .certain
+                type: .string
             )
         }
     }

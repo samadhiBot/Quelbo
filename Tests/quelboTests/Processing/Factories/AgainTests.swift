@@ -23,8 +23,7 @@ final class AgainTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "continue",
             type: .void,
-            confidence: .void,
-            quirk: .againStatement
+            isAgainStatement: true
         ))
     }
 
@@ -88,10 +87,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             category: .routines,
-            isRepeating: true,
-            returnable: .void
+            isRepeating: true
         ))
     }
 
@@ -160,10 +157,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             category: .routines,
-            isRepeating: true,
-            returnable: .void
+            isRepeating: true
         ))
     }
 
@@ -236,9 +231,7 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 
@@ -311,9 +304,7 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 }

@@ -24,8 +24,7 @@ final class SizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "size",
             code: "size: 4",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -34,8 +33,7 @@ final class SizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "size",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

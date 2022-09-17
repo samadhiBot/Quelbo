@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "size" },
-                    type: .int,
-                    confidence: .certain
+                    type: .int
                 )
             }
             let size = symbols[0]
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "size: \(size.code)"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

@@ -21,10 +21,8 @@ final class ReturnTrueTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
-            type: .bool,
-            confidence: .booleanTrue,
-            quirk: .returnStatement,
-            returnable: .explicit
+            type: .booleanTrue,
+            isReturnStatement: true
         ))
     }
 

@@ -33,8 +33,29 @@ final class RestTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "struct1.rest()",
-            type: .array(.int),
-            confidence: .certain
+            type: .array(.int)
+        ))
+    }
+
+    func testRestOfTable() throws {
+        try Factories.Global([
+            .atom("SOME-TABLE"),
+            .form([
+                .atom("TABLE"),
+                .decimal(1),
+                .decimal(2),
+                .decimal(3),
+                .string("4"),
+            ])
+        ], with: &localVariables).process()
+
+        let symbol = try factory.init([
+            .atom("SOME-TABLE"),
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "someTable.rest()",
+            type: .table
         ))
     }
 
@@ -57,8 +78,7 @@ final class RestTests: QuelboTests {
             symbol,
             .statement(
                 code: "struct2.rest()",
-                type: .array(.zilElement),
-                confidence: .certain
+                type: .array(.zilElement)
             )
         )
     }
@@ -83,8 +103,7 @@ final class RestTests: QuelboTests {
             symbol,
             .statement(
                 code: "struct3.rest(2)",
-                type: .array(.zilElement),
-                confidence: .certain
+                type: .array(.zilElement)
             )
         )
     }

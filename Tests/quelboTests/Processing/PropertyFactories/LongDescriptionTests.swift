@@ -33,8 +33,7 @@ final class LongDescriptionTests: QuelboTests {
                     nastily.
                     """
                 """#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -43,8 +42,7 @@ final class LongDescriptionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "longDescription",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 

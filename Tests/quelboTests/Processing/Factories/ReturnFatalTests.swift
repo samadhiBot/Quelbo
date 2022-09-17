@@ -21,8 +21,7 @@ final class ReturnFatalTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "returnFatal()",
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 

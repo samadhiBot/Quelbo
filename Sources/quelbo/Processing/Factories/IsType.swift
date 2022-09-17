@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "\(value.code).isType(\(type.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

@@ -39,7 +39,6 @@ extension Factories {
                             fizmoFlag.id.description
                         },
                         type: .bool,
-                        confidence: .certain,
                         category: .flags
                     )
 
@@ -56,8 +55,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "flags" },
-                    type: .array(.bool),
-                    confidence: .certain
+                    type: .array(.bool)
                 )
             }
 
@@ -69,7 +67,6 @@ extension Factories {
                     "flags: [\(flags.codeValues(.commaSeparated))]"
                 },
                 type: .array(.bool),
-                confidence: .certain,
                 children: symbols
             )
         }

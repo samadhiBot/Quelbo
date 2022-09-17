@@ -32,8 +32,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).hasFlag(\(flag.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

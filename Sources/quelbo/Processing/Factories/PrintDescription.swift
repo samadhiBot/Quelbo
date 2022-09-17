@@ -30,9 +30,7 @@ extension Factories {
                 code: { _ in
                     "output(\(string.code).description)"
                 },
-                type: .void,
-                confidence: .void,
-                returnable: .void
+                type: .void
             )
         }
     }

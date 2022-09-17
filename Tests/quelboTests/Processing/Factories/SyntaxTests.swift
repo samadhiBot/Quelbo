@@ -32,7 +32,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -58,7 +57,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -96,7 +94,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -131,7 +128,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -177,7 +173,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -209,7 +204,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -243,7 +237,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -285,7 +278,6 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            confidence: .certain,
             category: .syntax
         )
 

@@ -50,17 +50,15 @@ extension Factories {
                 code: { _ in
                     let declare = variable.isMutable != false ? "var" : "let"
                     var assignment: String {
-                        if value.confidence ?? .unknown < .assured, let type = variable.type {
-                            return type.emptyValueAssignment
+                        if value.type.confidence < .assured {
+                            return variable.type.emptyValueAssignment
                         } else {
                             return " = \(value.code)"
                         }
                     }
-
-                    return "\(declare) \(variable.code): \(variable.type ?? .unknown)\(assignment)"
+                    return "\(declare) \(variable.code): \(variable.type)\(assignment)"
                 },
                 type: variable.type,
-                confidence: variable.confidence,
                 category: variable.isMutable ?? false ? .globals : .constants
             )
 

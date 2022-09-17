@@ -36,8 +36,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(true)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -52,8 +51,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(north)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -64,8 +62,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(42)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -76,8 +73,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(sword)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -88,8 +84,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(trollMelee)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -100,8 +95,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #".isNot("Forty-two")"#,
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -112,8 +106,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(readbuf)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -129,8 +122,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(something)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -141,8 +133,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(whatAmI)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -153,8 +144,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(theVoid)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -165,8 +155,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(zilly)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -181,8 +170,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot([1, 2, 3])",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -197,8 +185,7 @@ final class IsNotTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(maybe)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 }

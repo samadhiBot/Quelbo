@@ -31,8 +31,7 @@ final class NextSiblingTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "egg.nextSibling",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 

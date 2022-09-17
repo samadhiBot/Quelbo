@@ -29,8 +29,7 @@ extension Factories {
                 code: { _ in
                     "\(container.code).isEmpty"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

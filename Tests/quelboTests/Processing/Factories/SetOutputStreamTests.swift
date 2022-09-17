@@ -32,8 +32,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.screenOff)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -44,8 +43,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.transcriptFileOff)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -56,8 +54,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.tableOff)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -68,8 +65,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.commandsFileOff)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -80,8 +76,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.screenOn)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -92,8 +87,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.transcriptFileOn)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -110,8 +104,7 @@ final class SetOutputStreamTests: QuelboTests {
                     &outputTable
                 )
                 """,
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -139,8 +132,7 @@ final class SetOutputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setOutputStream(.commandsFileOn)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
     func testNonIntegerThrows() throws {

@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     ".random(\(maximum.code))"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

@@ -52,7 +52,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -77,7 +76,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -105,7 +103,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -128,7 +125,6 @@ final class TableTests: QuelboTests {
             )
             """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -159,7 +155,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: false
         ))
     }
@@ -196,7 +191,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: false
         ))
     }
@@ -241,7 +235,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }

@@ -17,7 +17,7 @@ final class ParseTests: QuelboTests {
     }
 
     func testParse() throws {
-        localVariables.append(Variable(id: "atm"))
+        localVariables.append(Variable(id: "atm", type: .string))
 
         let symbol = try factory.init([
             .form([
@@ -35,8 +35,7 @@ final class ParseTests: QuelboTests {
             code: """
                 [["V?", atm].joined()].parse()
                 """,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

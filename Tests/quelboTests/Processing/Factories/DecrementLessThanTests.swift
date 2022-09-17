@@ -28,8 +28,7 @@ final class DecrementLessThanTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.decrement().isLessThan(3)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

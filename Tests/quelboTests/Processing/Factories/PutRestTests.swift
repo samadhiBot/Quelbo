@@ -35,8 +35,7 @@ final class PutRestTests: QuelboTests {
             code: """
                 [1, 2, 3, 4].putRest([5, 6, 7])
                 """,
-            type: .array(.int),
-            confidence: .certain
+            type: .array(.int)
         ))
     }
 
@@ -59,8 +58,7 @@ final class PutRestTests: QuelboTests {
             code: """
                 [1, 2, 3, 4].putRest(["A", "B", "C"])
                 """,
-            type: .array(.zilElement),
-            confidence: .certain
+            type: .array(.zilElement)
         ))
     }
 
@@ -83,8 +81,7 @@ final class PutRestTests: QuelboTests {
             code: """
                 [1, "A", 3, "C"].putRest([2, "B", 4])
                 """,
-            type: .array(.zilElement),
-            confidence: .certain
+            type: .array(.zilElement)
         ))
     }
 }

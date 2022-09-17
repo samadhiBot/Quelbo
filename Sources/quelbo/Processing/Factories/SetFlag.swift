@@ -34,8 +34,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).\(flag.code).set(\(value))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

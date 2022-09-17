@@ -27,8 +27,7 @@ extension Factories {
                 code: { _ in
                     "[\(elements.codeValues(.commaSeparated))].parse()"
                 },
-                type: .string,
-                confidence: .certain
+                type: .string
             )
         }
     }

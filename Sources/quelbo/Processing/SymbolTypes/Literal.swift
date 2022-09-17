@@ -10,19 +10,16 @@ import Foundation
 
 final class Literal: SymbolType {
     let _code: String
-    private(set) var type: DataType?
-    private(set) var confidence: DataType.Confidence?
+    private(set) var type: TypeInfo
     private(set) var isMutable: Bool?
-    private(set) var isZilElement: Bool
+//    private(set) var isZilElement: Bool
 
     init(
         code: String,
-        type: DataType,
-        confidence: DataType.Confidence
+        type: TypeInfo
     ) {
         self._code = code
-        self.confidence = confidence
-        self.isZilElement = false
+//        self.isZilElement = false
         self.type = type
     }
 
@@ -47,8 +44,8 @@ final class Literal: SymbolType {
      */
 
     var code: String {
-        if isZilElement {
-            switch type {
+        if type.isZilElement {
+            switch type.dataType {
 //            case .array(_): return ".array(_)(\(_code))"
             case .bool: return ".bool(\(_code))"
 //            case .comment: return ".comment(\(_code))"
@@ -72,7 +69,7 @@ final class Literal: SymbolType {
             }
         }
 
-        switch (_code, type) {
+        switch (_code, type.dataType) {
         case ("false", .bool): return "false"
         case ("false", .int): return "0"
         case ("false", .int32): return "0"
@@ -104,48 +101,57 @@ extension Symbol {
     static func literal(_ bool: Bool) -> Symbol {
         .literal(Literal(
             code: bool.description,
-            type: .bool,
-            confidence: bool ? .booleanTrue : .booleanFalse
+            type: .init(
+                dataType: .bool,
+                confidence: bool ? .booleanTrue : .booleanFalse
+            )
         ))
     }
 
     static func literal(_ int64: Int) -> Symbol {
         .literal(Literal(
             code: int64.description,
-            type: .int,
-            confidence: int64 == 0 ? .integerZero : .certain
+            type: .init(
+                dataType: .int,
+                confidence: int64 == 0 ? .integerZero : .certain
+            )
         ))
     }
 
     static func literal(_ int32: Int32) -> Symbol {
         .literal(Literal(
             code: int32.description,
-            type: .int32,
-            confidence: int32 == 0 ? .integerZero : .certain
+            type: .init(
+                dataType: .int32,
+                confidence: int32 == 0 ? .integerZero : .certain
+            )
         ))
     }
 
     static func literal(_ int16: Int16) -> Symbol {
         .literal(Literal(
             code: int16.description,
-            type: .int16,
-            confidence: int16 == 0 ? .integerZero : .certain
+            type: .init(
+                dataType: .int16,
+                confidence: int16 == 0 ? .integerZero : .certain
+            )
         ))
     }
 
     static func literal(_ int8: Int8) -> Symbol {
         .literal(Literal(
             code: int8.description,
-            type: .int8,
-            confidence: int8 == 0 ? .integerZero : .certain
+            type: .init(
+                dataType: .int8,
+                confidence: int8 == 0 ? .integerZero : .certain
+            )
         ))
     }
 
     static func literal(_ string: String) -> Symbol {
         .literal(Literal(
             code: string.quoted,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }
@@ -153,33 +159,36 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Literal {
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        guard
-            let dataType = dataType,
-            let assertionConfidence = assertionConfidence,
-            type != dataType
-        else { return }
-
-        if dataType == .zilElement {
-            isZilElement = true
-            confidence = .certain
-            return
-        }
-
-        if confidence == .certain && assertionConfidence == .certain {
-            throw Symbol.AssertionError.hasTypeAssertionFailed(
-                for: "Literal: \(_code)",
-                asserted: dataType,
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        guard let reconciled = type.reconcile(with: assertedType) else {
+            throw Symbol.AssertionError.hasTypeAssertionLiteralFailed(
+                for: _code,
+                asserted: assertedType,
                 actual: type
             )
         }
-        guard assertionConfidence > confidence ?? .unknown else { return }
 
-        type = dataType
-        confidence = assertionConfidence
+        self.type = reconciled //.asNonOptional
+
+//        if assertedType.dataType == .zilElement {
+//            self.isZilElement = true
+//            self.type = .init(
+//                dataType: type.dataType,
+//                confidence: .certain
+//            )
+//            return
+//        }
+//
+//        if type.confidence == .certain && assertedType.confidence == .certain {
+//            throw Symbol.AssertionError.hasTypeAssertionLiteralFailed(
+//                for: _code,
+//                asserted: assertedType,
+//                actual: type
+//            )
+//        }
+//        guard assertedType.confidence > type.confidence else { return }
+//
+//        type = assertedType
     }
 }
 
@@ -191,8 +200,7 @@ extension Literal: CustomDumpReflectable {
             self,
             children: [
                 "code": self.code,
-                "confidence": self.confidence as Any,
-                "isZilElement": self.isZilElement,
+//                "isZilElement": self.isZilElement,
                 "type": self.type as Any,
             ],
             displayStyle: .struct
@@ -203,7 +211,6 @@ extension Literal: CustomDumpReflectable {
 extension Literal: Equatable {
     static func == (lhs: Literal, rhs: Literal) -> Bool {
         lhs._code == rhs._code &&
-        lhs.confidence == rhs.confidence &&
         lhs.type == rhs.type
     }
 }

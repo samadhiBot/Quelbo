@@ -27,8 +27,7 @@ extension Factories {
                 code: { _ in
                     "save()"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

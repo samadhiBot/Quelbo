@@ -33,8 +33,7 @@ final class PropertyIndexTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.propertyIndex(of: .strength)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -50,8 +49,7 @@ final class PropertyIndexTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "here.propertyIndex(of: .dir)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

@@ -11,8 +11,7 @@ import Foundation
 final class Definition: SymbolType, Identifiable {
     let id: String?
     let tokens: [Token]
-    private(set) var confidence: DataType.Confidence?
-    private(set) var type: DataType?
+    private(set) var type: TypeInfo
 
     init(
         id: String? = nil,
@@ -20,6 +19,7 @@ final class Definition: SymbolType, Identifiable {
     ) {
         self.id = id
         self.tokens = tokens
+        self.type = .unknown
     }
 
     var category: Category? { .definitions }
@@ -48,12 +48,8 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Definition {
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        self.type = dataType
-        self.confidence = assertionConfidence
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        self.type = assertedType
     }
 }
 
@@ -66,6 +62,7 @@ extension Definition: CustomDumpReflectable {
             children: [
                 "id": self.id as Any,
                 "tokens": self.tokens,
+                "type": self.type
             ],
             displayStyle: .struct
         )
@@ -75,7 +72,8 @@ extension Definition: CustomDumpReflectable {
 extension Definition: Equatable {
     static func == (lhs: Definition, rhs: Definition) -> Bool {
         lhs.id == rhs.id &&
-        lhs.tokens == rhs.tokens
+        lhs.tokens == rhs.tokens &&
+        lhs.type == rhs.type
     }
 }
 

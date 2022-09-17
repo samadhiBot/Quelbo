@@ -24,8 +24,7 @@ final class PropertyDefaultTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setPropertyDefault(adjective, false)",
-            type: .bool,
-            confidence: .certain
+            type: .booleanFalse
         ))
     }
 
@@ -37,8 +36,7 @@ final class PropertyDefaultTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setPropertyDefault(size, 5)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

@@ -38,8 +38,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).propertyIndex(of: .\(property.code))"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

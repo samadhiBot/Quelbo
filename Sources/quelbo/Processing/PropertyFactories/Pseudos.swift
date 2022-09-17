@@ -40,8 +40,7 @@ extension Factories {
                         )
                         """
                     },
-                    type: .thing,
-                    confidence: .certain
+                    type: .thing
                 ))
             }
         }
@@ -50,8 +49,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "things" },
-                    type: .array(.thing),
-                    confidence: .certain
+                    type: .array(.thing)
                 )
             }
 
@@ -62,8 +60,7 @@ extension Factories {
                 code: { _ in
                     "things: [\(pseudos.codeValues(.commaSeparated))]"
                 },
-                type: .array(.thing),
-                confidence: .certain
+                type: .array(.thing)
             )
         }
     }

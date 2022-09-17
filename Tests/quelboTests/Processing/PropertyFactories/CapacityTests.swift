@@ -24,8 +24,7 @@ final class CapacityTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "capacity",
             code: "capacity: 6",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -34,8 +33,7 @@ final class CapacityTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "capacity",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

@@ -27,8 +27,7 @@ final class SynonymsTests: QuelboTests {
             code: """
                 synonyms: ["egg", "treasure"]
                 """,
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 
@@ -37,8 +36,7 @@ final class SynonymsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "synonyms",
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 

@@ -23,8 +23,7 @@ final class AsciiTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "\"A\".ascii",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -35,8 +34,7 @@ final class AsciiTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "65.ascii",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

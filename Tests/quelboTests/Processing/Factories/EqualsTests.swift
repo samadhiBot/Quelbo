@@ -26,8 +26,7 @@ final class EqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.equals(3)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -43,8 +42,7 @@ final class EqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "n.equals(3)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -57,8 +55,7 @@ final class EqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.equals(3, 4)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -70,8 +67,7 @@ final class EqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #""hello".equals("goodBye")"#,
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -93,8 +89,7 @@ final class EqualsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "isPlayerAlive.equals(isWorldAlive)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

@@ -49,7 +49,6 @@ extension Factories {
                         code
                     },
                     type: .direction,
-                    confidence: .certain,
                     category: .properties
                 ))
             }
@@ -77,7 +76,6 @@ extension Factories {
                     """
                 },
                 type: .void,
-                confidence: .certain,
                 category: .directions
             )
         }

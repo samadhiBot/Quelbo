@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "takeValue" },
-                    type: .int,
-                    confidence: .certain
+                    type: .int
                 )
             }
             let takeValue = symbols[0]
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "takeValue: \(takeValue.code)"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

@@ -34,8 +34,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).nextProperty(after: .\(property.code))"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

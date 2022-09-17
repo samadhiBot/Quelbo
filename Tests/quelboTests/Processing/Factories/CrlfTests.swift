@@ -21,9 +21,7 @@ final class CrlfTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"output("\n")"#,
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 

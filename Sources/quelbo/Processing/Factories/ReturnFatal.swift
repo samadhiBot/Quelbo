@@ -25,8 +25,7 @@ extension Factories {
                 code: { _ in
                     "returnFatal()"
                 },
-                type: .void,
-                confidence: .void
+                type: .void
             )
         }
     }

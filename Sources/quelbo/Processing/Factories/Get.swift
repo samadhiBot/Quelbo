@@ -19,10 +19,14 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert(.haveCount(.exactly(2)))
-            try symbols[0].assert([
-                .hasType(.table),
-                .isVariable,
-            ])
+
+            try symbols[0].assert(
+                .hasType(.oneOf([.array(.zilElement), .table, .zilElement]))
+            )
+            try? symbols[0].assert(
+                .isVariable
+            )
+
             try symbols[1].assert(.hasType(.int))
         }
 
@@ -34,8 +38,7 @@ extension Factories {
                 code: { _ in
                     "try \(table.code).get(at: \(offset.code))"
                 },
-                type: .zilElement,
-                confidence: .certain
+                type: .zilElement
             )
         }
     }

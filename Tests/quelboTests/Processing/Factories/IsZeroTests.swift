@@ -32,8 +32,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isZero",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -44,8 +43,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.isZero",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -60,8 +58,7 @@ final class IsZeroTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bar.isZero",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

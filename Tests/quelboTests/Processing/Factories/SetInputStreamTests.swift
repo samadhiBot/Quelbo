@@ -23,8 +23,7 @@ final class SetInputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setInputStream(.keyboard)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 
@@ -35,8 +34,7 @@ final class SetInputStreamTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setInputStream(.file)",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 

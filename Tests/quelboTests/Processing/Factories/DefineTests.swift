@@ -51,7 +51,7 @@ final class DefineTests: QuelboTests {
         XCTAssertNoDifference(symbol, .definition(expected))
         XCTAssertNoDifference(Game.findDefinition("incForm"), expected)
 
-        XCTAssertNil(Game.routines.find("incForm(foo)"))
+        XCTAssertNil(Game.routines.find("incForm(foo:)"))
 
         let fooCaller = try testFactory.init([
             .form([
@@ -73,12 +73,10 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .int,
-                confidence: .certain,
                 parameters: [
                     Instance(Variable(
                         id: "foo",
                         type: .int,
-                        confidence: .certain,
                         category: .globals,
                         isMutable: true
                     ))
@@ -89,8 +87,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(fooCaller, .statement(
             code: "incForm(foo: foo)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
 
         XCTAssertNil(Game.routines.find("incForm(bar:)"))
@@ -115,12 +112,10 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .int,
-                confidence: .certain,
                 parameters: [
                     Instance(Variable(
                         id: "bar",
                         type: .int,
-                        confidence: .certain,
                         category: .globals,
                         isMutable: true
                     ))
@@ -131,8 +126,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(barCaller, .statement(
             code: "incForm(bar: bar)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -185,17 +179,15 @@ final class DefineTests: QuelboTests {
                     /// The `double(foo:)` (DOUBLE) function.
                     func double(foo: Int) -> Int {
                         var foo: Int = foo
-                        // DeclareType foo: Int
+                        // Declare(foo: Int)
                         return foo.add(foo)
                     }
                     """,
                 type: .int,
-                confidence: .certain,
                 parameters: [
                     Instance(Variable(
                         id: "foo",
                         type: .int,
-                        confidence: .certain,
                         isMutable: true
                     ))
                 ],
@@ -205,8 +197,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(fooCaller, .statement(
             code: "double(foo: foo)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
 
         XCTAssertNil(Game.routines.find("double(bar:)"))
@@ -227,17 +218,15 @@ final class DefineTests: QuelboTests {
                     /// The `double(bar:)` (DOUBLE) function.
                     func double(bar: Int) -> Int {
                         var bar: Int = bar
-                        // DeclareType bar: Int
+                        // Declare(bar: Int)
                         return bar.add(bar)
                     }
                     """,
                 type: .int,
-                confidence: .certain,
                 parameters: [
                     Instance(Variable(
                         id: "bar",
                         type: .int,
-                        confidence: .certain,
                         isMutable: true
                     ))
                 ],
@@ -247,85 +236,22 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(barCaller, .statement(
             code: "double(bar: bar)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.440mph5j49mp
     func testPowerTo() throws {
-        let definition: [Token] = [
-            .atom("POWER-TO"),
-            .atom("ACT"),
-            .list([
-                .atom("X"),
-                .string("OPT"),
-                .list([
-                    .atom("Y"),
-                    .decimal(2)
-                ])
-            ]),
-            .form([
-                .atom("COND"),
-                .list([
-                    .form([
-                        .atom("=?"),
-                        .local("Y"),
-                        .decimal(0)
-                    ]),
-                    .form([
-                        .atom("RETURN"),
-                        .decimal(1),
-                        .local("ACT")
-                    ])
-                ])
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                    .list([
-                        .atom("Z"),
-                        .decimal(1)
-                    ]),
-                    .list([
-                        .atom("I"),
-                        .decimal(0)
-                    ])
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("Z"),
-                    .form([
-                        .atom("*"),
-                        .local("Z"),
-                        .local("X")
-                    ])
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("I"),
-                    .form([
-                        .atom("+"),
-                        .local("I"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("I"),
-                            .local("Y")
-                        ]),
-                        .form([
-                            .atom("RETURN"),
-                            .local("Z")
-                        ])
-                    ])
-                ])
-            ])
-        ]
+        let definition = try parse("""
+            <DEFINE POWER-TO ACT (X "OPT" (Y 2))
+                <COND (<=? .Y 0> <RETURN 1 .ACT>)>
+                <REPEAT ((Z 1)(I 0))
+                    <SET Z <* .Z .X>>
+                    <SET I <+ .I 1>>
+                    <COND (<=? .I .Y> <RETURN .Z>)>
+                >
+            >
+        """).droppingFirst
 
         let symbol = try factory.init(definition, with: &localVariables).process()
 
@@ -337,7 +263,7 @@ final class DefineTests: QuelboTests {
         XCTAssertNoDifference(symbol, .definition(expected))
         XCTAssertNoDifference(Game.findDefinition("powerTo"), expected)
 
-        XCTAssertNil(Game.routines.find("powerTo(foo)"))
+        XCTAssertNil(Game.routines.find("powerTo(foo:)"))
 
         let fooCaller = try testFactory.init([
             .form([
@@ -369,21 +295,18 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .int,
-                confidence: .certain,
                 parameters: [
                     Instance(
                         Variable(
                             id: "foo",
                             type: .int,
-                            confidence: .certain,
                             isMutable: true
                         )
                     ),
                     Instance(
                         Variable(
                             id: "y",
-                            type: .int,
-                            confidence: .certain
+                            type: .int
                         ),
                         isOptional: true
                     )
@@ -394,8 +317,7 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(fooCaller, .statement(
             code: "powerTo(foo: foo)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -453,7 +375,6 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .table,
-                confidence: .certain,
                 category: .routines
             )
         )
@@ -462,7 +383,6 @@ final class DefineTests: QuelboTests {
             id: "kbdReadbuf",
             code: "let kbdReadbuf: Table = makeReadbuf()",
             type: .table,
-            confidence: .certain,
             category: .constants
         ))
 
@@ -477,56 +397,19 @@ final class DefineTests: QuelboTests {
             id: "editReadbuf",
             code: "let editReadbuf: Table = makeReadbuf()",
             type: .table,
-            confidence: .certain,
             category: .constants
         ))
     }
 
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.243i4a2
     func testFirstThree() throws {
-        let definition: [Token] = [
-            .atom("FIRST-THREE"),
-            .list([
-                .atom("STRUC"),
-                .string("AUX"),
-                .list([
-                    .atom("I"),
-                    .decimal(3)
-                ])
-            ]),
-            .form([
-                .atom("MAPF"),
-                .global("LIST"),
-                .form([
-                    .atom("FUNCTION"),
-                    .list([
-                        .atom("E")
-                    ]),
-                    .form([
-                        .atom("COND"),
-                        .list([
-                            .form([
-                                .atom("0?"),
-                                .form([
-                                    .atom("SET"),
-                                    .atom("I"),
-                                    .form([
-                                        .atom("-"),
-                                        .local("I"),
-                                        .decimal(1)
-                                    ])
-                                ])
-                            ]),
-                            .form([
-                                .atom("MAPSTOP"),
-                                .local("E")
-                            ])
-                        ])
-                    ]),
-                    .local("E")
-                ]),
-                .local("STRUC")
-            ])
-        ]
+        let definition = try parse("""
+            <DEFINE FIRST-THREE (STRUC "AUX" (I 3))
+                <MAPF ,LIST
+                <FUNCTION (E)
+                    <COND (<0? <SET I <- .I 1>>> <MAPSTOP .E>)>
+                .E> .STRUC>>
+        """).droppingFirst
 
         let symbol = try factory.init(definition, with: &localVariables).process()
 
@@ -540,30 +423,12 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNil(Game.routines.find("firstThree(string:)"))
 
-//        let abcConstant = try Factories.Constant([
-//            .atom("ABC"),
-//            .form([
-//                .atom("FIRST-THREE"),
-//                .string("ABCDEFG")
-//            ])
-//        ], with: &localVariables).process()
-
         let abcCaller = try testFactory.init([
             .form([
                 .atom("FIRST-THREE"),
                 .string("ABCDEFG")
             ])
         ], with: &localVariables).process()
-
-//        let firstThreeFunction = try testFactory
-//
-//            .Constant([
-//            .atom("ABC"),
-//            .form([
-//                .atom("FIRST-THREE"),
-//                .string("ABCDEFG")
-//            ])
-//        ], with: &localVariables).process()
 
         XCTAssertNoDifference(
             Game.routines.find("firstThree(string:)"),
@@ -572,12 +437,14 @@ final class DefineTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `firstThree(string:)` (FIRST-THREE) function.
-                    func firstThree(string: String) -> [String] {
+                    func firstThree(
+                        string: String = "ABCDEFG"
+                    ) -> [(<Unknown>) -> <Unknown>] {
                         var i: Int = 3
                         return [
-                            { (e: <Unknown>) in
+                            { (e: <Unknown>) -> <Unknown> in
                                 if i.set(to: i.subtract(1)).isZero {
-                                    e.mapStop
+                                    return e
                                 }
                                 return e
                             }("ABCDEFG"),
@@ -585,24 +452,7 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .array(.string),
-                confidence: .certain,
                 category: .routines
-
-
-//                id: "firstThree()",
-//                code: """
-//                    @discardableResult
-//                    /// The `makeReadbuf` (MAKE-READBUF) function.
-//                    func makeReadbuf() -> Table {
-//                        return Table(
-//                            count: readbufSize,
-//                            flags: [.byte, .none]
-//                        )
-//                    }
-//                    """,
-//                type: .table,
-//                confidence: .certain,
-//                category: .routines
             )
         )
 
@@ -610,36 +460,8 @@ final class DefineTests: QuelboTests {
             code: """
                 firstThree(string: "ABCDEFG")
                 """,
-            type: .array(.function([.unknown], .unknown)),
-            confidence: .unknown
+            type: .function([.string], .string)
         ))
-
-
-//        let symbol = try factory.init([
-//            .atom(""),
-//        ], with: &localVariables).process()
-//
-//        XCTAssertNoDifference(symbol, .definition(
-//            id: "firstThree",
-//            code: """
-//                @discardableResult
-//                /// The `firstThree` (FIRST-THREE) function.
-//                func firstThree(struc: Void) -> [Void] {
-//                    var i: Int = 3
-//                    return [
-//                        { (e: <Unknown>) in
-//                            if i.set(to: i.subtract(1)).isZero {
-//                                e.mapStop
-//                            }
-//                            e
-//                        }(struc),
-//                    ]
-//                }
-//                """,
-//            type: .array(.void),
-//            confidence: .certain,
-//            category: .routines
-//        ))
     }
 
     func testMultifrob() throws {
@@ -647,210 +469,31 @@ final class DefineTests: QuelboTests {
             Variable(id: "prsa", type: .object)
         )
 
-        let definition: [Token] = [
-            .atom("MULTIFROB"),
-            .list([
-                .atom("X"),
-                .atom("ATMS"),
-                .string("AUX"),
-                .list([
-                    .atom("OO"),
-                    .list([
-                        .atom("OR")
-                    ])
-                ]),
-                .list([
-                    .atom("O"),
-                    .local("OO")
-                ]),
-                .list([
-                    .atom("L"),
-                    .list([
-                    ])
-                ]),
-                .atom("ATM")
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("EMPTY?"),
-                            .local("ATMS")
-                        ]),
-                        .form([
-                            .atom("RETURN!-"),
-                            .form([
-                                .atom("COND"),
-                                .list([
-                                    .form([
-                                        .atom("LENGTH?"),
-                                        .local("OO"),
-                                        .decimal(1)
-                                    ]),
-                                    .form([
-                                        .atom("ERROR"),
-                                        .local("X")
-                                    ])
-                                ]),
-                                .list([
-                                    .form([
-                                        .atom("LENGTH?"),
-                                        .local("OO"),
-                                        .decimal(2)
-                                    ]),
-                                    .form([
-                                        .atom("NTH"),
-                                        .local("OO"),
-                                        .decimal(2)
-                                    ])
-                                ]),
-                                .list([
-                                    .atom("ELSE"),
-                                    .form([
-                                        .atom("CHTYPE"),
-                                        .local("OO"),
-                                        .atom("FORM")
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ])
-                ]),
-                .form([
-                    .atom("REPEAT"),
-                    .list([
-                    ]),
-                    .form([
-                        .atom("COND"),
-                        .list([
-                            .form([
-                                .atom("EMPTY?"),
-                                .local("ATMS")
-                            ]),
-                            .form([
-                                .atom("RETURN!-")
-                            ])
-                        ])
-                    ]),
-                    .form([
-                        .atom("SET"),
-                        .atom("ATM"),
-                        .form([
-                            .atom("NTH"),
-                            .local("ATMS"),
-                            .decimal(1)
-                        ])
-                    ]),
-                    .form([
-                        .atom("SET"),
-                        .atom("L"),
-                        .list([
-                            .form([
-                                .atom("COND"),
-                                .list([
-                                    .form([
-                                        .atom("TYPE?"),
-                                        .local("ATM"),
-                                        .atom("ATOM")
-                                    ]),
-                                    .form([
-                                        .atom("FORM"),
-                                        .atom("GVAL"),
-                                        .form([
-                                            .atom("COND"),
-                                            .list([
-                                                .form([
-                                                    .atom("==?"),
-                                                    .local("X"),
-                                                    .atom("PRSA")
-                                                ]),
-                                                .form([
-                                                    .atom("PARSE"),
-                                                    .form([
-                                                        .atom("STRING"),
-                                                        .string("V?"),
-                                                        .form([
-                                                            .atom("SPNAME"),
-                                                            .local("ATM")
-                                                        ])
-                                                    ])
-                                                ])
-                                            ]),
-                                            .list([
-                                                .atom("ELSE"),
-                                                .local("ATM")
-                                            ])
-                                        ])
-                                    ])
-                                ]),
-                                .list([
-                                    .atom("ELSE"),
-                                    .local("ATM")
-                                ])
-                            ]),
-                            .segment(.local("L"))
-                        ])
-                    ]),
-                    .form([
-                        .atom("SET"),
-                        .atom("ATMS"),
-                        .form([
-                            .atom("REST"),
-                            .local("ATMS")
-                        ])
-                    ]),
-                    .form([
-                        .atom("COND"),
-                        .list([
-                            .form([
-                                .atom("==?"),
-                                .form([
-                                    .atom("LENGTH"),
-                                    .local("L")
-                                ]),
-                                .decimal(3)
-                            ]),
-                            .form([
-                                .atom("RETURN!-")
-                            ])
-                        ])
-                    ])
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("O"),
-                    .form([
-                        .atom("REST"),
-                        .form([
-                            .atom("PUTREST"),
-                            .local("O"),
-                            .list([
-                                .form([
-                                    .atom("FORM"),
-                                    .atom("EQUAL?"),
-                                    .form([
-                                        .atom("FORM"),
-                                        .atom("GVAL"),
-                                        .local("X")
-                                    ]),
-                                    .segment(.local("L"))
-                                ])
-                            ])
-                        ])
-                    ])
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("L"),
-                    .list([
-                    ])
-                ])
-            ])
-        ]
+        let definition: [Token] = try parse("""
+            <DEFINE MULTIFROB (X ATMS "AUX" (OO (OR)) (O .OO) (L ()) ATM)
+                <REPEAT ()
+                    <COND (<EMPTY? .ATMS>
+                           <RETURN!- <COND (<LENGTH? .OO 1> <ERROR .X>)
+                                   (<LENGTH? .OO 2> <NTH .OO 2>)
+                                   (ELSE <CHTYPE .OO FORM>)>>)>
+                    <REPEAT ()
+                        <COND (<EMPTY? .ATMS> <RETURN!->)>
+                        <SET ATM <NTH .ATMS 1>>
+                        <SET L
+                             (<COND (<TYPE? .ATM ATOM>
+                                 <FORM GVAL
+                                   <COND (<==? .X PRSA>
+                                      <PARSE
+                                        <STRING "V?"
+                                            <SPNAME .ATM>>>)
+                                     (ELSE .ATM)>>)
+                                (ELSE .ATM)>
+                              !.L)>
+                        <SET ATMS <REST .ATMS>>
+                        <COND (<==? <LENGTH .L> 3> <RETURN!->)>>
+                    <SET O <REST <PUTREST .O (<FORM EQUAL? <FORM GVAL .X> !.L>)>>>
+                    <SET L ()>>>
+        """).droppingFirst
 
         let symbol = try factory.init(definition, with: &localVariables).process()
 
@@ -889,7 +532,6 @@ final class DefineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             category: .routines
         ))
 
@@ -946,7 +588,6 @@ final class DefineTests: QuelboTests {
                     }
                     """,
                 type: .void,
-                confidence: .certain,
                 category: .routines
             )
         )

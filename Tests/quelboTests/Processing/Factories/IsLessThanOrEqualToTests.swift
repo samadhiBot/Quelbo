@@ -32,8 +32,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isLessThanOrEqualTo(3)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -45,8 +44,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isLessThanOrEqualTo(foo)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -58,8 +56,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isLessThanOrEqualTo(bar)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

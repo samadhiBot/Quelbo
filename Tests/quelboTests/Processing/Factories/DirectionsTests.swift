@@ -44,7 +44,6 @@ final class DirectionsTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .certain,
             category: .directions
         ))
 
@@ -53,84 +52,72 @@ final class DirectionsTests: QuelboTests {
                 id: "north",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "east",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "west",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "south",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "northEast",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "northWest",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "southEast",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "southWest",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "up",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "down",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "in",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
                 id: "out",
                 code: "",
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
             Statement(
@@ -143,7 +130,6 @@ final class DirectionsTests: QuelboTests {
                     )
                     """,
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
         ]

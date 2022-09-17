@@ -30,7 +30,6 @@ final class SynonymTestsTests: QuelboTests {
             id: "synonyms:north",
             code: #"Syntax.set("north", synonyms: "fore")"#,
             type: .string,
-            confidence: .certain,
             category: .syntax
         )
 
@@ -50,7 +49,6 @@ final class SynonymTestsTests: QuelboTests {
             id: "synonyms:put",
             code: #"Syntax.set("put", synonyms: "dip", "slide", "soak")"#,
             type: .string,
-            confidence: .certain,
             category: .syntax
         )
 

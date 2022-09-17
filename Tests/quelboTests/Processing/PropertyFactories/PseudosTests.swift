@@ -33,8 +33,7 @@ final class PseudosTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .array(.thing),
-            confidence: .certain
+            type: .array(.thing)
         ))
     }
 
@@ -62,8 +61,7 @@ final class PseudosTests: QuelboTests {
                     ),
                 ]
                 """,
-            type: .array(.thing),
-            confidence: .certain
+            type: .array(.thing)
         ))
     }
 
@@ -72,8 +70,7 @@ final class PseudosTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "things",
-            type: .array(.thing),
-            confidence: .certain
+            type: .array(.thing)
         ))
     }
 

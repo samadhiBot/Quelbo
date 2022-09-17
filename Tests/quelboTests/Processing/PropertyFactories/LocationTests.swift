@@ -26,7 +26,6 @@ final class LocationTests: QuelboTests {
             id: "location",
             code: "location: localGlobals",
             type: .object,
-            confidence: .certain,
             category: .rooms
         ))
     }
@@ -36,8 +35,7 @@ final class LocationTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "location",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 

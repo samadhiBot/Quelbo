@@ -33,8 +33,7 @@ extension Factories {
                 code: { _ in
                     "\(variable.code).increment().isGreaterThan(\(value.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

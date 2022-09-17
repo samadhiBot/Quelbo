@@ -26,8 +26,7 @@ extension Factories {
                     output("\\n")
                     """
                 },
-                type: .void,
-                confidence: .void
+                type: .void
             )
         }
     }

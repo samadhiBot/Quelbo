@@ -17,11 +17,16 @@ final class QuoteTests: QuelboTests {
     }
 
     func testQuoteAtom() throws {
+        localVariables.append(Variable(id: "obj", type: .object))
+
         let symbol = try factory.init([
             .atom("OBJ")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "obj"))
+        XCTAssertNoDifference(symbol, .variable(
+            id: "obj",
+            type: .object
+        ))
     }
 
     func testQuoteForm() throws {
@@ -34,8 +39,7 @@ final class QuoteTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".random(100)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -44,7 +48,6 @@ final class QuoteTests: QuelboTests {
             id: "flameBit",
             type: .bool,
             category: .globals,
-            confidence: .certain,
             isMutable: true
         )
 

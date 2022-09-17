@@ -28,7 +28,6 @@ final class MoveDirectionTests: QuelboTests {
                     )
                     """,
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
         ])
@@ -43,8 +42,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".north: .to(northOfHouse)",
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -57,8 +55,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".land: .to(streamView)",
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -71,8 +68,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".up: .per(upChimneyFunc)",
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -86,8 +82,7 @@ final class MoveDirectionTests: QuelboTests {
             code: """
                 .east: .blocked("The door is boarded and you can't remove the boards.")
                 """,
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -105,8 +100,7 @@ final class MoveDirectionTests: QuelboTests {
                     seems to be getting worse.
                     """)
                 """#,
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -121,8 +115,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".southWest: .conditional(stoneBarrow, if: wonFlag)",
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -144,8 +137,7 @@ final class MoveDirectionTests: QuelboTests {
                     else: "You would drown."
                 )
                 """,
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 
@@ -162,8 +154,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".west: .conditional(kitchen, if: kitchenWindow.isOpen)",
-            type: .direction,
-            confidence: .certain
+            type: .direction
         ))
     }
 

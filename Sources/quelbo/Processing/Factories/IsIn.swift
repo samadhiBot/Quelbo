@@ -31,8 +31,7 @@ extension Factories {
                 code: { _ in
                     "\(child.code).isIn(\(parent.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

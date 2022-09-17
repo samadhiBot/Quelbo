@@ -77,9 +77,7 @@ extension Factories {
                 code: { _ in
                     prints.codeValues(.singleLineBreak)
                 },
-                type: .void,
-                confidence: .void,
-                returnable: .void
+                type: .void
             )
         }
     }

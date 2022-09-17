@@ -27,14 +27,12 @@ extension Factories {
             let arrayOne = symbols[0]
             let arrayTwo = symbols[1]
             let type = arrayOne.type == arrayTwo.type ? arrayOne.type : .array(.zilElement)
-            let confidence = min(arrayOne.confidence ?? .unknown, arrayOne.confidence ?? .unknown)
 
             return .statement(
                 code: { _ in
                     "\(arrayOne.code).putRest(\(arrayTwo.code))"
                 },
-                type: type,
-                confidence: confidence
+                type: type
             )
         }
     }

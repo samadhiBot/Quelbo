@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "value" },
-                    type: .int,
-                    confidence: .certain
+                    type: .int
                 )
             }
 
@@ -39,8 +38,7 @@ extension Factories {
                 code: { _ in
                     "value: \(value.code)"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

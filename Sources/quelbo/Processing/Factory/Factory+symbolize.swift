@@ -34,9 +34,7 @@ extension FactoryType {
             case .commented(let token):
                 symbols.append(.statement(
                     code: { _ in token.value.commented },
-                    type: .comment,
-                    confidence: .certain,
-                    returnable: .void
+                    type: .comment
                 ))
 
             case .decimal(let int):
@@ -102,9 +100,7 @@ extension FactoryType {
     /// Translates a Zil [Atom](https://mdl-language.readthedocs.io/en/latest/04-values-of-atoms/)
     /// token into a Quelbo ``Symbol``.
     ///
-    /// - Parameters:
-    ///   - zil: The original Zil atom name.
-    ///   - index: The index at which the atom occurs in a block of Zil code.
+    /// - Parameter zil: The original Zil atom name.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil atom.
     func symbolizeAtom(_ zil: String) throws -> Symbol {
@@ -118,7 +114,7 @@ extension FactoryType {
         if zil == "T" {
             return .literal(true)
         }
-        return .variable(id: name)
+        return .variable(id: name, type: .unknown)
     }
 
 //    /// Translates a Zil
@@ -165,8 +161,7 @@ extension FactoryType {
                 code: { _ in
                     "\(closure.code)(\(nested.codeValues(.commaSeparated)))"
                 },
-                type: closure.type,
-                confidence: closure.confidence
+                type: closure.type
             )
 
         case .global(let name):
@@ -269,7 +264,6 @@ extension FactoryType {
                 code
             },
             type: .direction,
-            confidence: .certain,
             category: .properties
         )
     }

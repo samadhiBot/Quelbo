@@ -58,7 +58,6 @@ extension Factories {
                     "Syntax(\(definition.values(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .void,
-                confidence: .certain,
                 category: .syntax
             )
 

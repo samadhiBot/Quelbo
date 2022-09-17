@@ -32,9 +32,8 @@ extension Factories {
                     return "continue \(activation)"
                 },
                 type: .void,
-                confidence: .void,
                 activation: activation,
-                quirk: .againStatement
+                isAgainStatement: true
             )
         }
     }

@@ -11,9 +11,8 @@ import Foundation
 protocol SymbolType: Equatable, CustomDebugStringConvertible {
     var category: Category? { get }
     var code: String { get }
-    var confidence: DataType.Confidence? { get }
     var isMutable: Bool? { get }
-    var type: DataType? { get }
+    var type: TypeInfo { get }
 }
 
 extension SymbolType {

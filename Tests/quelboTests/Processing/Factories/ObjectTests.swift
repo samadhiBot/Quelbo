@@ -22,7 +22,6 @@ final class ObjectTests: QuelboTests {
                 id: "localGlobals",
                 code: "",
                 type: .object,
-                confidence: .certain,
                 category: .objects
             )
         )
@@ -75,7 +74,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -146,7 +144,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -208,7 +205,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -282,7 +278,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """#,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -347,7 +342,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -420,7 +414,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """#,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -507,7 +500,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """#,
             type: .object,
-            confidence: .certain,
             category: .objects
         ))
     }
@@ -571,7 +563,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         ))
     }
@@ -620,7 +611,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -708,7 +698,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         )
 
@@ -762,7 +751,6 @@ final class ObjectTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .objects
         ))
     }

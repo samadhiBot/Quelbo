@@ -25,8 +25,7 @@ extension Factories {
                 code: { _ in
                     "setPropertyDefault(\(variable.code), \(value.code))"
                 },
-                type: variable.type,
-                confidence: .certain
+                type: variable.type
             )
         }
     }

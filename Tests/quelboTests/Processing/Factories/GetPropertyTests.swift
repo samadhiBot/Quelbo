@@ -16,7 +16,7 @@ final class GetPropertyTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            .variable(id: "count", type: .int, confidence: .certain),
+            .variable(id: "count", type: .int),
             .variable(id: "troll", type: .object, category: .objects),
         ])
     }
@@ -33,8 +33,7 @@ final class GetPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

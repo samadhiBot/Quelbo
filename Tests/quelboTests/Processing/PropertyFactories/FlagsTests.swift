@@ -28,21 +28,18 @@ final class FlagsTests: QuelboTests {
                 id: "takeBit",
                 code: "isTakable",
                 type: .bool,
-                confidence: .certain,
                 category: .flags
             ),
             .statement(
                 id: "contBit",
                 code: "isContainer",
                 type: .bool,
-                confidence: .certain,
                 category: .flags
             ),
             .statement(
                 id: "openBit",
                 code: "isOpen",
                 type: .bool,
-                confidence: .certain,
                 category: .flags
             )
         ]
@@ -56,8 +53,7 @@ final class FlagsTests: QuelboTests {
                     isTakable,
                 ]
                 """,
-            type: .array(.bool),
-            confidence: .certain
+            type: .array(.bool)
         ))
 
         flagGlobals.forEach { flag in
@@ -76,8 +72,7 @@ final class FlagsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "flags",
-            type: .array(.bool),
-            confidence: .certain
+            type: .array(.bool)
         ))
     }
 
@@ -93,8 +88,7 @@ final class FlagsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "x.hasFlag(isTakable)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

@@ -20,8 +20,7 @@ extension Factories {
             try symbols.assert(.haveCount(.exactly(2)))
 
             try symbols[0].assertHasType(
-                .array(.unknown),
-                confidence: .unknown
+                .array(.unknown)
             )
             try symbols[1].assert(.hasType(.int))
         }
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "\(container.code).count == \(length.code)"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

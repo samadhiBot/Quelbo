@@ -38,7 +38,6 @@ final class RoomTests: QuelboTests {
                     )
                     """,
                 type: .direction,
-                confidence: .certain,
                 category: .properties
             ),
         ])
@@ -151,7 +150,6 @@ final class RoomTests: QuelboTests {
                 )
                 """,
             type: .object,
-            confidence: .certain,
             category: .rooms
         )
 
@@ -255,7 +253,6 @@ final class RoomTests: QuelboTests {
             )
             """,
             type: .object,
-            confidence: .certain,
             category: .rooms
         ))
     }
@@ -362,7 +359,6 @@ final class RoomTests: QuelboTests {
             )
             """,
             type: .object,
-            confidence: .certain,
             category: .rooms
         ))
     }
@@ -453,7 +449,6 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            confidence: .certain,
             category: .rooms
         ))
     }
@@ -519,7 +514,6 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            confidence: .certain,
             category: .rooms
         ))
     }
@@ -609,7 +603,6 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            confidence: .certain,
             category: .rooms
         )
 

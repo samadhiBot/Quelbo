@@ -32,8 +32,7 @@ extension Factories {
                 code: { _ in
                     "read(\(tables))"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

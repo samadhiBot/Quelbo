@@ -31,8 +31,7 @@ extension Factories {
                 code: { _ in
                     variable.code
                 },
-                type: .string,
-                confidence: .certain
+                type: .string
             )
         }
     }

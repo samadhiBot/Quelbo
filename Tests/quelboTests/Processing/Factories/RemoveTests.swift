@@ -31,8 +31,7 @@ final class RemoveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "sandwich.remove()",
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 

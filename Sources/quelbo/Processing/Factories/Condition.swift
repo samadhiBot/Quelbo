@@ -46,16 +46,15 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let conditions = symbols
-            let (type, confidence) = try conditions.returnType() ?? (.void, .void)
+            let type = try conditions.returnType() ?? .void
 
             return .statement(
                 code: { _ in
                     conditions.map(\.code).values(.separator(" else "))
                 },
                 type: type,
-                confidence: confidence,
                 children: conditions,
-                returnable: .void
+                suppressesReturns: true
             )
         }
     }

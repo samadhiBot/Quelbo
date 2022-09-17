@@ -31,7 +31,6 @@ extension Factories {
                     "\(object.code).\(property.code)"
                 },
                 type: property.type,
-                confidence: property.confidence,
                 children: symbols
             )
         }

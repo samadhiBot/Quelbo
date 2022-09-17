@@ -31,9 +31,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).move(to: \(location.code))"
                 },
-                type: .void,
-                confidence: .void,
-                returnable: .void
+                type: .void
             )
         }
     }

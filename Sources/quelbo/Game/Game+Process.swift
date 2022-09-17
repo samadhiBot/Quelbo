@@ -69,6 +69,7 @@ extension Game {
     ) throws {
         Logger.process.info("Processing tokens: \(remaining) of \(total) remaining")
 
+        progressBar.setValue(total - remaining)
         try processZilTokens(bar: &progressBar)
 
         if tokens.isEmpty {

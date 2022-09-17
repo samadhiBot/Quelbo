@@ -14,7 +14,6 @@ final class FactorySymbolizeTests: QuelboTests {
     let boardedWindow = Variable(
         id: "boardedWindow",
         type: .object,
-        confidence: .certain,
         category: .globals
     )
 
@@ -43,13 +42,13 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeAtomTForVariableT() throws {
-        localVariables.append(Variable(id: "t"))
+        localVariables.append(Variable(id: "t", type: .string))
 
         let symbol = try testFactory.init([
             .atom("T")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "t"))
+        XCTAssertNoDifference(symbol, .variable(id: "t", type: .string))
     }
 
     func testSymbolizeBoolTrue() throws {
@@ -83,9 +82,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "// true",
-            type: .comment,
-            confidence: .certain,
-            returnable: .void
+            type: .comment
         ))
     }
 
@@ -132,8 +129,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[isFloating, false]",
-            type: .array(.zilElement),
-            confidence: .booleanFalse
+            type: .array(.zilElement)
         ))
     }
 
@@ -166,8 +162,7 @@ final class FactorySymbolizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "strength",
             code: "strength: 10",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -176,7 +171,6 @@ final class FactorySymbolizeTests: QuelboTests {
             id: "north",
             code: "",
             type: .direction,
-            confidence: .certain,
             category: .properties
         ))
 
@@ -187,7 +181,6 @@ final class FactorySymbolizeTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "north",
             type: .direction,
-            confidence: .certain,
             category: .properties
         ))
     }
@@ -202,8 +195,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".random(100)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

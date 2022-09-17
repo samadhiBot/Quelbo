@@ -13,46 +13,50 @@ final class Statement: SymbolType {
     private(set) var category: Category?
     private(set) var children: [Symbol]
     private(set) var codeBlock: (Statement) throws -> String
-    private(set) var confidence: DataType.Confidence?
     private(set) var id: String?
+    private(set) var isAgainStatement: Bool
+    private(set) var isBindWithAgainStatement: Bool
     private(set) var isMutable: Bool?
-    private(set) var returnable: Symbol.Returnable
+    private(set) var isReturnStatement: Bool
     private(set) var parameters: [Instance]
     private(set) var repeating: Bool
-    private(set) var type: DataType?
-    private(set) var quirk: Quirk?
+    private(set) var suppressesReturns: Bool
+    private(set) var type: TypeInfo
 
     init(
         id: String? = nil,
         code: @escaping (Statement) throws -> String,
-        type: DataType?,
-        confidence: DataType.Confidence?,
+        type: TypeInfo,
         parameters: [Instance] = [],
         children: [Symbol] = [],
         category: Category? = nil,
         activation: String? = nil,
+        isAgainStatement: Bool = false,
+        isBindWithAgainStatement: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        quirk: Quirk? = nil,
-        returnable: Symbol.Returnable = .implicit
+        isReturnStatement: Bool = false,
+        suppressesReturns: Bool = false
     ) {
         self.activation = activation
         self.category = category
         self.children = children
         self.codeBlock = code
-        self.confidence = confidence
         self.id = id
+        self.isAgainStatement = isAgainStatement
+        self.isBindWithAgainStatement = isBindWithAgainStatement
         self.isMutable = isMutable
+        self.isReturnStatement = isReturnStatement
         self.parameters = parameters
         self.repeating = isRepeating
-        self.returnable = returnable
+        self.suppressesReturns = suppressesReturns
         self.type = type
-        self.quirk = quirk
     }
 
     var code: String {
         do {
             return try codeBlock(self)
+                .replacingOccurrences(of: "try try", with: "try")
         } catch {
             return "Statement:code:\(error)"
         }
@@ -61,20 +65,8 @@ final class Statement: SymbolType {
     var isRepeating: Bool {
         repeating || children.contains {
             guard case .statement(let statement) = $0 else { return false }
-
-            return statement.quirk == .againStatement
+            return statement.isAgainStatement
         }
-    }
-}
-
-// MARK: - Symbol Statement initializer
-
-extension Statement {
-    enum Quirk: Equatable {
-        case againStatement
-        case bindWithAgain
-        case returnStatement
-        case zilElement
     }
 }
 
@@ -84,30 +76,32 @@ extension Symbol {
     static func statement(
         id: String? = nil,
         code: @escaping (Statement) throws -> String,
-        type: DataType?,
-        confidence: DataType.Confidence?,
+        type: TypeInfo,
         parameters: [Instance] = [],
         children: [Symbol] = [],
         category: Category? = nil,
         activation: String? = nil,
+        isAgainStatement: Bool = false,
+        isBindWithAgainStatement: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        quirk: Statement.Quirk? = nil,
-        returnable: Symbol.Returnable = .implicit
+        isReturnStatement: Bool = false,
+        suppressesReturns: Bool = false
     ) -> Symbol {
         .statement(Statement(
             id: id,
             code: code,
             type: type,
-            confidence: confidence,
             parameters: parameters,
             children: children,
             category: category,
             activation: activation,
+            isAgainStatement: isAgainStatement,
+            isBindWithAgainStatement: isBindWithAgainStatement,
             isMutable: isMutable,
             isRepeating: isRepeating,
-            quirk: quirk,
-            returnable: returnable
+            isReturnStatement: isReturnStatement,
+            suppressesReturns: suppressesReturns
         ))
     }
 }
@@ -115,49 +109,25 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Statement {
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        guard
-            let dataType = dataType,
-            let assertionConfidence = assertionConfidence,
-            type != dataType
-        else { return }
-
-        for symbol in children {
-            guard
-                case .statement(let statement) = symbol,
-                statement.quirk == .returnStatement
-            else { continue}
-
-            try statement.assertHasType(dataType, confidence: assertionConfidence)
-        }
-
-        if dataType == .zilElement, quirk == nil {
-            quirk = .zilElement
-            return
-        }
-
-        if type == .zilElement || type == .optional(dataType) { return }
-
-        if let type = type,
-           confidence == .certain &&
-           assertionConfidence == .certain &&
-           ![.void, .zilElement].contains(dataType) &&
-           dataType != .optional(type)
-        {
-            throw Symbol.AssertionError.hasTypeAssertionFailed(
-                for: "Statement: \(code)",
-                asserted: dataType,
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        guard let reconciled = type.reconcile(with: assertedType) else {
+            throw Symbol.AssertionError.hasTypeAssertionStatementFailed(
+                for: id ?? code,
+                asserted: assertedType,
                 actual: type
             )
         }
 
-        guard assertionConfidence > confidence ?? .unknown else { return }
+        self.type = reconciled
 
-        type = confidence == .booleanFalse ? dataType.asOptional : dataType
-        confidence = assertionConfidence
+        for symbol in children {
+            guard
+                case .statement(let statement) = symbol,
+                statement.isReturnStatement
+            else { continue }
+
+            try statement.assertHasType(assertedType)
+        }
     }
 }
 
@@ -171,14 +141,15 @@ extension Statement: CustomDumpReflectable {
                 "id": self.id as Any,
                 "code": self.code,
                 "type": self.type as Any,
-                "confidence": self.confidence as Any,
                 "parameters": self.parameters,
                 "category": self.category as Any,
                 "activation": self.activation as Any,
+                "isAgainStatement": self.isAgainStatement,
+                "isBindWithAgainStatement": self.isBindWithAgainStatement,
                 "isMutable": self.isMutable as Any,
                 "isRepeating": self.isRepeating,
-                "quirk": self.quirk as Any,
-                "returnable": self.returnable
+                "isReturnStatement": self.isReturnStatement,
+                "suppressesReturns": self.suppressesReturns
             ],
             displayStyle: .struct
         )
@@ -187,16 +158,17 @@ extension Statement: CustomDumpReflectable {
 
 extension Statement: Equatable {
     static func == (lhs: Statement, rhs: Statement) -> Bool {
-        lhs.id == rhs.id
-        && lhs.code == rhs.code
-        && lhs.type == rhs.type
-        && lhs.confidence == rhs.confidence
-        && lhs.parameters == rhs.parameters
-        && lhs.category == rhs.category
-        && lhs.activation == rhs.activation
-        && lhs.isMutable == rhs.isMutable
-        && lhs.isRepeating == rhs.isRepeating
-        && lhs.quirk == rhs.quirk
-        && lhs.returnable == rhs.returnable
+        lhs.id == rhs.id &&
+        lhs.code == rhs.code &&
+        lhs.type == rhs.type &&
+        lhs.parameters == rhs.parameters &&
+        lhs.category == rhs.category &&
+        lhs.activation == rhs.activation &&
+        lhs.isAgainStatement == rhs.isAgainStatement &&
+        lhs.isBindWithAgainStatement == rhs.isBindWithAgainStatement &&
+        lhs.isMutable == rhs.isMutable &&
+        lhs.isRepeating == rhs.isRepeating &&
+        lhs.isReturnStatement == rhs.isReturnStatement &&
+        lhs.suppressesReturns == rhs.suppressesReturns
     }
 }

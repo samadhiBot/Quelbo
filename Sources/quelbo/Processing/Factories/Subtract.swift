@@ -40,8 +40,7 @@ extension Factories {
                 code: { _ in
                     "-\(value.code)"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

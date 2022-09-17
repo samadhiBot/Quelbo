@@ -18,17 +18,12 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbols = symbols
-            var confidence: DataType.Confidence? {
-                symbols
-                    .map { $0.confidence ?? .unknown }
-                    .max()
-            }
-            var type: DataType {
-                let types = symbols.map(\.type).unique
+            var type: TypeInfo {
+                let types = symbols.map { $0.type }.unique
 
                 switch types.count {
                 case 0: return .array(.unknown)
-                case 1: return .array(types[0] ?? .unknown)
+                case 1: return .array(types[0].dataType)
                 default: return .array(.zilElement)
                 }
             }
@@ -37,8 +32,7 @@ extension Factories {
                 code: { _ in
                     "[\(symbols.codeValues(.commaSeparated))]"
                 },
-                type: type,
-                confidence: confidence
+                type: type
             )
         }
     }

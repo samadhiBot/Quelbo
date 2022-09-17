@@ -17,17 +17,16 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
-                .haveTypeIn([.string, .direction]),
-            ])
+            try symbols.assert(
+                .haveType(.oneOf([.string, .direction]))
+            )
         }
 
         override func process() throws -> Symbol {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "adjectives" },
-                    type: .array(.string),
-                    confidence: .certain
+                    type: .array(.string)
                 )
             }
 
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "adjectives: [\(adjectives.values(.commaSeparated))]"
                 },
-                type: .array(.string),
-                confidence: .certain
+                type: .array(.string)
             )
         }
     }

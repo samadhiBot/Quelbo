@@ -29,8 +29,7 @@ final class NthTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"["AB", "CD", "EF"].nthElement(2)"#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -50,8 +49,7 @@ final class NthTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"a.set(to: ["AB", "CD", "EF"].nthElement(3))"#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

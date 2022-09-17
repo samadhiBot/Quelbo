@@ -25,8 +25,7 @@ final class InsertFileTests: QuelboTests {
             code: """
                 // Insert file "parser"
                 """,
-            type: .comment,
-            confidence: .certain
+            type: .comment
         ))
     }
 }

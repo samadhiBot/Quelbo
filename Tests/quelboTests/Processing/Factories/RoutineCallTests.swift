@@ -18,16 +18,14 @@ final class RoutineCallTests: QuelboTests {
                 id: "bagOfCoinsFunc",
                 code: "",
                 type: .void,
-                confidence: .void,
                 category: .routines
             ),
             .statement(
                 id: "oneFunc",
                 code: "",
                 type: .int,
-                confidence: .certain,
                 parameters: [
-                    Instance(Variable(id: "number", type: .int, confidence: .certain)),
+                    Instance(Variable(id: "number", type: .int)),
                 ],
                 category: .routines
             ),
@@ -35,10 +33,9 @@ final class RoutineCallTests: QuelboTests {
                 id: "twoFunc",
                 code: "",
                 type: .string,
-                confidence: .certain,
                 parameters: [
-                    Instance(Variable(id: "answer", type: .string, confidence: .certain)),
-                    Instance(Variable(id: "number", type: .int, confidence: .certain)),
+                    Instance(Variable(id: "answer", type: .string)),
+                    Instance(Variable(id: "number", type: .int)),
                 ],
                 category: .routines
             ),
@@ -46,11 +43,10 @@ final class RoutineCallTests: QuelboTests {
                 id: "threeFunc",
                 code: "",
                 type: .string,
-                confidence: .certain,
                 parameters: [
-                    Instance(Variable(id: "answer", type: .string, confidence: .certain)),
-                    Instance(Variable(id: "isValid", type: .bool, confidence: .certain)),
-                    Instance(Variable(id: "number", type: .int, confidence: .certain)),
+                    Instance(Variable(id: "answer", type: .string)),
+                    Instance(Variable(id: "isValid", type: .bool)),
+                    Instance(Variable(id: "number", type: .int)),
                 ],
                 category: .routines
             )
@@ -64,8 +60,7 @@ final class RoutineCallTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bagOfCoinsFunc()",
-            type: .void,
-            confidence: .void
+            type: .void
         ))
     }
 
@@ -77,8 +72,7 @@ final class RoutineCallTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "oneFunc(number: 42)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -96,8 +90,7 @@ final class RoutineCallTests: QuelboTests {
                     number: 42
                 )
                 """,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -120,8 +113,7 @@ final class RoutineCallTests: QuelboTests {
                     number: oneFunc(number: 42)
                 )
                 """,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

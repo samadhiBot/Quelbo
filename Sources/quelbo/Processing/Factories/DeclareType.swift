@@ -10,14 +10,12 @@ import Foundation
 extension Factories {
     /// A symbol factory for the MDL
     /// [#DECL](https://mdl-language.readthedocs.io/en/latest/14-data-type-declarations/#143-the-decl-syntax)
-    /// local type declaration.
+    /// and
+    /// [GDECL](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.k62wjra3zbsy)
+    /// type declarations.
     class DeclareType: Factory {
         override class var zilNames: [String] {
-            ["#DECL"]
-        }
-
-        var isGlobal: Bool {
-            false
+            ["#DECL", "GDECL"]
         }
 
         override func processTokens() throws {
@@ -31,76 +29,54 @@ extension Factories {
                     throw Error.missingDeclareTypeVariable(tokens)
                 }
                 
-                guard let dataType = dataType(for: typeToken) else {
-                    continue
-                }
-
                 try nameTokens.forEach { nameToken in
                     guard case .atom(let zil) = nameToken else {
                         throw Error.invalidDeclareTypeVariable(nameToken)
                     }
 
-                    let variable = Variable(
-                        id: zil.lowerCamelCase,
-                        type: dataType,
-                        confidence: .certain,
-                        category: isGlobal ? .globals : nil
+                    let dataType = try dataType(for: typeToken)
+
+                    symbols.append(
+                        .statement(
+                            code: { _ in
+                                "\(zil.lowerCamelCase): \(dataType)"
+                            },
+                            type: .comment
+                        )
                     )
-
-                    symbols.append(.variable(variable))
-
-                    try localVariables.commit(variable)
-
-                    if isGlobal {
-                        try Game.commit(.variable(variable))
-                    }
                 }
             }
         }
 
         override func process() throws -> Symbol {
-            let declareType = isGlobal ? "GlobalType" : "DeclareType"
-            let comment = symbols
-                .compactMap {
-                    guard
-                        let id = $0.id,
-                        let type = $0.type,
-                        type != .unknown
-                    else { return nil }
-
-                    return "// \(declareType) \(id): \(type)"
-                }
-                .joined(separator: "\n")
+            let types = symbols
 
             return .statement(
                 code: { _ in
-                    comment
+                    "Declare(\(types.codeValues(.commaSeparatedNoTrailingComma)))".commented
                 },
-                type: .comment,
-                confidence: .certain
+                type: .comment
             )
         }
     }
 }
 
 extension Factories.DeclareType {
-    func dataType(for typeToken: Token) -> DataType? {
+    func dataType(for typeToken: Token) throws -> String {
         switch typeToken {
         case .atom("FALSE"):
-            return .bool
+            return "Bool"
         case .atom("FIX"):
-            return .int
+            return "Int"
         case .atom("OBJECT"):
-            return .object
+            return "Object"
         case .atom("TABLE"):
-            return .table
+            return "Table"
         case .atom("VECTOR"):
-            return .array(.zilElement)
-        case .form(let tokens):
-            let types = tokens.compactMap { dataType(for: $0) }
-            return types.count == 1 ? types.first : nil
+            return "Array"
         default:
-            return nil
+            let symbol = try symbolize(typeToken)
+            return symbol.code
         }
     }
 }

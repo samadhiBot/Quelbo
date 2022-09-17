@@ -93,9 +93,7 @@ final class ProgramBlockTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 
@@ -181,9 +179,7 @@ final class ProgramBlockTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         ))
     }
 
@@ -290,10 +286,8 @@ final class ProgramBlockTests: QuelboTests {
                     output("RETURN EXIT BLOCK")
                 }
                 """,
-            type: .bool,
-            confidence: .booleanTrue,
-            category: .routines,
-            returnable: .void
+            type: .init(dataType: .bool, confidence: .booleanTrue),
+            category: .routines
         ))
     }
 }

@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "descriptionFunction" },
-                    type: .routine,
-                    confidence: .certain
+                    type: .routine
                 )
             }
             let function = symbols[0]
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "descriptionFunction: \(function.code)"
                 },
-                type: .routine,
-                confidence: .certain
+                type: .routine
             )
         }
     }

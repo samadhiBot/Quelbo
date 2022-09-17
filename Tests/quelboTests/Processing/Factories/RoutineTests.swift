@@ -20,7 +20,6 @@ final class RoutineTests: QuelboTests {
                 id: "isLit",
                 code: "",
                 type: .bool,
-                confidence: .certain,
                 category: .routines
             ),
             .statement(singSymbol),
@@ -55,9 +54,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -83,9 +80,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -116,18 +111,15 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .int,
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "rarg",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     )
                 ),
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -155,18 +147,15 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             parameters: [
                 Instance(
                     Variable(
                         id: "message",
-                        type: .string,
-                        confidence: .certain
+                        type: .string
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -206,9 +195,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .string,
-            confidence: .certain,
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -242,10 +229,8 @@ final class RoutineTests: QuelboTests {
                     return isDummy.set(to: true)
                 }
                 """,
-            type: .bool,
-            confidence: .booleanTrue,
-            category: .routines,
-            returnable: .void
+            type: .booleanTrue,
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -274,19 +259,16 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             parameters: [
                 Instance(
                     Variable(
                         id: "foo",
-                        type: .string,
-                        confidence: .certain
+                        type: .string
                     ),
                     isOptional: true
                 ),
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -325,27 +307,23 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .int,
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "foo",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     ),
                     isOptional: true
                 ),
                 Instance(
                     Variable(
                         id: "bar",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     ),
                     isOptional: true
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -378,119 +356,35 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
             parameters: [
                 Instance(
                     Variable(
                         id: "foo",
-                        type: .string,
-                        confidence: .certain
+                        type: .string
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
         XCTAssertNoDifference(Game.routines.find("deadFunc"), expected)
     }
 
-    // <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
-
     func testProcessWithMultipleDefaultValueParam() throws {
-        let symbol = try factory.init([
-            .atom("REMARK"),
-            .list([
-                .atom("REMARK"),
-                .atom("D"),
-                .atom("W"),
-                .string("AUX"),
-                .list([
-                    .atom("LEN"),
-                    .form([
-                        .atom("GET"),
-                        .local("REMARK"),
-                        .decimal(0)
-                    ])
-                ]),
-                .list([
-                    .atom("CNT"),
-                    .decimal(0)
-                ]),
-                .atom("STR")
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("G?"),
-                            .form([
-                                .atom("SET"),
-                                .atom("CNT"),
-                                .form([
-                                    .atom("+"),
-                                    .local("CNT"),
-                                    .decimal(1)
-                                ])
-                            ]),
-                            .local("LEN")
-                        ]),
-                        .form([
-                            .atom("RETURN")
-                        ])
-                    ])
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("STR"),
-                    .form([
-                        .atom("GET"),
-                        .local("REMARK"),
-                        .local("CNT")
-                    ])
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("EQUAL?"),
-                            .local("STR"),
-                            .global("F-WEP")
-                        ]),
-                        .form([
-                            .atom("PRINTD"),
-                            .local("W")
-                        ])
-                    ]),
-                    .list([
-                        .form([
-                            .atom("EQUAL?"),
-                            .local("STR"),
-                            .global("F-DEF")
-                        ]),
-                        .form([
-                            .atom("PRINTD"),
-                            .local("D")
-                        ])
-                    ]),
-                    .list([
-                        .atom("T"),
-                        .form([
-                            .atom("PRINT"),
-                            .local("STR")
-                        ])
-                    ])
-                ])
-            ]),
-            .form([
-                .atom("CRLF")
-            ])
-        ], with: &localVariables).process()
+        let symbol = try factory.init(
+            try parse("""
+                <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
+                     <REPEAT ()
+                             <COND (<G? <SET CNT <+ .CNT 1>> .LEN> <RETURN>)>
+                         <SET STR <GET .REMARK .CNT>>
+                         <COND (<EQUAL? .STR ,F-WEP> <PRINTD .W>)
+                               (<EQUAL? .STR ,F-DEF> <PRINTD .D>)
+                               (T <PRINT .STR>)>>
+                     <CRLF>>
+                """).droppingFirst,
+            with: &localVariables
+        ).process()
 
         let expected = Statement(
             id: "remark",
@@ -503,7 +397,7 @@ final class RoutineTests: QuelboTests {
                 ) {
                     var len: ZilElement = try remark.get(at: 0)
                     var cnt: Int = 0
-                    var str: String = ""
+                    var str: ZilElement = .none
                     while true {
                         if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
                             break
@@ -521,32 +415,27 @@ final class RoutineTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            confidence: .void,
             parameters: [
                 Instance(
                     Variable(
                         id: "remark",
-                        type: .table,
-                        confidence: .certain
+                        type: .oneOf([.table, .zilElement, .array(.zilElement)])
                     )
                 ),
                 Instance(
                     Variable(
                         id: "d",
-                        type: .object,
-                        confidence: .certain
+                        type: .object
                     )
                 ),
                 Instance(
                     Variable(
                         id: "w",
-                        type: .object,
-                        confidence: .certain
+                        type: .object
                     )
                 ),
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -597,80 +486,19 @@ final class RoutineTests: QuelboTests {
     }
 
     func testFindWeapon() throws {
-        let symbol = try factory.init([
-            .atom("FIND-WEAPON"),
-            .list([
-                .atom("O"),
-                .string("AUX"),
-                .atom("W")
-            ]),
-            .form([
-                .atom("SET"),
-                .atom("W"),
-                .form([
-                    .atom("FIRST?"),
-                    .local("O")
-                ])
-            ]),
-            .form([
-                .atom("COND"),
-                .list([
-                    .form([
-                        .atom("NOT"),
-                        .local("W")
-                    ]),
-                    .form([
-                        .atom("RFALSE")
-                    ])
-                ])
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("OR"),
-                            .form([
-                                .atom("EQUAL?"),
-                                .local("W"),
-                                .global("STILETTO"),
-                                .global("AXE"),
-                                .global("SWORD")
-                            ]),
-                            .form([
-                                .atom("EQUAL?"),
-                                .local("W"),
-                                .global("KNIFE"),
-                                .global("RUSTY-KNIFE")
-                            ])
-                        ]),
-                        .form([
-                            .atom("RETURN"),
-                            .local("W")
-                        ])
-                    ]),
-                    .list([
-                        .form([
-                            .atom("NOT"),
-                            .form([
-                                .atom("SET"),
-                                .atom("W"),
-                                .form([
-                                    .atom("NEXT?"),
-                                    .local("W")
-                                ])
-                            ])
-                        ]),
-                        .form([
-                            .atom("RFALSE")
-                        ])
-                    ])
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = try factory.init(
+            try parse("""
+                <ROUTINE FIND-WEAPON (O "AUX" W)
+                     <SET W <FIRST? .O>>
+                     <COND (<NOT .W>
+                        <RFALSE>)>
+                     <REPEAT ()
+                         <COND (<OR <EQUAL? .W ,STILETTO ,AXE ,SWORD>
+                                <EQUAL? .W ,KNIFE ,RUSTY-KNIFE>>
+                            <RETURN .W>)
+                               (<NOT <SET W <NEXT? .W>>> <RFALSE>)>>>
+            """).droppingFirst,
+            with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(findWeaponRoutine))
         XCTAssertNoDifference(Game.routines.find("findWeapon"), findWeaponRoutine)
@@ -718,9 +546,7 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -824,19 +650,16 @@ final class RoutineTests: QuelboTests {
                     return true
                 }
                 """,
-            type: .bool,
-            confidence: .booleanTrue,
+            type: .booleanTrue,
             parameters: [
                 Instance(
                     Variable(
                         id: "obj",
-                        type: .object,
-                        confidence: .certain
+                        type: .object
                     )
                 ),
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -914,6 +737,88 @@ final class RoutineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(singSymbol))
     }
+
+    func testIntRoutine() throws {
+        try! Game.commit([
+            .variable(id: "cIntlen", type: .int, category: .constants),
+            .variable(id: "cRtn", type: .int, category: .constants),
+            .variable(id: "cInts", type: .int, category: .globals),
+            .variable(id: "cDemons", type: .int, category: .globals),
+            .variable(id: "cTable", type: .table, category: .globals),
+            .variable(id: "cTablelen", type: .int, category: .globals),
+        ])
+
+        let definition = try parse("""
+            <ROUTINE INT (RTN "OPTIONAL" (DEMON <>) E C INT)
+                 #DECL ((RTN) ATOM (DEMON) <OR ATOM FALSE> (E C INT) <PRIMTYPE
+                                              VECTOR>)
+                 <SET E <REST ,C-TABLE ,C-TABLELEN>>
+                 <SET C <REST ,C-TABLE ,C-INTS>>
+                 <REPEAT ()
+                     <COND (<==? .C .E>
+                        <SETG C-INTS <- ,C-INTS ,C-INTLEN>>
+                        <AND .DEMON <SETG C-DEMONS <- ,C-DEMONS ,C-INTLEN>>>
+                        <SET INT <REST ,C-TABLE ,C-INTS>>
+                        <PUT .INT ,C-RTN .RTN>
+                        <RETURN .INT>)
+                           (<EQUAL? <GET .C ,C-RTN> .RTN> <RETURN .C>)>
+                     <SET C <REST .C ,C-INTLEN>>>>
+        """).droppingFirst
+        let symbol = try factory.init(definition, with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "int",
+            code: """
+                @discardableResult
+                /// The `int` (INT) routine.
+                func int(
+                    rtn: ZilElement,
+                    demon: Int = 0,
+                    e: Table? = nil,
+                    c: Table? = nil,
+                    int: Table? = nil
+                ) -> Table {
+                    var e: Table = e
+                    var c: Table = c
+                    var int: Table = int
+                    // Declare(
+                    //     rtn: atom,
+                    //     demon: .or(atom, false),
+                    //     e: Array,
+                    //     c: Array,
+                    //     int: Array
+                    // )
+                    e.set(to: cTable.rest(cTablelen))
+                    c.set(to: cTable.rest(cInts))
+                    while true {
+                        if c.equals(e) {
+                            cInts.set(to: cInts.subtract(cIntlen))
+                            .and(
+                                demon,
+                                cDemons.set(to: cDemons.subtract(cIntlen))
+                            )
+                            int.set(to: cTable.rest(cInts))
+                            try int.put(element: rtn, at: cRtn)
+                            return int
+                        } else if try c.get(at: cRtn).equals(rtn) {
+                            return c
+                        }
+                        return c.set(to: c.rest(cIntlen))
+                    }
+                }
+                """,
+            type: .table,
+            parameters: [
+                Instance(Variable(id: "rtn", type: .zilElement)),
+                Instance(Variable(id: "demon", type: .int), isOptional: true),
+                Instance(Variable(id: "e", type: .table, category: .globals, isMutable: true), isOptional: true),
+                Instance(Variable(id: "c", type: .table, category: .globals, isMutable: true), isOptional: true),
+                Instance(Variable(id: "int", type: .table, category: .globals, isMutable: true), isOptional: true),
+            ],
+            category: .routines
+        ))
+
+    }
 }
 
 // MARK: - Test helpers
@@ -934,19 +839,16 @@ extension RoutineTests {
                     return true
                 }
                 """,
-            type: .bool,
-            confidence: .booleanTrue,
+            type: .booleanTrue,
             parameters: [
                 Instance(
                     Variable(
                         id: "n",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
     }
 
@@ -975,18 +877,15 @@ extension RoutineTests {
                 }
                 """,
             type: .optional(.object),
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "o",
-                        type: .object,
-                        confidence: .certain
+                        type: .object
                     )
                 ),
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
     }
 
@@ -1020,18 +919,15 @@ extension RoutineTests {
             }
             """#,
             type: .void,
-            confidence: .void,
             parameters: [
                 Instance(
                     Variable(
                         id: "n",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
     }
 }

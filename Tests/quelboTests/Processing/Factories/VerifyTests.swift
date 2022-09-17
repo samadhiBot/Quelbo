@@ -21,8 +21,7 @@ final class VerifyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "verify()",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
 
     }

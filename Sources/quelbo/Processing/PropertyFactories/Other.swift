@@ -41,8 +41,7 @@ extension Factories {
                 code: { _ in
                     "\(name): \(code)"
                 },
-                type: type,
-                confidence: .certain
+                type: type
             )
         }
     }

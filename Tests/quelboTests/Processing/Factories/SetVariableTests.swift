@@ -32,8 +32,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.set(to: 3)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -45,8 +44,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"foo.set(to: "Bar!")"#,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -58,13 +56,12 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "isRobbed.set(to: true)",
-            type: .bool,
-            confidence: .booleanTrue
+            type: .init(dataType: .bool, confidence: .booleanTrue)
         ))
     }
 
     func testSetVariableCalledT() throws {
-        localVariables.append(Variable(id: "t"))
+        localVariables.append(Variable(id: "t", type: .int))
 
         let symbol = try factory.init([
             .atom("T"),
@@ -77,8 +74,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "t.set(to: thirty.add(3))",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -95,8 +91,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "x.set(to: n)",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 
@@ -115,8 +110,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "n.set(to: x.nextSibling)",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 
@@ -136,8 +130,7 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "n.set(to: n.subtract(1))",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

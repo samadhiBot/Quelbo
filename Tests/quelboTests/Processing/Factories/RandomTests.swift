@@ -31,8 +31,7 @@ final class RandomTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".random(2)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -43,8 +42,7 @@ final class RandomTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".random(foo)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -59,8 +57,7 @@ final class RandomTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".random(bar)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

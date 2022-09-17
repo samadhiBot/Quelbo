@@ -53,7 +53,6 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -79,7 +78,6 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }
@@ -110,7 +108,6 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: false
         ))
     }
@@ -157,7 +154,6 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            confidence: .certain,
             isMutable: true
         ))
     }

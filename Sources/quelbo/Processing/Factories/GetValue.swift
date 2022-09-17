@@ -29,8 +29,7 @@ extension Factories {
                 code: { _ in
                     variable.code
                 },
-                type: variable.type,
-                confidence: variable.confidence
+                type: variable.type
             )
         }
     }

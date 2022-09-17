@@ -16,15 +16,6 @@ enum Symbol: SymbolType {
 }
 
 extension Symbol {
-    enum Returnable {
-        case always
-        case explicit
-        case implicit
-        case void
-    }
-}
-
-extension Symbol {
     var canBeNilPlaceholder: Bool {
         self == .literal(false) || self == .literal(0)
     }
@@ -63,16 +54,6 @@ extension Symbol {
         }
     }
 
-    var confidence: DataType.Confidence? {
-        switch self {
-        case .definition(let definition): return definition.confidence
-        case .instance(let instance): return instance.confidence
-        case .literal(let literal): return literal.confidence
-        case .statement(let statement): return statement.confidence
-        case .variable(let variable): return variable.confidence
-        }
-    }
-
     var id: String? {
         switch self {
         case .definition(let definition): return definition.id
@@ -99,22 +80,26 @@ extension Symbol {
         }
     }
 
-    var isReturn: Bool {
+    var isReturnable: Bool {
+        isReturnStatement || type.hasReturnValue
+    }
+
+    var isReturnStatement: Bool {
         switch self {
         case .definition, .literal, .instance, .variable: return false
-        case .statement(let statement): return statement.quirk == .returnStatement
+        case .statement(let statement): return statement.isReturnStatement
         }
     }
 
-    var returnable: Returnable {
+    var suppressesReturns: Bool {
         switch self {
-        case .definition: return .void
-        case .literal, .instance, .variable: return .always
-        case .statement(let statement): return statement.returnable
+        case .definition: return true
+        case .literal, .instance, .variable: return false
+        case .statement(let statement): return statement.suppressesReturns
         }
     }
 
-    var type: DataType? {
+    var type: TypeInfo {
         switch self {
         case .definition(let definition): return definition.type
         case .instance(let instance): return instance.type

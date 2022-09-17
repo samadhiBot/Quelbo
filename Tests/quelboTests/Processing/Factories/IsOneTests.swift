@@ -31,8 +31,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isOne",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -43,8 +42,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "foo.isOne",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 
@@ -59,8 +57,7 @@ final class IsOneTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bar.isOne",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

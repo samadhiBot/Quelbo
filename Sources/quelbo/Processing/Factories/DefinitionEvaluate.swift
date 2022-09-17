@@ -54,7 +54,7 @@ extension Factories {
             let name = zilName.lowerCamelCase
             let zilName = zilName!
             let pro = blockProcessor!
-            let (type, confidence) = try pro.returnType()
+            let type = try pro.returnType() ?? .void
 
             let function: Symbol = .statement(
                 id: id,
@@ -72,7 +72,6 @@ extension Factories {
                     """
                 },
                 type: type,
-                confidence: confidence,
                 parameters: pro.paramSymbols,
                 children: pro.symbols,
                 category: .routines

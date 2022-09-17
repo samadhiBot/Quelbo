@@ -31,9 +31,7 @@ final class PrintDescriptionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "output(troll.description)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 

@@ -33,8 +33,7 @@ final class HasFlagTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "kitchenWindow.hasFlag(openBit)",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

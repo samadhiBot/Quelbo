@@ -30,8 +30,7 @@ final class JoinedStringsTests: QuelboTests {
             code: """
             ["A", 66.ascii, "CD"].joined()
             """,
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

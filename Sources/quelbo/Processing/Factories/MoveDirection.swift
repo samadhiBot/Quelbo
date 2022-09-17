@@ -106,8 +106,7 @@ extension Factories {
                 code: { _ in
                     moveDirectionCode
                 },
-                type: .direction,
-                confidence: .certain
+                type: .direction
             )
         }
     }

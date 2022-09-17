@@ -20,9 +20,8 @@ final class ConditionTests: QuelboTests {
                 id: "bottles",
                 code: "",
                 type: .int,
-                confidence: .certain,
                 parameters: [
-                    Instance(Variable(id: "n"))
+                    Instance(Variable(id: "n", type: .int))
                 ],
                 category: .routines
             ),
@@ -30,16 +29,14 @@ final class ConditionTests: QuelboTests {
                 id: "isOpenable",
                 code: "",
                 type: .bool,
-                confidence: .certain,
                 category: .routines
             ),
             .statement(
                 id: "thisIsIt",
                 code: "",
                 type: .bool,
-                confidence: .certain,
                 parameters: [
-                    Instance(Variable(id: "object"))
+                    Instance(Variable(id: "object", type: .object))
                 ],
                 category: .routines
             ),
@@ -60,7 +57,7 @@ final class ConditionTests: QuelboTests {
     }
 
     func testSingleCondition() throws {
-        localVariables.append(Variable(id: "rarg"))
+        localVariables.append(Variable(id: "rarg", type: .int))
 
         let symbol = try factory.init([
             .list([
@@ -83,13 +80,12 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
     func testDoubleCondition() throws {
-        localVariables.append(Variable(id: "rarg"))
+        localVariables.append(Variable(id: "rarg", type: .int))
 
         let symbol = try factory.init([
             .list([
@@ -125,15 +121,14 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            confidence: .certain,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
     func testSingleConditionImplicitReturnable() throws {
         localVariables.append(contentsOf: [
-            Variable(id: "rarg"),
-            Variable(id: "other")
+            Variable(id: "rarg", type: .int),
+            Variable(id: "other", type: .int)
         ])
 
         let symbol = try factory.init([
@@ -158,8 +153,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .int,
-            confidence: .integerZero,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
@@ -182,8 +176,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            confidence: .void,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
@@ -212,13 +205,12 @@ final class ConditionTests: QuelboTests {
             }
             """,
             type: .string,
-            confidence: .certain,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
     func testElsePredicate() throws {
-        localVariables.append(Variable(id: "n"))
+        localVariables.append(Variable(id: "n", type: .int))
 
         let symbol = try factory.init([
             .list([
@@ -258,8 +250,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            confidence: .void,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
@@ -283,8 +274,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
                 type: .void,
-            confidence: .void,
-            returnable: .void
+            suppressesReturns: true
         ))
     }
 
@@ -335,9 +325,8 @@ final class ConditionTests: QuelboTests {
                     return true
                 }
                 """,
-            type: .bool,
-            confidence: .booleanTrue,
-            returnable: .void
+            type: .booleanTrue,
+            suppressesReturns: true
         ))
     }
 }

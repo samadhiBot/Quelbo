@@ -29,8 +29,7 @@ extension Factories {
                 code: { _ in
                     "Stack.push(\(value.code))"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

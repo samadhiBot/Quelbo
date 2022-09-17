@@ -35,8 +35,7 @@ extension Factories {
                 code: { _ in
                     ".\(function)(\(operands.codeValues(.commaSeparatedNoTrailingComma)))"
                 },
-                type: operands.first?.type,
-                confidence: .certain
+                type: operands[0].type
             )
         }
     }

@@ -13,8 +13,7 @@ enum SymbolElementAssertion {
     case hasReturnValue
     case hasSameCategory(as: Symbol)
     case hasSameType(as: Symbol)
-    case hasType(DataType)
-    case hasTypeIn([DataType])
+    case hasType(TypeInfo)
     case isImmutable
     case isMutable
     case isVariable
@@ -25,8 +24,7 @@ enum SymbolCollectionAssertion {
     case haveCommonType
     case haveCount(SymbolCollectionCount)
     case haveSameType(as: Symbol)
-    case haveType(DataType)
-    case haveTypeIn([DataType])
+    case haveType(TypeInfo)
 }
 
 enum SymbolCollectionCount {
@@ -47,11 +45,9 @@ extension Symbol {
         case .hasSameCategory(as: let other):
             if let otherCategory = other.category { try assertHasCategory(otherCategory) }
         case .hasSameType(as: let other):
-            try assertHasType(other.type, confidence: other.confidence)
-        case .hasType(let dataType):
-            try assertHasType(dataType, confidence: .certain)
-        case .hasTypeIn(let dataTypes):
-            try assertHasTypeIn(dataTypes, confidence: .certain)
+            try assertHasType(other.type)
+        case .hasType(let typeInfo):
+            try assertHasType(typeInfo)
         case .isImmutable:
             try assertHasMutability(false)
         case .isMutable:
@@ -78,11 +74,9 @@ extension Array where Element == Symbol {
         case .haveCount(let comparator):
             try assertHaveCount(comparator)
         case .haveSameType(as: let other):
-            try forEach { try $0.assertHasType(other.type, confidence: other.confidence) }
-        case .haveType(let dataType):
-            try forEach { try $0.assertHasType(dataType, confidence: .certain) }
-        case .haveTypeIn(let dataTypes):
-            try forEach { try $0.assertHasTypeIn(dataTypes, confidence: .certain) }
+            try forEach { try $0.assertHasType(other.type) }
+        case .haveType(let typeInfo):
+            try forEach { try $0.assertHasType(typeInfo) }
         }
     }
 
@@ -127,7 +121,7 @@ extension Symbol {
     }
 
     func assertHasReturnValue() throws {
-        guard type?.hasReturnValue == true else {
+        guard type.hasReturnValue == true else {
             throw AssertionError.hasReturnValueAssertionFailed(
                 for: "\(self)",
                 asserted: true,
@@ -136,42 +130,19 @@ extension Symbol {
         }
     }
 
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
+    func assertHasType(_ assertedType: TypeInfo) throws {
         switch self {
         case .definition(let definition):
-            try definition.assertHasType(dataType, confidence: assertionConfidence)
+            try definition.assertHasType(assertedType)
         case .literal(let literal):
-            try literal.assertHasType(dataType, confidence: assertionConfidence)
+            try literal.assertHasType(assertedType)
         case .statement(let statement):
-            try statement.assertHasType(dataType, confidence: assertionConfidence)
+            try statement.assertHasType(assertedType)
         case .instance(let instance):
-            try instance.assertHasType(dataType, confidence: assertionConfidence)
+            try instance.assertHasType(assertedType)
         case .variable(let variable):
-            try variable.assertHasType(dataType, confidence: assertionConfidence)
+            try variable.assertHasType(assertedType)
         }
-    }
-
-    func assertHasTypeIn(
-        _ dataTypes: [DataType],
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        for dataType in dataTypes {
-            do {
-                try assertHasType(dataType, confidence: assertionConfidence)
-                return
-            } catch {
-                continue
-            }
-        }
-
-        throw Symbol.AssertionError.hasTypeInAssertionFailed(
-            for: "\(Self.self): \(code)",
-            asserted: dataTypes,
-            actual: type!
-        )
     }
 
     func assertIsVariable() throws {
@@ -186,11 +157,10 @@ extension Symbol {
 
 extension Array where Element == Symbol {
     func assertHaveCommonType() throws {
-        guard count > 1 else { return }
-
-        guard let alpha = self.max(by: {
-            $0.confidence ?? .unknown < $1.confidence ?? .unknown
-        }) else { return }
+        guard
+            count > 1,
+            let alpha = self.max(by: { $0.type.confidence < $1.type.confidence })
+        else { return }
 
         try assert(.haveSameType(as: alpha))
     }
@@ -215,9 +185,10 @@ extension Symbol {
         case hasCategoryAssertionFailed(for: String, asserted: Category, actual: Category)
         case hasMutabilityAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case hasReturnValueAssertionFailed(for: String, asserted: Bool, actual: Bool)
-        case hasSameTypeAssertionFailed(for: String, asserted: DataType, actual: DataType)
-        case hasTypeAssertionFailed(for: String, asserted: DataType, actual: DataType?)
-        case hasTypeInAssertionFailed(for: String, asserted: [DataType], actual: DataType)
+        case hasSameTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+        case hasTypeAssertionLiteralFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+        case hasTypeAssertionStatementFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+        case hasTypeAssertionVariableFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
         case isImmutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isMutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isVariableAssertionFailed(for: String)

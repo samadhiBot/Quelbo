@@ -45,7 +45,6 @@ final class FunctionTests: QuelboTests {
                 }
                 """,
             type: .function([], .int),
-            confidence: .certain,
             isMutable: false
         ))
     }
@@ -70,7 +69,6 @@ final class FunctionTests: QuelboTests {
                 }
                 """,
             type: .function([.int], .int),
-            confidence: .certain,
             isMutable: false
         ))
     }
@@ -96,7 +94,6 @@ final class FunctionTests: QuelboTests {
                 }
                 """,
             type: .function([.int, .int], .int),
-            confidence: .certain,
             isMutable: false
         ))
     }

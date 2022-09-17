@@ -40,8 +40,7 @@ final class AdjectivesTests: QuelboTests {
                     "coloni",
                 ]
                 """,
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 
@@ -63,8 +62,7 @@ final class AdjectivesTests: QuelboTests {
                     "west",
                 ]
                 """,
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 
@@ -73,8 +71,7 @@ final class AdjectivesTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "adjectives",
-            type: .array(.string),
-            confidence: .certain
+            type: .array(.string)
         ))
     }
 

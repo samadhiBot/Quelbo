@@ -27,8 +27,7 @@ extension Factories {
                 code: { _ in
                     "verify()"
                 },
-                type: .void,
-                confidence: .certain
+                type: .void
             )
         }
     }

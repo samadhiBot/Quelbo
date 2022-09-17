@@ -42,8 +42,7 @@ extension Factories {
                     code: { _ in
                         "\(instance.code): \(value.code)"
                     },
-                    type: value.type,
-                    confidence: value.confidence
+                    type: value.type
                 )
             }
         }
@@ -60,8 +59,7 @@ extension Factories {
                 code: { _ in
                     "\(applicable)(\(params.codeValues(.commaSeparatedNoTrailingComma)))"
                 },
-                type: applicable.type,
-                confidence: .certain
+                type: applicable.type
             )
         }
     }

@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "// Insert file \(filename.code)"
                 },
-                type: .comment,
-                confidence: .certain
+                type: .comment
             )
         }
     }

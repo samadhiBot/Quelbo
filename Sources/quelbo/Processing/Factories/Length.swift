@@ -27,8 +27,7 @@ extension Factories {
                 code: { _ in
                     "\(collection.code).count"
                 },
-                type: .int,
-                confidence: .certain
+                type: .int
             )
         }
     }

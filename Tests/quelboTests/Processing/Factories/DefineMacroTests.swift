@@ -20,8 +20,8 @@ final class DefineMacroTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            .variable(id: "contBit", type: .bool, category: .flags, confidence: .certain),
-            .variable(id: "doorBit", type: .bool, category: .flags, confidence: .certain),
+            .variable(id: "contBit", type: .bool, category: .flags),
+            .variable(id: "doorBit", type: .bool, category: .flags),
         ])
     }
 
@@ -65,13 +65,11 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .int,
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "atm",
                         type: .int,
-                        confidence: .certain,
                         category: Category.globals,
                         isMutable: true
                     )
@@ -80,15 +78,13 @@ final class DefineMacroTests: QuelboTests {
                     Variable(
                         id: "n",
                         type: .int,
-                        confidence: .certain,
                         category: nil,
                         isMutable: nil
                     ),
                     isOptional: true
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -132,18 +128,15 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "obj",
-                        type: .object,
-                        confidence: .certain
+                        type: .object
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -189,24 +182,21 @@ final class DefineMacroTests: QuelboTests {
                 func double(any: Int) -> Int {
                     do {
                         var x: Int = any
-                        // DeclareType x: Int
+                        // Declare(x: Int)
                         return x.add(x)
                     }
                 }
                 """,
             type: .int,
-            confidence: .certain,
             parameters: [
                 Instance(
                     Variable(
                         id: "any",
-                        type: .int,
-                        confidence: .certain
+                        type: .int
                     )
                 )
             ],
-            category: .routines,
-            returnable: .void
+            category: .routines
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))

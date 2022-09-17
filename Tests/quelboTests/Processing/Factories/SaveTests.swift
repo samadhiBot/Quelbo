@@ -21,8 +21,7 @@ final class SaveTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "save()",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 

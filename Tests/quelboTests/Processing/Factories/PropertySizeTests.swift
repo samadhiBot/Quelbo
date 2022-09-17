@@ -32,8 +32,7 @@ final class PropertySizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.propertySize(of: .strength)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

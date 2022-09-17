@@ -30,8 +30,7 @@ extension Factories {
                 code: { _ in
                     "\(object.code).remove()"
                 },
-                type: .void,
-                confidence: .void
+                type: .void
             )
         }
     }

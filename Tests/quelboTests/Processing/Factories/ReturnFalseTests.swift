@@ -21,10 +21,23 @@ final class ReturnFalseTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return false",
-            type: .bool,
-            confidence: .booleanFalse,
-            quirk: .returnStatement,
-            returnable: .explicit
+            type: .booleanFalse,
+            isReturnStatement: true
+        ))
+    }
+
+    func testReturnFalseBecomesReturnNil() throws {
+        let symbol = try factory.init([], with: &localVariables).process()
+        try symbol.assert(.hasType(.object))
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "return nil",
+            type: .init(
+                dataType: .object,
+                confidence: .certain,
+                isOptional: true
+            ),
+            isReturnStatement: true
         ))
     }
 

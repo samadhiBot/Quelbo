@@ -32,8 +32,7 @@ final class ParentTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "thief.parent",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 

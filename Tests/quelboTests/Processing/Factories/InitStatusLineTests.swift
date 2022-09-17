@@ -21,8 +21,7 @@ final class InitStatusLineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "initStatusLine()",
-            type: .void,
-            confidence: .certain
+            type: .void
         ))
     }
 }

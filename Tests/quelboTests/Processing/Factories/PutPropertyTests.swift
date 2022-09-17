@@ -34,8 +34,7 @@ final class PutPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength = 10",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -48,8 +47,7 @@ final class PutPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "winner.action = 0",
-            type: .int,
-            confidence: .integerZero
+            type: .init(dataType: .int, confidence: .integerZero)
         ))
     }
 

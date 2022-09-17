@@ -1,5 +1,5 @@
 //
-//  DataType+Confidence.swift
+//  TypeInfo+Confidence.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 7/12/22.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-// MARK: - DataType.Confidence
+// MARK: - TypeInfo.Confidence
 
-extension DataType {
+extension TypeInfo {
     enum Confidence: Int {
         case unknown
         case void
@@ -17,12 +17,14 @@ extension DataType {
         case integerZero
         case assured
         case booleanTrue
+        case scoped
         case certain
     }
 }
 
-extension DataType.Confidence: Comparable {
-    static func < (lhs: DataType.Confidence, rhs: DataType.Confidence) -> Bool {
+extension TypeInfo.Confidence: Comparable {
+    static func < (lhs: TypeInfo.Confidence, rhs: TypeInfo.Confidence) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 }
+

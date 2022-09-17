@@ -39,8 +39,7 @@ extension Factories {
                     code: { _ in
                         "\(symbol.code): \(value.code)"
                     },
-                    type: value.type,
-                    confidence: value.confidence
+                    type: value.type
                 )
             }
         }
@@ -58,9 +57,7 @@ extension Factories {
                 code: { _ in
                     "\(routineName)(\(params.codeValues(.commaSeparatedNoTrailingComma)))"
                 },
-                type: routine.type,
-                confidence: routine.confidence,
-                returnable: routine.returnable
+                type: routine.type
             )
         }
     }

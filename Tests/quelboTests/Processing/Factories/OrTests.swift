@@ -32,8 +32,7 @@ final class OrTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".or(true)",
-            type: .bool,
-            confidence: .certain
+            type: .booleanTrue
         ))
     }
 
@@ -45,8 +44,7 @@ final class OrTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".or(true, true)",
-            type: .bool,
-            confidence: .certain
+            type: .booleanTrue
         ))
     }
 
@@ -59,8 +57,7 @@ final class OrTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".or(true, false, true)",
-            type: .bool,
-            confidence: .certain
+            type: .booleanTrue
         ))
     }
 
@@ -73,8 +70,7 @@ final class OrTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".or(1, 0, 2)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -102,8 +98,7 @@ final class OrTests: QuelboTests {
                 .isNot(foundTreasureChest)
             )
             """,
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 }

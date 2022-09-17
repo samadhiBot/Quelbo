@@ -26,8 +26,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "synonyms" },
-                    type: .array(.string),
-                    confidence: .certain
+                    type: .array(.string)
                 )
             }
 
@@ -38,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "synonyms: [\(synonyms.values(.commaSeparated))]"
                 },
-                type: .array(.string),
-                confidence: .certain
+                type: .array(.string)
             )
         }
     }

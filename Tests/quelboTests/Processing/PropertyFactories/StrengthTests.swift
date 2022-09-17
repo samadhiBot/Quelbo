@@ -24,8 +24,7 @@ final class StrengthTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "strength",
             code: "strength: 2",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -34,8 +33,7 @@ final class StrengthTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "strength",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

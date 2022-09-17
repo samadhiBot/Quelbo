@@ -18,25 +18,15 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert(.haveCount(.exactly(0)))
-
-            symbols = [.literal(true)]
         }
 
         override func process() throws -> Symbol {
-            let value = symbols[0]
-
-            return .statement(
-                code: { statement in
-                    guard statement.type == .bool || value.code == "true" else {
-                        return "return nil"
-                    }
-
-                    return "return \(value.code)"
+            .statement(
+                code: { _ in
+                    "return true"
                 },
-                type: .bool,
-                confidence: value.confidence,
-                quirk: .returnStatement,
-                returnable: .explicit
+                type: .booleanTrue,
+                isReturnStatement: true
             )
         }
     }

@@ -19,7 +19,7 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.between(0...1)),
-                .haveTypeIn([.bool, .int])
+                .haveType(.oneOf([.bool, .int])),
             ])
         }
 
@@ -27,8 +27,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "vehicleType" },
-                    type: .bool,
-                    confidence: .certain
+                    type: .bool
                 )
             }
 
@@ -44,8 +43,7 @@ extension Factories {
                 code: { _ in
                     "vehicleType: \(vehicleType)"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

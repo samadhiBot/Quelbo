@@ -26,9 +26,9 @@ extension Factories {
             let values = symbols[0]
             let index = symbols[1]
 
-            var elementType: DataType?
-            if case .array(let type) = values.type {
-                elementType = type
+            var elementType: TypeInfo
+            if case .array(let type) = values.type.dataType {
+                elementType = .init(dataType: type, confidence: .certain)
             } else {
                 elementType = values.type
             }
@@ -37,8 +37,7 @@ extension Factories {
                 code: { _ in
                     "\(values.code).nthElement(\(index.code))"
                 },
-                type: elementType,
-                confidence: values.confidence
+                type: elementType
             )
         }
     }

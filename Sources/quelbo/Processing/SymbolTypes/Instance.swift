@@ -38,7 +38,7 @@ final class Instance: SymbolType {
             case .rooms: return ".room(\(variable.id))"
             default: break
             }
-            switch variable.type {
+            switch variable.type.dataType {
             case .bool: return ".bool(\(variable.id))"
             case .int16: return ".int16(\(variable.id))"
             case .int32: return ".int32(\(variable.id))"
@@ -53,11 +53,7 @@ final class Instance: SymbolType {
         return variable.code
     }
 
-    var confidence: DataType.Confidence? {
-        variable.confidence
-    }
-
-    var type: DataType? {
+    var type: TypeInfo {
         isZilElement ? .zilElement : variable.type
     }
 }
@@ -106,16 +102,11 @@ extension Instance {
         }
     }
 
-    func assertHasType(
-        _ dataType: DataType?,
-        confidence assertionConfidence: DataType.Confidence?
-    ) throws {
-        try variable.assertHasType(dataType, confidence: assertionConfidence)
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        try variable.assertHasType(assertedType)
 
-        if dataType == .zilElement {
+        if assertedType.dataType == .zilElement {
             isZilElement = true
-//            confidence = .certain
-            return
         }
 
 //        if self.ca

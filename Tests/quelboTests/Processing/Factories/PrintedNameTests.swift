@@ -32,8 +32,7 @@ final class PrintedNameTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 

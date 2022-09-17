@@ -36,8 +36,7 @@ extension Factories {
                 code: { _ in
                     "\(variable.code).decrement().isLessThan(\(value.code))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

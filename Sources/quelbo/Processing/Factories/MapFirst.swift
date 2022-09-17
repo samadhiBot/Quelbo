@@ -22,14 +22,14 @@ extension Factories {
             var tokens = tokens
             guard
                 let finalFunc = tokens.shift(),
-                let applicable = tokens.shift()
+                let apply = tokens.shift()
             else {
                 throw Error.missingMapFirstParameters(self.tokens)
             }
             self.mappedTokens.append(finalFunc)
 
             let applied: [Token] = processArgs(tokens).map { tokens in
-                .form([applicable] + tokens)
+                .form([apply] + tokens)
             }
             self.mappedTokens.append(contentsOf: applied)
         }

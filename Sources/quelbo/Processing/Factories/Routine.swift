@@ -38,7 +38,7 @@ extension Factories {
             let typeName = typeName
             let zilName = zilName!
             let pro = blockProcessor!
-            let (type, confidence) = try pro.returnType()
+            let type = try pro.returnType() ?? .void
 
             let routine: Symbol = .statement(
                 id: name,
@@ -56,11 +56,9 @@ extension Factories {
                     """
                 },
                 type: type,
-                confidence: confidence,
                 parameters: pro.paramSymbols,
                 children: pro.symbols,
-                category: .routines,
-                returnable: .void
+                category: .routines
             )
 
             try! Game.commit(routine)

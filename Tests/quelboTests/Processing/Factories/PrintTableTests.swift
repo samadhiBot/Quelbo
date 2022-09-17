@@ -23,9 +23,7 @@ final class PrintTableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "output(foo)",
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         ))
     }
 

@@ -32,8 +32,7 @@ final class FirstChildTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "thief.firstChild",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 
@@ -44,8 +43,7 @@ final class FirstChildTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "clearing.firstChild",
-            type: .object,
-            confidence: .certain
+            type: .object
         ))
     }
 

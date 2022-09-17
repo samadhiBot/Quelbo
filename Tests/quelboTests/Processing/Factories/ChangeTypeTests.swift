@@ -26,8 +26,7 @@ final class ChangeTypeTests: QuelboTests {
             code: """
                 "A".changeType(.fix)
                 """,
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -39,8 +38,7 @@ final class ChangeTypeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "65.changeType(.string)",
-            type: .string,
-            confidence: .certain
+            type: .string
         ))
     }
 }

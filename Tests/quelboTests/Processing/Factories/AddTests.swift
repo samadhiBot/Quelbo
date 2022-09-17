@@ -25,8 +25,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(2, 3)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -39,8 +38,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(2, 3, 4)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -52,13 +50,12 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "bigNumber.add(biggerNumber)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
     func testAddLocalAndDecimal() throws {
-        localVariables.append(Variable(id: "count"))
+        localVariables.append(Variable(id: "count", type: .int))
 
         let symbol = try factory.init([
             .local("COUNT"),
@@ -67,18 +64,17 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "count.add(1)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
 
         XCTAssertNoDifference(
             findLocalVariable("count"),
-            Variable(id: "count", type: .int, confidence: .certain)
+            Variable(id: "count", type: .int)
         )
     }
 
     func testAddDecimalAndLocal() throws {
-        localVariables.append(Variable(id: "count"))
+        localVariables.append(Variable(id: "count", type: .int))
 
         let symbol = try factory.init([
             .decimal(1),
@@ -87,24 +83,22 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, count)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
 
         XCTAssertNoDifference(
             findLocalVariable("count"),
-            Variable(id: "count", type: .int, confidence: .certain)
+            Variable(id: "count", type: .int)
         )
     }
 
     func testAddGlobalAndFunctionResult() throws {
         try! Game.commit([
-            .variable(id: "baseScore"),
+            .variable(id: "baseScore", type: .int),
             .statement(
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                confidence: .certain,
                 category: .routines
             ),
         ])
@@ -118,13 +112,12 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "baseScore.add(otvalFrob())",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
 
         XCTAssertNoDifference(
             Game.findGlobal("baseScore"),
-            Variable(id: "baseScore", type: .int, confidence: .certain)
+            Variable(id: "baseScore", type: .int)
         )
     }
 
@@ -144,8 +137,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(try src.get(at: 0), 1)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 
@@ -157,8 +149,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
             id: "pAclause",
-            type: .bool,
-            confidence: .booleanFalse,
+            type: .booleanFalse,
             category: .globals,
             isMutable: true
         ))
@@ -166,8 +157,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(pAclause, .statement(
             id: "pAclause",
             code: "var pAclause: Bool = false",
-            type: .bool,
-            confidence: .booleanFalse,
+            type: .booleanFalse,
             category: .globals
         ))
 
@@ -178,24 +168,21 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "pAclause.add(1)",
+            type: .int
+        ))
+
+        XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
+            id: "pAclause",
             type: .int,
-            confidence: .certain
+            category: .globals,
+            isMutable: true
         ))
 
         XCTAssertNoDifference(pAclause, .statement(
             id: "pAclause",
             code: "var pAclause: Int = 0",
             type: .optional(.int),
-            confidence: .certain,
             category: .globals
-        ))
-
-        XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
-            id: "pAclause",
-            type: .int,
-            confidence: .certain,
-            category: .globals,
-            isMutable: true
         ))
     }
 
@@ -215,8 +202,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, 1)",
-            type: .int,
-            confidence: .certain
+            type: .int
         ))
     }
 

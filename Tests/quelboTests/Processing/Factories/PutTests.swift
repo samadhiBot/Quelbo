@@ -33,9 +33,12 @@ final class PutTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try mytable.put(element: 123, at: 1)",
-            type: .int,
-            confidence: .certain
+            code: "try mytable.put(element: .int(123), at: 1)",
+            type: .init(
+                dataType: .int,
+                confidence: .certain,
+                isZilElement: true
+            )
         ))
     }
 
@@ -47,16 +50,19 @@ final class PutTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: #"try mytable.put(element: "hello", at: 1)"#,
-            type: .string,
-            confidence: .certain
+            code: #"try mytable.put(element: .string("hello"), at: 1)"#,
+            type: .init(
+                dataType: .string,
+                confidence: .certain,
+                isZilElement: true
+            )
         ))
     }
 
     func testPutLocal() throws {
         localVariables.append(contentsOf: [
-            Variable(id: "msg", type: .int, confidence: .certain),
-            Variable(id: "rfrob"),
+            Variable(id: "msg", type: .int),
+            Variable(id: "rfrob", type: .unknown),
         ])
 
         let symbol = try factory.init([
@@ -67,8 +73,11 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try rfrob.put(element: msg, at: 1)",
-            type: .int,
-            confidence: .certain
+            type: .init(
+                dataType: .int,
+                confidence: .certain,
+                isZilElement: true
+            )
         ))
     }
 

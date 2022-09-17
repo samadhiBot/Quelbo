@@ -21,8 +21,7 @@ final class OtherTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "advfcn",
             code: "advfcn: 0",
-            type: .int,
-            confidence: .certain
+            type: .integerZero
         ))
     }
 

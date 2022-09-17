@@ -28,8 +28,7 @@ final class GetValueTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "sandwich",
-            type: .bool,
-            confidence: .booleanTrue
+            type: .booleanTrue
         ))
     }
 
@@ -37,8 +36,7 @@ final class GetValueTests: QuelboTests {
         localVariables.append(
             Variable(
                 id: "sandwich",
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         )
 
@@ -48,8 +46,7 @@ final class GetValueTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "sandwich",
-            type: .bool,
-            confidence: .certain
+            type: .bool
         ))
     }
 

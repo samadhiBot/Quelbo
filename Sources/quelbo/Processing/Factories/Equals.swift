@@ -36,8 +36,7 @@ extension Factories {
                 code: { _ in
                     "\(first.code).\(function)(\(rest.codeValues(.commaSeparated)))"
                 },
-                type: .bool,
-                confidence: .certain
+                type: .bool
             )
         }
     }

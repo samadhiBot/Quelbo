@@ -44,14 +44,13 @@ extension Factories {
                     let elementValues = statement.children
                         .codeValues(.commaSeparatedNoTrailingComma)
 
-                    if statement.quirk == .zilElement {
+                    if statement.type.isZilElement {
                         return ".table(Table(\(elementValues)))"
                     } else {
                         return "Table(\(elementValues))"
                     }
                 },
                 type: .table,
-                confidence: .certain,
                 children: symbols,
                 isMutable: !flags.contains(.pure)
             )
@@ -91,8 +90,7 @@ extension Factories.Table {
             code: { _ in
                 "flags: [\(flagValues)]"
             },
-            type: .zilElement,
-            confidence: .certain
+            type: .zilElement
         )
     }
 }

@@ -40,9 +40,7 @@ extension Factories.Return {
 
                 return "break \(activation)"
             },
-            type: .void,
-            confidence: .void,
-            returnable: .void
+            type: .void
         )
     }
 
@@ -52,9 +50,7 @@ extension Factories.Return {
                 "return \(value.code)"
             },
             type: value.type,
-            confidence: value.confidence,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         )
     }
 
@@ -64,9 +60,7 @@ extension Factories.Return {
                 "return true"
             },
             type: .bool,
-            confidence: .certain,
-            quirk: .returnStatement,
-            returnable: .explicit
+            isReturnStatement: true
         )
     }
 }

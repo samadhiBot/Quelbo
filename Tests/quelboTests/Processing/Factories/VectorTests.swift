@@ -26,8 +26,7 @@ final class VectorTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"[1, 2, "AB", "C"]"#,
-            type: .array(.zilElement),
-            confidence: .certain
+            type: .array(.zilElement)
         ))
     }
 }

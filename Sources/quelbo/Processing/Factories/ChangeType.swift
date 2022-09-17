@@ -58,15 +58,14 @@ extension Factories {
                 code: { _ in
                     "\(value.code).changeType(.\(newType.code))"
                 },
-                type: try dataType(for: newType.code),
-                confidence: .certain
+                type: try typeInfo(for: newType.code)
             )
         }
     }
 }
 
 extension Factories.ChangeType {
-    func dataType(for code: String) throws -> DataType {
+    func typeInfo(for code: String) throws -> TypeInfo {
         switch code {
         case "fix": return .int
         case "form": return .unknown
