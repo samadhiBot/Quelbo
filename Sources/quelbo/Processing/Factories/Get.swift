@@ -21,7 +21,12 @@ extension Factories {
             try symbols.assert(.haveCount(.exactly(2)))
 
             try symbols[0].assert(
-                .hasType(.oneOf([.array(.zilElement), .table, .zilElement]))
+                .hasType(.oneOf([
+                    .array(.string),
+                    .array(.zilElement),
+                    .table,
+                    .zilElement,
+                ]))
             )
             try? symbols[0].assert(
                 .isVariable

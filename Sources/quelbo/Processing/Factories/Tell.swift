@@ -16,7 +16,7 @@ extension Factories {
             ["TELL"]
         }
 
-        enum Mode {
+        enum PrintMode {
             case carriageReturn
             case character
             case description
@@ -24,32 +24,32 @@ extension Factories {
             case number
         }
 
-        var mode = Mode.normal
+        var printMode: PrintMode = .normal
 
         override func processTokens() throws {
             let printTokens: [Token] = tokens.compactMap { token in
                 switch token {
                     case .atom("CR"), .atom("CRLF"):
-                        mode = .carriageReturn
+                        printMode = .carriageReturn
                         return nil
                     case .atom("D"):
-                        mode = .description
+                        printMode = .description
                         return nil
                     case .atom("N"):
-                        mode = .number
+                        printMode = .number
                         return nil
                     case .atom("C"):
-                        mode = .character
+                        printMode = .character
                         return nil
                     case .atom("B"):
-                        mode = .normal
+                        printMode = .normal
                         return nil
                     default: break
                 }
 
-                defer { mode = .normal }
+                defer { printMode = .normal }
 
-                switch mode {
+                switch printMode {
                     case .carriageReturn:
                         return .form([.atom("CRLF")])
                     case .character:

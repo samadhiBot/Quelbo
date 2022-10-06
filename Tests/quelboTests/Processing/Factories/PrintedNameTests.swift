@@ -31,7 +31,7 @@ final class PrintedNameTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "troll",
+            code: "troll.id",
             type: .string
         ))
     }

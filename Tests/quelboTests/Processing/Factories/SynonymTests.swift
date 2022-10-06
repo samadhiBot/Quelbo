@@ -13,46 +13,40 @@ final class SynonymTestsTests: QuelboTests {
     let factory = Factories.Synonym.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("SYNONYM", root: true))
-        AssertSameFactory(factory, Game.findFactory("ADJ-SYNONYM", root: true))
-        AssertSameFactory(factory, Game.findFactory("DIR-SYNONYM", root: true))
-        AssertSameFactory(factory, Game.findFactory("PREP-SYNONYM", root: true))
-        AssertSameFactory(factory, Game.findFactory("VERB-SYNONYM", root: true))
+        AssertSameFactory(factory, Game.findFactory("SYNONYM", type: .mdl))
+        AssertSameFactory(factory, Game.findFactory("ADJ-SYNONYM", type: .mdl))
+        AssertSameFactory(factory, Game.findFactory("DIR-SYNONYM", type: .mdl))
+        AssertSameFactory(factory, Game.findFactory("PREP-SYNONYM", type: .mdl))
+        AssertSameFactory(factory, Game.findFactory("VERB-SYNONYM", type: .mdl))
     }
 
     func testSynonym() throws {
-        let symbol = try factory.init([
-            .atom("NORTH"),
-            .atom("FORE")
-        ], with: &localVariables).process()
+        let symbol = process("<SYNONYM NW NORTHWEST>")
 
-        let expected = Statement(
-            id: "synonyms:north",
-            code: #"Syntax.set("north", synonyms: "fore")"#,
+        XCTAssertNoDifference(symbol, .statement(
+            code: """
+                Syntax.set("nw", synonyms: ["northwest"])
+                """,
             type: .string,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.syntax.find("synonyms:north"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testMultipleSynonyms() throws {
-        let symbol = try factory.init([
-            .atom("PUT"),
-            .atom("SLIDE"),
-            .atom("DIP"),
-            .atom("SOAK"),
-        ], with: &localVariables).process()
+        let symbol = process("<SYNONYM UNDER UNDERNEATH BENEATH BELOW>")
 
-        let expected = Statement(
-            id: "synonyms:put",
-            code: #"Syntax.set("put", synonyms: "dip", "slide", "soak")"#,
+        XCTAssertNoDifference(symbol, .statement(
+            code: """
+                Syntax.set("under", synonyms: [
+                    "below",
+                    "beneath",
+                    "underneath",
+                ])
+                """,
             type: .string,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.syntax.find("synonyms:put"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 }

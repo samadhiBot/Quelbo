@@ -17,14 +17,9 @@ final class SyntaxTests: QuelboTests {
     }
 
     func testQuitSyntax() throws {
-        let symbol = try factory.init([
-            .atom("QUIT"),
-            .atom("="),
-            .atom("V-QUIT")
-        ], with: &localVariables).process()
+        let symbol = process("<SYNTAX QUIT = V-QUIT>")
 
-        let expected = Statement(
-            id: "quit",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "quit",
@@ -32,23 +27,25 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
+            category: .syntax,
+            isCommittable: true
+        ))
 
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("quit"), expected)
+        XCTAssertNoDifference(
+            Game.shared.symbols.first?.code,
+            """
+            Syntax(
+                verb: "quit",
+                actionRoutine: vQuit
+            )
+            """
+        )
     }
 
     func testContemplateSyntax() throws {
-        let symbol = try factory.init([
-            .atom("CONTEMPLATE"),
-            .atom("OBJECT"),
-            .atom("="),
-            .atom("V-THINK-ABOUT")
-        ], with: &localVariables).process()
+        let symbol = process("<SYNTAX CONTEMPLATE OBJECT = V-THINK-ABOUT>")
 
-        let expected = Statement(
-            id: "contemplate",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "contemplate",
@@ -57,32 +54,17 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("contemplate"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testTakeSyntax() throws {
-        let symbol = try factory.init([
-            .atom("TAKE"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("TAKEBIT")
-            ]),
-            .list([
-                .atom("MANY"),
-                .atom("ON-GROUND"),
-                .atom("IN-ROOM")
-            ]),
-            .atom("="),
-            .atom("V-TAKE")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX TAKE OBJECT (FIND TAKEBIT) (MANY ON-GROUND IN-ROOM) = V-TAKE>
+        """)
 
-        let expected = Statement(
-            id: "take",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "take",
@@ -94,11 +76,32 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
+            category: .syntax,
+            isCommittable: true
+        ))
+    }
 
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("take"), expected)
+    func testTakeOffSyntax() throws {
+        let symbol = process("""
+            <SYNTAX TAKE OFF OBJECT (FIND WORNBIT) (HAVE HELD CARRIED) = V-UNWEAR>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: """
+                Syntax(
+                    verb: "take",
+                    directObject: Syntax.Object(
+                        preposition: "off",
+                        where: isBeingWorn,
+                        search: [.carried, .have, .held]
+                    ),
+                    actionRoutine: vUnwear
+                )
+                """,
+            type: .void,
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testWaterSyntax() throws {
@@ -115,8 +118,7 @@ final class SyntaxTests: QuelboTests {
             .atom("WATER")
         ], with: &localVariables).process()
 
-        let expected = Statement(
-            id: "water",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "water",
@@ -128,11 +130,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("water"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testPutSyntax() throws {
@@ -156,8 +156,7 @@ final class SyntaxTests: QuelboTests {
             .atom("PRE-PUT-IN")
         ], with: &localVariables).process()
 
-        let expected = Statement(
-            id: "put",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "put",
@@ -173,11 +172,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("put"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testWakeSyntax() throws {
@@ -192,8 +189,7 @@ final class SyntaxTests: QuelboTests {
             .atom("V-WAKE")
         ], with: &localVariables).process()
 
-        let expected = Statement(
-            id: "wake",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "wake",
@@ -204,11 +200,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("wake"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testWakeUpSyntax() throws {
@@ -224,8 +218,7 @@ final class SyntaxTests: QuelboTests {
             .atom("V-WAKE")
         ], with: &localVariables).process()
 
-        let expected = Statement(
-            id: "wake",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "wake",
@@ -237,11 +230,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("wake"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 
     func testWakeKludgeSyntax() throws {
@@ -262,8 +253,7 @@ final class SyntaxTests: QuelboTests {
             .atom("V-WAKE")
         ], with: &localVariables).process()
 
-        let expected = Statement(
-            id: "wake",
+        XCTAssertNoDifference(symbol, .statement(
             code: """
                 Syntax(
                     verb: "wake",
@@ -278,10 +268,8 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
-            category: .syntax
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.shared.symbols.find("wake"), expected)
+            category: .syntax,
+            isCommittable: true
+        ))
     }
 }

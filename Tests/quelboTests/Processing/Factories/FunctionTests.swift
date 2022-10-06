@@ -16,59 +16,38 @@ final class FunctionTests: QuelboTests {
         AssertSameFactory(factory, Game.findFactory("FUNCTION"))
     }
 
-    func testSimpleAddFunction() throws {
-        let symbol = try factory.init([
-            .list([
-                .string("AUX"),
-                .list([
-                    .atom("X"),
-                    .decimal(1)
-                ]),
-                .list([
-                    .atom("Y"),
-                    .decimal(2)
-                ])
-            ]),
-            .form([
-                .atom("+"),
-                .local("X"),
-                .local("Y")
-            ])
-        ], with: &localVariables).process()
+    func testUselessAddFunctionWithoutParams() throws {
+        let symbol = process("""
+            <FUNCTION ("AUX" (X 1) (Y 2)) <+ .X .Y>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "anon247a",
             code: """
-                {
+                func anon247a() -> Int {
                     var x: Int = 1
                     var y: Int = 2
-                    return x.add(y)
+                    return .add(x, y)
                 }
                 """,
-            type: .function([], .int),
+            type: .int,
             isMutable: false
         ))
     }
 
     func testFunctionWithSingleParam() throws {
-        let symbol = try factory.init([
-            .list([
-                .atom("N")
-            ]),
-            .form([
-                .atom("*"),
-                .local("N"),
-                .local("N")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <FUNCTION (N) <* .N .N>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "anon87f2",
             code: """
-                { (n: Int) -> Int in
-                    var n: Int = n
-                    return n.multiply(n)
+                func anon87f2(n: Int) -> Int {
+                    return .multiply(n, n)
                 }
                 """,
-            type: .function([.int], .int),
+            type: .int,
             isMutable: false
         ))
     }
@@ -87,13 +66,13 @@ final class FunctionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "anonf70d",
             code: """
-                { (a: Int, b: Int) -> Int in
-                    var a: Int = a
-                    return a.add(b)
+                func anonf70d(a: Int, b: Int) -> Int {
+                    return .add(a, b)
                 }
                 """,
-            type: .function([.int, .int], .int),
+            type: .int,
             isMutable: false
         ))
     }

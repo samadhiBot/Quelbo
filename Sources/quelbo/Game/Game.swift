@@ -13,45 +13,47 @@ import os.log
 /// A container for a Zil to Swift game translation.
 ///
 class Game {
-    /// A parser that translates raw Zil code into Swift ``Token`` values.
-    let parser: AnyParser<Substring.UTF8View, Array<Token>>
+    /// <#Description#>
+    private(set) var definitions: [Definition] = []
 
     /// <#Description#>
-    var definitions: [Definition] = []
-
-    /// An array of any errors encountered during game processing.
-    var errors: [String] = []
-
-    /// An array of ``Token`` values parsed from the raw Zil code.
-    var tokens: [Token] = []
+    private(set) var globalVariables: [Variable] = Game.reservedGlobals
 
     /// An array of ``Symbol`` symbols processed from the `tokens`.
-    var symbols: [Symbol] = []
+    private(set) var symbols: [Symbol] = []
 
-    /// <#Description#>
-    var globalVariables: [Variable] = []
+    /// An array of ``Token`` values parsed from the raw Zil code.
+    private(set) var tokens: [Token] = []
 
     /// The ZMachine version to emulate during processing.
-    var zMachineVersion: Game.ZMachineVersion = .z3
-
-    private init() {
-        let syntax = ZilSyntax().parser
-
-        let parser = Parse {
-            Many {
-                syntax
-            } separator: {
-                Whitespace()
-            }
-            End()
-        }
-        .eraseToAnyParser()
-
-        self.parser = parser
-    }
+    private(set) var zMachineVersion: Game.ZMachineVersion = .z3
 
     /// A shared instance of the ``Game`` representation.
     static var shared = Game()
+
+    /// <#Description#>
+    /// - Parameter path: <#path description#>
+    func parseZilSource(at path: String) throws {
+        let parser = Game.Parser()
+        try parser.parseZilSource(at: path)
+        tokens = parser.parsedTokens
+    }
+
+    /// <#Description#>
+    /// - Parameters:
+    ///   - target: <#target description#>
+    ///   - printSymbolsOnFail: <#printSymbolsOnFail description#>
+    func processTokens(
+        to target: String? = nil,
+        with printSymbolsOnFail: Bool = false
+    ) throws {
+        let processor = Game.Processor(
+            tokens: tokens,
+            target: target,
+            printSymbolsOnFail: printSymbolsOnFail
+        )
+        try processor.processTokens()
+    }
 }
 
 // MARK: - Game symbol storage
@@ -63,18 +65,23 @@ extension Game {
         try commit([symbol])
     }
 
-    /// Commit an array of processed ``Variable`` values to the known ``globalVariables``.
-    ///
-    /// - Parameter variables: An array of variables to commit.
+    /// <#Description#>
+    /// - Parameter symbols: <#symbols description#>
     static func commit(_ symbols: [Symbol]) throws {
         for symbol in symbols {
             switch symbol {
             case .definition(let definition):
                 shared.definitions.append(definition)
-            case .statement:
-                shared.symbols.append(symbol)
+
             case .instance, .literal:
-                throw GameError.invalidCommitType(symbol)
+                break
+
+            case .statement(let statement):
+                if statement.isCommittable {
+                    shared.symbols.append(symbol)
+                }
+                try commit(statement.children)
+
             case .variable(let variable):
                 try shared.globalVariables.commit(variable)
             }
@@ -98,13 +105,13 @@ extension Game {
     /// - Returns: <#description#>
     static func findFactory(
         _ id: String,
-        root: Bool = false
+        type: Factories.FactoryType? = nil
     ) -> Factory.Type? {
         let found = factories.filter { $0.zilNames.contains(id) }
         switch found.count {
         case 0: return nil
         case 1: return found[0]
-        default: return found.first { root == $0.muddle }
+        default: return found.first { type == $0.factoryType }
         }
     }
 
@@ -116,15 +123,18 @@ extension Game {
     }
 
     /// <#Description#>
-    /// - Parameter id: <#id description#>
-    /// - Returns: <#description#>
-    static func findPropertyFactory(_ id: String) -> PropertyFactory.Type? {
-        let found = propertyFactories.filter { $0.zilNames.contains(id) }
-        switch found.count {
-        case 0: return nil
-        case 1: return found[0]
-        default: fatalError()
-        }
+    static func reset(
+        definitions: [Definition] = [],
+        globalVariables: [Variable] = Game.reservedGlobals,
+        symbols: [Symbol] = [],
+        tokens: [Token] = [],
+        zMachineVersion: Game.ZMachineVersion = .z3
+    ) {
+        shared.definitions = definitions
+        shared.globalVariables = globalVariables
+        shared.symbols = symbols
+        shared.tokens = tokens
+        shared.zMachineVersion = zMachineVersion
     }
 }
 
@@ -149,14 +159,25 @@ extension Game {
         .map { $0 as! Factory.Type }
 
     static func makeFactory(
-        _ zil: String,
+        zil: String,
         tokens: [Token],
-        with localVariables: inout [Variable]
+        with localVariables: inout [Variable],
+        type factoryType: Factories.FactoryType? = nil,
+        mode factoryMode: Factory.FactoryMode = .process
     ) throws -> Factory {
-        if let factory = factories.first(where: { $0.zilNames.contains(zil)}) {
+        if let factory = Game.findFactory(zil, type: factoryType) {
+            var factoryTokens: [Token] {
+                switch tokens.first {
+                case .atom(zil): return tokens.droppingFirst
+                case .decimal: return tokens.droppingFirst
+                case .global(zil): return tokens.droppingFirst
+                default: return tokens
+                }
+            }
             return try factory.init(
-                tokens.droppingFirst,
-                with: &localVariables
+                factoryTokens,
+                with: &localVariables,
+                mode: factoryMode
             )
         }
 
@@ -165,43 +186,51 @@ extension Game {
         }
 
         if Game.findDefinition(zil.lowerCamelCase) != nil {
-            try Factories.DefinitionEvaluate(tokens, with: &localVariables).process()
-            return try Factories.RoutineCall(tokens, with: &localVariables)
+            return try Factories.DefinitionEvaluate(tokens, with: &localVariables)
         }
 
         throw GameError.factoryNotFound(zil)
     }
+}
 
+// MARK: - Reserved globals
+
+extension Game {
+    static var reservedGlobals: [Variable] {
+        [
+            Variable(id: "actions", type: .array(.string), category: .globals, isMutable: true),
+            Variable(id: "preactions", type: .table, category: .globals, isMutable: true),
+            Variable(id: "prsa", type: .int, category: .globals, isMutable: true),
+            Variable(id: "prsi", type: .object, category: .globals, isMutable: true),
+            Variable(id: "prso", type: .object, category: .globals, isMutable: true),
+            Variable(id: "verbs", type: .table, category: .globals, isMutable: true),
+        ]
+    }
+}
+// MARK: - setZMachineVersion
+
+extension Game {
     /// <#Description#>
-    static let propertyFactories = _Runtime
-        .subclasses(of: PropertyFactory.self)
-        .map { $0 as! PropertyFactory.Type }
+    func setZMachineVersion() throws {
+        for token in tokens {
+            guard
+                case .form(var formTokens) = token,
+                case .atom("VERSION") = formTokens.shift()
+            else {
+                continue
+            }
+            self.zMachineVersion = try Game.ZMachineVersion(tokens: formTokens)
+            break
+        }
 
-    /// Inserts or updates a ``Symbol`` in the known ``gameSymbols``.
-    ///
-    /// - Parameter symbol: The revised symbol to insert or reconcile with a committed symbol.
-    ///
-    /// - Returns: The reconciled and committed symbol.
-//    @discardableResult static func upsert(_ variable: Variable) throws -> Variable {
-//        guard let found = findGlobal(variable.id) else {
-//            shared.globalVariables.append(variable)
-//            return variable
-//        }
-//
-//        if found == variable { return found }
-//
-//        if variable.confidence > found.confidence {
-//            found.confidence = variable.confidence
-//            found.type = variable.type
-//            return found
-//        }
-//
-//        if variable.confidence < found.confidence {
-//            return found
-//        }
-//
-//        throw GameError.variableUpsertConflict(old: found, new: variable)
-//    }
+        Game.Print.heading(
+            """
+
+            􀀷 Z-machine version
+            """,
+            zMachineVersion.rawValue
+        )
+    }
 }
 
 // MARK: - GameError

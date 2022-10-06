@@ -23,6 +23,7 @@ enum SymbolCollectionAssertion {
     case areVariables
     case haveCommonType
     case haveCount(SymbolCollectionCount)
+    case haveReturnValues
     case haveSameType(as: Symbol)
     case haveType(TypeInfo)
 }
@@ -68,15 +69,17 @@ extension Array where Element == Symbol {
     func assert(_ assertion: SymbolCollectionAssertion) throws {
         switch assertion {
         case .areVariables:
-            try forEach { try $0.assertIsVariable() }
+            try nonCommentSymbols.forEach { try $0.assertIsVariable() }
         case .haveCommonType:
-            try assertHaveCommonType()
+            try nonCommentSymbols.assertHaveCommonType()
         case .haveCount(let comparator):
-            try assertHaveCount(comparator)
+            try nonCommentSymbols.assertHaveCount(comparator)
+        case .haveReturnValues:
+            try nonCommentSymbols.forEach { try $0.assertHasReturnValue() }
         case .haveSameType(as: let other):
-            try forEach { try $0.assertHasType(other.type) }
+            try nonCommentSymbols.forEach { try $0.assertHasType(other.type) }
         case .haveType(let typeInfo):
-            try forEach { try $0.assertHasType(typeInfo) }
+            try nonCommentSymbols.forEach { try $0.assertHasType(typeInfo) }
         }
     }
 
@@ -121,9 +124,13 @@ extension Symbol {
     }
 
     func assertHasReturnValue() throws {
+        if case .definition(let definition) = self {
+            print("▶️ definition:", definition)
+        }
+
         guard type.hasReturnValue == true else {
             throw AssertionError.hasReturnValueAssertionFailed(
-                for: "\(self)",
+                for: handle,
                 asserted: true,
                 actual: false
             )
@@ -177,6 +184,18 @@ extension Array where Element == Symbol {
             actual: count,
             symbols: self
         )
+    }
+
+    var nonCommentSymbols: [Symbol] {
+        compactMap { symbol in
+            guard
+                case .statement(let statement) = symbol,
+                statement.type == .comment
+            else {
+                return symbol
+            }
+            return nil
+        }
     }
 }
 

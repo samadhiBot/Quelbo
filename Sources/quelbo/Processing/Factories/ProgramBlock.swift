@@ -41,7 +41,7 @@ extension Factories {
         override func process() throws -> Symbol {
             let pro = blockProcessor!
             let repeating = repeating || pro.repeating
-            let type = try pro.returnType() ?? .void
+            let type = pro.returnType() ?? .void
 
             var activationDeclaration: String {
                 guard
@@ -98,7 +98,7 @@ extension Factories {
                 activation: pro.activation,
                 isBindWithAgainStatement: isBindWithAgain,
                 isRepeating: isRepeating,
-                suppressesReturns: true
+                returnHandling: .suppress
             )
         }
     }

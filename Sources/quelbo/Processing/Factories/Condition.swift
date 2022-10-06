@@ -28,7 +28,8 @@ extension Factories {
                     symbols.append(
                         try conditionalFactory.init(
                             conditionTokens,
-                            with: &localVariables
+                            with: &localVariables,
+                            mode: mode
                         ).process()
                     )
                 default:
@@ -46,15 +47,17 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let conditions = symbols
-            let type = try conditions.returnType() ?? .void
+            let type = conditions.returnType() ?? .void
 
             return .statement(
                 code: { _ in
-                    conditions.map(\.code).values(.separator(" else "))
+                    conditions
+                        .map(\.handle)
+                        .values(.separator(" else "))
                 },
                 type: type,
                 children: conditions,
-                suppressesReturns: true
+                returnHandling: .suppress
             )
         }
     }

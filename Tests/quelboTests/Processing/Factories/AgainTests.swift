@@ -75,7 +75,7 @@ final class AgainTests: QuelboTests {
                 func testAgain1() {
                     var x: Int = 0
                     while true {
-                        x.set(to: x.add(1))
+                        x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(5) {
@@ -88,6 +88,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
+            isCommittable: true,
             isRepeating: true
         ))
     }
@@ -144,7 +145,7 @@ final class AgainTests: QuelboTests {
                 func testAgain2() {
                     var x: Int = 0
                     while true {
-                        x.set(to: x.add(1))
+                        x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(5) {
@@ -158,6 +159,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
+            isCommittable: true,
             isRepeating: true
         ))
     }
@@ -219,7 +221,7 @@ final class AgainTests: QuelboTests {
                 func testAgain3() {
                     var x: Int = 0
                     act1: while true {
-                        x.set(to: x.add(1))
+                        x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(5) {
@@ -231,7 +233,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         ))
     }
 
@@ -292,7 +295,7 @@ final class AgainTests: QuelboTests {
                     var x: Int = 0
                     while true {
                         // PROG generates default activation
-                        x.set(to: x.add(1))
+                        x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(5) {
@@ -304,7 +307,8 @@ final class AgainTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         ))
     }
 }

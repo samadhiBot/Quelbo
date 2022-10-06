@@ -27,18 +27,18 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
 
-            while let zil = try? findName(in: &tokens) {
+            while let zilName = try? findName(in: &tokens) {
                 var code = ""
-                var name = zil.lowerCamelCase
+                var name = zilName.lowerCamelCase
 
-                if let fizmoDirection = Direction.find(zil) {
+                if let fizmoDirection = Direction.find(zilName) {
                     name = fizmoDirection.id.description
                 } else {
                     code = """
                         /// Represents an exit toward \(name).
                         public static let \(name) = Direction(
                             id: "\(name)",
-                            synonyms: ["\(zil)"]
+                            synonyms: ["\(zilName)"]
                         )
                         """
                 }
@@ -49,7 +49,8 @@ extension Factories {
                         code
                     },
                     type: .direction,
-                    category: .properties
+                    category: .properties,
+                    isCommittable: true
                 ))
             }
 
@@ -60,8 +61,6 @@ extension Factories {
             guard !symbols.isEmpty else {
                 throw Error.noDirectionsDefined(self.tokens)
             }
-
-            try! Game.commit(symbols)
         }
 
         override func process() throws -> Symbol {
@@ -76,6 +75,7 @@ extension Factories {
                     """
                 },
                 type: .void,
+                children: symbols,
                 category: .directions
             )
         }

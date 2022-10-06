@@ -23,10 +23,10 @@ extension TypeInfo {
         case table
         case thing
         case unknown
+        case verb
         case void
         case zilElement
         indirect case array(DataType)
-        indirect case function([DataType], DataType)
         indirect case oneOf(Set<DataType>)
         indirect case property(DataType)
     }
@@ -49,9 +49,9 @@ extension TypeInfo.DataType  {
     /// Whether the symbol with this data type can take a `.zilElement` value.
     var canBeZilElement: Bool {
         switch self {
-        case .bool, .int, .int16, .int32, .int8, .object, .string, .table, .zilElement:
+        case .bool, .int, .int16, .int32, .int8, .object, .string, .table, .verb, .zilElement:
             return true
-        case .comment, .direction, .function, .routine, .thing, .unknown, .void:
+        case .comment, .direction, .routine, .thing, .unknown, .void:
             return false
         case .array(let dataType):
             return dataType.canBeZilElement
@@ -128,9 +128,6 @@ extension Set where Element == TypeInfo.DataType {
             if case .array = $0 { return true } else { return false }
         }) { return found }
         if let found = first(where: {
-            if case .function = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
             if case .oneOf = $0 { return true } else { return false }
         }) { return found }
         if let found = first(where: {
@@ -141,50 +138,48 @@ extension Set where Element == TypeInfo.DataType {
     }
 }
 
-extension TypeInfo.DataType: CustomDebugStringConvertible {
-    var debugDescription: String {
-        switch self {
-        case .array(let type):
-            return "<Array<\(type)>>"
-        case .bool:
-            return "Bool"
-        case .comment:
-            return "<Comment>"
-        case .direction:
-            return "Direction"
-        case .function(let params, let type):
-            return "(\(params.map(\.debugDescription).values(.commaSeparated))) -> \(type)"
-        case .int:
-            return "Int"
-        case .int8:
-            return "Int8"
-        case .int16:
-            return "Int16"
-        case .int32:
-            return "Int32"
-        case .object:
-            return "Object"
-        case .oneOf(let types):
-            return "<\(types.map(\.debugDescription).joined(separator: " | "))>"
-        case .property(let type):
-            return "<Property<\(type)>>"
-        case .routine:
-            return "Routine"
-        case .string:
-            return "String"
-        case .table:
-            return "Table"
-        case .thing:
-            return "Thing"
-        case .unknown:
-            return "<Unknown>"
-        case .void:
-            return "Void"
-        case .zilElement:
-            return "ZilElement"
-        }
-    }
-}
+//extension TypeInfo.DataType: CustomDebugStringConvertible {
+//    var debugDescription: String {
+//        switch self {
+//        case .array(let type):
+//            return "<Array<\(type)>>"
+//        case .bool:
+//            return "Bool"
+//        case .comment:
+//            return "<Comment>"
+//        case .direction:
+//            return "Direction"
+//        case .int:
+//            return "Int"
+//        case .int8:
+//            return "Int8"
+//        case .int16:
+//            return "Int16"
+//        case .int32:
+//            return "Int32"
+//        case .object:
+//            return "Object"
+//        case .oneOf(let types):
+//            return "<\(types.map(\.debugDescription).joined(separator: " | "))>"
+//        case .property(let type):
+//            return "<Property<\(type)>>"
+//        case .routine:
+//            return "Routine"
+//        case .string:
+//            return "String"
+//        case .table:
+//            return "Table"
+//        case .thing:
+//            return "Thing"
+//        case .unknown:
+//            return "<Unknown>"
+//        case .void:
+//            return "Void"
+//        case .zilElement:
+//            return "ZilElement"
+//        }
+//    }
+//}
 
 extension TypeInfo.DataType: CustomStringConvertible {
     var description: String {
@@ -197,8 +192,6 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "<Comment>"
         case .direction:
             return "Direction"
-        case .function(let params, let type):
-            return "(\(params.map(\.description).values(.commaSeparated))) -> \(type)"
         case .int:
             return "Int"
         case .int8:
@@ -223,6 +216,8 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "Thing"
         case .unknown:
             return "<Unknown>"
+        case .verb:
+            return "Verb"
         case .void:
             return "Void"
         case .zilElement:

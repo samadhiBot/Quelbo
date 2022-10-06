@@ -12,6 +12,10 @@ extension Factories {
     /// [SYNONYM](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.s1gwiysqrg1z)
     /// function.
     class Synonym: Factory {
+        override class var factoryType: FactoryType {
+            .mdl
+        }
+
         override class var zilNames: [String] {
             [
                 "SYNONYM",
@@ -20,10 +24,6 @@ extension Factories {
                 "PREP-SYNONYM",
                 "VERB-SYNONYM",
             ]
-        }
-
-        override class var muddle: Bool {
-            true
         }
 
         override func processSymbols() throws {
@@ -39,19 +39,16 @@ extension Factories {
                 .map(\.code.quoted)
                 .sorted()
 
-            let symbol: Symbol = .statement(
-                id: "synonyms:\(word.code)",
+            return .statement(
                 code: { _ in
                     """
-                    Syntax.set("\(word.code)", synonyms: \(synonyms.values(.commaSeparated)))
+                    Syntax.set("\(word.code)", synonyms: [\(synonyms.values(.commaSeparated))])
                     """
                 },
                 type: .string,
-                category: .syntax
+                category: .syntax,
+                isCommittable: true
             )
-
-            try! Game.commit(symbol)
-            return symbol
         }
     }
 }

@@ -29,7 +29,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    variable.code
+                    "\(variable.code).id"
                 },
                 type: .string
             )

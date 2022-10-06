@@ -13,48 +13,59 @@ final class FlagsTests: QuelboTests {
     let factory = Factories.Flags.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("FLAGS"))
+        AssertSameFactory(factory, Game.findFactory("FLAGS", type: .property))
     }
 
     func testFlags() throws {
-        let symbol = try factory.init([
-            .atom("TAKEBIT"),
-            .atom("CONTBIT"),
-            .atom("OPENBIT")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <OBJECT BROKEN-EGG
+                (DESC "broken jewel-encrusted egg")
+                (FLAGS TAKEBIT CONTBIT OPENBIT)
+                (CAPACITY 6)>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "brokenEgg",
+            code: """
+                /// The `brokenEgg` (BROKEN-EGG) object.
+                var brokenEgg = Object(
+                    capacity: 6,
+                    description: "broken jewel-encrusted egg",
+                    flags: [
+                        isContainer,
+                        isOpen,
+                        isTakable,
+                    ]
+                )
+                """,
+            type: .object,
+            category: .objects,
+            isCommittable: true
+        ))
 
         let flagGlobals: [Symbol] = [
             .statement(
                 id: "takeBit",
                 code: "isTakable",
                 type: .bool,
-                category: .flags
+                category: .flags,
+                isCommittable: true
             ),
             .statement(
                 id: "contBit",
                 code: "isContainer",
                 type: .bool,
-                category: .flags
+                category: .flags,
+                isCommittable: true
             ),
             .statement(
                 id: "openBit",
                 code: "isOpen",
                 type: .bool,
-                category: .flags
+                category: .flags,
+                isCommittable: true
             )
         ]
-
-        XCTAssertNoDifference(symbol, .statement(
-            id: "flags",
-            code: """
-                flags: [
-                    isContainer,
-                    isOpen,
-                    isTakable,
-                ]
-                """,
-            type: .array(.bool)
-        ))
 
         flagGlobals.forEach { flag in
             guard
@@ -77,9 +88,7 @@ final class FlagsTests: QuelboTests {
     }
 
     func testFlagRegisteredAsGlobal() throws {
-        _ = try factory.init([
-            .atom("TAKEBIT"),
-        ], with: &localVariables).process()
+        process("<OBJECT BROKEN-EGG (FLAGS TAKEBIT CONTBIT OPENBIT)>")
 
         let symbol = try Factories.HasFlag([
             .atom("X"),

@@ -16,26 +16,23 @@ extension Factories {
             ["DEFINE"]
         }
 
-        var name: String!
+        var zilName: String!
         var definition: [Token] = []
 
         override func processTokens() throws {
             var tokens = tokens
 
-            self.name = try findName(in: &tokens)
+            self.zilName = try findName(in: &tokens)
             self.definition = tokens
         }
 
         override func process() throws -> Symbol {
-            let definitionName = name!.lowerCamelCase
+            let definitionName = zilName!.lowerCamelCase
 
-            let symbol: Symbol = .definition(
+            return .definition(
                 id: definitionName,
                 tokens: definition
             )
-
-            try! Game.commit(symbol)
-            return symbol
         }
     }
 }

@@ -47,7 +47,7 @@ final class PrintNumberTests: QuelboTests {
         ))
     }
 
-    func testProcessForm() throws {
+    func testprocess() throws {
         let symbol = try factory.init([
             .form([
                 .atom("ADD"),

@@ -12,16 +12,13 @@ extension Factories {
     ///
     class DefinitionEvaluate: Factory {
         var blockProcessor: BlockProcessor!
-        var zilName: String!
 
         override func processTokens() throws {
             var callerParams = tokens
+            let zilName = try findName(in: &callerParams).lowerCamelCase
 
-            self.zilName = try findName(in: &callerParams)
-            let name = zilName.lowerCamelCase
-
-            guard let rawDefinition = Game.findDefinition(name) else {
-                throw Error.definitionNotFound(name)
+            guard let rawDefinition = Game.findDefinition(zilName) else {
+                throw Error.definitionNotFound(zilName)
             }
             var defTokens = rawDefinition.tokens
 
@@ -35,51 +32,76 @@ extension Factories {
                 throw Error.definitionParametersNotFound(defTokens)
             }
 
-            for substitution in zip(defParams, callerParams) {
+            for substitution in substitutions(from: defParams, to: callerParams) {
                 defParams = try defParams.deepReplacing(substitution.0, with: substitution.1)
                 defTokens = try defTokens.deepReplacing(substitution.0, with: substitution.1)
             }
 
             defTokens.insert(.list(defParams), at: 0)
+
             if let activation = activation {
                 defTokens.insert(.atom(activation), at: 0)
             }
 
-            self.blockProcessor = try BlockProcessor(defTokens, with: &localVariables)
+            self.blockProcessor = try BlockProcessor(
+                defTokens,
+                with: &localVariables
+            )
+            blockProcessor.assert(
+                activation: activation
+            )
         }
 
         @discardableResult
         override func process() throws -> Symbol {
-            let id = try evalID(tokens)
-            let name = zilName.lowerCamelCase
-            let zilName = zilName!
             let pro = blockProcessor!
-            let type = try pro.returnType() ?? .void
 
-            let function: Symbol = .statement(
-                id: id,
-                code: { statement in
+            return .statement(
+                code: { _ in
                     """
-                    \(try pro.discardableResult())\
-                    /// The `\(id)` (\(zilName)) function.
-                    func \(name)\
-                    (\(pro.paramDeclarations))\
-                    \(try pro.returnDeclaration()) \
                     {
                     \(pro.auxiliaryDefs.indented)\
-                    \(pro.codeHandlingRepeating.indented)
-                    }
+                    \(pro.code.indented)
+                    }()
                     """
                 },
-                type: type,
-                parameters: pro.paramSymbols,
-                children: pro.symbols,
-                category: .routines
+                type: pro.returnType() ?? .unknown
             )
-
-            try! Game.commit(function)
-            return function
         }
+    }
+}
+
+extension Factories.DefinitionEvaluate {
+    func substitutions(
+        from fromParams: [Token],
+        to toParams: [Token]
+    ) -> [(Token, Token)] {
+        var subs: [(Token, Token)] = []
+        var toParams = toParams
+
+        for token in fromParams {
+            switch token {
+            case .atom:
+                guard let substitution = toParams.shift() else { continue }
+                subs.append((token, substitution))
+            case .list(let listTokens):
+                guard
+                    listTokens.count == 2,
+                    let substitution = toParams.shift()
+                else { continue }
+                subs.append((token, .list([listTokens[0], substitution])))
+            case .quote(let token):
+                subs.append(contentsOf: substitutions(from: [token], to: toParams))
+            case .string("ARGS"),
+                 .string("AUX"),
+                 .string("EXTRA"),
+                 .string("OPT"),
+                 .string("OPTIONAL"): continue
+            default:
+                continue
+            }
+        }
+        return subs
     }
 }
 
@@ -90,5 +112,43 @@ extension Factories.DefinitionEvaluate {
         case definitionNotFound(String)
         case definitionParametersNotFound([Token])
         case missingDefinitionIdentifier(Symbol)
+    }
+}
+
+// MARK: - Token Array Conformances
+
+extension Array where Element == Token {
+    /// <#Description#>
+    /// - Parameters:
+    ///   - originalToken: <#originalToken description#>
+    ///   - replacementToken: <#replacementToken description#>
+    /// - Returns: <#description#>
+    func deepReplacing(
+        _ originalToken: Token,
+        with replacementToken: Token
+    ) throws -> [Token] {
+        let original = originalToken.value
+        return try evaluated.map { (token: Token) -> Token in
+            switch token {
+            case originalToken:
+                return replacementToken
+            case .atom(let string):
+                return string == original ? replacementToken : token
+            case .form(let tokens):
+                return try .form(tokens.deepReplacing(originalToken, with: replacementToken))
+            case .global(let string):
+                return string == original ? replacementToken : token
+            case .list(let tokens):
+                return try .list(tokens.deepReplacing(originalToken, with: replacementToken))
+            case .local(let string):
+                return string == original ? replacementToken : token
+            case .property(let string):
+                return string == original ? replacementToken : token
+            case .vector(let tokens):
+                return try .vector(tokens.deepReplacing(originalToken, with: replacementToken))
+            default:
+                return token
+            }
+        }
     }
 }

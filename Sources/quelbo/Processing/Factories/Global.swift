@@ -13,12 +13,12 @@ extension Factories {
     /// [SETG](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.415t9al)
     /// (when called at root level) functions.
     class Global: Factory {
-        override class var zilNames: [String] {
-            ["GLOBAL", "SETG"]
+        override class var factoryType: FactoryType {
+            .mdl
         }
 
-        override class var muddle: Bool {
-            true
+        override class var zilNames: [String] {
+            ["GLOBAL", "SETG"]
         }
 
         override func processSymbols() throws {
@@ -45,10 +45,9 @@ extension Factories {
             let variable = symbols[0]
             let value = symbols[1]
 
-            let assignment = Statement(
+            return .statement(
                 id: variable.code,
                 code: { _ in
-                    let declare = variable.isMutable != false ? "var" : "let"
                     var assignment: String {
                         if value.type.confidence < .assured {
                             return variable.type.emptyValueAssignment
@@ -56,18 +55,15 @@ extension Factories {
                             return " = \(value.code)"
                         }
                     }
+                    let declare = variable.isMutable != false ? "var" : "let"
+
                     return "\(declare) \(variable.code): \(variable.type)\(assignment)"
                 },
                 type: variable.type,
-                category: variable.isMutable ?? false ? .globals : .constants
+                children: [variable],
+                category: variable.isMutable ?? false ? .globals : .constants,
+                isCommittable: true
             )
-
-            try Game.commit([
-                variable,
-                .statement(assignment)
-            ])
-
-            return .statement(assignment)
         }
     }
 }

@@ -26,7 +26,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeAtomReferringToGlobal() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .atom("BOARDED-WINDOW")
         ], with: &localVariables).process()
 
@@ -34,7 +34,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeAtomTForBooleanTrue() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .atom("T")
         ], with: &localVariables).process()
 
@@ -44,7 +44,7 @@ final class FactorySymbolizeTests: QuelboTests {
     func testSymbolizeAtomTForVariableT() throws {
         localVariables.append(Variable(id: "t", type: .string))
 
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .atom("T")
         ], with: &localVariables).process()
 
@@ -52,7 +52,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeBoolTrue() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .bool(true)
         ], with: &localVariables).process()
 
@@ -60,7 +60,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeBoolFalse() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .bool(false)
         ], with: &localVariables).process()
 
@@ -68,7 +68,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeCharacter() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .character("Z")
         ], with: &localVariables).process()
 
@@ -76,7 +76,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeCommented() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .commented(.bool(true))
         ], with: &localVariables).process()
 
@@ -87,32 +87,32 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeDecimal() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .decimal(42)
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .literal(42))
     }
 
-//    func testSymbolizeEval() throws {
-//        let symbol = try testFactory.init([
-//            .eval(
-//                .form([
-//                    .atom("+"),
-//                    .decimal(2),
-//                    .decimal(3),
-//                ])
-//            )
-//        ], with: &localVariables).process()
-//
-//        XCTAssertNoDifference(symbol, Symbol(
-//            code: ".add(2, 3)",
-//            type: .int
-//        ))
-//    }
+    func testSymbolizeEval() throws {
+        let symbol = try TestFactory([
+            .eval(
+                .form([
+                    .atom("+"),
+                    .decimal(2),
+                    .decimal(3),
+                ])
+            )
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: ".add(2, 3)",
+            type: .int
+        ))
+    }
 
     func testSymbolizeGlobal() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .global("BOARDED-WINDOW")
         ], with: &localVariables).process()
 
@@ -120,7 +120,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeList() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .list([
                 .atom("FLOATING?"),
                 .bool(false),
@@ -129,7 +129,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[isFloating, false]",
-            type: .array(.zilElement)
+            type: .array(.bool)
         ))
     }
 
@@ -138,7 +138,7 @@ final class FactorySymbolizeTests: QuelboTests {
             .init(id: "fooBar", type: .object)
         )
 
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .local("FOO-BAR")
         ], with: &localVariables).process()
 
@@ -147,14 +147,14 @@ final class FactorySymbolizeTests: QuelboTests {
 
     func testSymbolizeUnknownLocalThrows() throws {
         XCTAssertThrowsError(
-            _ = try testFactory.init([
+            _ = try TestFactory([
                 .local("FOO-BAR")
             ], with: &localVariables).process()
         )
     }
 
     func testSymbolizeProperty() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .property("STRENGTH"),
             .decimal(10),
         ], with: &localVariables).process()
@@ -171,10 +171,11 @@ final class FactorySymbolizeTests: QuelboTests {
             id: "north",
             code: "",
             type: .direction,
-            category: .properties
+            category: .properties,
+            isCommittable: true
         ))
 
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .property("NORTH")
         ], with: &localVariables).process()
 
@@ -186,7 +187,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeQuote() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .quote(.form([
                 .atom("RANDOM"),
                 .decimal(100)
@@ -200,7 +201,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
 //    func testSymbolizeSegment() throws {
-//        let symbol = try testFactory.init([
+//        let symbol = try TestFactory([
 //            .segment(
 //                .form([
 //                    .atom("+"),
@@ -217,7 +218,7 @@ final class FactorySymbolizeTests: QuelboTests {
 //    }
 
     func testSymbolizeString() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .string("Plants can talk")
         ], with: &localVariables).process()
 
@@ -225,7 +226,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeTypeByte() throws {
-        let symbol = try testFactory.init([
+        let symbol = try TestFactory([
             .type("BYTE"),
             .decimal(42),
         ], with: &localVariables).process()

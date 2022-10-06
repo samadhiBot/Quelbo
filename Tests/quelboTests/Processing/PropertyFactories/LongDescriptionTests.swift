@@ -13,7 +13,7 @@ final class LongDescriptionTests: QuelboTests {
     let factory = Factories.LongDescription.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("LDESC"))
+        AssertSameFactory(factory, Game.findFactory("LDESC", type: .property))
     }
 
     func testLongDescription() throws {

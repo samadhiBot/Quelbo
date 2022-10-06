@@ -13,7 +13,7 @@ final class TextTests: QuelboTests {
     let factory = Factories.Text.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("TEXT"))
+        AssertSameFactory(factory, Game.findFactory("TEXT", type: .property))
     }
 
     func testText() throws {

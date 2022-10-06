@@ -13,6 +13,7 @@ final class Instance: SymbolType {
     private(set) var isMutable: Bool?
     private(set) var isOptional: Bool
     private(set) var isZilElement: Bool
+    private(set) var returnHandling: Symbol.ReturnHandling
 
     init(
         _ variable: Variable,
@@ -23,6 +24,7 @@ final class Instance: SymbolType {
         self.isMutable = isMutable // ?? variable.isMutable
         self.isOptional = isOptional
         self.isZilElement = false
+        self.returnHandling = .implicit
 //        self.type = variable.type
         self.variable = variable
     }
@@ -140,7 +142,8 @@ extension Instance: CustomDumpReflectable {
                 "variable": self.variable,
                 "isMutable": self.isMutable as Any,
                 "isOptional": self.isOptional,
-                "isZilElement": self.isZilElement
+                "isZilElement": self.isZilElement,
+                "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
         )
@@ -152,6 +155,7 @@ extension Instance: Equatable {
         lhs.variable == rhs.variable &&
         lhs.isMutable == rhs.isMutable &&
         lhs.isOptional == rhs.isOptional &&
-        lhs.isZilElement == rhs.isZilElement
+        lhs.isZilElement == rhs.isZilElement &&
+        lhs.returnHandling == rhs.returnHandling
     }
 }

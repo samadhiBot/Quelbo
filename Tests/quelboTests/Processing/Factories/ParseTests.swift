@@ -19,23 +19,18 @@ final class ParseTests: QuelboTests {
     func testParse() throws {
         localVariables.append(Variable(id: "atm", type: .string))
 
-        let symbol = try factory.init([
-            .form([
-                .atom("STRING"),
-                .string("V?"),
-                .form([
-                    .atom("SPNAME"),
-                    .local("ATM")
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <PARSE <STRING "V?" <SPNAME .ATM>>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: nil,
             code: """
-                [["V?", atm].joined()].parse()
+                [
+                    ["V?", atm.id].joined(),
+                ].parse()
                 """,
-            type: .string
+            type: .verb
         ))
     }
 }

@@ -17,15 +17,7 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfIntegerList() throws {
-        try Factories.Global([
-            .atom("STRUCT1"),
-            .vector([
-                .decimal(1),
-                .decimal(2),
-                .decimal(3),
-                .decimal(4)
-            ])
-        ], with: &localVariables).process()
+        process("<GLOBAL STRUCT1 [1 2 3 4]>")
 
         let symbol = try factory.init([
             .atom("STRUCT1"),
@@ -38,16 +30,9 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfTable() throws {
-        try Factories.Global([
-            .atom("SOME-TABLE"),
-            .form([
-                .atom("TABLE"),
-                .decimal(1),
-                .decimal(2),
-                .decimal(3),
-                .string("4"),
-            ])
-        ], with: &localVariables).process()
+        process("""
+            <GLOBAL SOME-TABLE <TABLE 1 2 3 "4">>
+        """)
 
         let symbol = try factory.init([
             .atom("SOME-TABLE"),
@@ -60,15 +45,9 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedList() throws {
-        try Factories.Global([
-            .atom("STRUCT2"),
-            .vector([
-                .decimal(1),
-                .decimal(2),
-                .string("AB"),
-                .character("C"),
-            ])
-        ], with: &localVariables).process()
+        process("""
+            <GLOBAL STRUCT2 [1 2 "AB" "C"]>
+        """)
 
         let symbol = try factory.init([
             .atom("STRUCT2"),
@@ -84,15 +63,9 @@ final class RestTests: QuelboTests {
     }
 
     func testRestOfMixedListAfterFirstTwo() throws {
-        try Factories.Global([
-            .atom("STRUCT3"),
-            .vector([
-                .decimal(1),
-                .decimal(2),
-                .string("AB"),
-                .character("C"),
-            ])
-        ], with: &localVariables).process()
+        process(#"""
+            <GLOBAL STRUCT3 [1 2 "AB" !\C]>
+        """#)
 
         let symbol = try factory.init([
             .atom("STRUCT3"),

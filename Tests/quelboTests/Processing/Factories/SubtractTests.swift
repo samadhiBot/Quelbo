@@ -23,7 +23,8 @@ final class SubtractTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             )
         ])
     }
@@ -91,7 +92,12 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "bigNumber.subtract(biggerNumber)",
+            code: """
+                .subtract(
+                    bigNumber,
+                    biggerNumber
+                )
+                """,
             type: .int
         ))
     }
@@ -103,7 +109,7 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "cyclowrath.subtract(1)",
+            code: ".subtract(cyclowrath, 1)",
             type: .int
         ))
     }
@@ -117,7 +123,12 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "baseScore.subtract(otvalFrob())",
+            code: """
+                .subtract(
+                    baseScore,
+                    otvalFrob()
+                )
+                """,
             type: .int
         ))
     }

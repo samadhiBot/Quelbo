@@ -13,14 +13,11 @@ final class GetValueTests: QuelboTests {
     let factory = Factories.GetValue.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("VALUE"))
+        AssertSameFactory(factory, Game.findFactory("VALUE", type: .zCode))
     }
 
     func testGetGlobalValue() throws {
-        try Factories.Global([
-            .atom("SANDWICH"),
-            .bool(true)
-        ], with: &localVariables).process()
+        process("<GLOBAL SANDWICH T>")
 
         let symbol = try factory.init([
             .global("SANDWICH"),

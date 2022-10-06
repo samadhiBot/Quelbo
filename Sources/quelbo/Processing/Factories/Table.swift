@@ -41,7 +41,8 @@ extension Factories {
         override func process() throws -> Symbol {
             .statement(
                 code: { statement in
-                    let elementValues = statement.children
+                    let elementValues = statement
+                        .children
                         .codeValues(.commaSeparatedNoTrailingComma)
 
                     if statement.type.isZilElement {

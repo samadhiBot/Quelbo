@@ -8,29 +8,33 @@
 import Foundation
 
 /// A base class for symbol factories whose job is to translate a parsed ``Token`` array into a
-/// ``Symbol`` representation of a Zil code element.
-///
-class FactoryType {
+/// ``Symbol`` representing a Zil code element.
+class Factory {
     /// The Zil directives that correspond to this symbol factory.
     class var zilNames: [String] { [] }
 
-    /// <#Description#>
-    class var muddle: Bool { false }
+    /// Specifies what type of command the factory translates.
+    class var factoryType: Factories.FactoryType { .zCode }
 
-    /// A variables dictionary of saved ``DataType-swift.enum`` keyed by symbol ``Symbol/id``.
+    /// An array of the local variables at play within a factory.
     var localVariables: [Variable]
 
-    /// An array of ``Symbol`` values processed from ``tokens``.
+    /// <#Description#>
+    let mode: FactoryMode
+
+    /// An array of ``Symbol`` instances processed from ``tokens``.
     var symbols: [Symbol] = []
 
-    /// An array of ``Token`` values parsed from Zil source code.
+    /// An array of ``Token`` instances parsed from Zil source code.
     let tokens: [Token]
 
     required init(
         _ tokens: [Token],
-        with variables: inout [Variable]
+        with variables: inout [Variable],
+        mode factoryMode: FactoryMode = .process
     ) throws {
         self.localVariables = variables
+        self.mode = factoryMode
         self.tokens = tokens
 
         try processTokens()
@@ -59,41 +63,28 @@ class FactoryType {
         return evaluatedSymbols
     }
 
-    /// Generates a symbol identifier based on the specified tokens.
-    ///
-    /// - Parameter tokens: Tokens used to produce an identifier.
-    ///
-    /// - Returns: A symbol identifier based on the specified tokens.
-    func evalID(_ tokens: [Token]) throws -> String {
-        var tokens = tokens
-
-        let name = try findName(in: &tokens)
-        let params = tokens.map { token in
-            switch token {
-            case .atom(let value): return "\(value.lowerCamelCase):"
-            case .bool: return "bool:"
-            case .character: return "character:"
-            case .commented: return "commented:"
-            case .decimal: return "decimal:"
-            case .eval: return "eval:"
-            case .form: return "form:"
-            case .global: return "global:"
-            case .list: return "list:"
-            case .local: return "local:"
-            case .property: return "property:"
-            case .quote: return "quote:"
-            case .segment: return "segment:"
-            case .string: return "string:"
-            case .type: return "type:"
-            case .vector: return "vector:"
-            }
-        }.joined(separator: "")
-
-        return "\(name.lowerCamelCase)(\(params))"
-    }
-
+    /// <#Description#>
+    /// - Parameter id: <#id description#>
+    /// - Returns: <#description#>
     func findLocal(_ id: String) -> Variable? {
         localVariables.first { $0.id == id }
+    }
+
+    /// <#Description#>
+    /// - Parameter zil: <#zil description#>
+    /// - Returns: <#description#>
+    func knownVariable(_ zil: String) -> Variable? {
+        switch zil {
+        case "PRSA":
+            return Variable(
+                id: "prsa",
+                type: .int,
+                category: .globals,
+                isMutable: true
+            )
+        default:
+            return nil
+        }
     }
 
     /// Processes the ``tokens`` array into a ``Symbol`` array.
@@ -108,6 +99,7 @@ class FactoryType {
         self.symbols = try symbolize(tokens)
     }
 
+    /// <#Description#>
     func processSymbols() throws {
         // override in child factories
     }
@@ -123,33 +115,27 @@ class FactoryType {
     }
 }
 
-// MARK: - Factories
+extension Factory {
+    /// <#Description#>
+    enum FactoryMode: Equatable {
+        case evaluate
 
-/// Namespace for symbol factories that translate a ``Token`` array to a ``Symbol`` array.
-enum Factories {}
+        case process
+    }
+}
 
 // MARK: - Equatable
 
-extension FactoryType: Equatable {
-    static func == (lhs: FactoryType, rhs: FactoryType) -> Bool {
+extension Factory: Equatable {
+    static func == (lhs: Factory, rhs: Factory) -> Bool {
         type(of: lhs) == type(of: rhs)
     }
 }
 
-// MARK: - Factory
-
-/// <#Description#>
-class Factory: FactoryType {}
-
-// MARK: - PropertyFactory
-
-/// <#Description#>
-class PropertyFactory: FactoryType {}
-
 // MARK: - Errors
 
-extension FactoryType {
+extension Factory {
     enum Error: Swift.Error {
-        case unimplementedFactory(FactoryType)
+        case unimplementedFactory(Factory)
     }
 }

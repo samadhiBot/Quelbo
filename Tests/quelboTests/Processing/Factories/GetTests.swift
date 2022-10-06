@@ -41,10 +41,7 @@ final class GetTests: QuelboTests {
     }
 
     func testNestedGet() throws {
-        let symbol = try factory.init(
-            try parse("<GET <GET ,P-ITBL ,P-VERBN> 0>").droppingFirst,
-            with: &localVariables
-        ).process()
+        let symbol = process("<GET <GET ,P-ITBL ,P-VERBN> 0>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try pItbl.get(at: pVerbn).get(at: 0)",

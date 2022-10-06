@@ -53,7 +53,7 @@ extension Factories {
             let properties = symbols.sorted
             let zilName = zilName!
 
-            let symbol: Symbol = .statement(
+            return .statement(
                 id: name,
                 code: { _ in
                     """
@@ -64,11 +64,10 @@ extension Factories {
                     """
                 },
                 type: .object,
-                category: category
+                children: symbols,
+                category: category,
+                isCommittable: true
             )
-
-            try! Game.commit(symbol)
-            return symbol
         }
     }
 }
@@ -92,17 +91,17 @@ extension Factories.Object {
                 return nil
             case .list(let listTokens):
                 var tokens = listTokens
-                let zil = try findName(in: &tokens)
+                let zilName = try findName(in: &tokens)
 
-                if let propertyFactory = Game.findPropertyFactory(zil) {
+                if let propertyFactory = Game.findFactory(zilName, type: .property) {
                     do {
                         let factory = try propertyFactory.init(tokens, with: &localVariables)
                         return try factory.process()
                     } catch {
-                        guard zil == "IN" else { throw error }
+                        guard zilName == "IN" else { throw error }
                     }
                 }
-                if isDirection(zil) {
+                if isDirection(zilName) {
                     let factory = try Factories.MoveDirection(listTokens, with: &localVariables)
                     directionSymbols.append(try factory.process())
                     return nil

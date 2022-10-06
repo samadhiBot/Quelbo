@@ -13,7 +13,7 @@ final class CapacityTests: QuelboTests {
     let factory = Factories.Capacity.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("CAPACITY"))
+        AssertSameFactory(factory, Game.findFactory("CAPACITY", type: .property))
     }
 
     func testCapacity() throws {

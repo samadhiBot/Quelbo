@@ -16,8 +16,8 @@ extension Factories {
             ["DEFMAC"]
         }
 
-        override var typeName: String {
-            "macro"
+        override var isMacro: Bool {
+            true
         }
     }
 }

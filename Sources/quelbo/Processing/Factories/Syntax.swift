@@ -52,18 +52,14 @@ extension Factories {
         override func process() throws -> Symbol {
             let definition = definition
 
-            let symbol: Symbol = .statement(
-                id: verb,
+            return .statement(
                 code: { _ in
                     "Syntax(\(definition.values(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .void,
-                category: .syntax
+                category: .syntax,
+                isCommittable: true
             )
-
-            try! Game.commit(symbol)
-
-            return symbol
         }
     }
 }

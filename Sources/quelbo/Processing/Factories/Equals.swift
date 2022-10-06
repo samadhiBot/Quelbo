@@ -34,7 +34,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(first.code).\(function)(\(rest.codeValues(.commaSeparated)))"
+                    "\(first.handle).\(function)(\(rest.handles(.commaSeparated)))"
                 },
                 type: .bool
             )

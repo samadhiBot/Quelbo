@@ -27,7 +27,7 @@ extension Factories {
                 code: { _ in
                     "[\(elements.codeValues(.commaSeparated))].parse()"
                 },
-                type: .string
+                type: .verb
             )
         }
     }

@@ -22,7 +22,7 @@ final class ParentTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("LOC"))
+        AssertSameFactory(factory, Game.findFactory("LOC", type: .zCode))
     }
 
     func testThiefsLocation() throws {

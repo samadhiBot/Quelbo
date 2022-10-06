@@ -13,7 +13,7 @@ final class VehicleTypeTests: QuelboTests {
     let factory = Factories.VehicleType.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("VTYPE"))
+        AssertSameFactory(factory, Game.findFactory("VTYPE", type: .property))
     }
 
     func testVehicleType() throws {

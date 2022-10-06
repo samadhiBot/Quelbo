@@ -58,10 +58,6 @@ extension TypeInfo {
         .init(dataType: .direction, confidence: .certain)
     }
 
-    static func function(_ params: [DataType], _ returnType: DataType) -> TypeInfo {
-        .init(dataType: .function(params, returnType), confidence: .certain)
-    }
-
     static var int: TypeInfo {
         .init(dataType: .int, confidence: .certain)
     }
@@ -100,6 +96,10 @@ extension TypeInfo {
 
     static var thing: TypeInfo {
         .init(dataType: .thing, confidence: .certain)
+    }
+
+    static var verb: TypeInfo {
+        .init(dataType: .verb, confidence: .certain)
     }
 
     static var void: TypeInfo {
@@ -162,7 +162,7 @@ extension TypeInfo {
         switch dataType {
         case .bool: return " = false"
         case .comment, .oneOf, .unknown, .void: return " = \(self)"
-        case .direction, .function, .object, .routine, .table, .thing: return "? = nil"
+        case .direction, .object, .routine, .table, .thing, .verb: return "? = nil"
         case .int, .int8, .int16, .int32: return " = 0"
         case .property: return " = nil"
         case .string: return " = \"\""
@@ -185,6 +185,10 @@ extension TypeInfo {
             assertedType.confidence >= self.confidence
         else { return self }
 
+        var maxConfidence: Confidence {
+            max(confidence, assertedType.confidence)
+        }
+
         var optional: Bool {
             switch (self, assertedType) {
             case (.booleanFalse, .bool), (.integerZero, .int): return isOptional
@@ -193,21 +197,29 @@ extension TypeInfo {
             }
         }
 
-        //        if assertedType.dataType == .zilElement, quirk == nil {
-        //            quirk = .zilElement
-        //            return
-        //        }
-
-
-        let maxConfidence = max(confidence, assertedType.confidence)
+//        print("▶️", dataType, "<->", assertedType.dataType)
 
         switch (dataType, assertedType.dataType) {
         case (.comment, _): return self
         case (_, .comment): return assertedType
         case (.unknown, _): return assertedType
         case (_, .unknown): return self
+
+        case (.verb, .int), (.array(.verb), .int): return self
+        case (.int, .verb), (.int, .array(.verb)): return assertedType
+
         case (.array(.unknown), .array): return assertedType
         case (.array, .array(.unknown)): return self
+        case (.array(.unknown), let other): return .array(other) // TODO: verify this
+
+        case (.array(.zilElement), .array(let other)):
+            guard other.canBeZilElement else { return nil }
+            return assertedType
+        case (.array(let selfType), .array(.zilElement)):
+            guard selfType.canBeZilElement else { return nil }
+            return self
+
+//        case (_, .array(.unknown)): return .array(dataType)
         case (.oneOf(let selfTypes), .oneOf(let other)):
             let common = selfTypes.union(other)
             switch common.count {

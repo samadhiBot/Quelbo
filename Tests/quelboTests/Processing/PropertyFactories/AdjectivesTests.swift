@@ -21,7 +21,7 @@ final class AdjectivesTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("ADJECTIVE"))
+        AssertSameFactory(factory, Game.findFactory("ADJECTIVE", type: .property))
     }
 
     func testAdjectives() throws {

@@ -7,66 +7,82 @@
 
 import Foundation
 import SwiftPrettyPrint
+import os.log
 
 extension Game {
-    func comment(_ title: String, _ code: String) -> String {
-        """
-        // \(title)
-        // ============================================================
-
-        \(code)
-        """
-    }
-
-    func printHeading(_ title: String, _ code: String = "") {
-        print(
+    struct Print {
+        static func comment(_ title: String, _ code: String) -> String {
             """
-            \(title)
-            ========================================================================
-            \(code.isEmpty ? "" : code)
+            // \(title)
+            // ============================================================
+
+            \(code)
             """
-        )
-    }
-
-    var output: String {
-        var output: [String] = []
-
-        if !Game.directions.isEmpty {
-            output.append(comment("Directions", Game.directions.codeValues(.singleLineBreak)))
         }
-        if !Game.constants.isEmpty {
-            output.append(comment("Constants", Game.constants.codeValues(.singleLineBreak)))
-        }
-        if !Game.globals.isEmpty {
-            output.append(comment("Globals", Game.globals.codeValues(.singleLineBreak)))
-        }
-        if !Game.objects.isEmpty {
-            output.append(comment("Objects", Game.objects.sorted(by: { $0.code < $1.code }).codeValues(.doubleLineBreak)))
-        }
-        if !Game.rooms.isEmpty {
-            output.append(comment("Rooms", Game.rooms.codeValues(.doubleLineBreak)))
-        }
-        if !Game.routines.isEmpty {
-            output.append(comment("Routines", Game.routines.codeValues(.doubleLineBreak)))
-        }
-//        if !Game.functions.isEmpty {
-//            output.append(comment("Functions", Game.functions.codeValues(.doubleLineBreak)))
-//        }
 
-        return output.joined(separator: "\n\n")
-    }
+        static func heading(_ title: String, _ code: String = "") {
+            Logger.heading.info(
+                "\("\(title) \(code)".trimmingCharacters(in: .whitespacesAndNewlines), privacy: .public)"
+            )
 
-    func printSymbols() {
-        print(output)
-    }
+            print(
+                """
+                \(title)
+                ========================================================================
+                \(code.isEmpty ? "" : code)
+                """
+            )
+        }
 
-    func printTokens() {
-        printHeading(
-            """
+        static var output: String {
+            var output: [String] = []
 
-            🎟  Zil tokens
-            """
-        )
-        Pretty.prettyPrint(tokens)
+            if !Game.directions.isEmpty {
+                output.append(
+                    Self.comment("Directions", Game.directions.codeValues(.singleLineBreak))
+                )
+            }
+            if !Game.constants.isEmpty {
+                output.append(
+                    Self.comment("Constants", Game.constants.codeValues(.singleLineBreak))
+                )
+            }
+            if !Game.globals.isEmpty {
+                output.append(
+                    Self.comment("Globals", Game.globals.codeValues(.singleLineBreak))
+                )
+            }
+            if !Game.objects.isEmpty {
+                output.append(
+                    Self.comment("Objects", Game.objects.sorted(by: { $0.code < $1.code }).codeValues(.doubleLineBreak))
+                )
+            }
+            if !Game.rooms.isEmpty {
+                output.append(
+                    Self.comment("Rooms", Game.rooms.codeValues(.doubleLineBreak))
+                )
+            }
+            if !Game.routines.isEmpty {
+                output.append(
+                    Self.comment("Routines", Game.routines.codeValues(.doubleLineBreak))
+                )
+            }
+
+            return output.joined(separator: "\n\n")
+        }
+
+        static func symbols() {
+            print(output)
+        }
+
+        static func tokens(_ tokens: [Token]) {
+            heading(
+                """
+
+                🎟  Zil tokens
+                """
+            )
+            Pretty.prettyPrint(tokens)
+        }
     }
 }

@@ -13,7 +13,7 @@ final class SynonymsTests: QuelboTests {
     let factory = Factories.Synonyms.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("SYNONYM"))
+        AssertSameFactory(factory, Game.findFactory("SYNONYM", type: .property))
     }
 
     func testSynonyms() throws {

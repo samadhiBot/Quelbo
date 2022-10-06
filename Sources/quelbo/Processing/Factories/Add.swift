@@ -25,27 +25,15 @@ extension Factories {
                 .haveCount(.atLeast(2)),
                 .haveType(.int)
             ])
-
-            try? symbols[0].assert(.isMutable)
         }
 
         override func process() throws -> Symbol {
-            let originals = symbols
+            let arguments = symbols
             let function = function
 
             return .statement(
                 code: { _ in
-                    var arguments = originals
-
-                    guard
-                        let first = arguments.shift(),
-                        case .variable(let variable) = first,
-                        variable.isMutable ?? false
-                    else {
-                        return ".\(function)(\(originals.codeValues(.commaSeparated)))"
-
-                    }
-                    return "\(first.code).\(function)(\(arguments.codeValues(.commaSeparated)))"
+                    ".\(function)(\(arguments.codeValues(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .int
             )

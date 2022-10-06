@@ -17,10 +17,9 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
-                .haveCount(.atLeast(1)),
-                .haveCommonType
-            ])
+            try symbols.assert(
+                .haveCount(.atLeast(1))
+            )
         }
 
         var function: String {

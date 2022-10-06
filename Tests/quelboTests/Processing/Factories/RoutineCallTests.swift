@@ -18,7 +18,8 @@ final class RoutineCallTests: QuelboTests {
                 id: "bagOfCoinsFunc",
                 code: "",
                 type: .void,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(
                 id: "oneFunc",
@@ -27,7 +28,8 @@ final class RoutineCallTests: QuelboTests {
                 parameters: [
                     Instance(Variable(id: "number", type: .int)),
                 ],
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(
                 id: "twoFunc",
@@ -37,7 +39,8 @@ final class RoutineCallTests: QuelboTests {
                     Instance(Variable(id: "answer", type: .string)),
                     Instance(Variable(id: "number", type: .int)),
                 ],
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(
                 id: "threeFunc",
@@ -48,7 +51,8 @@ final class RoutineCallTests: QuelboTests {
                     Instance(Variable(id: "isValid", type: .bool)),
                     Instance(Variable(id: "number", type: .int)),
                 ],
-                category: .routines
+                category: .routines,
+                isCommittable: true
             )
         ])
     }

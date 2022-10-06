@@ -27,95 +27,54 @@ final class DefineMacroTests: QuelboTests {
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.206ipza
     func testIncreaseMacro() throws {
-        let symbol = try factory.init([
-            .atom("INC"),
-            .list([
-                .atom("ATM"),
-                .string("OPTIONAL"),
-                .list([
-                    .atom("N"),
-                    .decimal(1)
-                ])
-            ]),
-            .form([
-                .atom("FORM"),
-                .atom("SET"),
-                .local("ATM"),
-                .form([
-                    .atom("FORM"),
-                    .atom("+"),
-                    .form([
-                        .atom("FORM"),
-                        .atom("LVAL"),
-                        .local("ATM")
-                    ]),
-                    .local("N")
-                ])
-            ])
-        ], with: &localVariables).process()
+        let inc = process("""
+            <DEFMAC INC (ATM "OPTIONAL" (N 1))
+                    <FORM SET .ATM
+                        <FORM + <FORM LVAL .ATM> .N>>>
+        """)
 
-        let expected = Statement(
+        XCTAssertNoDifference(inc, .statement(
             id: "inc",
             code: """
                 @discardableResult
                 /// The `inc` (INC) macro.
                 func inc(atm: Int, n: Int = 1) -> Int {
                     var atm: Int = atm
-                    return atm.set(to: atm.add(n))
+                    return atm.set(to: .add(atm, n))
                 }
                 """,
             type: .int,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "atm",
-                        type: .int,
-                        category: Category.globals,
-                        isMutable: true
-                    )
-                ),
-                Instance(
-                    Variable(
-                        id: "n",
-                        type: .int,
-                        category: nil,
-                        isMutable: nil
-                    ),
-                    isOptional: true
-                )
-            ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
+        ))
+
+        XCTAssertNoDifference(
+            process("<INC FOO>"),
+            .statement(
+                code: "inc(atm: foo)",
+                type: .int
+            )
         )
 
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("inc"), expected)
+        XCTAssertNoDifference(
+            process("<INC BAR 42>"),
+            .statement(
+                code: "inc(atm: bar, n: 42)",
+                type: .int
+            )
+        )
     }
 
     func testIsOpenableMacro() throws {
-        let symbol = try factory.init([
-            .atom("OPENABLE?"),
-            .list([
-                .quote(.atom("OBJ"))
-            ]),
-            .form([
-                .atom("FORM"),
-                .atom("OR"),
-                .form([
-                    .atom("FORM"),
-                    .atom("FSET?"),
-                    .local("OBJ"),
-                    .quote(.global("DOORBIT"))
-                ]),
-                .form([
-                    .atom("FORM"),
-                    .atom("FSET?"),
-                    .local("OBJ"),
-                    .quote(.global("CONTBIT"))
-                ])
-            ])
-        ], with: &localVariables).process()
+        process("<GLOBAL PRSI <>>")
 
-        let expected = Statement(
+        let isOpenable = process("""
+            <DEFMAC OPENABLE? ('OBJ)
+                <FORM OR <FORM FSET? .OBJ ',DOORBIT>
+                         <FORM FSET? .OBJ ',CONTBIT>>>
+        """)
+
+        XCTAssertNoDifference(isOpenable, .statement(
             id: "isOpenable",
             code: """
                 @discardableResult
@@ -128,149 +87,85 @@ final class DefineMacroTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "obj",
-                        type: .object
-                    )
-                )
-            ],
-            category: .routines
-        )
+            category: .routines,
+            isCommittable: true
+        ))
 
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("isOpenable"), expected)
+        XCTAssertNoDifference(
+            process("<OPENABLE? ,PRSI>"),
+            .statement(
+                code: "isOpenable(obj: prsi)",
+                type: .bool
+            )
+        )
     }
 
     // https://mdl-language.readthedocs.io/en/latest/17-macro-operations/#172-eval-macros
     func testDoubleMacro() throws {
-        let symbol = try factory.init([
-            .atom("DOUBLE"),
-            .list([
-                .quote(.atom("ANY"))
-            ]),
-            .form([
-                .atom("FORM"),
-                .atom("PROG"),
-                .list([
-                    .list([
-                        .atom("X"),
-                        .local("ANY")
-                    ])
-                ]),
-                .type("DECL"),
-                .list([
-                    .list([
-                        .atom("X")
-                    ]),
-                    .atom("FIX")
-                ]),
-                .quote(.form([
-                    .atom("+"),
-                    .local("X"),
-                    .local("X")
-                ]))
-            ])
-        ], with: &localVariables).process()
+        let double = process("""
+            <DEFMAC DOUBLE ('ANY)
+                    <FORM PROG ((X .ANY)) #DECL ((X) FIX) '<+ .X .X>>>
+        """)
 
-        let expected = Statement(
+        XCTAssertNoDifference(double, .statement(
             id: "double",
             code: """
                 @discardableResult
                 /// The `double` (DOUBLE) macro.
                 func double(any: Int) -> Int {
                     do {
-                        var x: Int = any
-                        // Declare(x: Int)
-                        return x.add(x)
+                        return .add(x, x)
                     }
                 }
                 """,
             type: .int,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "any",
-                        type: .int
-                    )
-                )
-            ],
-            category: .routines
-        )
+            category: .routines,
+            isCommittable: true
+        ))
 
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("double"), expected)
+        XCTAssertNoDifference(
+            process("<DOUBLE 21>"),
+            .statement(
+                code: "double(any: 21)",
+                type: .int
+            )
+        )
     }
 
-//    func testBottlesMacro() throws {
-//        let symbol = try factory.init([
-//            .atom("BOTTLES"),
-//            .list([
-//                .quote(.atom("N"))
-//            ]),
-//            .form([
-//                .atom("FORM"),
-//                .atom("PROG"),
-//                .quote(.list([
-//                ])),
-//                .form([
-//                    .atom("FORM"),
-//                    .atom("PRINTN"),
-//                    .local("N")
-//                ]),
-//                .form([
-//                    .atom("FORM"),
-//                    .atom("PRINTI"),
-//                    .string(" bottle")
-//                ]),
-//                .form([
-//                    .atom("FORM"),
-//                    .atom("COND"),
-//                    .form([
-//                        .atom("LIST"),
-//                        .form([
-//                            .atom("FORM"),
-//                            .atom("N==?"),
-//                            .local("N"),
-//                            .decimal(1)
-//                        ]),
-//                        .quote(.form([
-//                            .atom("PRINTC"),
-//                            .character("s")
-//                        ]))
-//                    ])
-//                ])
-//            ])
-//        ], with: &localVariables).process()
-//
-//        let expected = Symbol(
-//            id: "bottles",
-//            code: """
-//                /// The `bottles` (BOTTLES) macro.
-//                func bottles(n: Int) {
-//                    do {
-//                        output(n)
-//                        output(" bottle")
-//                        if n.isNotEqualTo(1) {
-//                            output("s")
-//                        }
-//                    }
-//                }
-//                """,
-//            type: .void,
-//            category: .routines,
-//            children: [
-//                Symbol(
-//                    id: "n",
-//                    code: "n: Int",
-//                    type: .int
-//                )
-//            ]
-//        )
-//
-//        XCTAssertNoDifference(symbol, expected)
-//        XCTAssertNoDifference(try Game.find("bottles", category: .routines), expected)
-//    }
+    func testBottlesMacro() throws {
+        let bottles = process(#"""
+            <DEFMAC BOTTLES ('N)
+                <FORM PROG '()
+                    <FORM PRINTN .N>
+                    <FORM PRINTI " bottle">
+                    <FORM COND <LIST <FORM N==? .N 1> '<PRINTC !\s>>>>>
+        """#)
 
+        XCTAssertNoDifference(bottles, .statement(
+            id: "bottles",
+            code: """
+                /// The `bottles` (BOTTLES) macro.
+                func bottles(n: Int) {
+                    do {
+                        output(n)
+                        output(" bottle")
+                        if n.isNotEqualTo(1) {
+                            output("s")
+                        }
+                    }
+                }
+                """,
+            type: .void,
+            category: .routines,
+            isCommittable: true
+        ))
+
+        XCTAssertNoDifference(
+            process("<BOTTLES 99>"),
+            .statement(
+                code: "bottles(n: 99)",
+                type: .void
+            )
+        )
+    }
 }

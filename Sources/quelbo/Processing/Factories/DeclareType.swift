@@ -19,73 +19,88 @@ extension Factories {
         }
 
         override func processTokens() throws {
-            var typeTokens = tokens
-
-            while !typeTokens.isEmpty {
-                guard
-                    case .list(let nameTokens) = typeTokens.shift(),
-                    let typeToken = typeTokens.shift()
-                else {
-                    throw Error.missingDeclareTypeVariable(tokens)
-                }
-                
-                try nameTokens.forEach { nameToken in
-                    guard case .atom(let zil) = nameToken else {
-                        throw Error.invalidDeclareTypeVariable(nameToken)
-                    }
-
-                    let dataType = try dataType(for: typeToken)
-
-                    symbols.append(
-                        .statement(
-                            code: { _ in
-                                "\(zil.lowerCamelCase): \(dataType)"
-                            },
-                            type: .comment
-                        )
-                    )
-                }
-            }
+            // Don't process tokens. In practice, Zil's type declarations don't provide anything
+            // beyond what Quelbo can otherwise infer during type discovery.
         }
 
         override func process() throws -> Symbol {
-            let types = symbols
-
-            return .statement(
-                code: { _ in
-                    "Declare(\(types.codeValues(.commaSeparatedNoTrailingComma)))".commented
-                },
+            .statement(
+                code: { _ in "" },
                 type: .comment
             )
         }
     }
 }
 
-extension Factories.DeclareType {
-    func dataType(for typeToken: Token) throws -> String {
-        switch typeToken {
-        case .atom("FALSE"):
-            return "Bool"
-        case .atom("FIX"):
-            return "Int"
-        case .atom("OBJECT"):
-            return "Object"
-        case .atom("TABLE"):
-            return "Table"
-        case .atom("VECTOR"):
-            return "Array"
-        default:
-            let symbol = try symbolize(typeToken)
-            return symbol.code
-        }
-    }
-}
 
-// MARK: - Errors
-
-extension Factories.DeclareType {
-    enum Error: Swift.Error {
-        case invalidDeclareTypeVariable(Token)
-        case missingDeclareTypeVariable([Token])
-    }
-}
+//        override func processTokens() throws {
+//            var typeTokens = tokens
+//
+//            while !typeTokens.isEmpty {
+//                guard
+//                    case .list(let nameTokens) = typeTokens.shift(),
+//                    let typeToken = typeTokens.shift()
+//                else {
+//                    throw Error.missingDeclareTypeVariable(tokens)
+//                }
+//
+//                try nameTokens.forEach { nameToken in
+//                    guard case .atom(let zil) = nameToken else {
+//                        throw Error.invalidDeclareTypeVariable(nameToken)
+//                    }
+//
+//                    let dataType = try dataType(for: typeToken)
+//
+//                    symbols.append(
+//                        .statement(
+//                            code: { _ in
+//                                "\(zil.lowerCamelCase): \(dataType)"
+//                            },
+//                            type: .comment
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//
+//        override func process() throws -> Symbol {
+//            let types = symbols
+//
+//            return .statement(
+//                code: { _ in
+//                    "Declare(\(types.codeValues(.commaSeparatedNoTrailingComma)))".commented
+//                },
+//                type: .comment
+//            )
+//        }
+//    }
+//}
+//
+//extension Factories.DeclareType {
+//    func dataType(for typeToken: Token) throws -> String {
+//        switch typeToken {
+//        case .atom("FALSE"):
+//            return "Bool"
+//        case .atom("FIX"):
+//            return "Int"
+//        case .atom("OBJECT"):
+//            return "Object"
+//        case .atom("TABLE"):
+//            return "Table"
+//        case .atom("VECTOR"):
+//            return "Array"
+//        default:
+//            let symbol = try symbolize(typeToken)
+//            return symbol.code
+//        }
+//    }
+//}
+//
+//// MARK: - Errors
+//
+//extension Factories.DeclareType {
+//    enum Error: Swift.Error {
+//        case invalidDeclareTypeVariable(Token)
+//        case missingDeclareTypeVariable([Token])
+//    }
+//}

@@ -11,6 +11,8 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [FUNCTION](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.m3e5asphu6rd)
     /// function.
+    ///
+    /// In practice, anonymous functions in Zil only seem to occur in a ``MapFirst`` context.
     class Function: Factory {
         override class var zilNames: [String] {
             ["FUNCTION"]
@@ -26,22 +28,45 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let name = "anon\(tokens.miniHash)"
             let pro = blockProcessor!
+            let type = pro.returnType() ?? .void
 
             return .statement(
+                id: name,
                 code: { _ in
-                    let argNames = pro.paramDeclarations
-
-                    return """
-                        {\(argNames.isEmpty ? "" : " (\(argNames))\(try pro.returnDeclaration()) in")
-                        \(pro.auxiliaryDefs.indented)\
-                        \(pro.code.indented)
-                        }
-                        """
+                    """
+                    func \(name)\
+                    (\(pro.paramDeclarations))\
+                    \(try pro.returnDeclaration()) \
+                    {
+                    \(pro.auxiliaryDefs.indented)\
+                    \(pro.codeHandlingRepeating.indented)
+                    }
+                    """
                 },
-                type: try pro.functionType(),
+                type: type,
+                parameters: pro.paramSymbols,
+                children: pro.symbols,
+                isAnonymousFunction: true,
                 isMutable: false
             )
         }
+
+//            return .statement(
+//                code: { _ in
+//                    let argNames = pro.paramDeclarations
+//
+//                    return """
+//                        {\(argNames.isEmpty ? "" : " (\(argNames))\(try pro.returnDeclaration()) in")
+//                        \(pro.auxiliaryDefs.indented)\
+//                        \(pro.code.indented)
+//                        }
+//                        """
+//                },
+//                type: try pro.functionType(),
+//                isMutable: false
+//            )
+//        }
     }
 }

@@ -23,7 +23,8 @@ final class DivideTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             )
         ])
     }
@@ -65,7 +66,12 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "bigNumber.divide(biggerNumber)",
+            code: """
+                .divide(
+                    bigNumber,
+                    biggerNumber
+                )
+                """,
             type: .int
         ))
     }
@@ -77,7 +83,7 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "cyclowrath.divide(1)",
+            code: ".divide(cyclowrath, 1)",
             type: .int
         ))
     }
@@ -91,7 +97,12 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "baseScore.divide(otvalFrob())",
+            code: """
+                .divide(
+                    baseScore,
+                    otvalFrob()
+                )
+                """,
             type: .int
         ))
     }

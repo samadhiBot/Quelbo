@@ -12,24 +12,13 @@ import XCTest
 final class BitwiseAndTests: QuelboTests {
     let factory = Factories.BitwiseAnd.self
 
-//    override func setUp() {
-//        super.setUp()
-//
-//        try! Game.commit([
-//            .statement(id: "someInt", type: .int, category: .globals),
-//        ])
-//    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("BAND"))
         AssertSameFactory(factory, Game.findFactory("ANDB"))
     }
 
     func testBitwiseAnd() throws {
-        try Factories.Global([
-            .atom("SOME-INT"),
-            .decimal(42),
-        ], with: &localVariables).process()
+        process("<GLOBAL SOME-INT 42>")
 
         let symbol = try factory.init([
             .decimal(1),

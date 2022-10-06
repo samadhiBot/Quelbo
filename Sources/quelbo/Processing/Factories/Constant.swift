@@ -18,19 +18,19 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert([
-                .haveCount(.exactly(2))
-            ])
-
-            try symbols[0].assert([
-                .hasCategory(.constants),
-                .hasSameType(as: symbols[1]),
-                .isImmutable,
-                .isVariable,
+                .haveCommonType,
+                .haveCount(.exactly(2)),
             ])
 
             try symbols[1].assert(
                 .hasReturnValue
             )
+
+            try symbols[0].assert([
+                .hasCategory(.constants),
+                .isImmutable,
+                .isVariable,
+            ])
         }
     }
 }

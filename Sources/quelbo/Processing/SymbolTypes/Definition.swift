@@ -9,12 +9,12 @@ import CustomDump
 import Foundation
 
 final class Definition: SymbolType, Identifiable {
-    let id: String?
+    let id: String
     let tokens: [Token]
     private(set) var type: TypeInfo
 
     init(
-        id: String? = nil,
+        id: String,
         tokens: [Token]
     ) {
         self.id = id
@@ -25,7 +25,7 @@ final class Definition: SymbolType, Identifiable {
     var category: Category? { .definitions }
 
     var code: String {
-        id ?? "// Definition:\(tokens.map(\.value))"
+        id
     }
 
     var isMutable: Bool? { false }
@@ -35,7 +35,7 @@ final class Definition: SymbolType, Identifiable {
 
 extension Symbol {
     static func definition(
-        id: String? = nil,
+        id: String,
         tokens: [Token]
     ) -> Symbol {
         .definition(Definition(

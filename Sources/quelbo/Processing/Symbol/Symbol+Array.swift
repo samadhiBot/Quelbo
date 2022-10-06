@@ -18,14 +18,23 @@ extension Array where Element == Symbol {
         map(\.code).values(displayOptions)
     }
 
-    func returnType() throws -> TypeInfo? {
-        if let alpha = withReturnStatement.max( by: { $0.type.confidence < $1.type.confidence }) {
-            return alpha.type
+    func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
+        map(\.handle).values(displayOptions)
+    }
+
+    func returnType() -> TypeInfo? {
+        if let explicit = withReturnStatement.max(
+            by: { $0.type.confidence < $1.type.confidence }
+        ) {
+            return explicit.type
         }
-        guard let lastSymbol = last(where: { $0.type.dataType != .comment }) else {
+        guard
+            let lastSymbol = nonCommentSymbols.last,
+            lastSymbol.isReturnable
+        else {
             return nil
         }
-        return lastSymbol.isReturnable ? lastSymbol.type : nil
+        return lastSymbol.type
     }
 
     /// Returns the ``Symbol`` array sorted by element ``Symbol/code`` for flag symbols, and by

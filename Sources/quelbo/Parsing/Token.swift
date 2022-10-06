@@ -57,6 +57,9 @@ indirect enum Token: Hashable {
 
     /// Represents a Zil vector.
     case vector([Token])
+
+    /// Represents a Zil verb.
+    case verb(String)
 }
 
 extension Token {
@@ -79,52 +82,59 @@ extension Token {
         case .string(let value):     return "\(value)"
         case .type(let value):       return "\(value)"
         case .vector(let tokens):    return "\(tokens.map { $0.value })"
+        case .verb(let value):       return "\(value)"
         }
     }
 }
 
-// MARK: - Conformances
+extension Token: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .atom(let value):       return ".atom(\(value))"
+        case .bool(let value):       return ".bool(\(value))"
+        case .character(let value):  return ".character(\(value))"
+        case .commented(let token):  return ".commented(\(token))"
+        case .decimal(let value):    return ".decimal(\(value))"
+        case .eval(let token):       return ".eval(\(token))"
+        case .form(let tokens):      return ".form(\(tokens.map(\.description))"
+        case .global(let value):     return ".global(\(value))"
+        case .list(let tokens):      return ".list(\(tokens.map(\.description))"
+        case .local(let value):      return ".local(\(value))"
+        case .property(let value):   return ".property(\(value))"
+        case .quote(let token):      return ".quote(\(token))"
+        case .segment(let token):    return ".segment(\(token))"
+        case .string(let value):     return ".string(\(value))"
+        case .type(let value):       return ".type(\(value))"
+        case .vector(let tokens):    return ".vector(\(tokens.map(\.description))"
+        case .verb(let value):       return ".verb(\(value))"
+        }
+    }
+}
 
 extension Array where Element == Token {
-    enum ReplacementError: Error {
-        case invalidReplacementTokens(original: Token, replacement: Token)
-    }
-
-    /// <#Description#>
-    /// - Parameters:
-    ///   - originalToken: <#originalToken description#>
-    ///   - replacementToken: <#replacementToken description#>
-    /// - Returns: <#description#>
-    func deepReplacing(_ originalToken: Token, with replacementToken: Token) throws -> [Token] {
-        let original = originalToken.value
-
-        return try map { (token: Token) -> Token in
+    var evaluated: [Token] {
+        map { token in
             switch token {
-            case .atom(let string):
-                return string == original ? replacementToken : token
-            case .form(let tokens):
-                return try .form(tokens.deepReplacing(originalToken, with: replacementToken))
-            case .global(let string):
-                return string == original ? replacementToken : token
-            case .list(let tokens):
-                return try .list(tokens.deepReplacing(originalToken, with: replacementToken))
-            case .local(let string):
-                return string == original ? replacementToken : token
-            case .property(let string):
-                return string == original ? replacementToken : token
-            case .vector(let tokens):
-                return try .vector(tokens.deepReplacing(originalToken, with: replacementToken))
-            default: return token
+            case .eval(let evalToken):
+                return evalToken
+            case .form(var formTokens):
+                switch formTokens.shift() {
+                case .atom("FORM"): return .form(formTokens.evaluated)
+                case .atom("LIST"): return .list(formTokens.evaluated)
+                default: return token
+                }
+            case .quote(let quotedToken):
+                return quotedToken
+            default:
+                return token
             }
         }
     }
 
-    var hash: String {
-        let tokenString = map(\.value).joined(separator: ".")
-        let tokenData = tokenString.data(using: .utf8)
-        let hashed = Insecure.MD5.hash(data: tokenData!)
-        let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-
-        return "zil\(hashString.suffix(4))"
+    var miniHash: String {
+        let computed = Insecure.MD5.hash(
+            data: map(\.description).joined().data(using: .utf8)!
+        )
+        return "\("\(computed)".suffix(4))"
     }
 }

@@ -48,78 +48,24 @@ final class RoomTests: QuelboTests {
     }
 
     func testWestOfHouse() throws {
-        let symbol = try factory.init([
-            .atom("WEST-OF-HOUSE"),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("DESC"),
-                .string("West of House")
-            ]),
-            .list([
-                .atom("NORTH"),
-                .atom("TO"),
-                .atom("NORTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("SOUTH"),
-                .atom("TO"),
-                .atom("SOUTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("NE"),
-                .atom("TO"),
-                .atom("NORTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("SE"),
-                .atom("TO"),
-                .atom("SOUTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("WEST"),
-                .atom("TO"),
-                .atom("FOREST-1")
-            ]),
-            .list([
-                .atom("EAST"),
-                .string("The door is boarded and you can't remove the boards.")
-            ]),
-            .list([
-                .atom("SW"),
-                .atom("TO"),
-                .atom("STONE-BARROW"),
-                .atom("IF"),
-                .atom("WON-FLAG")
-            ]),
-            .list([
-                .atom("IN"),
-                .atom("TO"),
-                .atom("STONE-BARROW"),
-                .atom("IF"),
-                .atom("WON-FLAG")
-            ]),
-            .list([
-                .atom("ACTION"),
-                .atom("WEST-HOUSE")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("RLANDBIT"),
-                .atom("ONBIT"),
-                .atom("SACREDBIT")
-            ]),
-            .list([
-                .atom("GLOBAL"),
-                .atom("WHITE-HOUSE"),
-                .atom("BOARD"),
-                .atom("FOREST")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROOM WEST-OF-HOUSE
+                  (IN ROOMS)
+                  (DESC "West of House")
+                  (NORTH TO NORTH-OF-HOUSE)
+                  (SOUTH TO SOUTH-OF-HOUSE)
+                  (NE TO NORTH-OF-HOUSE)
+                  (SE TO SOUTH-OF-HOUSE)
+                  (WEST TO FOREST-1)
+                  (EAST "The door is boarded and you can't remove the boards.")
+                  (SW TO STONE-BARROW IF WON-FLAG)
+                  (IN TO STONE-BARROW IF WON-FLAG)
+                  (ACTION WEST-HOUSE)
+                  (FLAGS RLANDBIT ONBIT SACREDBIT)
+                  (GLOBAL WHITE-HOUSE BOARD FOREST)>
+        """)
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "westOfHouse",
             code: """
                 /// The `westOfHouse` (WEST-OF-HOUSE) room.
@@ -150,11 +96,9 @@ final class RoomTests: QuelboTests {
                 )
                 """,
             type: .object,
-            category: .rooms
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.rooms.find("westOfHouse"), expected)
+            category: .rooms,
+            isCommittable: true
+        ))
     }
 
     func testReservoirSouth() throws {
@@ -253,7 +197,8 @@ final class RoomTests: QuelboTests {
             )
             """,
             type: .object,
-            category: .rooms
+            category: .rooms,
+            isCommittable: true
         ))
     }
 
@@ -359,7 +304,8 @@ final class RoomTests: QuelboTests {
             )
             """,
             type: .object,
-            category: .rooms
+            category: .rooms,
+            isCommittable: true
         ))
     }
 
@@ -449,7 +395,8 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            category: .rooms
+            category: .rooms,
+            isCommittable: true
         ))
     }
 
@@ -514,62 +461,31 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            category: .rooms
+            category: .rooms,
+            isCommittable: true
         ))
     }
 
     func testInStream() throws {
-        let symbol = try factory.init([
-            .atom("IN-STREAM"),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("LDESC"),
-                .string("You are on the gently flowing stream. The upstream route is too narrow to navigate, and the downstream route is invisible due to twisting walls. There is a narrow beach to land on.")
-            ]),
-            .list([
-                .atom("DESC"),
-                .string("Stream")
-            ]),
-            .list([
-                .atom("UP"),
-                .string("The channel is too narrow.")
-            ]),
-            .list([
-                .atom("WEST"),
-                .string("The channel is too narrow.")
-            ]),
-            .list([
-                .atom("LAND"),
-                .atom("TO"),
-                .atom("STREAM-VIEW")
-            ]),
-            .list([
-                .atom("DOWN"),
-                .atom("TO"),
-                .atom("RESERVOIR")
-            ]),
-            .list([
-                .atom("EAST"),
-                .atom("TO"),
-                .atom("RESERVOIR")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("NONLANDBIT")
-            ]),
-            .list([
-                .atom("GLOBAL"),
-                .atom("GLOBAL-WATER")
-            ]),
-            .list([
-                .atom("PSEUDO"),
-                .string("STREAM"),
-                .atom("STREAM-PSEUDO")
-            ])
-        ], with: &localVariables).process()
+        process("<DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>")
+
+        let symbol = process("""
+            <ROOM IN-STREAM
+                  (IN ROOMS)
+                  (LDESC
+                      "You are on the gently flowing stream. The upstream route is too narrow
+                      to navigate, and the downstream route is invisible due to twisting
+                      walls. There is a narrow beach to land on.")
+                  (DESC "Stream")
+                  (UP "The channel is too narrow.")
+                  (WEST "The channel is too narrow.")
+                  (LAND TO STREAM-VIEW)
+                  (DOWN TO RESERVOIR)
+                  (EAST TO RESERVOIR)
+                  (FLAGS NONLANDBIT )
+                  (GLOBAL GLOBAL-WATER)
+                  (PSEUDO "STREAM" STREAM-PSEUDO)>
+        """)
 
         let expected = Statement(
             id: "inStream",
@@ -603,7 +519,8 @@ final class RoomTests: QuelboTests {
             )
             """#,
             type: .object,
-            category: .rooms
+            category: .rooms,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))

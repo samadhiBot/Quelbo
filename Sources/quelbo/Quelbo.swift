@@ -38,7 +38,7 @@ struct Quelbo: ParsableCommand {
         try game.parseZilSource(at: path)
 
         if printTokens {
-            game.printTokens()
+            Game.Print.tokens(game.tokens)
         }
 
         try game.setZMachineVersion()

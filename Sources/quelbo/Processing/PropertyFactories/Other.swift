@@ -11,13 +11,17 @@ extension Factories {
     /// A symbol factory for any unhandled properties of a Zil
     /// [OBJECT](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.38czs75)
     /// type.
-    class Other: PropertyFactory {
-        var name: String!
+    class Other: Factory {
+        override class var factoryType: FactoryType {
+            .property
+        }
+
+        var zilName: String!
 
         override func processTokens() throws {
             var tokens = tokens
 
-            self.name = try findName(in: &tokens)
+            self.zilName = try findName(in: &tokens)
             self.symbols = try symbolize(tokens)
         }
 
@@ -27,7 +31,7 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let code: String
-            let name = name!.lowerCamelCase
+            let name = zilName!.lowerCamelCase
             let type = symbols[0].type
 
             switch symbols.count {

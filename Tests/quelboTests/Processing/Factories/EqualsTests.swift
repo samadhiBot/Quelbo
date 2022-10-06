@@ -72,15 +72,8 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualTwoGlobalBools() throws {
-        try Factories.Global([
-            .atom("PLAYER-ALIVE?"),
-            .bool(true)
-        ], with: &localVariables).process()
-
-        try Factories.Global([
-            .atom("WORLD-ALIVE?"),
-            .bool(true)
-        ], with: &localVariables).process()
+        process("<GLOBAL PLAYER-ALIVE? T>")
+        process("<GLOBAL WORLD-ALIVE? T>")
 
         let symbol = try factory.init([
             .global("PLAYER-ALIVE?"),

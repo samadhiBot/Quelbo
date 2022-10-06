@@ -9,7 +9,6 @@ import Foundation
 
 extension Game {
     /// The ZMachine version to emulate during processing.
-    ///
     enum ZMachineVersion: String {
         case z3
         case z3Time

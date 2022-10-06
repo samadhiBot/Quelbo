@@ -13,7 +13,7 @@ final class StrengthTests: QuelboTests {
     let factory = Factories.Strength.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("STRENGTH"))
+        AssertSameFactory(factory, Game.findFactory("STRENGTH", type: .property))
     }
 
     func testStrength() throws {

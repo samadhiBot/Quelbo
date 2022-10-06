@@ -13,6 +13,7 @@ final class Literal: SymbolType {
     private(set) var type: TypeInfo
     private(set) var isMutable: Bool?
 //    private(set) var isZilElement: Bool
+    private(set) var returnHandling: Symbol.ReturnHandling
 
     init(
         code: String,
@@ -20,6 +21,7 @@ final class Literal: SymbolType {
     ) {
         self._code = code
 //        self.isZilElement = false
+        self.returnHandling = .implicit
         self.type = type
     }
 
@@ -154,6 +156,13 @@ extension Symbol {
             type: .string
         ))
     }
+
+    static func verb(_ verb: String) -> Symbol {
+        .literal(Literal(
+            code: verb,
+            type: .verb
+        ))
+    }
 }
 
 // MARK: - Special assertion handlers
@@ -200,8 +209,8 @@ extension Literal: CustomDumpReflectable {
             self,
             children: [
                 "code": self.code,
-//                "isZilElement": self.isZilElement,
                 "type": self.type as Any,
+                "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
         )
@@ -211,6 +220,7 @@ extension Literal: CustomDumpReflectable {
 extension Literal: Equatable {
     static func == (lhs: Literal, rhs: Literal) -> Bool {
         lhs._code == rhs._code &&
+        lhs.returnHandling == rhs.returnHandling &&
         lhs.type == rhs.type
     }
 }

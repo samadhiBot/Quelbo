@@ -13,8 +13,8 @@ final class LocationTests: QuelboTests {
     let factory = Factories.Location.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("IN"))
-        AssertSameFactory(factory, Game.findPropertyFactory("LOC"))
+        AssertSameFactory(factory, Game.findFactory("IN", type: .property))
+        AssertSameFactory(factory, Game.findFactory("LOC", type: .property))
     }
 
     func testLocation() throws {

@@ -17,21 +17,7 @@ final class DirectionsTests: QuelboTests {
     }
 
     func testDirections() throws {
-        let symbol = try factory.init([
-            .atom("NORTH"),
-            .atom("EAST"),
-            .atom("WEST"),
-            .atom("SOUTH"),
-            .atom("NE"),
-            .atom("NW"),
-            .atom("SE"),
-            .atom("SW"),
-            .atom("UP"),
-            .atom("DOWN"),
-            .atom("IN"),
-            .atom("OUT"),
-            .atom("LAND")
-        ], with: &localVariables).process()
+        let symbol = process("<DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -52,73 +38,85 @@ final class DirectionsTests: QuelboTests {
                 id: "north",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "east",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "west",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "south",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "northEast",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "northWest",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "southEast",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "southWest",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "up",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "down",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "in",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "out",
                 code: "",
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
             Statement(
                 id: "land",
@@ -130,7 +128,8 @@ final class DirectionsTests: QuelboTests {
                     )
                     """,
                 type: .direction,
-                category: .properties
+                category: .properties,
+                isCommittable: true
             ),
         ]
 

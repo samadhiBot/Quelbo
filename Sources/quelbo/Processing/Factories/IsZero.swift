@@ -16,15 +16,15 @@ extension Factories {
             ["0?", "ZERO?"]
         }
 
+        var function: String {
+            "isZero"
+        }
+
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.exactly(1)),
                 .haveType(.int)
             ])
-        }
-
-        var function: String {
-            "isZero"
         }
 
         override func process() throws -> Symbol {

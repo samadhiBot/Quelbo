@@ -44,6 +44,7 @@ struct ZilSyntax {
         let atomOddities = OneOf {
             "0?".utf8.map { "0?" }
             "1?".utf8.map { "1?" }
+            "1ST?".utf8.map { "1ST?" }
         }
 
         let boolFalse = Parse {
@@ -156,6 +157,11 @@ struct ZilSyntax {
             }
         }
 
+        let verb = Parse {
+            ",V?".utf8
+            atom
+        }
+
         parser = Parse {
             Skip { Whitespace() }
             OneOf {
@@ -167,11 +173,12 @@ struct ZilSyntax {
                     eval.map(Token.eval)
                     form.map(Token.form)
                     property.map(Token.property)
+                    verb.map(Token.verb)
                     global.map(Token.global)
-                    list.map(Token.list)
-                    local.map(Token.local)
                 }
                 OneOf {
+                    list.map(Token.list)
+                    local.map(Token.local)
                     quote.map(Token.quote)
                     segment.map(Token.segment)
                     vector.map(Token.vector)

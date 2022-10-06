@@ -20,16 +20,13 @@ extension Factories {
         override func processTokens() throws {
             var routineTokens = tokens
 
-            let name = try findName(in: &routineTokens).lowerCamelCase
+            let zilName = try findName(in: &routineTokens).lowerCamelCase
 
-            if let routine = Game.routines.find(name) {
-                self.routine = routine
-            } else if let function = Game.routines.find(try evalID(tokens)) {
-                self.routine = function
-            } else {
-                throw Error.unknownRoutine(name, routineTokens)
+            guard let routine = Game.routines.find(zilName) else {
+                throw Error.unknownRoutine(zilName, routineTokens)
             }
-
+            self.routine = routine
+            
             var paramSymbols = try symbolize(routineTokens)
 
             self.params = routine.parameters.compactMap { symbol in
@@ -44,6 +41,7 @@ extension Factories {
             }
         }
 
+        @discardableResult
         override func process() throws -> Symbol {
             guard
                 let routine = routine,
@@ -55,7 +53,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(routineName)(\(params.codeValues(.commaSeparatedNoTrailingComma)))"
+                    "\(routineName)(\(params.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: routine.type
             )

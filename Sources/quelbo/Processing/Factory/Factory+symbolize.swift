@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension FactoryType {
+extension Factory {
     /// Translates a ``Token`` array into a ``Symbol`` array.
     ///
     /// - Parameters:
@@ -16,7 +16,10 @@ extension FactoryType {
     /// - Returns: A ``Symbol`` array corresponding to the translated tokens.
     ///
     /// - Throws: When token translation fails.
-    func symbolize(_ tokens: [Token]) throws -> [Symbol] {
+    func symbolize(
+        _ tokens: [Token],
+        mode factoryMode: FactoryMode? = nil
+    ) throws -> [Symbol] {
         var tokens = tokens
         var symbols: [Symbol] = []
 
@@ -40,11 +43,11 @@ extension FactoryType {
             case .decimal(let int):
                 symbols.append(.literal(int))
 
-//            case .eval(let token):
-//                symbols.append(symbolizeEval(token))
+            case .eval(let token):
+                symbols.append(try symbolizeEval(token))
 
             case .form(let tokens):
-                symbols.append(try symbolizeForm(tokens))
+                symbols.append(try symbolizeForm(tokens, mode: factoryMode))
 
             case .global(let string):
                 symbols.append(try symbolizeGlobal(string))
@@ -73,8 +76,8 @@ extension FactoryType {
             case .vector(let tokens):
                 symbols.append(try symbolizeList(tokens))
 
-            default:
-                throw SymbolizationError.unimplemented(token)
+            case .verb(let rawVerb):
+                symbols.append(.verb(rawVerb))
             }
         }
 
@@ -89,8 +92,11 @@ extension FactoryType {
     /// - Returns: A ``Symbol`` corresponding to the translated tokens.
     ///
     /// - Throws: When token translation fails.
-    func symbolize(_ token: Token) throws -> Symbol {
-        let symbols = try symbolize([token])
+    func symbolize(
+        _ token: Token,
+        mode factoryMode: FactoryMode? = nil
+    ) throws -> Symbol {
+        let symbols = try symbolize([token], mode: factoryMode ?? mode)
         guard symbols.count == 1 else {
             throw SymbolizationError.singleTokenSymbolizationFailed(token)
         }
@@ -105,32 +111,31 @@ extension FactoryType {
     /// - Returns: A ``Symbol`` representation of a Zil atom.
     func symbolizeAtom(_ zil: String) throws -> Symbol {
         let name = zil.lowerCamelCase
-        if let global = Game.findGlobal(name) {
-            return .instance(global)
+
+        if let global = Game.findGlobal(name) { return .instance(global) }
+        if let local = findLocal(name) { return .variable(local) }
+        if let known = knownVariable(zil) { return .variable(known) }
+        if zil == "T" { return .literal(true) }
+        if Game.findDefinition(name) != nil {
+            return try Factories.DefinitionEvaluate(
+                [.atom(zil)],
+                with: &localVariables).process(
+            )
         }
-        if let local = findLocal(name) {
-            return .variable(local)
-        }
-        if zil == "T" {
-            return .literal(true)
-        }
+
         return .variable(id: name, type: .unknown)
     }
 
-//    /// Translates a Zil
-//    /// ["% notation"](https://mdl-language.readthedocs.io/en/latest/17-macro-operations/#171-read-macros)
-//    /// token into a Quelbo ``Symbol``.
-//    ///
-//    /// - Parameter evalToken: The Zil token that was marked for immediate evaluation.
-//    ///
-//    /// - Returns: A ``Symbol`` representation of a Zil character.
-//    func symbolizeEval(_ evalToken: Token) throws -> Symbol {
-//        try symbolize(evalToken)
-////        guard let symbol = try symbolize([evalToken]).first else {
-////            throw SymbolizationError.invalidProperty(evalToken)
-////        }
-////        return symbol
-//    }
+    /// Translates a Zil
+    /// ["% notation"](https://mdl-language.readthedocs.io/en/latest/17-macro-operations/#171-read-macros)
+    /// token into a Quelbo ``Symbol``.
+    ///
+    /// - Parameter evalToken: The Zil token that was marked for immediate evaluation.
+    ///
+    /// - Returns: A ``Symbol`` representation of a Zil character.
+    func symbolizeEval(_ evalToken: Token) throws -> Symbol {
+        try symbolize(evalToken, mode: .evaluate)
+    }
 
     /// Translates a Zil
     /// [Form](https://mdl-language.readthedocs.io/en/latest/03-built-in-functions/#31-representation-1)
@@ -139,16 +144,19 @@ extension FactoryType {
     /// - Parameter formTokens: A `Token` array consisting of the Zil form elements.
     ///
     /// - Returns: A ``Symbol`` representation of the Zil form.
-    func symbolizeForm(_ formTokens: [Token]) throws -> Symbol {
+    func symbolizeForm(
+        _ formTokens: [Token],
+        mode factoryMode: FactoryMode? = nil
+    ) throws -> Symbol {
         var tokens = formTokens
 
-        let zil: String
+        let zilString: String
         switch tokens.first {
         case .atom(let name):
-            zil = name
+            zilString = name
 
         case .decimal(let nth):
-            zil = "NTH"
+            zilString = "NTH"
             tokens.append(.decimal(nth))
 
         case .form:
@@ -156,28 +164,33 @@ extension FactoryType {
             guard let closure = nested.shift() else {
                 throw SymbolizationError.invalidZilForm(formTokens)
             }
-
             return .statement(
                 code: { _ in
-                    "\(closure.code)(\(nested.codeValues(.commaSeparated)))"
+                    if nested.isEmpty {
+                        return closure.code
+                    } else {
+                        return "\(closure.code)(\(nested.codeValues(.commaSeparated)))"
+                    }
                 },
                 type: closure.type
             )
 
         case .global(let name):
-            zil = name
+            zilString = name
 
         case .local(let name):
-            zil = name
+            zilString = name
 
         default:
             throw SymbolizationError.invalidZilForm(formTokens)
         }
 
         let factory = try Game.makeFactory(
-            zil,
+            zil: zilString,
             tokens: tokens,
-            with: &localVariables
+            with: &localVariables,
+            type: .zCode,
+            mode: factoryMode ?? mode
         )
 
         return try factory.process()
@@ -195,17 +208,10 @@ extension FactoryType {
     func symbolizeGlobal(_ zil: String) throws -> Symbol {
         let id = zil.lowerCamelCase
 
-        if let global = Game.findGlobal(id) {
-            return .variable(global)
-        }
-
-        if let found = Game.shared.symbols.find(id) {
-            return .statement(found)
-        }
-
-        if let flag = Game.flags.find(id) {
-            return .statement(flag)
-        }
+        if let global = Game.findGlobal(id) { return .variable(global)}
+        if let found = Game.shared.symbols.find(id) { return .statement(found)}
+        if let flag = Game.flags.find(id) { return .statement(flag)}
+        if mode == .evaluate { return .variable(id: id, type: .unknown) }
 
         throw GameError.globalNotFound(id)
     }
@@ -231,13 +237,10 @@ extension FactoryType {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil local atom.
     func symbolizeLocal(_ zil: String) throws -> Symbol {
-        let localName = zil.lowerCamelCase
-
-        if let found = localVariables.first(where: { $0.id == localName }) {
-            return .variable(found)
+        guard let found = localVariables.first(where: { $0.id == zil.lowerCamelCase }) else {
+            throw SymbolizationError.unknownLocal(zil)
         }
-
-        throw SymbolizationError.unknownLocal(zil)
+        return .variable(found)
     }
 
     /// Translates a Zil Object
@@ -248,7 +251,7 @@ extension FactoryType {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil object property.
     func symbolizeProperty(_ zil: String, siblings: inout [Token]) throws -> Symbol {
-        if let factory = Game.findPropertyFactory(zil) {
+        if let factory = Game.findFactory(zil, type: .property) {
             return try factory.init(siblings, with: &localVariables).process()
         }
 
@@ -276,7 +279,11 @@ extension FactoryType {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil quote.
     func symbolizeQuote(_ token: Token) throws -> Symbol {
-        try Factories.Quote([token], with: &localVariables).process()
+        try Factories.Quote(
+            [token],
+            with: &localVariables,
+            mode: mode
+        ).process()
     }
 
     /// Translates a Zil
@@ -332,14 +339,12 @@ extension FactoryType {
 
 // MARK: - Errors
 
-extension FactoryType {
+extension Factory {
     enum SymbolizationError: Swift.Error {
         case invalidZilForm([Token])
         case missingDeclarationValue([Token])
         case noRoutineOrDefinition([Token])
         case singleTokenSymbolizationFailed(Token)
-        case unimplemented(Token)
-//        case unknownAtom(String)
         case unknownLocal(String)
         case unknownType(String)
         case unknownZilProperty(String)

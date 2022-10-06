@@ -22,7 +22,6 @@ extension Factories {
         private(set) var implicitReturns: Bool = true
         private(set) var parameters: [Parameter] = []
         private(set) var repeating: Bool = false
-        private(set) var substitutions: [Token] = []
 
         override func processTokens() throws {
             var tokens = tokens
@@ -34,22 +33,21 @@ extension Factories {
                 tokens.removeFirst()
             }
 
-            guard case .list(let paramTokens) = tokens.shift() else {
-                throw Error.unexpectedTokenWhileFindingParameters(self.tokens)
+            if case .list(let paramTokens) = tokens.first {
+                try processParameters(in: paramTokens)
+                tokens.removeFirst()
             }
-
-            try processParameters(in: paramTokens)
 
             symbols = try symbolize(tokens)
         }
 
         override func processSymbols() throws {
-            try symbols
-                .withReturnStatement
-                .assert(.haveCommonType)
+            try symbols.withReturnStatement.assert(
+                .haveCommonType
+            )
 
-            try parameters.forEach {
-                try $0.assertCommonType()
+            for parameter in parameters {
+                try parameter.assertCommonType()
             }
 
             for symbol in symbols {
@@ -147,15 +145,13 @@ extension Factories.BlockProcessor {
     func assert(
         activation: String? = nil,
         implicitReturns: Bool = true,
-        repeating: Bool = false,
-        substitutions: [Token] = []
+        repeating: Bool = false
     ) {
         if self.activation == nil {
             self.activation = activation
         }
         self.implicitReturns = implicitReturns
         self.repeating = repeating
-        if self.substitutions.isEmpty { self.substitutions = substitutions }
     }
 
     /// Scans through a ``Token`` array until it finds a parameter list, then returns a translated
@@ -207,13 +203,7 @@ extension Factories.BlockProcessor {
             }
 
             guard let nameToken = nameToken else { continue }
-
-            var nameSymbol: Symbol
-            if let substitution = substitutions.shift() {
-                nameSymbol = try symbolize(substitution)
-            } else {
-                nameSymbol = try symbolize(nameToken)
-            }
+            let nameSymbol = try symbolize(nameToken)
 
             var valueSymbol: Symbol?
             if let valueToken = valueToken {
@@ -222,15 +212,18 @@ extension Factories.BlockProcessor {
                 valueSymbol = value
             }
 
-            guard case .variable(let variable) = nameSymbol else {
-                throw Error.unexpectedNameSymboltype(nameSymbol, paramTokens)
+            let nameVariable: Variable
+            switch nameSymbol {
+            case .instance(let instance): nameVariable = instance.variable
+            case .variable(let variable): nameVariable = variable
+            default: throw Error.unexpectedNameSymbolType(nameSymbol, paramTokens)
             }
 
-            localVariables.append(variable)
+            localVariables.append(nameVariable)
 
             let parameter = Parameter(
                 nameSymbol: Instance(
-                    variable,
+                    nameVariable,
                     isOptional: context == .optional
                 ),
                 defaultValue: valueSymbol,
@@ -271,27 +264,34 @@ extension Factories.BlockProcessor {
     var code: String {
         var lines = symbols.filter { !$0.code.isEmpty }
         guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
-            return lines
-                .map(\.code)
-                .joined(separator: "\n")
+            return lines.handles(.singleLineBreak)
         }
-
         let last = lines.remove(at: lastIndex)
-        var codeLines = lines.map(\.code)
+        var codeLines = lines.map(\.handle)
         var lastLine: String {
+            if let returnType = returnType(), last.type != returnType {
+                return last.handle
+            }
             switch last {
             case .definition:
-                return last.code
+                return last.handle
             case .literal, .instance, .variable:
-                return "return \(last.code)"
+                return "return \(last.handle)"
             case .statement(let statement):
-                if statement.isReturnStatement ||
-                   statement.type == .void ||
-                   statement.suppressesReturns ||
-                   !implicitReturns {
-                    return last.code
-                } else {
-                    return "return \(last.code)"
+                switch statement.returnHandling {
+                case .force:
+                    return "return \(last.handle)"
+                case .implicit:
+                    if statement.isReturnStatement ||
+                       statement.type == .void ||
+                       !implicitReturns
+                    {
+                        return last.handle
+                    } else {
+                        return "return \(last.handle)"
+                    }
+                case .suppress:
+                    return last.handle
                 }
             }
         }
@@ -323,7 +323,7 @@ extension Factories.BlockProcessor {
     }
 
     func discardableResult() throws -> String {
-        let type = try returnType()
+        let type = returnType()
         guard let type = type else { return "" }
 
         switch type {
@@ -332,14 +332,14 @@ extension Factories.BlockProcessor {
         }
     }
 
-    func functionType() throws -> TypeInfo {
-        let type = try returnType() ?? .void
-//        guard let type = type else {
-//            throw Error.missingFunctionType
-//        }
-
-        return .function(parameters.map(\.type.dataType), type.dataType)
-    }
+//    func functionType() throws -> TypeInfo {
+//        let type = try returnType() ?? .void
+////        guard let type = type else {
+////            throw Error.missingFunctionType
+////        }
+//
+//        return .function(parameters.map(\.type.dataType), type.dataType)
+//    }
 
     var hasActivation: Bool {
         guard
@@ -380,7 +380,7 @@ extension Factories.BlockProcessor {
     }
 
     func returnDeclaration() throws -> String {
-        guard let type = try returnType() else { return "" }
+        guard let type = returnType() else { return "" }
 
         switch type {
         case .comment, .void: return ""
@@ -388,8 +388,8 @@ extension Factories.BlockProcessor {
         }
     }
 
-    func returnType() throws -> TypeInfo? {
-        try symbols.returnType()
+    func returnType() -> TypeInfo? {
+        symbols.returnType()
     }
 }
 
@@ -398,7 +398,7 @@ extension Factories.BlockProcessor {
 extension Factories.BlockProcessor {
     enum Error: Swift.Error {
         case missingFunctionType
-        case unexpectedNameSymboltype(Symbol, [Token])
+        case unexpectedNameSymbolType(Symbol, [Token])
         case unexpectedTokenWhileFindingParameters([Token])
     }
 }

@@ -73,7 +73,7 @@ final class SetVariableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "t.set(to: thirty.add(3))",
+            code: "t.set(to: .add(thirty, 3))",
             type: .int
         ))
     }
@@ -129,7 +129,7 @@ final class SetVariableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "n.set(to: n.subtract(1))",
+            code: "n.set(to: .subtract(n, 1))",
             type: .int
         ))
     }

@@ -20,7 +20,8 @@ final class RoutineTests: QuelboTests {
                 id: "isLit",
                 code: "",
                 type: .bool,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(singSymbol),
             .variable(id: "axe", type: .object, category: .objects),
@@ -28,9 +29,11 @@ final class RoutineTests: QuelboTests {
             .variable(id: "fWep", type: .int),
             .variable(id: "here", type: .object, category: .rooms),
             .variable(id: "knife", type: .object, category: .objects),
+            .variable(id: "mLook", type: .int),
             .variable(id: "rustyKnife", type: .object, category: .objects),
             .variable(id: "stiletto", type: .object, category: .objects),
             .variable(id: "sword", type: .object, category: .objects),
+            .variable(id: "wonFlag", type: .bool),
         ])
     }
 
@@ -39,22 +42,23 @@ final class RoutineTests: QuelboTests {
     }
 
     func testProcessZeroParamsZeroExpressions() throws {
-        let symbol = try factory.init([
-            .atom("BAG-OF-COINS-F"),
-            .list([]),
-            .commented(.atom("noop")),
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE BAG-OF-COINS-F ()
+                 ;"<STUPID-CONTAINER ,BAG-OF-COINS 'coins'>"
+            >
+        """)
 
         let expected = Statement(
             id: "bagOfCoinsFunc",
             code: """
                 /// The `bagOfCoinsFunc` (BAG-OF-COINS-F) routine.
                 func bagOfCoinsFunc() {
-                    // noop
+                    // <STUPID-CONTAINER ,BAG-OF-COINS 'coins'>
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -62,14 +66,7 @@ final class RoutineTests: QuelboTests {
     }
 
     func testProcessZeroParamsOneExpression() throws {
-        let symbol = try factory.init([
-            .atom("GO"),
-            .list([]),
-            .form([
-                .atom("SING"),
-                .decimal(99),
-            ]),
-        ], with: &localVariables).process()
+        let symbol = process("<ROUTINE GO () <SING 99>>")
 
         let expected = Statement(
             id: "go",
@@ -80,7 +77,8 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -88,38 +86,43 @@ final class RoutineTests: QuelboTests {
     }
 
     func testProcessOneKnownParam() throws {
-        let symbol = try factory.init([
-            .atom("WEST-HOUSE"),
-            .list([
-                .atom("RARG")
-            ]),
-            .form([
-                .atom("ADD"),
-                .atom("RARG"),
-                .decimal(42)
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE WEST-HOUSE (RARG)
+                 <COND (<EQUAL? .RARG ,M-LOOK>
+                    <TELL
+                        "You are standing in an open field west of a white house, with a boarded
+                        front door.">
+                    <COND (,WON-FLAG
+                           <TELL
+                                " A secret path leads southwest into the forest.">)>
+                    <CRLF>)>>
+        """)
 
         let expected = Statement(
             id: "westHouse",
-            code: """
-                @discardableResult
+            code: #"""
                 /// The `westHouse` (WEST-HOUSE) routine.
-                func westHouse(rarg: Int) -> Int {
-                    var rarg: Int = rarg
-                    return rarg.add(42)
+                func westHouse(rarg: Int) {
+                    if rarg.equals(mLook) {
+                        output("""
+                            You are standing in an open field west of a white house, \
+                            with a boarded front door.
+                            """)
+                        if wonFlag {
+                            output(" A secret path leads southwest into the forest.")
+                        }
+                        output("\n")
+                    }
                 }
-                """,
-            type: .int,
+                """#,
+            type: .void,
             parameters: [
                 Instance(
-                    Variable(
-                        id: "rarg",
-                        type: .int
-                    )
+                    Variable(id: "rarg", type: .int)
                 ),
             ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -138,7 +141,7 @@ final class RoutineTests: QuelboTests {
             ])
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "printMessage",
             code: """
                 /// The `printMessage` (PRINT-MESSAGE) routine.
@@ -155,11 +158,9 @@ final class RoutineTests: QuelboTests {
                     )
                 )
             ],
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("printMessage"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithAuxiliaryParams() throws {
@@ -182,7 +183,7 @@ final class RoutineTests: QuelboTests {
             ]),
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "isDucking",
             code: """
                 @discardableResult
@@ -195,11 +196,9 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .string,
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("isDucking"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithAuxiliaryParamsWithoutValues() throws {
@@ -219,7 +218,7 @@ final class RoutineTests: QuelboTests {
             ]),
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "boomRoom",
             code: """
                 @discardableResult
@@ -230,11 +229,9 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .booleanTrue,
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("boomRoom"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithOneOptionalParam() throws {
@@ -250,7 +247,7 @@ final class RoutineTests: QuelboTests {
             ])
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "batD",
             code: """
                 /// The `batD` (BAT-D) routine.
@@ -268,11 +265,9 @@ final class RoutineTests: QuelboTests {
                     isOptional: true
                 ),
             ],
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("batD"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithMultipleOptionalParam() throws {
@@ -293,7 +288,7 @@ final class RoutineTests: QuelboTests {
             ]),
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "batBat",
             code: """
                     @discardableResult
@@ -302,8 +297,7 @@ final class RoutineTests: QuelboTests {
                         foo: Int = 0,
                         bar: Int = 42
                     ) -> Int {
-                        var foo: Int = foo
-                        return foo.add(bar)
+                        return .add(foo, bar)
                     }
                     """,
             type: .int,
@@ -323,11 +317,9 @@ final class RoutineTests: QuelboTests {
                     isOptional: true
                 )
             ],
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("batBat"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithOneDefaultValueParam() throws {
@@ -345,7 +337,7 @@ final class RoutineTests: QuelboTests {
             ])
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "deadFunc",
             code: """
                 /// The `deadFunc` (DEAD-FUNCTION) routine.
@@ -364,27 +356,22 @@ final class RoutineTests: QuelboTests {
                     )
                 )
             ],
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("deadFunc"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testProcessWithMultipleDefaultValueParam() throws {
-        let symbol = try factory.init(
-            try parse("""
-                <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
-                     <REPEAT ()
-                             <COND (<G? <SET CNT <+ .CNT 1>> .LEN> <RETURN>)>
-                         <SET STR <GET .REMARK .CNT>>
-                         <COND (<EQUAL? .STR ,F-WEP> <PRINTD .W>)
-                               (<EQUAL? .STR ,F-DEF> <PRINTD .D>)
-                               (T <PRINT .STR>)>>
-                     <CRLF>>
-                """).droppingFirst,
-            with: &localVariables
-        ).process()
+        let symbol = process("""
+            <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
+                 <REPEAT ()
+                         <COND (<G? <SET CNT <+ .CNT 1>> .LEN> <RETURN>)>
+                     <SET STR <GET .REMARK .CNT>>
+                     <COND (<EQUAL? .STR ,F-WEP> <PRINTD .W>)
+                           (<EQUAL? .STR ,F-DEF> <PRINTD .D>)
+                           (T <PRINT .STR>)>>
+                 <CRLF>>
+        """)
 
         let expected = Statement(
             id: "remark",
@@ -399,7 +386,7 @@ final class RoutineTests: QuelboTests {
                     var cnt: Int = 0
                     var str: ZilElement = .none
                     while true {
-                        if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
+                        if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                             break
                         }
                         str.set(to: try remark.get(at: cnt))
@@ -415,90 +402,39 @@ final class RoutineTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "remark",
-                        type: .oneOf([.table, .zilElement, .array(.zilElement)])
-                    )
-                ),
-                Instance(
-                    Variable(
-                        id: "d",
-                        type: .object
-                    )
-                ),
-                Instance(
-                    Variable(
-                        id: "w",
-                        type: .object
-                    )
-                ),
-            ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
         XCTAssertNoDifference(Game.routines.find("remark"), expected)
     }
 
-    // <ROUTINE THIEF-VS-ADVENTURER (HERE? "AUX" ROBBED? (WINNER-ROBBED? <>))
-
-    // <ROUTINE ROBBER-FUNCTION ("OPTIONAL" (MODE <>) "AUX" (FLG <>) X N)
-
-    // <ROUTINE I-LANTERN ("AUX" TICK (TBL <VALUE LAMP-TABLE>))
-
     func testBottlesRoutine() throws {
-        let symbol = try factory.init([
-            .atom("BOTTLES"),
-            .list([
-                .atom("N")
-            ]),
-            .form([
-                .atom("PRINTN"),
-                .local("N")
-            ]),
-            .form([
-                .atom("PRINTI"),
-                .string(" bottle")
-            ]),
-            .form([
-                .atom("COND"),
-                .list([
-                    .form([
-                        .atom("N==?"),
-                        .local("N"),
-                        .decimal(1)
-                    ]),
-                    .form([
-                        .atom("PRINTC"),
-                        .character("s")
-                    ])
-                ])
-            ]),
-            .form([
-                .atom("RTRUE")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process(#"""
+            <ROUTINE BOTTLES (N)
+                <PRINTN .N>
+                <PRINTI " bottle">
+                <COND (<N==? .N 1> <PRINTC !\s>)>
+                <RTRUE>>
+        """#)
 
         XCTAssertNoDifference(symbol, .statement(bottlesRoutine))
         XCTAssertNoDifference(Game.routines.find("bottles"), bottlesRoutine)
     }
 
     func testFindWeapon() throws {
-        let symbol = try factory.init(
-            try parse("""
-                <ROUTINE FIND-WEAPON (O "AUX" W)
-                     <SET W <FIRST? .O>>
-                     <COND (<NOT .W>
-                        <RFALSE>)>
-                     <REPEAT ()
-                         <COND (<OR <EQUAL? .W ,STILETTO ,AXE ,SWORD>
-                                <EQUAL? .W ,KNIFE ,RUSTY-KNIFE>>
-                            <RETURN .W>)
-                               (<NOT <SET W <NEXT? .W>>> <RFALSE>)>>>
-            """).droppingFirst,
-            with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE FIND-WEAPON (O "AUX" W)
+                 <SET W <FIRST? .O>>
+                 <COND (<NOT .W>
+                    <RFALSE>)>
+                 <REPEAT ()
+                     <COND (<OR <EQUAL? .W ,STILETTO ,AXE ,SWORD>
+                            <EQUAL? .W ,KNIFE ,RUSTY-KNIFE>>
+                        <RETURN .W>)
+                           (<NOT <SET W <NEXT? .W>>> <RFALSE>)>>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(findWeaponRoutine))
         XCTAssertNoDifference(Game.routines.find("findWeapon"), findWeaponRoutine)
@@ -509,10 +445,7 @@ final class RoutineTests: QuelboTests {
             .statement(findWeaponRoutine)
         )
 
-        try Factories.Global([
-            .atom("WINNER"),
-            .decimal(0)
-        ], with: &localVariables).process()
+        process("<GLOBAL WINNER 0>")
 
         let symbol = try factory.init([
             .atom("DWEAPON-MINI"),
@@ -535,7 +468,7 @@ final class RoutineTests: QuelboTests {
             ]),
         ], with: &localVariables).process()
 
-        let expected = Statement(
+        XCTAssertNoDifference(symbol, .statement(
             id: "dweaponMini",
             code: """
                 /// The `dweaponMini` (DWEAPON-MINI) routine.
@@ -546,11 +479,9 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("dweaponMini"), expected)
+            category: .routines,
+            isCommittable: true
+        ))
     }
 
     func testRemoveCarefully() throws {
@@ -559,74 +490,19 @@ final class RoutineTests: QuelboTests {
             .variable(id: "pItObject", type: .object, category: .objects),
         ])
 
-        try Factories.Global([
-            .atom("LIT"),
-            .bool(false)
-        ], with: &localVariables).process()
+        process("<GLOBAL LIT <>>")
 
-        let symbol = try factory.init([
-            .atom("REMOVE-CAREFULLY"),
-            .list([
-                .atom("OBJ"),
-                .string("AUX"),
-                .atom("OLIT")
-            ]),
-            .form([
-                .atom("COND"),
-                .list([
-                    .form([
-                        .atom("EQUAL?"),
-                        .local("OBJ"),
-                        .global("P-IT-OBJECT")
-                    ]),
-                    .form([
-                        .atom("SETG"),
-                        .atom("P-IT-OBJECT"),
-                        .bool(false)
-                    ])
-                ])
-            ]),
-            .form([
-                .atom("SET"),
-                .atom("OLIT"),
-                .global("LIT")
-            ]),
-            .form([
-                .atom("REMOVE"),
-                .local("OBJ")
-            ]),
-            .form([
-                .atom("SETG"),
-                .atom("LIT"),
-                .form([
-                    .atom("LIT?"),
-                    .global("HERE")
-                ])
-            ]),
-            .form([
-                .atom("COND"),
-                .list([
-                    .form([
-                        .atom("AND"),
-                        .local("OLIT"),
-                        .form([
-                            .atom("NOT"),
-                            .form([
-                                .atom("EQUAL?"),
-                                .local("OLIT"),
-                                .global("LIT")
-                            ])
-                        ])
-                    ]),
-                    .form([
-                        .atom("TELL"),
-                        .string("You are left in the dark..."),
-                        .atom("CR")
-                    ])
-                ])
-            ]),
-            .atom("T")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE REMOVE-CAREFULLY (OBJ "AUX" OLIT)
+                 <COND (<EQUAL? .OBJ ,P-IT-OBJECT>
+                    <SETG P-IT-OBJECT <>>)>
+                 <SET OLIT ,LIT>
+                 <REMOVE .OBJ>
+                 <SETG LIT <LIT? ,HERE>>
+                 <COND (<AND .OLIT <NOT <EQUAL? .OLIT ,LIT>>>
+                    <TELL "You are left in the dark..." CR>)>
+                 T>
+        """)
 
         let expected = Statement(
             id: "removeCarefully",
@@ -659,7 +535,8 @@ final class RoutineTests: QuelboTests {
                     )
                 ),
             ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -739,19 +616,16 @@ final class RoutineTests: QuelboTests {
     }
 
     func testIntRoutine() throws {
-        try! Game.commit([
-            .variable(id: "cIntlen", type: .int, category: .constants),
-            .variable(id: "cRtn", type: .int, category: .constants),
-            .variable(id: "cInts", type: .int, category: .globals),
-            .variable(id: "cDemons", type: .int, category: .globals),
-            .variable(id: "cTable", type: .table, category: .globals),
-            .variable(id: "cTablelen", type: .int, category: .globals),
-        ])
+        let symbol = process("""
+            <CONSTANT C-INTLEN 6>
+            <CONSTANT C-RTN 2>
+            <GLOBAL C-INTS 180>
+            <GLOBAL C-DEMONS 180>
+            <GLOBAL C-TABLE <ITABLE NONE 180>>
+            <CONSTANT C-TABLELEN 180>
 
-        let definition = try parse("""
             <ROUTINE INT (RTN "OPTIONAL" (DEMON <>) E C INT)
-                 #DECL ((RTN) ATOM (DEMON) <OR ATOM FALSE> (E C INT) <PRIMTYPE
-                                              VECTOR>)
+                 #DECL ((RTN) ATOM (DEMON) <OR ATOM FALSE> (E C INT) <PRIMTYPE VECTOR>)
                  <SET E <REST ,C-TABLE ,C-TABLELEN>>
                  <SET C <REST ,C-TABLE ,C-INTS>>
                  <REPEAT ()
@@ -763,8 +637,7 @@ final class RoutineTests: QuelboTests {
                         <RETURN .INT>)
                            (<EQUAL? <GET .C ,C-RTN> .RTN> <RETURN .C>)>
                      <SET C <REST .C ,C-INTLEN>>>>
-        """).droppingFirst
-        let symbol = try factory.init(definition, with: &localVariables).process()
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "int",
@@ -773,7 +646,7 @@ final class RoutineTests: QuelboTests {
                 /// The `int` (INT) routine.
                 func int(
                     rtn: ZilElement,
-                    demon: Int = 0,
+                    demon: Bool = false,
                     e: Table? = nil,
                     c: Table? = nil,
                     int: Table? = nil
@@ -781,21 +654,14 @@ final class RoutineTests: QuelboTests {
                     var e: Table = e
                     var c: Table = c
                     var int: Table = int
-                    // Declare(
-                    //     rtn: atom,
-                    //     demon: .or(atom, false),
-                    //     e: Array,
-                    //     c: Array,
-                    //     int: Array
-                    // )
                     e.set(to: cTable.rest(cTablelen))
                     c.set(to: cTable.rest(cInts))
                     while true {
                         if c.equals(e) {
-                            cInts.set(to: cInts.subtract(cIntlen))
+                            cInts.set(to: .subtract(cInts, cIntlen))
                             .and(
                                 demon,
-                                cDemons.set(to: cDemons.subtract(cIntlen))
+                                cDemons.set(to: .subtract(cDemons, cIntlen))
                             )
                             int.set(to: cTable.rest(cInts))
                             try int.put(element: rtn, at: cRtn)
@@ -808,16 +674,9 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .table,
-            parameters: [
-                Instance(Variable(id: "rtn", type: .zilElement)),
-                Instance(Variable(id: "demon", type: .int), isOptional: true),
-                Instance(Variable(id: "e", type: .table, category: .globals, isMutable: true), isOptional: true),
-                Instance(Variable(id: "c", type: .table, category: .globals, isMutable: true), isOptional: true),
-                Instance(Variable(id: "int", type: .table, category: .globals, isMutable: true), isOptional: true),
-            ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         ))
-
     }
 }
 
@@ -848,7 +707,8 @@ extension RoutineTests {
                     )
                 )
             ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
     }
 
@@ -885,7 +745,8 @@ extension RoutineTests {
                     )
                 ),
             ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
     }
 
@@ -927,7 +788,8 @@ extension RoutineTests {
                     )
                 )
             ],
-            category: .routines
+            category: .routines,
+            isCommittable: true
         )
     }
 }

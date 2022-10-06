@@ -47,12 +47,12 @@ final class ReturnTests: QuelboTests {
                 }
                 """,
             type: .void,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ34() throws {
-        Game.shared.zMachineVersion = .z3
+        Game.reset(zMachineVersion: .z3)
 
         let symbol = try factory.init([], with: &localVariables).process()
 
@@ -63,7 +63,7 @@ final class ReturnTests: QuelboTests {
     }
 
     func testReturnNoValueBlockWithDefaultActivationZ5Plus() throws {
-        Game.shared.zMachineVersion = .z5
+        Game.reset(zMachineVersion: .z5)
 
         let symbol = try factory.init([], with: &localVariables).process()
 

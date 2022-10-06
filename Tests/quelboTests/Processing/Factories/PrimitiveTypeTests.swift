@@ -78,10 +78,9 @@ final class PrimitiveTypeTests: QuelboTests {
      */
 
     func testPrimitiveTypeCharacter() throws {
-        let symbol = try factory.init(
-            try parse(#"<PRIMTYPE !\A>"#).droppingFirst,
-            with: &localVariables
-        ).process()
+        let symbol = process(#"""
+            <PRIMTYPE !\A>
+        """#)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "Int",
@@ -90,10 +89,9 @@ final class PrimitiveTypeTests: QuelboTests {
     }
 
     func testPrimitiveTypeAddForm() throws {
-        let symbol = try factory.init(
-            try parse("<PRIMTYPE <+ 1 2>>").droppingFirst,
-            with: &localVariables
-        ).process()
+        let symbol = process("""
+            <PRIMTYPE <+ 1 2>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, 2)",
@@ -102,10 +100,9 @@ final class PrimitiveTypeTests: QuelboTests {
     }
 
     func testPrimitiveTypeString() throws {
-        let symbol = try factory.init(
-            try parse(#"<PRIMTYPE "ABC">"#).droppingFirst,
-            with: &localVariables
-        ).process()
+        let symbol = process("""
+            <PRIMTYPE "ABC">
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "String",

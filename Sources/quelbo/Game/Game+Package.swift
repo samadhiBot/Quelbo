@@ -9,75 +9,83 @@ import Files
 import Foundation
 
 extension Game {
-    func package(path target: String) throws {
-        guard let name = target.split(separator: "/").last else {
-            throw FilesError(path: target, reason: "Unable to create package name.")
-        }
-        let project = "\(name)"
+    struct Package {
+        private let project: String
+        private var folder: Folder = .current
+        private var sourcesFolder: Folder = .current
 
-        let folder = try folder(path: target)
-        try createPackage(named: project, in: folder)
+        init(path target: String) throws {
+            guard let name = target.split(separator: "/").last else {
+                throw FilesError(path: target, reason: "Unable to create package name.")
+            }
+            self.project = "\(name)"
 
-        let sourcesFolder = try folder.subfolder(at: "Sources/\(name)")
+            self.folder = try folder(path: target)
+            try createPackage(named: project, in: folder)
 
-        if !Game.directions.isEmpty {
-            try createFile(
-                named: "Directions.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.directions.codeValues()
-            )
+            self.sourcesFolder = try folder.subfolder(at: "Sources/\(name)")
         }
 
-        if !Game.constants.isEmpty {
-            try createFile(
-                named: "Constants.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.constants.codeValues(.commaSeparated)
-            )
-        }
+        func build() throws {
+            if !Game.directions.isEmpty {
+                try createFile(
+                    named: "Directions.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.directions.codeValues()
+                )
+            }
 
-        if !Game.globals.isEmpty {
-            try createFile(
-                named: "Globals.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.globals.codeValues(.commaSeparated)
-            )
-        }
+            if !Game.constants.isEmpty {
+                try createFile(
+                    named: "Constants.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.constants.codeValues(.commaSeparated)
+                )
+            }
 
-        if !Game.objects.isEmpty {
-            try createFile(
-                named: "Objects.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.objects.codeValues(.doubleLineBreak)
-            )
-        }
+            if !Game.globals.isEmpty {
+                try createFile(
+                    named: "Globals.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.globals.codeValues(.commaSeparated)
+                )
+            }
 
-        if !Game.rooms.isEmpty {
-            try createFile(
-                named: "Rooms.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.rooms.codeValues(.doubleLineBreak)
-            )
-        }
+            if !Game.objects.isEmpty {
+                try createFile(
+                    named: "Objects.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.objects.codeValues(.doubleLineBreak)
+                )
+            }
 
-        if !Game.routines.isEmpty {
-            try createFile(
-                named: "Routines.swift",
-                project: project,
-                in: sourcesFolder,
-                with: Game.routines.codeValues(.doubleLineBreak)
-            )
+            if !Game.rooms.isEmpty {
+                try createFile(
+                    named: "Rooms.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.rooms.codeValues(.doubleLineBreak)
+                )
+            }
+
+            if !Game.routines.isEmpty {
+                try createFile(
+                    named: "Routines.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.routines.codeValues(.doubleLineBreak)
+                )
+            }
         }
     }
 }
 
-private extension Game {
-    func createFile(
+private extension Game.Package {
+    private func createFile(
         named fileName: String,
         project: String,
         in folder: Folder,
@@ -99,7 +107,7 @@ private extension Game {
         )
     }
 
-    func createPackage(named name: String, in folder: Folder) throws {
+    private func createPackage(named name: String, in folder: Folder) throws {
         let sources = try folder.createSubfolder(at: "Sources/\(name)")
         let tests = try folder.createSubfolder(at: "Tests/\(name)Tests")
 
@@ -163,7 +171,7 @@ private extension Game {
         )
     }
 
-    func folder(path target: String) throws -> Folder {
+    private func folder(path target: String) throws -> Folder {
         var target = target
         if target.hasSuffix("/") {
             target.removeLast()

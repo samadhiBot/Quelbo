@@ -1,0 +1,113 @@
+//
+//  PrintContentsTests.swift
+//  Quelbo
+//
+//  Created by Chris Sessions on 10/3/22.
+//
+
+import CustomDump
+import XCTest
+@testable import quelbo
+
+final class PrintContentsTests: QuelboTests {
+    override func setUp() {
+        super.setUp()
+
+        process("""
+            <ROUTINE THIS-IS-IT (OBJ)
+                 <SETG P-IT-OBJECT .OBJ>>
+
+            <ROUTINE PRINT-CONTENTS (OBJ "AUX" F N (1ST? T) (IT? <>) (TWO? <>))
+                 <COND (<SET F <FIRST? .OBJ>>
+                    <REPEAT ()
+                        <SET N <NEXT? .F>>
+                        <COND (.1ST? <SET 1ST? <>>)
+                              (ELSE
+                               <TELL ", ">
+                               <COND (<NOT .N> <TELL "and ">)>)>
+                        <TELL "a " D .F>
+                        <COND (<AND <NOT .IT?> <NOT .TWO?>>
+                               <SET IT? .F>)
+                              (ELSE
+                               <SET TWO? T>
+                               <SET IT? <>>)>
+                        <SET F .N>
+                        <COND (<NOT .F>
+                               <COND (<AND .IT? <NOT .TWO?>>
+                                  <THIS-IS-IT .IT?>)>
+                               <RTRUE>)>>)>>
+        """, type: .mdl)
+    }
+
+    func testThisIsIt() {
+        XCTAssertNoDifference(
+            Game.routines.find("thisIsIt"),
+            Statement(
+                id: "thisIsIt",
+                code: """
+                    /// The `thisIsIt` (THIS-IS-IT) routine.
+                    func thisIsIt(obj: Object) {
+                        return pItObject.set(to: obj)
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testPrintContents() {
+        XCTAssertNoDifference(
+            Game.routines.find("printContents"),
+            Statement(
+                id: "printContents",
+                code: """
+                    @discardableResult
+                    /// The `printContents` (PRINT-CONTENTS) routine.
+                    func printContents(obj: Object) -> Bool {
+                        var f: Object? = nil
+                        var n: Object? = nil
+                        var is1St: Bool = true
+                        var isIt: Bool = false
+                        var isTwo: Bool = false
+                        if _ = f.set(to: obj.firstChild) {
+                            while true {
+                                n.set(to: f.nextSibling)
+                                if is1St {
+                                    is1St.set(to: false)
+                                } else {
+                                    output(", ")
+                                    if .isNot(n) {
+                                        output("and ")
+                                    }
+                                }
+                                output("a ")
+                                output(f.description)
+                                if .and(
+                                    .isNot(isIt),
+                                    .isNot(isTwo)
+                                ) {
+                                    isIt.set(to: f)
+                                } else {
+                                    isTwo.set(to: true)
+                                    isIt.set(to: nil)
+                                }
+                                f.set(to: n)
+                                if .isNot(f) {
+                                    if _ = .and(isIt, .isNot(isTwo)) {
+                                        thisIsIt(obj: isIt)
+                                    }
+                                    return true
+                                }
+                            }
+                        }
+                    }
+                    """,
+                type: .booleanTrue,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+}

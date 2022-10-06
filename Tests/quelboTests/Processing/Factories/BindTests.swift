@@ -99,7 +99,8 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         ))
     }
 
@@ -169,7 +170,7 @@ final class BindTests: QuelboTests {
                     while true {
                         output("START ")
                         do {
-                            x.set(to: x.add(1))
+                            x.set(to: .add(x, 1))
                             output(x)
                             output(" ")
                             if x.equals(3) {
@@ -185,7 +186,8 @@ final class BindTests: QuelboTests {
                 }
                 """,
             type: .void,
-            category: .routines
+            category: .routines,
+            isCommittable: true
         ))
     }
 }

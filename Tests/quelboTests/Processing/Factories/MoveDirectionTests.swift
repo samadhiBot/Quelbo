@@ -14,25 +14,6 @@ import XCTest
 final class MoveDirectionTests: QuelboTests {
     let factory = Factories.MoveDirection.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-            .statement(
-                id: "land",
-                code: """
-                    /// Represents an exit toward land.
-                    public static let land = Direction(
-                        id: "land",
-                        synonyms: ["LAND"]
-                    )
-                    """,
-                type: .direction,
-                category: .properties
-            ),
-        ])
-    }
-
     func testMoveDirectionToRoom() throws {
         let symbol = try factory.init([
             .atom("NORTH"),
@@ -47,6 +28,8 @@ final class MoveDirectionTests: QuelboTests {
     }
 
     func testMoveNovelDirectionToRoom() throws {
+        process("<DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>")
+
         let symbol = try factory.init([
             .atom("LAND"),
             .atom("TO"),

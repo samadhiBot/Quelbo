@@ -23,7 +23,8 @@ final class MultiplyTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             )
         ])
     }
@@ -65,7 +66,12 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "bigNumber.multiply(biggerNumber)",
+            code: """
+                .multiply(
+                    bigNumber,
+                    biggerNumber
+                )
+                """,
             type: .int
         ))
     }
@@ -77,7 +83,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "cyclowrath.multiply(1)",
+            code: ".multiply(cyclowrath, 1)",
             type: .int
         ))
     }
@@ -91,7 +97,12 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "baseScore.multiply(otvalFrob())",
+            code: """
+                .multiply(
+                    baseScore,
+                    otvalFrob()
+                )
+                """,
             type: .int
         ))
     }

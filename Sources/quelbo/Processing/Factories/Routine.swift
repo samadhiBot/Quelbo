@@ -19,12 +19,12 @@ extension Factories {
         var blockProcessor: BlockProcessor!
         var zilName: String!
 
-        var typeName: String {
-            "routine"
+        var isMacro: Bool {
+            false
         }
 
         override func processTokens() throws {
-            var tokens = tokens
+            var tokens = isMacro ? tokens.evaluated : tokens
 
             self.zilName = try findName(in: &tokens)
             self.blockProcessor = try Factories.BlockProcessor(
@@ -35,12 +35,12 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let name = zilName.lowerCamelCase
-            let typeName = typeName
+            let typeName = isMacro ? "macro" : "routine"
             let zilName = zilName!
             let pro = blockProcessor!
-            let type = try pro.returnType() ?? .void
+            let type = pro.returnType() ?? .void
 
-            let routine: Symbol = .statement(
+            return .statement(
                 id: name,
                 code: { _ in
                     """
@@ -58,11 +58,9 @@ extension Factories {
                 type: type,
                 parameters: pro.paramSymbols,
                 children: pro.symbols,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             )
-
-            try! Game.commit(routine)
-            return routine
         }
     }
 }

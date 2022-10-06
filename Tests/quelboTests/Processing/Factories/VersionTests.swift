@@ -17,15 +17,14 @@ final class VersionTests: QuelboTests {
     }
 
     func testAtom() throws {
-        let symbol = try factory.init([
-            .atom("ZIP")
-        ], with: &localVariables).process()
+        let symbol = process("<VERSION ZIP>")
 
         let expected = Statement(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -33,16 +32,14 @@ final class VersionTests: QuelboTests {
     }
 
     func testZ3WithTime() throws {
-        let symbol = try factory.init([
-            .atom("ZIP"),
-            .atom("TIME")
-        ], with: &localVariables).process()
+        let symbol = process("<VERSION ZIP TIME>")
 
         let expected = Statement(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3Time""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -50,15 +47,14 @@ final class VersionTests: QuelboTests {
     }
 
     func testDecimal() throws {
-        let symbol = try factory.init([
-            .decimal(3)
-        ], with: &localVariables).process()
+        let symbol = process("<VERSION 3>")
 
         let expected = Statement(
             id: "zMachineVersion",
             code: #"let zMachineVersion: String = "z3""#,
             type: .string,
-            category: .constants
+            category: .constants,
+            isCommittable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))

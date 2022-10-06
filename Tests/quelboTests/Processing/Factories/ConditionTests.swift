@@ -23,13 +23,15 @@ final class ConditionTests: QuelboTests {
                 parameters: [
                     Instance(Variable(id: "n", type: .int))
                 ],
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(
                 id: "isOpenable",
                 code: "",
                 type: .bool,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .statement(
                 id: "thisIsIt",
@@ -38,7 +40,8 @@ final class ConditionTests: QuelboTests {
                 parameters: [
                     Instance(Variable(id: "object", type: .object))
                 ],
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
             .variable(id: "clearing", type: .object, category: .rooms),
             .variable(id: "here", type: .object, category: .rooms),
@@ -80,7 +83,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -121,7 +124,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .bool,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -153,7 +156,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .int,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -176,7 +179,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -205,7 +208,7 @@ final class ConditionTests: QuelboTests {
             }
             """,
             type: .string,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -250,7 +253,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -274,7 +277,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
                 type: .void,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 
@@ -326,7 +329,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .booleanTrue,
-            suppressesReturns: true
+            returnHandling: .suppress
         ))
     }
 }

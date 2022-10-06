@@ -54,6 +54,16 @@ extension Symbol {
         }
     }
 
+    var handle: String {
+        switch self {
+        case .definition(let definition): return definition.id
+        case .instance(let instance): return instance.variable.id
+        case .literal(let literal): return literal.code
+        case .statement(let statement): return statement.id ?? statement.code
+        case .variable(let variable): return variable.id
+        }
+    }
+
     var id: String? {
         switch self {
         case .definition(let definition): return definition.id
@@ -91,11 +101,11 @@ extension Symbol {
         }
     }
 
-    var suppressesReturns: Bool {
+    var returnHandling: ReturnHandling {
         switch self {
-        case .definition: return true
-        case .literal, .instance, .variable: return false
-        case .statement(let statement): return statement.suppressesReturns
+        case .definition: return .suppress
+        case .literal, .instance, .variable: return .implicit
+        case .statement(let statement): return statement.returnHandling
         }
     }
 

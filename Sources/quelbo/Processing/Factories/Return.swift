@@ -22,6 +22,9 @@ extension Factories {
 
         override func process() throws -> Symbol {
             if let valueSymbol = symbols.shift() {
+                if case .statement(let statement) = valueSymbol {
+                    statement.assertShouldReturn()
+                }
                 return valueReturn(valueSymbol)
             } else if Game.shared.zMachineVersion > .z4 {
                 return z5Return()
@@ -47,7 +50,11 @@ extension Factories.Return {
     func valueReturn(_ value: Symbol) -> Symbol{
         .statement(
             code: { _ in
-                "return \(value.code)"
+                if value.returnHandling == .suppress {
+                    return value.code
+                } else {
+                    return "return \(value.code)"
+                }
             },
             type: value.type,
             isReturnStatement: true

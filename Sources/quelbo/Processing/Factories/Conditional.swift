@@ -14,13 +14,6 @@ extension Factories {
         var blockProcessor: BlockProcessor!
         var predicate: Symbol!
 
-        func ifStatement(for predicateCode: String) -> String {
-            switch predicateCode {
-            case "else", "t", "true": return ""
-            default: return "if \(predicateCode) "
-            }
-        }
-
         override func processTokens() throws {
             var conditionTokens = tokens
 
@@ -33,15 +26,22 @@ extension Factories {
             conditionTokens.insert(.list([]), at: 0)
             blockProcessor = try Factories.BlockProcessor(
                 conditionTokens,
-                with: &localVariables
+                with: &localVariables,
+                mode: mode
             )
             blockProcessor.assert(implicitReturns: false)
         }
 
+        override func processSymbols() throws {
+            try? predicate.assert(
+                .hasType(.bool)
+            )
+        }
+
         override func process() throws -> Symbol {
-            let ifStatement = ifStatement(for: predicate.code)
+            let ifStatement = ifStatement(for: predicateCode())
             let pro = blockProcessor!
-            let type = try pro.returnType() ?? .void
+            let type = pro.returnType() ?? .void
 
             return .statement(
                 code: { _ in
@@ -54,6 +54,20 @@ extension Factories {
                 type: type,
                 children: pro.symbols
             )
+        }
+
+        func ifStatement(for predicateCode: String) -> String {
+            switch predicateCode {
+            case "else", "t", "true": return ""
+            default: return "if \(predicateCode) "
+            }
+        }
+
+        func predicateCode() -> String {
+            if predicate.type.dataType == .bool {
+                return predicate.code
+            }
+            return "_ = \(predicate.code)"
         }
     }
 }

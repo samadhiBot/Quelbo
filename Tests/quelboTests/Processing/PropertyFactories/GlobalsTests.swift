@@ -20,7 +20,7 @@ final class GlobalsTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("GLOBAL"))
+        AssertSameFactory(factory, Game.findFactory("GLOBAL", type: .property))
     }
 
     func testGlobals() throws {

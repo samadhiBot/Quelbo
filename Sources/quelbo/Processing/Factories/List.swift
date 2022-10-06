@@ -16,6 +16,12 @@ extension Factories {
             ["LIST"]
         }
 
+        override func processSymbols() throws {
+            try? symbols.assert(
+                .haveCommonType
+            )
+        }
+
         override func process() throws -> Symbol {
             let symbols = symbols
             var type: TypeInfo {
@@ -32,7 +38,8 @@ extension Factories {
                 code: { _ in
                     "[\(symbols.codeValues(.commaSeparated))]"
                 },
-                type: type
+                type: type,
+                children: symbols
             )
         }
     }

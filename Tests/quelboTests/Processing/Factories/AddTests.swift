@@ -49,13 +49,18 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "bigNumber.add(biggerNumber)",
+            code: """
+                .add(
+                    bigNumber,
+                    biggerNumber
+                )
+                """,
             type: .int
         ))
     }
 
-    func testAddLocalAndDecimal() throws {
-        localVariables.append(Variable(id: "count", type: .int))
+    func testAddMutableLocalAndDecimal() throws {
+        localVariables.append(Variable(id: "count", type: .int, isMutable: true))
 
         let symbol = try factory.init([
             .local("COUNT"),
@@ -63,7 +68,7 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "count.add(1)",
+            code: ".add(count, 1)",
             type: .int
         ))
 
@@ -74,7 +79,7 @@ final class AddTests: QuelboTests {
     }
 
     func testAddDecimalAndLocal() throws {
-        localVariables.append(Variable(id: "count", type: .int))
+        localVariables.append(Variable(id: "count", type: .int, isMutable: true))
 
         let symbol = try factory.init([
             .decimal(1),
@@ -99,7 +104,8 @@ final class AddTests: QuelboTests {
                 id: "otvalFrob",
                 code: "",
                 type: .int,
-                category: .routines
+                category: .routines,
+                isCommittable: true
             ),
         ])
 
@@ -111,7 +117,12 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "baseScore.add(otvalFrob())",
+            code: """
+                .add(
+                    baseScore,
+                    otvalFrob()
+                )
+                """,
             type: .int
         ))
 
@@ -142,10 +153,7 @@ final class AddTests: QuelboTests {
     }
 
     func testAddOneToGlobalDefinedAsFalse() throws {
-        let pAclause = try Factories.Global([
-            .atom("P-ACLAUSE"),
-            .bool(false)
-        ], with: &localVariables).process()
+        let pAclause = process("<GLOBAL P-ACLAUSE <>>")
 
         XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
             id: "pAclause",
@@ -158,7 +166,8 @@ final class AddTests: QuelboTests {
             id: "pAclause",
             code: "var pAclause: Bool = false",
             type: .booleanFalse,
-            category: .globals
+            category: .globals,
+            isCommittable: true
         ))
 
         let symbol = try factory.init([
@@ -167,7 +176,7 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "pAclause.add(1)",
+            code: ".add(pAclause, 1)",
             type: .int
         ))
 
@@ -182,7 +191,8 @@ final class AddTests: QuelboTests {
             id: "pAclause",
             code: "var pAclause: Int = 0",
             type: .optional(.int),
-            category: .globals
+            category: .globals,
+            isCommittable: true
         ))
     }
 

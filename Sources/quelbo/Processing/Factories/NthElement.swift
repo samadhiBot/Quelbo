@@ -1,5 +1,5 @@
 //
-//  Nth.swift
+//  NthElement.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 5/9/22.
@@ -11,13 +11,15 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [NTH](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.odc9jc)
     /// function.
-    class Nth: Factory {
+    class NthElement: Factory {
         override class var zilNames: [String] {
             ["NTH"]
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(2)))
+            try symbols.assert(
+                .haveCount(.exactly(2))
+            )
 
             try symbols[1].assert(.hasType(.int))
         }
@@ -37,7 +39,8 @@ extension Factories {
                 code: { _ in
                     "\(values.code).nthElement(\(index.code))"
                 },
-                type: elementType
+                type: elementType,
+                returnHandling: .force
             )
         }
     }

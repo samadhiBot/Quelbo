@@ -13,7 +13,7 @@ final class PseudosTests: QuelboTests {
     let factory = Factories.Pseudos.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("PSEUDO"))
+        AssertSameFactory(factory, Game.findFactory("PSEUDO", type: .property))
     }
 
     func testPseudos() throws {

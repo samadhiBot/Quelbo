@@ -15,7 +15,7 @@ extension Factories {
     /// functions.
     class Print: Factory {
         override class var zilNames: [String] {
-            ["PRINT", "PRINTB", "PRINTI"]
+            ["PRINT", "PRINTB", "PRINTI", "PRINC"]
         }
 
         override func processSymbols() throws {

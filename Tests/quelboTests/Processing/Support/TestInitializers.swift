@@ -19,11 +19,13 @@ extension Statement {
         category: Category? = nil,
         activation: String? = nil,
         isAgainStatement: Bool = false,
+        isAnonymousFunction: Bool = false,
         isBindWithAgainStatement: Bool = false,
+        isCommittable: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
         isReturnStatement: Bool = false,
-        suppressesReturns: Bool = false
+        returnHandling: Symbol.ReturnHandling = .implicit
     ) {
         self.init(
             id: id,
@@ -34,11 +36,13 @@ extension Statement {
             category: category,
             activation: activation,
             isAgainStatement: isAgainStatement,
+            isAnonymousFunction: isAnonymousFunction,
             isBindWithAgainStatement: isBindWithAgainStatement,
+            isCommittable: isCommittable,
             isMutable: isMutable,
             isRepeating: isRepeating,
             isReturnStatement: isReturnStatement,
-            suppressesReturns: suppressesReturns
+            returnHandling: returnHandling
         )
     }
 }
@@ -55,11 +59,13 @@ extension Symbol {
         category: Category? = nil,
         activation: String? = nil,
         isAgainStatement: Bool = false,
+        isAnonymousFunction: Bool = false,
         isBindWithAgainStatement: Bool = false,
+        isCommittable: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
         isReturnStatement: Bool = false,
-        suppressesReturns: Bool = false
+        returnHandling: Symbol.ReturnHandling = .implicit
     ) -> Symbol {
         .statement(Statement(
             id: id,
@@ -70,11 +76,13 @@ extension Symbol {
             category: category,
             activation: activation,
             isAgainStatement: isAgainStatement,
+            isAnonymousFunction: isAnonymousFunction,
             isBindWithAgainStatement: isBindWithAgainStatement,
+            isCommittable: isCommittable,
             isMutable: isMutable,
             isRepeating: isRepeating,
             isReturnStatement: isReturnStatement,
-            suppressesReturns: suppressesReturns
+            returnHandling: returnHandling
         ))
     }
 }

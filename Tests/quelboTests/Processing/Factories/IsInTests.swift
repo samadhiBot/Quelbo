@@ -52,10 +52,7 @@ final class IsInTests: QuelboTests {
     }
 
     func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
-        let _ = try! Factories.Global([
-            .atom("HERE"),
-            .decimal(0)
-        ], with: &localVariables).process()
+        process("<GLOBAL HERE 0>")
 
         localVariables.append(
             Variable(id: "oo", type: .table)

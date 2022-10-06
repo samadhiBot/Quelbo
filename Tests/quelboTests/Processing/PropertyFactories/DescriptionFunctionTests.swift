@@ -13,7 +13,7 @@ final class DescriptionFunctionTests: QuelboTests {
     let factory = Factories.DescriptionFunction.self
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findPropertyFactory("DESCFCN"))
+        AssertSameFactory(factory, Game.findFactory("DESCFCN", type: .property))
     }
 
     func testDescriptionFunction() throws {

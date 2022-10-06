@@ -12,7 +12,11 @@ extension Factories {
     /// A symbol factory for the `FLAGS` property of a Zil
     /// [OBJECT](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.38czs75)
     /// type.
-    class Flags: PropertyFactory {
+    class Flags: Factory {
+        override class var factoryType: FactoryType {
+            .property
+        }
+
         override class var zilNames: [String] {
             ["FLAGS"]
         }
@@ -39,10 +43,10 @@ extension Factories {
                             fizmoFlag.id.description
                         },
                         type: .bool,
-                        category: .flags
+                        category: .flags,
+                        isCommittable: true
                     )
 
-                    try Game.commit(flagSymbol)
                     symbols.append(flagSymbol)
 
                 default:
@@ -62,7 +66,6 @@ extension Factories {
             let flags = symbols.sorted
 
             return .statement(
-                id: "flags",
                 code: { _ in
                     "flags: [\(flags.codeValues(.commaSeparated))]"
                 },
