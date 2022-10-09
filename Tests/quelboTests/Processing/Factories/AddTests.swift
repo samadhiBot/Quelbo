@@ -110,7 +110,7 @@ final class AddTests: QuelboTests {
         ])
 
         let symbol = try factory.init([
-            .global("BASE-SCORE"),
+            .global(.atom("BASE-SCORE")),
             .form([
                 .atom("OTVAL-FROB")
             ])
@@ -140,7 +140,7 @@ final class AddTests: QuelboTests {
         let symbol = try factory.init([
             .form([
                 .atom("GETB"),
-                .global("SRC"),
+                .global(.atom("SRC")),
                 .decimal(0)
             ]),
             .decimal(1)
@@ -171,7 +171,7 @@ final class AddTests: QuelboTests {
         ))
 
         let symbol = try factory.init([
-            .global("P-ACLAUSE"),
+            .global(.atom("P-ACLAUSE")),
             .decimal(1)
         ], with: &localVariables).process()
 
@@ -234,7 +234,7 @@ final class AddTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(1),
-                .global("MY-BIKE"),
+                .global(.atom("MY-BIKE")),
             ], with: &localVariables)
         )
     }

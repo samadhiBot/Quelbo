@@ -39,7 +39,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
     func testLessThanOrEqualsGlobal() throws {
         let symbol = try factory.init([
             .decimal(2),
-            .global("FOO"),
+            .global(.atom("FOO")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

@@ -49,8 +49,8 @@ extension Factory {
             case .form(let tokens):
                 symbols.append(try symbolizeForm(tokens, mode: factoryMode))
 
-            case .global(let string):
-                symbols.append(try symbolizeGlobal(string))
+            case .global(let token):
+                symbols.append(try symbolizeGlobal(token))
 
             case .list(let tokens):
                 symbols.append(try symbolizeList(tokens))
@@ -116,12 +116,8 @@ extension Factory {
         if let local = findLocal(name) { return .variable(local) }
         if let known = knownVariable(zil) { return .variable(known) }
         if zil == "T" { return .literal(true) }
-        if Game.findDefinition(name) != nil {
-            return try Factories.DefinitionEvaluate(
-                [.atom(zil)],
-                with: &localVariables).process(
-            )
-        }
+        if let defined = try findAndEvaluateDefinition(zil) { return .statement(defined) }
+        if mode == .evaluate && Game.findFactory(zil) != nil { return .zilAtom(zil) }
 
         return .variable(id: name, type: .unknown)
     }
@@ -175,7 +171,7 @@ extension Factory {
                 type: closure.type
             )
 
-        case .global(let name):
+        case .global(.atom(let name)):
             zilString = name
 
         case .local(let name):
@@ -185,15 +181,13 @@ extension Factory {
             throw SymbolizationError.invalidZilForm(formTokens)
         }
 
-        let factory = try Game.makeFactory(
+        return try Game.process(
             zil: zilString,
             tokens: tokens,
             with: &localVariables,
             type: .zCode,
             mode: factoryMode ?? mode
         )
-
-        return try factory.process()
     }
 
     /// Translates a Zil
@@ -205,7 +199,11 @@ extension Factory {
     ///   - index: The index at which the global occurs in a block of Zil code.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil global atom.
-    func symbolizeGlobal(_ zil: String) throws -> Symbol {
+    func symbolizeGlobal(_ token: Token) throws -> Symbol {
+        guard case .atom(let zil) = token else {
+            return try symbolize(token)
+        }
+
         let id = zil.lowerCamelCase
 
         if let global = Game.findGlobal(id) { return .variable(global)}
@@ -318,23 +316,10 @@ extension Factory {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
             return try Factories.DeclareType(tokens, with: &localVariables).process()
-//        case "SPLICE":
-//            return .statement(code: "SPLICE (not yet implemented)")
         default:
             throw SymbolizationError.unknownType(type)
         }
     }
-
-//    /// Translates a Zil
-//    /// [Vector](https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#722-vector-1)
-//    /// token into a ``Symbol``.
-//    ///
-//    /// - Parameter vectorTokens: A `Token` array consisting of the Zil vector elements.
-//    ///
-//    /// - Returns: A ``Symbol`` representation of the Zil vector.
-//    func symbolizeVector(_ vectorTokens: [Token]) throws -> Symbol {
-//        try Factories.Vector(vectorTokens, with: &localVariables).process()
-//    }
 }
 
 // MARK: - Errors

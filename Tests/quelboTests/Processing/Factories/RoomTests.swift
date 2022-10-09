@@ -16,18 +16,6 @@ final class RoomTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-//            .statement(id: "north", type: .direction, category: .properties),
-//            .statement(id: "east", type: .direction, category: .properties),
-//            .statement(id: "west", type: .direction, category: .properties),
-//            .statement(id: "south", type: .direction, category: .properties),
-//            .statement(id: "northEast", type: .direction, category: .properties),
-//            .statement(id: "northWest", type: .direction, category: .properties),
-//            .statement(id: "southEast", type: .direction, category: .properties),
-//            .statement(id: "southWest", type: .direction, category: .properties),
-//            .statement(id: "up", type: .direction, category: .properties),
-//            .statement(id: "down", type: .direction, category: .properties),
-//            .statement(id: "in", type: .direction, category: .properties),
-//            .statement(id: "out", type: .direction, category: .properties),
             .statement(
                 id: "land",
                 code: """

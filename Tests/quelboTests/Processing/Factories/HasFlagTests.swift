@@ -27,8 +27,8 @@ final class HasFlagTests: QuelboTests {
 
     func testHasFlag() throws {
         let symbol = try factory.init([
-            .global("KITCHEN-WINDOW"),
-            .global("OPENBIT"),
+            .global(.atom("KITCHEN-WINDOW")),
+            .global(.atom("OPENBIT")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -41,7 +41,7 @@ final class HasFlagTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("KITCHEN-WINDOW"),
-                .global("OPENBIT"),
+                .global(.atom("OPENBIT")),
             ], with: &localVariables).process()
         )
     }

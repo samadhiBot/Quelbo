@@ -458,13 +458,13 @@ final class RoutineTests: QuelboTests {
                 .atom("DWEAPON"),
                 .form([
                     .atom("FIND-WEAPON"),
-                    .global("WINNER")
+                    .global(.atom("WINNER"))
                 ])
             ]),
             .form([
                 .atom("MOVE"),
                 .local("DWEAPON"),
-                .global("HERE")
+                .global(.atom("HERE"))
             ]),
         ], with: &localVariables).process()
 

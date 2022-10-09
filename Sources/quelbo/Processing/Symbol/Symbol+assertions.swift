@@ -124,10 +124,6 @@ extension Symbol {
     }
 
     func assertHasReturnValue() throws {
-        if case .definition(let definition) = self {
-            print("▶️ definition:", definition)
-        }
-
         guard type.hasReturnValue == true else {
             throw AssertionError.hasReturnValueAssertionFailed(
                 for: handle,

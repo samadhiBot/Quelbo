@@ -67,7 +67,7 @@ final class SetVariableTests: QuelboTests {
             .atom("T"),
             .form([
                 .atom("ADD"),
-                .global("THIRTY"),
+                .global(.atom("THIRTY")),
                 .decimal(3),
             ])
         ], with: &localVariables).process()
@@ -81,7 +81,6 @@ final class SetVariableTests: QuelboTests {
     func testSetVariableToLocalVariable() throws {
         localVariables.append(
             Variable(id: "n", type: .string)
-//            Variable(id: "n", code: "var n: String = \"Foo!\"", type: .string)
         )
 
         let symbol = try factory.init([

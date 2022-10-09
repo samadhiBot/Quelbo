@@ -20,20 +20,6 @@ extension Symbol {
         self == .literal(false) || self == .literal(0)
     }
 
-//    var canBeReturnValue: Bool {
-//        guard !isReturn else { return false }
-//
-//        switch self {
-//        case .definition:
-//            return false
-//        case .literal, .instance, .variable:
-//            return true
-//        case .statement(let statement):
-//            return statement.returnable != .void &&
-//                   statement.type?.hasReturnValue ?? false
-//        }
-//    }
-
     var category: Category? {
         switch self {
         case .definition(let definition): return definition.category

@@ -37,7 +37,7 @@ final class RandomTests: QuelboTests {
 
     func testRandomGlobal() throws {
         let symbol = try factory.init([
-            .global("FOO")
+            .global(.atom("FOO"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

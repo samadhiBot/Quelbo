@@ -16,18 +16,6 @@ extension Factories {
             ["PUTP"]
         }
 
-//        override class var parameters: Parameters {
-//            .three(.object, .property(.unknown), .unknown)
-//        }
-
-//        override func process() throws -> Symbol {
-//            .statement(
-//                code: "\(object.code).\(offset.code) = \(value.code)",
-//                type: value.type,
-//                children: symbols
-//            )
-//        }
-
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.exactly(3))
@@ -50,6 +38,5 @@ extension Factories {
                 type: value.type
             )
         }
-
     }
 }

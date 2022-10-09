@@ -28,8 +28,8 @@ final class ReadTests: QuelboTests {
 
     func testReadDecimal() throws {
         let symbol = try factory.init([
-            .global("READBUF"),
-            .global("LEXBUF"),
+            .global(.atom("READBUF")),
+            .global(.atom("LEXBUF")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -41,8 +41,8 @@ final class ReadTests: QuelboTests {
     func testReadNonTableThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .global("NOTBUF"),
-                .global("LEXBUF"),
+                .global(.atom("NOTBUF")),
+                .global(.atom("LEXBUF")),
             ], with: &localVariables).process()
         )
     }

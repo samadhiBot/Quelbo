@@ -29,10 +29,6 @@ extension Factories {
             let container = symbols[0]
             let length = symbols[1]
 
-//            guard case .array = container.type else {
-//                throw Error.lengthEqualsExpectedArray(container)
-//            }
-
             return .statement(
                 code: { _ in
                     "\(container.code).count == \(length.code)"
@@ -42,11 +38,3 @@ extension Factories {
         }
     }
 }
-
-//// MARK: - Errors
-//
-//extension Factories.LengthEquals {
-//    enum Error: Swift.Error {
-//        case lengthEqualsExpectedArray(Symbol)
-//    }
-//}

@@ -155,7 +155,7 @@ final class RepeatTests: QuelboTests {
                         .form([
                             .atom("COND"),
                             .list([
-                                .global("FUNNY-RETURN?"),
+                                .global(.atom("FUNNY-RETURN?")),
                                 .form([
                                     .atom("TELL"),
                                     .string("RETURN EXIT ROUTINE"),

@@ -43,7 +43,7 @@ final class PropertyIndexTests: QuelboTests {
         )
 
         let symbol = try factory.init([
-            .global("HERE"),
+            .global(.atom("HERE")),
             .local("DIR")
         ], with: &localVariables).process()
 
@@ -57,7 +57,7 @@ final class PropertyIndexTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
-                .global("P?STRENGTH")
+                .global(.atom("P?STRENGTH"))
             ], with: &localVariables).process()
         )
     }

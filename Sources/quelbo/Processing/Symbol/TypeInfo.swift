@@ -110,6 +110,10 @@ extension TypeInfo {
         .init(dataType: .unknown, confidence: .unknown)
     }
 
+    static var zilAtom: TypeInfo {
+        .init(dataType: .zilAtom, confidence: .certain)
+    }
+
     static var zilElement: TypeInfo {
         .init(dataType: .zilElement, confidence: .certain, isZilElement: true)
     }
@@ -127,26 +131,6 @@ extension TypeInfo {
         )
     }
 
-    /// <#Description#>
-//    var asNonOptional: TypeInfo {
-//        .init(
-//            dataType: dataType,
-//            confidence: confidence,
-//            isOptional: false,
-//            isZilElement: isZilElement
-//        )
-//
-////        if case .optional(let type) = dataType {
-////            return .init(
-////                dataType: type,
-////                confidence: confidence,
-////                isZilElement: isZilElement
-////            )
-////        } else {
-////            return self
-////        }
-//    }
-
     var asZElement: TypeInfo {
         .init(
             dataType: dataType,
@@ -161,7 +145,7 @@ extension TypeInfo {
 
         switch dataType {
         case .bool: return " = false"
-        case .comment, .oneOf, .unknown, .void: return " = \(self)"
+        case .comment, .oneOf, .unknown, .void, .zilAtom: return " = \(self)"
         case .direction, .object, .routine, .table, .thing, .verb: return "? = nil"
         case .int, .int8, .int16, .int32: return " = 0"
         case .property: return " = nil"
@@ -197,8 +181,6 @@ extension TypeInfo {
             }
         }
 
-//        print("▶️", dataType, "<->", assertedType.dataType)
-
         switch (dataType, assertedType.dataType) {
         case (.comment, _): return self
         case (_, .comment): return assertedType
@@ -219,7 +201,6 @@ extension TypeInfo {
             guard selfType.canBeZilElement else { return nil }
             return self
 
-//        case (_, .array(.unknown)): return .array(dataType)
         case (.oneOf(let selfTypes), .oneOf(let other)):
             let common = selfTypes.union(other)
             switch common.count {
@@ -252,7 +233,6 @@ extension TypeInfo {
                 confidence: maxConfidence,
                 isOptional: optional
             )
-//        case (.property(let dataType), .property(let other)):
 
         case (.property(let selfType), let other):
             guard selfType == other else { return nil }
@@ -260,22 +240,7 @@ extension TypeInfo {
                 dataType: dataType,
                 confidence: maxConfidence
             )
-//        case (let selfType, .property(let other)):
-//            guard selfType == other else { return nil }
-//            return .init(
-//                dataType: dataType,
-//                confidence: maxConfidence
-//            )
 
-//        case (.optional(let selfType), .optional(let other)):
-//        case (.optional(let selfType), let other):
-//            guard selfType == other else {
-//                return nil
-//            }
-//            return .init(dataType: dataType, confidence: maxConfidence)
-//        case (let selfType, .optional(let other)):
-//            guard selfType == other else { return nil }
-//            return .init(dataType: dataType, confidence: maxConfidence)
         case (.zilElement, let other):
             guard other.canBeZilElement else { return nil }
             return .init(
@@ -284,7 +249,7 @@ extension TypeInfo {
                 isOptional: optional,
                 isZilElement: true
             )
-//            ? assertedType.asZElement : nil
+
         case (let selfType, .zilElement):
             guard selfType.canBeZilElement else { return nil }
             return .init(
@@ -293,6 +258,7 @@ extension TypeInfo {
                 isOptional: optional,
                 isZilElement: true
             )
+
         default:
             if assertedType.confidence > confidence {
                 return .init(
@@ -314,14 +280,6 @@ extension TypeInfo {
         }
     }
 }
-
-// MARK: - Conformances
-
-//extension TypeInfo: CustomDebugStringConvertible {
-//    var debugDescription: String {
-//        dataType.debugDescription
-//    }
-//}
 
 extension TypeInfo: CustomStringConvertible {
     var description: String {

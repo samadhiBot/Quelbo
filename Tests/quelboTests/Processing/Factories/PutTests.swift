@@ -27,7 +27,7 @@ final class PutTests: QuelboTests {
 
     func testPutInteger() throws {
         let symbol = try factory.init([
-            .global("MYTABLE"),
+            .global(.atom("MYTABLE")),
             .decimal(1),
             .decimal(123)
         ], with: &localVariables).process()
@@ -44,7 +44,7 @@ final class PutTests: QuelboTests {
 
     func testPutString() throws {
         let symbol = try factory.init([
-            .global("MYTABLE"),
+            .global(.atom("MYTABLE")),
             .decimal(1),
             .string("hello")
         ], with: &localVariables).process()
@@ -94,7 +94,7 @@ final class PutTests: QuelboTests {
     func testNonIndexThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .global("MYTABLE"),
+                .global(.atom("MYTABLE")),
                 .string("1"),
                 .decimal(123)
             ], with: &localVariables).process()

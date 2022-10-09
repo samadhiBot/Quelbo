@@ -45,21 +45,23 @@ final class IsVerbZorkTests: QuelboTests {
         """, type: .mdl)
     }
 
-    func testZorkIsVerb() throws {
+    func testZorkMultifrob() throws {
         XCTAssertNoDifference(
-            Game.routines.find("isVerb"),
+            Game.routines.find("multifrob"),
             Statement(
-                id: "isVerb",
+                id: "multifrob",
                 code: """
-                /// The `isVerb` (VERB?) macro.
-                func isVerb(atms: Table) {
-                    var atms: Table = atms
-                    {
+                    /// The `multifrob` (MULTIFROB) routine.
+                    func multifrob(
+                        prsa: Int,
+                        atms: Table
+                    ) {
                         var oo: [<Unknown>] = [or]
                         var o: [<Unknown>] = oo
                         var l: [<Unknown>] = []
                         var atm: <Unknown> = <Unknown>
                         var prsa: Int = prsa
+                        var atms: Table = atms
                         while true {
                             if atms.isEmpty {
                                 if oo.count == 1 {
@@ -97,9 +99,8 @@ final class IsVerbZorkTests: QuelboTests {
                             o.set(to: o.putRest([prsa.equals(l)]).rest())
                             l.set(to: [])
                         }
-                    }()
-                }
-                """,
+                    }
+                    """,
                 type: .void,
                 category: .routines,
                 isCommittable: true
@@ -107,7 +108,29 @@ final class IsVerbZorkTests: QuelboTests {
         )
     }
 
-    func testMethodThatCallsIsVerb() {
+    func testZorkIsVerb() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("isVerb"),
+            Statement(
+                id: "isVerb",
+                code: """
+                    /// The `isVerb` (VERB?) macro.
+                    func isVerb(atms: Table) {
+                        var atms: Table = atms
+                        multifrob(
+                            prsa: prsa,
+                            atms: atms
+                        )
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testMethodThatCallsFizmoIsVerb() {
         let treasureInside = process("""
             <ROUTINE TREASURE-INSIDE ()
                      <COND (<VERB? OPEN>

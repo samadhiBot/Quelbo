@@ -179,7 +179,7 @@ extension Factories.BlockProcessor {
             var valueToken: Token?
 
             switch token {
-            case .atom:
+            case .atom, .local:
                 nameToken = token
             case .list(let listTokens):
                 guard listTokens.count == 2 else {
@@ -267,31 +267,31 @@ extension Factories.BlockProcessor {
             return lines.handles(.singleLineBreak)
         }
         let last = lines.remove(at: lastIndex)
-        var codeLines = lines.map(\.handle)
+        var codeLines = lines.map(\.code)
         var lastLine: String {
             if let returnType = returnType(), last.type != returnType {
-                return last.handle
+                return last.code
             }
             switch last {
             case .definition:
                 return last.handle
             case .literal, .instance, .variable:
-                return "return \(last.handle)"
+                return "return \(last.code)"
             case .statement(let statement):
                 switch statement.returnHandling {
                 case .force:
-                    return "return \(last.handle)"
+                    return "return \(last.code)"
                 case .implicit:
                     if statement.isReturnStatement ||
                        statement.type == .void ||
                        !implicitReturns
                     {
-                        return last.handle
+                        return last.code
                     } else {
-                        return "return \(last.handle)"
+                        return "return \(last.code)"
                     }
                 case .suppress:
-                    return last.handle
+                    return last.code
                 }
             }
         }
@@ -331,15 +331,6 @@ extension Factories.BlockProcessor {
         default: return "@discardableResult\n"
         }
     }
-
-//    func functionType() throws -> TypeInfo {
-//        let type = try returnType() ?? .void
-////        guard let type = type else {
-////            throw Error.missingFunctionType
-////        }
-//
-//        return .function(parameters.map(\.type.dataType), type.dataType)
-//    }
 
     var hasActivation: Bool {
         guard

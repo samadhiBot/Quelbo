@@ -20,12 +20,10 @@ final class Instance: SymbolType {
         isOptional: Bool = false,
         isMutable: Bool? = nil
     ) {
-////        self.confidence = variable.confidence
         self.isMutable = isMutable // ?? variable.isMutable
         self.isOptional = isOptional
         self.isZilElement = false
         self.returnHandling = .implicit
-//        self.type = variable.type
         self.variable = variable
     }
 
@@ -66,12 +64,10 @@ extension Symbol {
     static func instance(
         _ variable: Variable,
         isOptional: Bool = false
-//        isMutable: Bool = false
     ) -> Symbol {
         .instance(Instance(
             variable,
             isOptional: isOptional
-////            isMutable: isMutable
         ))
     }
 }
@@ -79,16 +75,6 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Instance {
-//    func assertHasCategory(_ assertionCategory: Category) throws {
-//        if let category = category, assertionCategory != category {
-//            throw Symbol.AssertionError.hasCategoryFailed(
-//                asserted: assertionCategory,
-//                actual: category
-//            )
-//        }
-//        self.category = assertionCategory
-//    }
-
     func assertHasMutability(_ mutability: Bool) throws {
         switch isMutable {
         case mutability:
@@ -110,25 +96,7 @@ extension Instance {
         if assertedType.dataType == .zilElement {
             isZilElement = true
         }
-
-//        if self.ca
-
-//        if confidence == .certain && assertionConfidence == .certain {
-//            throw Symbol.AssertionError.typeFailed("Instance: \(code)", asserted: dataType, actual: type!)
-//        }
-//        guard assertionConfidence > confidence else { return }
-//
-//        type = dataType
-//        confidence = assertionConfidence
     }
-
-//    func assertIsImmutable() throws {
-//        try variable.assertIsImmutable()
-//    }
-//
-//    func assertIsMutable() throws {
-//        try variable.assertIsMutable()
-//    }
 }
 
 

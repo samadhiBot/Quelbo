@@ -17,10 +17,7 @@ final class PropertyDefaultTests: QuelboTests {
     }
 
     func testBool() throws {
-        let symbol = try factory.init([
-            .atom("ADJECTIVE"),
-            .bool(false)
-        ], with: &localVariables).process()
+        let symbol = process("<PROPDEF ADJECTIVE <>>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setPropertyDefault(adjective, false)",
@@ -29,10 +26,7 @@ final class PropertyDefaultTests: QuelboTests {
     }
 
     func testDecimal() throws {
-        let symbol = try factory.init([
-            .atom("SIZE"),
-            .decimal(5)
-        ], with: &localVariables).process()
+        let symbol = process("<PROPDEF SIZE 5>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setPropertyDefault(size, 5)",

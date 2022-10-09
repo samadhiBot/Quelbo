@@ -68,7 +68,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotObject() throws {
         let symbol = try factory.init([
-            .global("SWORD")
+            .global(.atom("SWORD"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -101,7 +101,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotTable() throws {
         let symbol = try factory.init([
-            .global("READBUF")
+            .global(.atom("READBUF"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -139,7 +139,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotVoid() throws {
         let symbol = try factory.init([
-            .global("THE-VOID")
+            .global(.atom("THE-VOID"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -150,7 +150,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotZilElement() throws {
         let symbol = try factory.init([
-            .global("ZILLY")
+            .global(.atom("ZILLY"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

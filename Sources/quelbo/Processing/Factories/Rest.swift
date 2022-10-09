@@ -38,7 +38,6 @@ extension Factories {
         override func process() throws -> Symbol {
             let structure = symbols[0]
             let count = symbols[1]
-//            let structureType = structure.type.dataType == .table ? .array(.zilElement) : structure.type
 
             return .statement(
                 code: { _ in

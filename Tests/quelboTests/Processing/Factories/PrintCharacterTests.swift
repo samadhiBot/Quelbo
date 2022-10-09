@@ -50,7 +50,6 @@ final class PrintCharacterTests: QuelboTests {
 
         XCTAssertThrowsError(
             try factory.init([
-//                .local("troll"),
             ], with: &localVariables).process()
         )
     }
@@ -68,7 +67,7 @@ final class PrintCharacterTests: QuelboTests {
 
     func testProcessAtom() throws {
         let symbol = try factory.init([
-            .global("LETTER-Z")
+            .global(.atom("LETTER-Z"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

@@ -30,7 +30,7 @@ final class GetTests: QuelboTests {
 
     func testGet() throws {
         let symbol = try factory.init([
-            .global("FOO"),
+            .global(.atom("FOO")),
             .decimal(2)
         ], with: &localVariables).process()
 
@@ -61,7 +61,7 @@ final class GetTests: QuelboTests {
     func testNonIndexThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .global("FOO"),
+                .global(.atom("FOO")),
                 .string("2")
             ], with: &localVariables).process()
         )

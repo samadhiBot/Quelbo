@@ -130,28 +130,6 @@ extension Variable {
             )
         }
     }
-
-//    func assertIsImmutable() throws {
-//        guard mutable != true else {
-//            throw Symbol.AssertionError.isImmutableAssertionFailed(
-//                for: "Variable: \(id)",
-//                asserted: false,
-//                actual: true
-//            )
-//        }
-//        mutable = false
-//    }
-//
-//    func assertIsMutable() throws {
-//        guard mutable != false else {
-//            throw Symbol.AssertionError.isMutableAssertionFailed(
-//                for: "Variable: \(id)",
-//                asserted: true,
-//                actual: false
-//            )
-//        }
-//        mutable = true
-//    }
 }
 
 // MARK: - Conformances

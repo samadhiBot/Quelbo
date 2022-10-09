@@ -78,7 +78,7 @@ final class MultiplyTests: QuelboTests {
 
     func testMultiplyAtomAndDecimal() throws {
         let symbol = try factory.init([
-            .global("CYCLOWRATH"),
+            .global(.atom("CYCLOWRATH")),
             .decimal(1),
         ], with: &localVariables).process()
 
@@ -90,7 +90,7 @@ final class MultiplyTests: QuelboTests {
 
     func testMultiplyAtomAndFunctionResult() throws {
         let symbol = try factory.init([
-            .global("BASE-SCORE"),
+            .global(.atom("BASE-SCORE")),
             .form([
                 .atom("OTVAL-FROB")
             ])

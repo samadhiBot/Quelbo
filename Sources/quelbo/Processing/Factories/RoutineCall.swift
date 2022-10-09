@@ -45,15 +45,16 @@ extension Factories {
         override func process() throws -> Symbol {
             guard
                 let routine = routine,
-                let routineName = routine.id?.split(separator: "(").first
+                let routineID = routine.id
             else {
                 throw Error.unknownRoutineName(symbols)
             }
             let params = params
 
             return .statement(
+                id: routineID,
                 code: { _ in
-                    "\(routineName)(\(params.handles(.commaSeparatedNoTrailingComma)))"
+                    "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: routine.type
             )
@@ -67,6 +68,5 @@ extension Factories.RoutineCall {
     enum Error: Swift.Error {
         case unknownRoutine(String, [Token])
         case unknownRoutineName([Symbol])
-        case missingRoutineParameter(Symbol)
     }
 }

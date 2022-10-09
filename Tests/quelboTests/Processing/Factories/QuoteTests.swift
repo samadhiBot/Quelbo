@@ -54,7 +54,7 @@ final class QuoteTests: QuelboTests {
         try Game.commit(flameBit)
 
         let symbol = try factory.init([
-            .global("FLAMEBIT")
+            .global(.atom("FLAMEBIT"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, flameBit)

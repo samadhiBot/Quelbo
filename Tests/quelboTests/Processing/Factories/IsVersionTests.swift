@@ -36,7 +36,7 @@ final class IsVersionTests: QuelboTests {
                     .atom("RESP"),
                     .form([
                         .atom("GETB"),
-                        .global("READBUF"),
+                        .global(.atom("READBUF")),
                         .decimal(1)
                     ])
                 ])
@@ -48,7 +48,7 @@ final class IsVersionTests: QuelboTests {
                     .atom("RESP"),
                     .form([
                         .atom("GETB"),
-                        .global("READBUF"),
+                        .global(.atom("READBUF")),
                         .decimal(1)
                     ])
                 ])
@@ -60,7 +60,7 @@ final class IsVersionTests: QuelboTests {
                     .list([
                         .form([
                             .atom("GETB"),
-                            .global("READBUF"),
+                            .global(.atom("READBUF")),
                             .decimal(1)
                         ]),
                         .form([
@@ -68,7 +68,7 @@ final class IsVersionTests: QuelboTests {
                             .atom("RESP"),
                             .form([
                                 .atom("GETB"),
-                                .global("READBUF"),
+                                .global(.atom("READBUF")),
                                 .decimal(2)
                             ])
                         ])

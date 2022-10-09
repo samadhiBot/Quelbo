@@ -40,7 +40,7 @@ final class PropertyNextTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
-                .global("P?STRENGTH")
+                .global(.atom("P?STRENGTH"))
             ], with: &localVariables).process()
         )
     }

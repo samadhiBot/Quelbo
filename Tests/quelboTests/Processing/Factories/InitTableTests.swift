@@ -112,7 +112,7 @@ final class InitTableTests: QuelboTests {
     func testInitTableNoneGlobalBytes() throws {
         let symbol = try factory.init([
             .atom("NONE"),
-            .global("READBUF-SIZE"),
+            .global(.atom("READBUF-SIZE")),
             .list([
                 .atom("BYTE")
             ])

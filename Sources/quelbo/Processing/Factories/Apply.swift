@@ -16,57 +16,10 @@ extension Factories {
             ["APPLY"]
         }
 
-//        /// The user-defined applicable that is being called.
-//        var applicable: Statement!
-//
-//        /// The user-defined applicable parameters.
-//        var params: [Symbol] = []
-
-//        override func processTokens() throws {
-//            var tokens = tokens.
-//
-//            guard
-//                let applicableToken = tokens.shift()
-//            else {
-//                throw Error.missingApplyRoutine("asdf")
-//            }
-//            let applicableSymbol = try symbolize(applicableToken)
-//
-////            let zilName = try findName(in: &tokens)
-//            var symbols = try symbolize(tokens)
-//
-//            if let applicable = Game.routines.find("zilName") {
-//                self.applicable = applicable
-//            } else {
-//                let routine = try Factories.Routine(
-//                    self.tokens,
-//                    with: &localVariables
-//                ).process()
-//                guard case .statement(let routineStatement) = routine else {
-//                    throw Error.missingApplyRoutine("zilName")
-//                }
-//                self.applicable = routineStatement
-//            }
-//
-//            self.params = try applicable.parameters.map { (instance: Instance) -> Symbol in
-//                guard let value = symbols.shift() else {
-//                    throw Error.missingApplyParameter(instance)
-//                }
-//
-//                return .statement(
-//                    code: { _ in
-//                        "\(instance.code): \(value.code)"
-//                    },
-//                    type: value.type
-//                )
-//            }
-//        }
-
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.atLeast(1))
             )
-//            try symbols.assert(.haveCount(.atLeast(1)))
         }
 
         override func process() throws -> Symbol {

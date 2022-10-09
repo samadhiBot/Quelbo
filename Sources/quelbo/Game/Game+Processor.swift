@@ -133,21 +133,17 @@ extension Game.Processor {
                         "􀊫 \(zilString, privacy: .public) \(tokens[0].value, privacy: .public)"
                     )
 
-                    let factory = try Game.makeFactory(
+                    let symbol = try Game.process(
                         zil: zilString,
                         tokens: tokens,
                         with: &localVariables,
                         type: .mdl
                     )
-
-                    Logger.process.debug(
-                        "   􀎕 Factory: \(String(describing: factory), privacy: .public)"
-                    )
-
-                    let symbol = try factory.process()
                     try Game.commit(symbol)
 
-                    Logger.process.info("   􀋃 Processed: \(symbol.debugDescription, privacy: .public)")
+                    Logger.process.info(
+                        "   􀋃 Processed: \(symbol.debugDescription, privacy: .public)"
+                    )
 
                     progressBar.next()
 
@@ -165,5 +161,73 @@ extension Game.Processor {
         }
         self.errors = errors
         self.tokens = unprocessedTokens
+    }
+}
+
+// MARK: - Game.process
+
+extension Game {
+    static func process(
+        zil: String,
+        tokens: [Token],
+        with localVariables: inout [Variable],
+        type factoryType: Factories.FactoryType? = nil,
+        mode factoryMode: Factory.FactoryMode = .process
+    ) throws -> Symbol {
+        func logFactory(_ factory: Factory.Type) {
+            if NSClassFromString("XCTest") == nil {
+                Logger.process.debug(
+                    "   􀎕 Factory: \(String(describing: factory), privacy: .public)"
+                )
+            }
+        }
+
+        if let factory = Game.findFactory(zil, type: factoryType) {
+            var factoryTokens: [Token] {
+                switch tokens.first {
+                case .atom(zil): return tokens.droppingFirst
+                case .decimal: return tokens.droppingFirst
+                case .global(.atom(zil)): return tokens.droppingFirst
+                default: return tokens
+                }
+            }
+            logFactory(factory)
+
+            return try factory.init(
+                factoryTokens,
+                with: &localVariables,
+                mode: factoryMode
+            ).process()
+        }
+
+        if Game.routines.find(zil.lowerCamelCase) != nil {
+            logFactory(Factories.RoutineCall.self)
+
+            return try Factories.RoutineCall(
+                tokens,
+                with: &localVariables,
+                mode: factoryMode
+            ).process()
+        }
+
+        if Game.findDefinition(zil.lowerCamelCase) != nil {
+            logFactory(Factories.DefinitionEvaluate.self)
+
+            let routine = try Factories.DefinitionEvaluate(
+                tokens,
+                with: &localVariables,
+                mode: factoryMode
+            ).process()
+
+            try Game.commit(routine)
+
+            return try Factories.RoutineCall(
+                tokens,
+                with: &localVariables,
+                mode: factoryMode
+            ).process()
+        }
+
+        throw GameError.factoryNotFound(zil)
     }
 }

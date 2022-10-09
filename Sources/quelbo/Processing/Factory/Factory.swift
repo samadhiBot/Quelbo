@@ -43,24 +43,22 @@ class Factory {
         variables = localVariables
     }
 
-    /// <#Description#>
-    /// - Parameter symbols: <#symbols description#>
-    /// - Returns: <#description#>
-    func evaluate(_ symbols: [Symbol]) throws -> [Symbol] {
-        var evaluatedSymbols: [Symbol] = []
-
-        for symbol in symbols {
-            guard case .definition(let definition) = symbol else {
-                evaluatedSymbols.append(symbol)
-                continue
-            }
-
-            evaluatedSymbols.append(
-                contentsOf: try symbolize(definition.tokens)
-            )
+    func findAndEvaluateDefinition(_ zil: String) throws -> Statement? {
+        guard Game.findDefinition(zil.lowerCamelCase) != nil else {
+            return nil
         }
+        let evaluated = try Factories.DefinitionEvaluate(
+            [.atom(zil)],
+            with: &localVariables
+        ).process()
 
-        return evaluatedSymbols
+        return Statement(
+            code: { _ in
+                evaluated.handle
+            },
+            type: evaluated.type,
+            children: [evaluated]
+        )
     }
 
     /// <#Description#>

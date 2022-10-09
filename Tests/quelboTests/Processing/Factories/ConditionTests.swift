@@ -67,7 +67,7 @@ final class ConditionTests: QuelboTests {
                 .form([
                     .atom("EQUAL?"),
                     .local("RARG"),
-                    .global("M-ENTER")
+                    .global(.atom("M-ENTER"))
                 ]),
                 .form([
                     .atom("PRINT"),
@@ -95,7 +95,7 @@ final class ConditionTests: QuelboTests {
                 .form([
                     .atom("EQUAL?"),
                     .local("RARG"),
-                    .global("M-ENTER")
+                    .global(.atom("M-ENTER"))
                 ]),
                 .form([
                     .atom("PRINT"),
@@ -105,12 +105,12 @@ final class ConditionTests: QuelboTests {
             .list([
                 .form([
                     .atom("IN?"),
-                    .global("TROLL"),
-                    .global("HERE")
+                    .global(.atom("TROLL")),
+                    .global(.atom("HERE"))
                 ]),
                 .form([
                     .atom("THIS-IS-IT"),
-                    .global("TROLL")
+                    .global(.atom("TROLL"))
                 ])
             ]),
         ], with: &localVariables).process()
@@ -139,7 +139,7 @@ final class ConditionTests: QuelboTests {
                 .form([
                     .atom("EQUAL?"),
                     .local("RARG"),
-                    .global("M-ENTER")
+                    .global(.atom("M-ENTER"))
                 ]),
                 .form([
                     .atom("SET"),
@@ -164,7 +164,7 @@ final class ConditionTests: QuelboTests {
     func testAtomPredicate() throws {
         let symbol = try factory.init([
             .list([
-                .global("WON-FLAG"),
+                .global(.atom("WON-FLAG")),
                 .form([
                     .atom("TELL"),
                     .string(" A secret path leads southwest into the forest.")
@@ -188,8 +188,8 @@ final class ConditionTests: QuelboTests {
             .list([
                 .form([
                     .atom("EQUAL?"),
-                    .global("HERE"),
-                    .global("CLEARING")
+                    .global(.atom("HERE")),
+                    .global(.atom("CLEARING"))
                 ]),
                 .string("The grating opens.")
             ]),
@@ -260,7 +260,7 @@ final class ConditionTests: QuelboTests {
     func testBooleanPredicate() throws {
         let symbol = try factory.init([
             .list([
-                .global("FUNNY-RETURN?"),
+                .global(.atom("FUNNY-RETURN?")),
                 .form([
                     .atom("TELL"),
                     .string("RETURN EXIT ROUTINE"),
@@ -276,7 +276,7 @@ final class ConditionTests: QuelboTests {
                     output("RETURN EXIT ROUTINE")
                 }
                 """#,
-                type: .void,
+            type: .void,
             returnHandling: .suppress
         ))
     }
@@ -288,17 +288,17 @@ final class ConditionTests: QuelboTests {
                     .atom("OR"),
                     .form([
                         .atom("FSET?"),
-                        .global("PRSI"),
-                        .global("OPENBIT")
+                        .global(.atom("PRSI")),
+                        .global(.atom("OPENBIT"))
                     ]),
                     .form([
                         .atom("OPENABLE?"),
-                        .global("PRSI")
+                        .global(.atom("PRSI"))
                     ]),
                     .form([
                         .atom("FSET?"),
-                        .global("PRSI"),
-                        .global("VEHBIT")
+                        .global(.atom("PRSI")),
+                        .global(.atom("VEHBIT"))
                     ])
                 ])
             ]),

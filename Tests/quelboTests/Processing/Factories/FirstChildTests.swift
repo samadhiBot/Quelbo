@@ -27,7 +27,7 @@ final class FirstChildTests: QuelboTests {
 
     func testThiefsFirstInventoryItem() throws {
         let symbol = try factory.init([
-            .global("THIEF")
+            .global(.atom("THIEF"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -38,7 +38,7 @@ final class FirstChildTests: QuelboTests {
 
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
-            .global("CLEARING")
+            .global(.atom("CLEARING"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

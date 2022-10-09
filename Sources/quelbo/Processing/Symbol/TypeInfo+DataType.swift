@@ -25,6 +25,7 @@ extension TypeInfo {
         case unknown
         case verb
         case void
+        case zilAtom
         case zilElement
         indirect case array(DataType)
         indirect case oneOf(Set<DataType>)
@@ -51,7 +52,7 @@ extension TypeInfo.DataType  {
         switch self {
         case .bool, .int, .int16, .int32, .int8, .object, .string, .table, .verb, .zilElement:
             return true
-        case .comment, .direction, .routine, .thing, .unknown, .void:
+        case .comment, .direction, .routine, .thing, .unknown, .void, .zilAtom:
             return false
         case .array(let dataType):
             return dataType.canBeZilElement
@@ -138,49 +139,6 @@ extension Set where Element == TypeInfo.DataType {
     }
 }
 
-//extension TypeInfo.DataType: CustomDebugStringConvertible {
-//    var debugDescription: String {
-//        switch self {
-//        case .array(let type):
-//            return "<Array<\(type)>>"
-//        case .bool:
-//            return "Bool"
-//        case .comment:
-//            return "<Comment>"
-//        case .direction:
-//            return "Direction"
-//        case .int:
-//            return "Int"
-//        case .int8:
-//            return "Int8"
-//        case .int16:
-//            return "Int16"
-//        case .int32:
-//            return "Int32"
-//        case .object:
-//            return "Object"
-//        case .oneOf(let types):
-//            return "<\(types.map(\.debugDescription).joined(separator: " | "))>"
-//        case .property(let type):
-//            return "<Property<\(type)>>"
-//        case .routine:
-//            return "Routine"
-//        case .string:
-//            return "String"
-//        case .table:
-//            return "Table"
-//        case .thing:
-//            return "Thing"
-//        case .unknown:
-//            return "<Unknown>"
-//        case .void:
-//            return "Void"
-//        case .zilElement:
-//            return "ZilElement"
-//        }
-//    }
-//}
-
 extension TypeInfo.DataType: CustomStringConvertible {
     var description: String {
         switch self {
@@ -220,6 +178,8 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "Verb"
         case .void:
             return "Void"
+        case .zilAtom:
+            return "<zilAtom>"
         case .zilElement:
             return "ZilElement"
         }

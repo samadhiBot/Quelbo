@@ -88,7 +88,7 @@ final class ParsingTests: QuelboTests {
             ;,ACT?ASK
         """).first
 
-        XCTAssertNoDifference(parsed, .commented(.global("ACT?ASK")))
+        XCTAssertNoDifference(parsed, .commented(.global(.atom("ACT?ASK"))))
     }
 
     func testCommentedList() throws {
@@ -103,7 +103,7 @@ final class ParsingTests: QuelboTests {
                     .form([
                         .atom("EQUAL?"),
                         .local("WRD"),
-                        .global("W?$BUZZ")
+                        .global(.atom("W?$BUZZ"))
                     ]),
                     .atom("T")
                 ])
@@ -149,7 +149,7 @@ final class ParsingTests: QuelboTests {
                     .list([
                         .form([
                             .atom("==?"),
-                            .global("ZORK-NUMBER"),
+                            .global(.atom("ZORK-NUMBER")),
                             .decimal(3)
                         ])
                     ])
@@ -178,7 +178,7 @@ final class ParsingTests: QuelboTests {
             ,ON-LAKE
         """).first
 
-        XCTAssertNoDifference(parsed, .global("ON-LAKE"))
+        XCTAssertNoDifference(parsed, .global(.atom("ON-LAKE")))
     }
 
     func testInt() throws {
@@ -248,7 +248,7 @@ final class ParsingTests: QuelboTests {
             parsed,
             .quote(
                 .list([
-                    .global("DEAD"),
+                    .global(.atom("DEAD")),
                     .form([
                         .atom("COND"),
                         .list([
@@ -302,7 +302,7 @@ final class ParsingTests: QuelboTests {
             !,EXTRA-FLAGS
         """).first
 
-        XCTAssertNoDifference(parsed, .segment(.global("EXTRA-FLAGS")))
+        XCTAssertNoDifference(parsed, .segment(.global(.atom("EXTRA-FLAGS"))))
     }
 
     func testString() throws {

@@ -51,6 +51,7 @@ final class DefineMacroTests: QuelboTests {
         XCTAssertNoDifference(
             process("<INC FOO>"),
             .statement(
+                id: "inc",
                 code: "inc(atm: foo)",
                 type: .int
             )
@@ -59,6 +60,7 @@ final class DefineMacroTests: QuelboTests {
         XCTAssertNoDifference(
             process("<INC BAR 42>"),
             .statement(
+                id: "inc",
                 code: "inc(atm: bar, n: 42)",
                 type: .int
             )
@@ -94,6 +96,7 @@ final class DefineMacroTests: QuelboTests {
         XCTAssertNoDifference(
             process("<OPENABLE? ,PRSI>"),
             .statement(
+                id: "isOpenable",
                 code: "isOpenable(obj: prsi)",
                 type: .bool
             )
@@ -126,6 +129,7 @@ final class DefineMacroTests: QuelboTests {
         XCTAssertNoDifference(
             process("<DOUBLE 21>"),
             .statement(
+                id: "double",
                 code: "double(any: 21)",
                 type: .int
             )
@@ -163,6 +167,7 @@ final class DefineMacroTests: QuelboTests {
         XCTAssertNoDifference(
             process("<BOTTLES 99>"),
             .statement(
+                id: "bottles",
                 code: "bottles(n: 99)",
                 type: .void
             )

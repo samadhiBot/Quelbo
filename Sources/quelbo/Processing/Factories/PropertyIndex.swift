@@ -16,10 +16,6 @@ extension Factories {
             ["GETPT"]
         }
 
-//        override class var parameters: Parameters {
-//            .two(.object, .property(.unknown))
-//        }
-
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.exactly(2))

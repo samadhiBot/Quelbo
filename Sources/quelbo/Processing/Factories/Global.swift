@@ -60,7 +60,10 @@ extension Factories {
                     return "\(declare) \(variable.code): \(variable.type)\(assignment)"
                 },
                 type: variable.type,
-                children: [variable],
+                children: [
+                    variable,
+                    value,
+                ],
                 category: variable.isMutable ?? false ? .globals : .constants,
                 isCommittable: true
             )

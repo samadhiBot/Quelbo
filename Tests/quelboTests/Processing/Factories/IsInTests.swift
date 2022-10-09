@@ -65,10 +65,10 @@ final class IsInTests: QuelboTests {
                 .form([
                     .atom("GET"),
                     .local("OO"),
-                    .global("V-VILLAIN")
+                    .global(.atom("V-VILLAIN"))
                 ])
             ]),
-            .global("HERE")
+            .global(.atom("HERE"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

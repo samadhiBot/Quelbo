@@ -63,6 +63,7 @@ final class RoutineCallTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "bagOfCoinsFunc",
             code: "bagOfCoinsFunc()",
             type: .void
         ))
@@ -75,6 +76,7 @@ final class RoutineCallTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "oneFunc",
             code: "oneFunc(number: 42)",
             type: .int
         ))
@@ -88,6 +90,7 @@ final class RoutineCallTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "twoFunc",
             code: """
                 twoFunc(
                     answer: \"Answer\",
@@ -110,6 +113,7 @@ final class RoutineCallTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "threeFunc",
             code: """
                 threeFunc(
                     answer: \"Answer\",

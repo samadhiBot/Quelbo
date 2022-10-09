@@ -27,7 +27,7 @@ final class PrintedNameTests: QuelboTests {
 
     func testPrintedName() throws {
         let symbol = try factory.init([
-            .global("TROLL")
+            .global(.atom("TROLL"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -39,8 +39,8 @@ final class PrintedNameTests: QuelboTests {
     func testProcessMultipleArguments() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .global("TROLL"),
-                .global("TROLL"),
+                .global(.atom("TROLL")),
+                .global(.atom("TROLL")),
             ], with: &localVariables).process()
         )
     }

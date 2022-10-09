@@ -38,7 +38,7 @@ final class IsZeroTests: QuelboTests {
 
     func testIsZeroGlobal() throws {
         let symbol = try factory.init([
-            .global("FOO")
+            .global(.atom("FOO"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

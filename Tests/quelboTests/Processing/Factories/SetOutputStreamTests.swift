@@ -94,7 +94,7 @@ final class SetOutputStreamTests: QuelboTests {
     func testSetOutputStreamTableOn() throws {
         let symbol = try factory.init([
             .decimal(3),
-            .global("OUTPUT-TABLE")
+            .global(.atom("OUTPUT-TABLE"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
@@ -120,7 +120,7 @@ final class SetOutputStreamTests: QuelboTests {
         XCTAssertThrowsError(
             _ = try factory.init([
                 .decimal(3),
-                .global("TRAP-DOOR")
+                .global(.atom("TRAP-DOOR"))
             ], with: &localVariables).process()
         )
     }

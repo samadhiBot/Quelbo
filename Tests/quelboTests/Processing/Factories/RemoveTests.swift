@@ -26,7 +26,7 @@ final class RemoveTests: QuelboTests {
 
     func testRemoveSandwich() throws {
         let symbol = try factory.init([
-            .global("SANDWICH"),
+            .global(.atom("SANDWICH")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

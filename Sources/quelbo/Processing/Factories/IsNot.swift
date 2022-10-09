@@ -27,7 +27,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    ".isNot(\(other.handle))"
+                    ".isNot(\(other.code))"
                 },
                 type: .bool
             )

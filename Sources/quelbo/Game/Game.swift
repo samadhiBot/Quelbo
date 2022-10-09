@@ -71,6 +71,12 @@ extension Game {
         for symbol in symbols {
             switch symbol {
             case .definition(let definition):
+                if let found = findDefinition(definition.id) {
+                    guard definition == found else {
+                        throw GameError.commitDefinitionConflict(definition.id)
+                    }
+                    continue
+                }
                 shared.definitions.append(definition)
 
             case .instance, .literal:
@@ -78,6 +84,12 @@ extension Game {
 
             case .statement(let statement):
                 if statement.isCommittable {
+                    if let id = statement.id, let found = shared.symbols.find(id) {
+                        guard statement == found else {
+                            throw GameError.commitStatementConflict(id)
+                        }
+                        continue
+                    }
                     shared.symbols.append(symbol)
                 }
                 try commit(statement.children)
@@ -157,40 +169,6 @@ extension Game {
     static let factories = _Runtime
         .subclasses(of: Factory.self)
         .map { $0 as! Factory.Type }
-
-    static func makeFactory(
-        zil: String,
-        tokens: [Token],
-        with localVariables: inout [Variable],
-        type factoryType: Factories.FactoryType? = nil,
-        mode factoryMode: Factory.FactoryMode = .process
-    ) throws -> Factory {
-        if let factory = Game.findFactory(zil, type: factoryType) {
-            var factoryTokens: [Token] {
-                switch tokens.first {
-                case .atom(zil): return tokens.droppingFirst
-                case .decimal: return tokens.droppingFirst
-                case .global(zil): return tokens.droppingFirst
-                default: return tokens
-                }
-            }
-            return try factory.init(
-                factoryTokens,
-                with: &localVariables,
-                mode: factoryMode
-            )
-        }
-
-        if Game.routines.find(zil.lowerCamelCase) != nil {
-            return try Factories.RoutineCall(tokens, with: &localVariables)
-        }
-
-        if Game.findDefinition(zil.lowerCamelCase) != nil {
-            return try Factories.DefinitionEvaluate(tokens, with: &localVariables)
-        }
-
-        throw GameError.factoryNotFound(zil)
-    }
 }
 
 // MARK: - Reserved globals
@@ -236,6 +214,8 @@ extension Game {
 // MARK: - GameError
 
 enum GameError: Swift.Error {
+    case commitDefinitionConflict(String)
+    case commitStatementConflict(String)
     case factoryNotFound(String)
     case failedToProcessTokens([String])
     case globalNotFound(String)

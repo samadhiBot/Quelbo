@@ -79,37 +79,62 @@ final class PerformTests: QuelboTests {
                             output(obj.description)
                             output("=]")
                         }
-                        return {
-                            var res: Int = 0
-                            if .isNot(fcn) {
-                                return false
-                            } else {
-                                if debug {
-                                    if .isNot(str) {
-                                        output("\n")
-                                    } else {
-                                        output("\n")
-                                        output(str)
-                                        output(" -> ")
-                                    }
-                                }
-                                res.set(to: if foo.isAssigned {
-                                    fcn(foo)
+                        return dApply(
+                            str: str,
+                            fcn: fcn,
+                            foo: foo
+                        )
+                    }
+                    """#,
+                type: .int,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testDApply() {
+        XCTAssertNoDifference(
+            Game.routines.find("dApply"),
+            Statement(
+                id: "dApply",
+                code: #"""
+                    @discardableResult
+                    /// The `dApply` (D-APPLY) routine.
+                    func dApply(
+                        str: String,
+                        fcn: <Unknown>,
+                        foo: Bool = false
+                    ) -> Int {
+                        var res: Int = 0
+                        if .isNot(fcn) {
+                            return false
+                        } else {
+                            if debug {
+                                if .isNot(str) {
+                                    output("\n")
                                 } else {
-                                    fcn()
-                                })
-                                if .and(debug, str) {
-                                    if res.equals(2) {
-                                        output("Fatal")
-                                    } else if .isNot(res) {
-                                        output("Not handled")
-                                    } else {
-                                        output("Handled")
-                                    }
+                                    output("\n")
+                                    output(str)
+                                    output(" -> ")
                                 }
-                                return res
                             }
-                        }()
+                            res.set(to: if foo.isAssigned {
+                                fcn(foo)
+                            } else {
+                                fcn()
+                            })
+                            if .and(debug, str) {
+                                if res.equals(2) {
+                                    output("Fatal")
+                                } else if .isNot(res) {
+                                    output("Not handled")
+                                } else {
+                                    output("Handled")
+                                }
+                            }
+                            return res
+                        }
                     }
                     """#,
                 type: .int,
@@ -242,37 +267,17 @@ final class PerformTests: QuelboTests {
                     prsi.set(to: i)
                     if .and(
                         notHereObject.equals(prso, prsi),
-                        v.set(to: {
-                            var res: Int = 0
-                            if .isNot(notHereObjectFunc) {
-                                return false
-                            } else {
-                                if debug {
-                                    if .isNot("Not Here") {
-                                        output("\n")
-                                    } else {
-                                        output("\n")
-                                        output("Not Here")
-                                        output(" -> ")
-                                    }
-                                }
-                                res.set(to: if foo.isAssigned {
-                                    notHereObjectFunc(foo)
-                                } else {
-                                    notHereObjectFunc()
-                                })
-                                if .and(debug, "Not Here") {
-                                    if res.equals(2) {
-                                        output("Fatal")
-                                    } else if .isNot(res) {
-                                        output("Not handled")
-                                    } else {
-                                        output("Handled")
-                                    }
-                                }
-                                return res
+                        v.set(to: dApply(
+                            str: "Not Here",
+                            fcn: @discardableResult
+                            /// The `notHereObjectFunc` (NOT-HERE-OBJECT-F) routine.
+                            func notHereObjectFunc() -> Bool {
+                                var tbl: <Unknown> = <Unknown>
+                                var isPrso: Bool = true
+                                var obj: Object? = nil
+                                return true
                             }
-                        }())
+                        ))
                     ) {
                         return v
                     } else {
@@ -284,103 +289,23 @@ final class PerformTests: QuelboTests {
                             fcn: winner.action
                         )) {
                             return v
-                        } else if _ = v.set(to: {
-                            var res: Int = 0
-                            if .isNot(winner.parent.action) {
-                                return false
-                            } else {
-                                if debug {
-                                    if .isNot("Room (M-BEG)") {
-                                        output("\n")
-                                    } else {
-                                        output("\n")
-                                        output("Room (M-BEG)")
-                                        output(" -> ")
-                                    }
-                                }
-                                res.set(to: if mBeg.isAssigned {
-                                    winner.parent.action(mBeg)
-                                } else {
-                                    winner.parent.action()
-                                })
-                                if .and(debug, "Room (M-BEG)") {
-                                    if res.equals(2) {
-                                        output("Fatal")
-                                    } else if .isNot(res) {
-                                        output("Not handled")
-                                    } else {
-                                        output("Handled")
-                                    }
-                                }
-                                return res
-                            }
-                        }()) {
+                        } else if _ = v.set(to: dApply(
+                            str: "Room (M-BEG)",
+                            fcn: winner.parent.action,
+                            foo: mBeg
+                        )) {
                             return v
-                        } else if _ = v.set(to: {
-                            var res: Int = 0
-                            if .isNot(try preactions.get(at: a)) {
-                                return false
-                            } else {
-                                if debug {
-                                    if .isNot("Preaction") {
-                                        output("\n")
-                                    } else {
-                                        output("\n")
-                                        output("Preaction")
-                                        output(" -> ")
-                                    }
-                                }
-                                res.set(to: if foo.isAssigned {
-                                    try preactions.get(at: a)(foo)
-                                } else {
-                                    try preactions.get(at: a)()
-                                })
-                                if .and(debug, "Preaction") {
-                                    if res.equals(2) {
-                                        output("Fatal")
-                                    } else if .isNot(res) {
-                                        output("Not handled")
-                                    } else {
-                                        output("Handled")
-                                    }
-                                }
-                                return res
-                            }
-                        }()) {
+                        } else if _ = v.set(to: dApply(
+                            str: "Preaction",
+                            fcn: try preactions.get(at: a)
+                        )) {
                             return v
                         } else if _ = .and(
                             i,
-                            v.set(to: {
-                                var res: Int = 0
-                                if .isNot(i.action) {
-                                    return false
-                                } else {
-                                    if debug {
-                                        if .isNot("PRSI") {
-                                            output("\n")
-                                        } else {
-                                            output("\n")
-                                            output("PRSI")
-                                            output(" -> ")
-                                        }
-                                    }
-                                    res.set(to: if foo.isAssigned {
-                                        i.action(foo)
-                                    } else {
-                                        i.action()
-                                    })
-                                    if .and(debug, "PRSI") {
-                                        if res.equals(2) {
-                                            output("Fatal")
-                                        } else if .isNot(res) {
-                                            output("Not handled")
-                                        } else {
-                                            output("Handled")
-                                        }
-                                    }
-                                    return res
-                                }
-                            }())
+                            v.set(to: dApply(
+                                str: "PRSI",
+                                fcn: i.action
+                            ))
                         ) {
                             return v
                         } else if _ = .and(
@@ -398,70 +323,16 @@ final class PerformTests: QuelboTests {
                         } else if _ = .and(
                             o,
                             .isNot(a.equals(WALK)),
-                            v.set(to: {
-                                var res: Int = 0
-                                if .isNot(o.action) {
-                                    return false
-                                } else {
-                                    if debug {
-                                        if .isNot("PRSO") {
-                                            output("\n")
-                                        } else {
-                                            output("\n")
-                                            output("PRSO")
-                                            output(" -> ")
-                                        }
-                                    }
-                                    res.set(to: if foo.isAssigned {
-                                        o.action(foo)
-                                    } else {
-                                        o.action()
-                                    })
-                                    if .and(debug, "PRSO") {
-                                        if res.equals(2) {
-                                            output("Fatal")
-                                        } else if .isNot(res) {
-                                            output("Not handled")
-                                        } else {
-                                            output("Handled")
-                                        }
-                                    }
-                                    return res
-                                }
-                            }())
+                            v.set(to: dApply(
+                                str: "PRSO",
+                                fcn: o.action
+                            ))
                         ) {
                             return v
-                        } else if _ = v.set(to: {
-                            var res: Int = 0
-                            if .isNot(try actions.get(at: a)) {
-                                return false
-                            } else {
-                                if debug {
-                                    if .isNot(false) {
-                                        output("\n")
-                                    } else {
-                                        output("\n")
-                                        output(nil)
-                                        output(" -> ")
-                                    }
-                                }
-                                res.set(to: if foo.isAssigned {
-                                    try actions.get(at: a)(foo)
-                                } else {
-                                    try actions.get(at: a)()
-                                })
-                                if .and(debug, false) {
-                                    if res.equals(2) {
-                                        output("Fatal")
-                                    } else if .isNot(res) {
-                                        output("Not handled")
-                                    } else {
-                                        output("Handled")
-                                    }
-                                }
-                                return res
-                            }
-                        }()) {
+                        } else if _ = v.set(to: dApply(
+                            str: false,
+                            fcn: try actions.get(at: a)
+                        )) {
                             return v
                         }
                     }

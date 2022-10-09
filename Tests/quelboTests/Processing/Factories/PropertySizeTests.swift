@@ -26,7 +26,7 @@ final class PropertySizeTests: QuelboTests {
 
     func testPropertySize() throws {
         let symbol = try factory.init([
-            .global("TROLL"),
+            .global(.atom("TROLL")),
             .property("STRENGTH")
         ], with: &localVariables).process()
 
@@ -40,7 +40,7 @@ final class PropertySizeTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .string("TROLL"),
-                .global("P?STRENGTH")
+                .global(.atom("P?STRENGTH"))
             ], with: &localVariables).process()
         )
     }

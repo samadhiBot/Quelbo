@@ -26,7 +26,7 @@ final class NextSiblingTests: QuelboTests {
 
     func testFirstItemInClearing() throws {
         let symbol = try factory.init([
-            .global("EGG")
+            .global(.atom("EGG"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

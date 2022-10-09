@@ -22,9 +22,9 @@ final class FunctionTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "anon247a",
+            id: "anone836",
             code: """
-                func anon247a() -> Int {
+                func anone836() -> Int {
                     var x: Int = 1
                     var y: Int = 2
                     return .add(x, y)
@@ -41,9 +41,9 @@ final class FunctionTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "anon87f2",
+            id: "anon8fd9",
             code: """
-                func anon87f2(n: Int) -> Int {
+                func anon8fd9(n: Int) -> Int {
                     return .multiply(n, n)
                 }
                 """,
@@ -66,9 +66,9 @@ final class FunctionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "anonf70d",
+            id: "anonea8b",
             code: """
-                func anonf70d(a: Int, b: Int) -> Int {
+                func anonea8b(a: Int, b: Int) -> Int {
                     return .add(a, b)
                 }
                 """,

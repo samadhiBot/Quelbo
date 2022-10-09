@@ -24,9 +24,6 @@ enum Category: String {
     /// Symbols representing object flags.
     case flags
 
-//    /// Symbols representing evaluated functions defined by the game.
-//    case functions
-
     /// Symbols representing global game variables.
     case globals
 

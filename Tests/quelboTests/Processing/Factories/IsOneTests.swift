@@ -37,7 +37,7 @@ final class IsOneTests: QuelboTests {
 
     func testIsOneGlobal() throws {
         let symbol = try factory.init([
-            .global("FOO")
+            .global(.atom("FOO"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

@@ -83,11 +83,11 @@ final class AndTests: QuelboTests {
             .form([
                 .atom("=?"),
                 .local("RARG"),
-                .global("M-ENTER"),
+                .global(.atom("M-ENTER")),
             ]),
             .form([
                 .atom("NOT"),
-                .global("FOUND-TREASURE-CHEST"),
+                .global(.atom("FOUND-TREASURE-CHEST")),
             ]),
         ], with: &localVariables).process()
 

@@ -79,7 +79,7 @@ struct ZilSyntax {
 
         let global = Parse {
             ",".utf8
-            atom
+            Lazy { parser! }
         }
 
         let list = Parse {

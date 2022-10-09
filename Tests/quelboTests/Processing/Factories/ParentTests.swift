@@ -27,7 +27,7 @@ final class ParentTests: QuelboTests {
 
     func testThiefsLocation() throws {
         let symbol = try factory.init([
-            .global("THIEF")
+            .global(.atom("THIEF"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

@@ -45,32 +45,36 @@ extension Factories {
          */
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(2)))
+            try symbols.assert(
+                .haveCount(.exactly(2))
+            )
 
-            try symbols[1].assert(.hasType(.string))
+            try symbols[1].assert(
+                .hasType(.oneOf([.string, .zilAtom]))
+            )
         }
 
         override func process() throws -> Symbol {
-            let value = symbols[0]
-            let newType = symbols[1]
+            let value = symbols[0].code
+            let newType = symbols[1].code.lowerCamelCase
 
             return .statement(
                 code: { _ in
-                    "\(value.code).changeType(.\(newType.code))"
+                    "\(value).changeType(.\(newType))"
                 },
-                type: try typeInfo(for: newType.code)
+                type: try typeInfo(for: newType)
             )
         }
     }
 }
 
 extension Factories.ChangeType {
-    func typeInfo(for code: String) throws -> TypeInfo {
-        switch code {
+    func typeInfo(for typeChange: String) throws -> TypeInfo {
+        switch typeChange {
         case "fix": return .int
         case "form": return .unknown
         case "string": return .string
-        default: throw Error.unimplementedChangeType(code)
+        default: throw Error.unimplementedChangeType(typeChange)
         }
     }
 }

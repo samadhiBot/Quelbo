@@ -92,7 +92,7 @@ final class FlagsTests: QuelboTests {
 
         let symbol = try Factories.HasFlag([
             .atom("X"),
-            .global("TAKEBIT")
+            .global(.atom("TAKEBIT"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

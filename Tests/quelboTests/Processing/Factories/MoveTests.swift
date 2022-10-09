@@ -58,7 +58,7 @@ final class MoveTests: QuelboTests {
 
         let symbol = try factory.init([
             .local("DWEAPON"),
-            .global("HERE"),
+            .global(.atom("HERE")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

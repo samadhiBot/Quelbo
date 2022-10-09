@@ -52,21 +52,5 @@ extension Factories {
                 isMutable: false
             )
         }
-
-//            return .statement(
-//                code: { _ in
-//                    let argNames = pro.paramDeclarations
-//
-//                    return """
-//                        {\(argNames.isEmpty ? "" : " (\(argNames))\(try pro.returnDeclaration()) in")
-//                        \(pro.auxiliaryDefs.indented)\
-//                        \(pro.code.indented)
-//                        }
-//                        """
-//                },
-//                type: try pro.functionType(),
-//                isMutable: false
-//            )
-//        }
     }
 }

@@ -86,31 +86,26 @@ class QuelboTests: XCTestCase {
         for token in parsed {
             do {
                 switch token {
-                case .atom, .bool, .character, .commented, .decimal, .eval, .global, .list,
-                     .local, .property, .quote, .segment, .string, .type, .vector, .verb:
-                    XCTFail(
-                        """
-                        Test processing is not implemented for this token type:
-                        \(token)
-                        """,
-                        file: file,
-                        line: line
-                    )
-                    return .literal(false)
                 case .form(let tokens):
                     guard case .atom(let zilString) = tokens.first else {
                         throw GameError.unknownDirective(tokens)
                     }
-                    let factory = try Game.makeFactory(
+                    let symbol = try Game.process(
                         zil: zilString,
                         tokens: tokens,
                         with: &localVariables,
                         type: .mdl
                     )
-                    let symbol = try factory.process()
                     try Game.commit(symbol)
 
                     symbols.append(symbol)
+                default:
+                    XCTFail(
+                        "Test processing is not implemented for this token type:\n\(token)",
+                        file: file,
+                        line: line
+                    )
+                    return .literal(false)
                 }
             } catch {
                 XCTFail(

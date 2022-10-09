@@ -24,7 +24,7 @@ final class BitwiseAndTests: QuelboTests {
             .decimal(1),
             .decimal(0),
             .decimal(2),
-            .global("SOME-INT"),
+            .global(.atom("SOME-INT")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

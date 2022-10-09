@@ -11,62 +11,53 @@ extension Factories {
     /// A symbol factory for calls to functions and routines defined in a game.
     ///
     class DefinitionEvaluate: Factory {
-        var blockProcessor: BlockProcessor!
-
         override func processTokens() throws {
             var callerParams = tokens
-            let zilName = try findName(in: &callerParams).lowerCamelCase
+            let zilName = try findName(in: &callerParams)
 
-            guard let rawDefinition = Game.findDefinition(zilName) else {
+            guard let rawDefinition = Game.findDefinition(zilName.lowerCamelCase) else {
                 throw Error.definitionNotFound(zilName)
             }
-            var defTokens = rawDefinition.tokens
+            var definitionTokens = rawDefinition.tokens
 
             var activation: String?
-            if case .atom(let act) = defTokens.first {
+            if case .atom(let act) = definitionTokens.first {
                 activation = act
-                defTokens.removeFirst()
+                definitionTokens.removeFirst()
             }
 
-            guard case .list(var defParams) = defTokens.shift() else {
-                throw Error.definitionParametersNotFound(defTokens)
+            guard case .list(let definitionParams) = definitionTokens.first else {
+                throw Error.definitionParametersNotFound(definitionTokens)
             }
 
-            for substitution in substitutions(from: defParams, to: callerParams) {
-                defParams = try defParams.deepReplacing(substitution.0, with: substitution.1)
-                defTokens = try defTokens.deepReplacing(substitution.0, with: substitution.1)
+            for substitution in substitutions(from: definitionParams, to: callerParams) {
+                definitionTokens = definitionTokens.deepReplacing(
+                    from: substitution.0,
+                    to: substitution.1
+                )
             }
-
-            defTokens.insert(.list(defParams), at: 0)
 
             if let activation = activation {
-                defTokens.insert(.atom(activation), at: 0)
+                definitionTokens.insert(.atom(activation), at: 0)
             }
+            definitionTokens.insert(.atom(zilName), at: 0)
 
-            self.blockProcessor = try BlockProcessor(
-                defTokens,
+            let routine = try Factories.Routine(
+                definitionTokens,
                 with: &localVariables
-            )
-            blockProcessor.assert(
-                activation: activation
-            )
+            ).process()
+            try Game.commit(routine)
+
+            let evaluated = try Factories.RoutineCall(
+                [.atom(zilName)] + callerParams,
+                with: &localVariables
+            ).process()
+
+            symbols.append(evaluated)
         }
 
-        @discardableResult
         override func process() throws -> Symbol {
-            let pro = blockProcessor!
-
-            return .statement(
-                code: { _ in
-                    """
-                    {
-                    \(pro.auxiliaryDefs.indented)\
-                    \(pro.code.indented)
-                    }()
-                    """
-                },
-                type: pro.returnType() ?? .unknown
-            )
+            symbols[0]
         }
     }
 }
@@ -124,28 +115,26 @@ extension Array where Element == Token {
     ///   - replacementToken: <#replacementToken description#>
     /// - Returns: <#description#>
     func deepReplacing(
-        _ originalToken: Token,
-        with replacementToken: Token
-    ) throws -> [Token] {
+        from originalToken: Token,
+        to replacementToken: Token
+    ) -> [Token] {
         let original = originalToken.value
-        return try evaluated.map { (token: Token) -> Token in
+        return evaluated.map { (token: Token) -> Token in
             switch token {
             case originalToken:
                 return replacementToken
             case .atom(let string):
                 return string == original ? replacementToken : token
             case .form(let tokens):
-                return try .form(tokens.deepReplacing(originalToken, with: replacementToken))
-            case .global(let string):
-                return string == original ? replacementToken : token
+                return .form(tokens.deepReplacing(from: originalToken, to: replacementToken))
             case .list(let tokens):
-                return try .list(tokens.deepReplacing(originalToken, with: replacementToken))
+                return .list(tokens.deepReplacing(from: originalToken, to: replacementToken))
             case .local(let string):
                 return string == original ? replacementToken : token
             case .property(let string):
                 return string == original ? replacementToken : token
             case .vector(let tokens):
-                return try .vector(tokens.deepReplacing(originalToken, with: replacementToken))
+                return .vector(tokens.deepReplacing(from: originalToken, to: replacementToken))
             default:
                 return token
             }

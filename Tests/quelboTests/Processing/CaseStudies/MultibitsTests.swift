@@ -34,6 +34,53 @@ final class MultibitsTests: QuelboTests {
         """)
     }
 
+    func testZorkMultibits() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("multibits"),
+            Statement(
+                id: "multibits",
+                code: """
+                    /// The `multibits` (MULTIBITS) routine.
+                    func multibits(
+                        fset: <Unknown>,
+                        obj: Object,
+                        bits: Table
+                    ) {
+                        var o: [<Unknown>] = []
+                        var atm: <Unknown> = <Unknown>
+                        var bits: Table = bits
+                        while true {
+                            if bits.isEmpty {
+                                if o.count == 1 {
+                                    return o.nthElement(1)
+                                } else if fset.equals(isFset) {
+                                    .or(o)
+                                } else {
+                                    do {
+                                        return o
+                                    }
+                                }
+                            }
+                            atm.set(to: bits.nthElement(1))
+                            bits.set(to: bits.rest())
+                            o.set(to: [
+                                obj.if atm.isType(form) {
+                                    return atm
+                                } else {
+                                    return atm
+                                }.set(true),
+                                o,
+                            ])
+                        }
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+
     func testBsetMacro() throws {
         XCTAssertNoDifference(
             Game.routines.find("bset"),
@@ -46,33 +93,11 @@ final class MultibitsTests: QuelboTests {
                         bits: Table
                     ) {
                         var bits: Table = bits
-                        {
-                            var o: [<Unknown>] = []
-                            var atm: <Unknown> = <Unknown>
-                            while true {
-                                if bits.isEmpty {
-                                    if o.count == 1 {
-                                        return o.nthElement(1)
-                                    } else if fset.equals(isFset) {
-                                        .or(o)
-                                    } else {
-                                        do {
-                                            return o
-                                        }
-                                    }
-                                }
-                                atm.set(to: bits.nthElement(1))
-                                bits.set(to: bits.rest())
-                                o.set(to: [
-                                    obj.if atm.isType(form) {
-                                        return atm
-                                    } else {
-                                        return atm
-                                    }.set(true),
-                                    o,
-                                ])
-                            }
-                        }()
+                        multibits(
+                            fset: fset,
+                            obj: obj,
+                            bits: bits
+                        )
                     }
                     """,
                 type: .void,
@@ -86,6 +111,7 @@ final class MultibitsTests: QuelboTests {
         XCTAssertNoDifference(
             process("<BSET SOME-OBJECT SOME-TABLE>"),
             .statement(
+                id: "bset",
                 code: """
                     bset(
                         obj: someObject,

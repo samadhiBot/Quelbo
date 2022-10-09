@@ -40,7 +40,7 @@ final class PutPropertyTests: QuelboTests {
 
     func testPutPropertyOnObjectFromGlobals() throws {
         let symbol = try factory.init([
-            .global("WINNER"),
+            .global(.atom("WINNER")),
             .property("ACTION"),
             .decimal(0),
         ], with: &localVariables).process()

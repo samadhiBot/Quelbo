@@ -113,7 +113,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
     func testSymbolizeGlobal() throws {
         let symbol = try TestFactory([
-            .global("BOARDED-WINDOW")
+            .global(.atom("BOARDED-WINDOW"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .variable(boardedWindow))
@@ -200,22 +200,22 @@ final class FactorySymbolizeTests: QuelboTests {
         ))
     }
 
-//    func testSymbolizeSegment() throws {
-//        let symbol = try TestFactory([
-//            .segment(
-//                .form([
-//                    .atom("+"),
-//                    .decimal(2),
-//                    .decimal(3),
-//                ])
-//            )
-//        ], with: &localVariables).process()
-//
-//        XCTAssertNoDifference(symbol, Symbol(
-//            code: ".add(2, 3)",
-//            type: .int
-//        ))
-//    }
+    func testSymbolizeSegment() throws {
+        let symbol = try TestFactory([
+            .segment(
+                .form([
+                    .atom("+"),
+                    .decimal(2),
+                    .decimal(3),
+                ])
+            )
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: ".add(2, 3)",
+            type: .int
+        ))
+    }
 
     func testSymbolizeString() throws {
         let symbol = try TestFactory([

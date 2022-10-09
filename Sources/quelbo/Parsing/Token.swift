@@ -32,7 +32,7 @@ indirect enum Token: Hashable {
     case form([Token])
 
     /// Represents a Zil global atom.
-    case global(String)
+    case global(Token)
 
     /// Represents a Zil list.
     case list([Token])
@@ -73,7 +73,7 @@ extension Token {
         case .decimal(let value):    return "\(value)"
         case .eval(let token):       return "\(token)"
         case .form(let tokens):      return "\(tokens.map { $0.value })"
-        case .global(let value):     return "\(value)"
+        case .global(let token):     return "\(token.value)"
         case .list(let tokens):      return "\(tokens.map { $0.value })"
         case .local(let value):      return "\(value)"
         case .property(let value):   return "\(value)"
@@ -96,16 +96,16 @@ extension Token: CustomStringConvertible {
         case .commented(let token):  return ".commented(\(token))"
         case .decimal(let value):    return ".decimal(\(value))"
         case .eval(let token):       return ".eval(\(token))"
-        case .form(let tokens):      return ".form(\(tokens.map(\.description))"
-        case .global(let value):     return ".global(\(value))"
-        case .list(let tokens):      return ".list(\(tokens.map(\.description))"
+        case .form(let tokens):      return ".form(\(tokens.map(\.description).values())"
+        case .global(let token):     return ".global(\(token))"
+        case .list(let tokens):      return ".list(\(tokens.map(\.description).values())"
         case .local(let value):      return ".local(\(value))"
         case .property(let value):   return ".property(\(value))"
         case .quote(let token):      return ".quote(\(token))"
         case .segment(let token):    return ".segment(\(token))"
         case .string(let value):     return ".string(\(value))"
         case .type(let value):       return ".type(\(value))"
-        case .vector(let tokens):    return ".vector(\(tokens.map(\.description))"
+        case .vector(let tokens):    return ".vector(\(tokens.map(\.description).values())"
         case .verb(let value):       return ".verb(\(value))"
         }
     }
@@ -123,6 +123,8 @@ extension Array where Element == Token {
                 case .atom("LIST"): return .list(formTokens.evaluated)
                 default: return token
                 }
+            case .global(let globalToken):
+                return globalToken
             case .quote(let quotedToken):
                 return quotedToken
             default:

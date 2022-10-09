@@ -28,13 +28,6 @@ extension Game {
             .sorted
     }
 
-//    /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/functions`` category.
-//    static var functions: [Symbol] {
-//        shared.symbols
-//            .filter { $0.category == .functions }
-//            .sorted
-//    }
-
     /// Returns an array of game symbols in the ``Symbol/Category-swift.enum/globals`` category.
     static var globals: [Symbol] {
         shared.symbols

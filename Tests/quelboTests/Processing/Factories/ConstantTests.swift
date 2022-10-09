@@ -309,8 +309,8 @@ final class ConstantTests: QuelboTests {
         // Move expects `foo` to be an object, not a boolean. This triggers an update of the
         // `foo` game symbol's type from boolean to object.
         let move = try Factories.Move([
-            .global("FOO"),
-            .global("CLEARING")
+            .global(.atom("FOO")),
+            .global(.atom("CLEARING"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(move, .statement(

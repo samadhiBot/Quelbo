@@ -65,8 +65,8 @@ final class IsNotEqualToTests: QuelboTests {
 
     func testEqualTwoGlobalBools() throws {
         let symbol = try factory.init([
-            .global("PLAYER-ALIVE?"),
-            .global("WORLD-ALIVE?"),
+            .global(.atom("PLAYER-ALIVE?")),
+            .global(.atom("WORLD-ALIVE?")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

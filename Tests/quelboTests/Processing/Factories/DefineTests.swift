@@ -37,7 +37,7 @@ final class DefineTests: QuelboTests {
                     .form([
                         .atom("ITABLE"),
                         .atom("NONE"),
-                        .global("READBUF-SIZE"),
+                        .global(.atom("READBUF-SIZE")),
                         .list([
                             .atom("BYTE")
                         ])
@@ -50,16 +50,29 @@ final class DefineTests: QuelboTests {
             process("<CONSTANT KBD-READBUF <MAKE-READBUF>>"),
             .statement(
                 id: "kbdReadbuf",
+                code: "let kbdReadbuf: Table = makeReadbuf()",
+                type: .table,
+                category: .constants,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.routines.find("makeReadbuf"),
+            Statement(
+                id: "makeReadbuf",
                 code: """
-                    let kbdReadbuf: Table = {
+                    @discardableResult
+                    /// The `makeReadbuf` (MAKE-READBUF) routine.
+                    func makeReadbuf() -> Table {
                         return Table(
                             count: readbufSize,
                             flags: [.byte, .none]
                         )
-                    }()
+                    }
                     """,
                 type: .table,
-                category: .constants,
+                category: Category.routines,
                 isCommittable: true
             )
         )
@@ -68,14 +81,7 @@ final class DefineTests: QuelboTests {
             process("<CONSTANT EDIT-READBUF <MAKE-READBUF>>"),
             .statement(
                 id: "editReadbuf",
-                code: """
-                let editReadbuf: Table = {
-                    return Table(
-                        count: readbufSize,
-                        flags: [.byte, .none]
-                    )
-                }()
-                """,
+                code: "let editReadbuf: Table = makeReadbuf()",
                 type: .table,
                 category: .constants,
                 isCommittable: true
@@ -114,28 +120,40 @@ final class DefineTests: QuelboTests {
             ]
         ))
 
+        // `incForm` isn't processed until it has been called
+        XCTAssertNil(Game.routines.find("incForm"))
+
         XCTAssertNoDifference(
             process("<INC-FORM FOO>"),
             .statement(
+                id: "incForm",
+                code: "incForm(foo: foo)",
+                type: .int
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.routines.find("incForm"),
+            Statement(
+                id: "incForm",
                 code: """
-                    {
+                    @discardableResult
+                    /// The `incForm` (INC-FORM) routine.
+                    func incForm(foo: Int) -> Int {
                         var foo: Int = foo
                         return foo.set(to: .add(1, foo))
-                    }()
+                    }
                     """,
-                type: .int
+                type: .int,
+                category: Category.routines,
+                isCommittable: true
             )
         )
 
         XCTAssertNoDifference(
             process("<SET BAZ <INC-FORM BAR>>"),
             .statement(
-                code: """
-                    baz.set(to: {
-                        var bar: Int = bar
-                        return bar.set(to: .add(1, bar))
-                    }())
-                    """,
+                code: "baz.set(to: incForm(foo: bar))",
                 type: .int
             )
         )
@@ -148,23 +166,33 @@ final class DefineTests: QuelboTests {
         XCTAssertNoDifference(
             process("<DOUBLE FOO>"),
             .statement(
-                code: """
-                    {
-                        return .add(foo, foo)
-                    }()
-                    """,
+                id: "double",
+                code: "double(foo: foo)",
                 type: .int
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.routines.find("double"),
+            Statement(
+                id: "double",
+                code: """
+                    @discardableResult
+                    /// The `double` (DOUBLE) routine.
+                    func double(foo: Int) -> Int {
+                        return .add(foo, foo)
+                    }
+                    """,
+                type: .int,
+                category: Category.routines,
+                isCommittable: true
             )
         )
 
         XCTAssertNoDifference(
             process("<SET BAZ <DOUBLE BAR>>"),
             .statement(
-                code: """
-                    baz.set(to: {
-                        return .add(bar, bar)
-                    }())
-                    """,
+                code: "baz.set(to: double(foo: bar))",
                 type: .int
             )
         )
@@ -186,8 +214,19 @@ final class DefineTests: QuelboTests {
         XCTAssertNoDifference(
             process("<SET BAR <POWER-TO FOO>>"),
             .statement(
+                code: "bar.set(to: powerTo(foo: foo))",
+                type: .int
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.routines.find("powerTo"),
+            Statement(
+                id: "powerTo",
                 code: """
-                    bar.set(to: {
+                    @discardableResult
+                    /// The `powerTo` (POWER-TO) routine.
+                    func powerTo(foo: Int, y: Int = 2) -> Int {
                         if y.equals(0) {
                             return 1
                         }
@@ -200,9 +239,11 @@ final class DefineTests: QuelboTests {
                                 return z
                             }
                         }
-                    }())
+                    }
                     """,
-                type: .int
+                type: .int,
+                category: Category.routines,
+                isCommittable: true
             )
         )
     }

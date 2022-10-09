@@ -30,7 +30,7 @@ final class TellTests: QuelboTests {
             .atom("CR"),
             .atom("CRLF"),
             .atom("D"),
-            .global("TROLL"),
+            .global(.atom("TROLL")),
             .atom("N"),
             .decimal(42),
             .atom("C"),

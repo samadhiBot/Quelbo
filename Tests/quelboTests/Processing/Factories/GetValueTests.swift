@@ -20,7 +20,7 @@ final class GetValueTests: QuelboTests {
         process("<GLOBAL SANDWICH T>")
 
         let symbol = try factory.init([
-            .global("SANDWICH"),
+            .global(.atom("SANDWICH")),
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(

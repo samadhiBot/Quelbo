@@ -39,7 +39,7 @@ final class PrintTests: QuelboTests {
 
     func testPrintAtom() throws {
         let symbol = try factory.init([
-            .global("MESSAGE")
+            .global(.atom("MESSAGE"))
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
