@@ -25,15 +25,22 @@ final class PropertySizeTests: QuelboTests {
     }
 
     func testPropertySize() throws {
-        let symbol = try factory.init([
-            .global(.atom("TROLL")),
-            .property("STRENGTH")
-        ], with: &localVariables).process()
+        localVariables.append(.init(id: "tx", type: .unknown))
+
+        let symbol = process("<PTSIZE .TX>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "troll.propertySize(of: .strength)",
+            code: "tx.propertySize",
             type: .int
         ))
+
+        XCTAssertNoDifference(
+            findLocalVariable("tx"),
+            .init(
+                id: "tx",
+                type: .object
+            )
+        )
     }
 
     func testNonObjectThrows() throws {

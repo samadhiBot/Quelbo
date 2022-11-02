@@ -19,14 +19,14 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert(.haveCount(.exactly(2)))
 
-            try? symbols[0].assert(.hasType(.array(.unknown)))
-            try? symbols[1].assert(.hasType(.array(.unknown)))
+            try? symbols[0].assert(.hasType(.unknown.array))
+            try? symbols[1].assert(.hasType(.unknown.array))
         }
 
         override func process() throws -> Symbol {
             let arrayOne = symbols[0]
             let arrayTwo = symbols[1]
-            let type = arrayOne.type == arrayTwo.type ? arrayOne.type : .array(.zilElement)
+            let type = arrayOne.type == arrayTwo.type ? arrayOne.type : .someTableElement.array
 
             return .statement(
                 code: { _ in

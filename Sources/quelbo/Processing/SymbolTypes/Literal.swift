@@ -28,7 +28,7 @@ final class Literal: SymbolType {
     }
 
     var code: String {
-        if type.isZilElement {
+        if type.isTableElement == true {
             switch type.dataType {
             case .bool: return ".bool(\(_code))"
             case .int16: return ".int16(\(_code))"
@@ -147,15 +147,7 @@ extension Symbol {
 
 extension Literal {
     func assertHasType(_ assertedType: TypeInfo) throws {
-        guard let reconciled = type.reconcile(with: assertedType) else {
-            throw Symbol.AssertionError.hasTypeAssertionLiteralFailed(
-                for: _code,
-                asserted: assertedType,
-                actual: type
-            )
-        }
-
-        self.type = reconciled
+        self.type = try type.reconcile(".literal(\(_code))", with: assertedType)
     }
 }
 

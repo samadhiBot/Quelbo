@@ -17,7 +17,7 @@ final class ParseTests: QuelboTests {
     }
 
     func testParse() throws {
-        localVariables.append(Variable(id: "atm", type: .string))
+        localVariables.append(.init(id: "atm", type: .string))
 
         let symbol = process("""
             <PARSE <STRING "V?" <SPNAME .ATM>>>

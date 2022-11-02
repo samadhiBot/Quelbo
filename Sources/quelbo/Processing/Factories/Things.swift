@@ -94,7 +94,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "things" },
-                    type: .array(.thing)
+                    type: .thing.array
                 )
             }
 
@@ -105,7 +105,7 @@ extension Factories {
                 code: { _ in
                     "things: [\(pseudos.codeValues(.commaSeparated))]"
                 },
-                type: .array(.thing)
+                type: .thing.array
             )
         }
     }

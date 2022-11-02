@@ -23,8 +23,8 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert([
-                .haveCommonType,
                 .haveCount(.exactly(2)),
+                .haveCommonType
             ])
 
             try symbols[1].assert(
@@ -36,7 +36,7 @@ extension Factories {
             try symbols[0].assert([
                 .hasCategory(mutable ? .globals : .constants),
                 .isVariable,
-                mutable ? .isMutable : .isImmutable
+                mutable ? .isMutable : .isImmutable,
             ])
         }
 
@@ -47,23 +47,21 @@ extension Factories {
 
             return .statement(
                 id: variable.code,
-                code: { _ in
-                    var assignment: String {
-                        if value.type.confidence < .assured {
-                            return variable.type.emptyValueAssignment
-                        } else {
-                            return " = \(value.code)"
-                        }
-                    }
+                code: { statement in
+                    let type = statement.type
+                    let assignment = {
+                        if type.isOptional == true { return statement.typeDescription }
+                        if type.confidence < .assured { return statement.type.emptyValueAssignment }
+                        return "\(statement.typeDescription) = \(value.code)"
+                    }()
                     let declare = variable.isMutable != false ? "var" : "let"
 
-                    return "\(declare) \(variable.code): \(variable.type)\(assignment)"
+                    return "\(declare) \(variable.handle): \(assignment)"
                 },
-                type: variable.type,
-                children: [
-                    variable,
-                    value,
-                ],
+                type: value.type,
+                payload: .init(
+                    symbols: [variable, value]
+                ),
                 category: variable.isMutable ?? false ? .globals : .constants,
                 isCommittable: true
             )

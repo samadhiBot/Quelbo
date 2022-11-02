@@ -18,7 +18,7 @@ final class LengthEqualsTests: QuelboTests {
 
     func testLengthEquals() throws {
         localVariables.append(
-            Variable(id: "atms", type: .array(.zilElement))
+            Statement(id: "atms", type: .someTableElement.array)
         )
 
         let symbol = try factory.init([

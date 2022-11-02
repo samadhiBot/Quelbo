@@ -15,6 +15,8 @@ protocol SymbolType: Equatable, CustomDebugStringConvertible {
     var type: TypeInfo { get }
 }
 
+// MARK: - Assertion helpers
+
 extension SymbolType {
     func assertHasCategory(_ assertionCategory: Category) throws {
         if let category = category, assertionCategory != category {
@@ -27,15 +29,23 @@ extension SymbolType {
     }
 
     func assertHasMutability(_ mutability: Bool) throws {
-        guard let isMutable = isMutable else { return }
-
-        guard mutability == isMutable else {
+        switch isMutable {
+        case mutability, .none: return
+        default:
             throw Symbol.AssertionError.hasMutabilityAssertionFailed(
                 for: "\(Self.self)",
                 asserted: mutability,
                 actual: isMutable
             )
         }
+    }
+}
+
+// MARK: - Computed properties
+
+extension SymbolType {
+    var typeDescription: String {
+        type.description
     }
 }
 

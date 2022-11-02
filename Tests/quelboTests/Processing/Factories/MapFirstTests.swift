@@ -87,7 +87,7 @@
 //                .add(3, 12),
 //            ]
 //            """,
-//            type: .array(.int)
+//            type: .int.array
 //        ))
 //    }
 //
@@ -133,7 +133,7 @@
 //                }(3),
 //            ]
 //            """,
-//            type: .array(.int)
+//            type: .int.array
 //        ))
 //    }
 //
@@ -166,7 +166,7 @@
 //                        ]
 //                    }()
 //                    """,
-//                type: .array(.unknown)
+//                type: .unknown.array
 //            )
 //        ) // -> #"["A", "B", "C"]"#
 //    }

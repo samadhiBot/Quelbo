@@ -25,8 +25,6 @@ final class RoutineTests: QuelboTests {
             ),
             .statement(singSymbol),
             .variable(id: "axe", type: .object, category: .objects),
-            .variable(id: "fDef", type: .int),
-            .variable(id: "fWep", type: .int),
             .variable(id: "here", type: .object, category: .rooms),
             .variable(id: "knife", type: .object, category: .objects),
             .variable(id: "mLook", type: .int),
@@ -116,11 +114,13 @@ final class RoutineTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(id: "rarg", type: .int)
-                ),
-            ],
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(id: "rarg", type: .int)
+                    ),
+                ]
+            ),
             category: .routines,
             isCommittable: true
         )
@@ -150,14 +150,16 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "message",
-                        type: .string
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "message",
+                            type: .string
+                        )
                     )
-                )
-            ],
+                ]
+            ),
             category: .routines,
             isCommittable: true
         ))
@@ -256,15 +258,17 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "foo",
-                        type: .string
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "foo",
+                            type: .string
+                        ),
+                        isOptional: true
                     ),
-                    isOptional: true
-                ),
-            ],
+                ]
+            ),
             category: .routines,
             isCommittable: true
         ))
@@ -301,22 +305,24 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .int,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "foo",
-                        type: .int
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "foo",
+                            type: .int
+                        ),
+                        isOptional: true
                     ),
-                    isOptional: true
-                ),
-                Instance(
-                    Variable(
-                        id: "bar",
-                        type: .int
-                    ),
-                    isOptional: true
-                )
-            ],
+                    Instance(
+                        Statement(
+                            id: "bar",
+                            type: .int
+                        ),
+                        isOptional: true
+                    )
+                ]
+            ),
             category: .routines,
             isCommittable: true
         ))
@@ -348,14 +354,16 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "foo",
-                        type: .string
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "foo",
+                            type: .string
+                        )
                     )
-                )
-            ],
+                ]
+            ),
             category: .routines,
             isCommittable: true
         ))
@@ -363,6 +371,9 @@ final class RoutineTests: QuelboTests {
 
     func testProcessWithMultipleDefaultValueParam() throws {
         let symbol = process("""
+            <CONSTANT F-WEP 0> ;"means print weapon name"
+            <CONSTANT F-DEF 1> ;"means print defender name (villain, e.g.)"
+
             <ROUTINE REMARK (REMARK D W "AUX" (LEN <GET .REMARK 0>) (CNT 0) STR)
                  <REPEAT ()
                          <COND (<G? <SET CNT <+ .CNT 1>> .LEN> <RETURN>)>
@@ -382,9 +393,9 @@ final class RoutineTests: QuelboTests {
                     d: Object,
                     w: Object
                 ) {
-                    var len: ZilElement = try remark.get(at: 0)
+                    var len: Int = try remark.get(at: 0)
                     var cnt: Int = 0
-                    var str: ZilElement = .none
+                    var str: Int = 0
                     while true {
                         if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                             break
@@ -482,65 +493,6 @@ final class RoutineTests: QuelboTests {
             category: .routines,
             isCommittable: true
         ))
-    }
-
-    func testRemoveCarefully() throws {
-        try! Game.commit([
-            .statement(findWeaponRoutine),
-            .variable(id: "pItObject", type: .object, category: .objects),
-        ])
-
-        process("<GLOBAL LIT <>>")
-
-        let symbol = process("""
-            <ROUTINE REMOVE-CAREFULLY (OBJ "AUX" OLIT)
-                 <COND (<EQUAL? .OBJ ,P-IT-OBJECT>
-                    <SETG P-IT-OBJECT <>>)>
-                 <SET OLIT ,LIT>
-                 <REMOVE .OBJ>
-                 <SETG LIT <LIT? ,HERE>>
-                 <COND (<AND .OLIT <NOT <EQUAL? .OLIT ,LIT>>>
-                    <TELL "You are left in the dark..." CR>)>
-                 T>
-        """)
-
-        let expected = Statement(
-            id: "removeCarefully",
-            code: """
-                @discardableResult
-                /// The `removeCarefully` (REMOVE-CAREFULLY) routine.
-                func removeCarefully(obj: Object) -> Bool {
-                    var olit: Bool = false
-                    if obj.equals(pItObject) {
-                        pItObject.set(to: nil)
-                    }
-                    olit.set(to: lit)
-                    obj.remove()
-                    lit.set(to: isLit())
-                    if .and(
-                        olit,
-                        .isNot(olit.equals(lit))
-                    ) {
-                        output("You are left in the dark...")
-                    }
-                    return true
-                }
-                """,
-            type: .booleanTrue,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "obj",
-                        type: .object
-                    )
-                ),
-            ],
-            category: .routines,
-            isCommittable: true
-        )
-
-        XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.routines.find("removeCarefully"), expected)
     }
 
     func testSingRoutine() throws {
@@ -645,15 +597,15 @@ final class RoutineTests: QuelboTests {
                 @discardableResult
                 /// The `int` (INT) routine.
                 func int(
-                    rtn: ZilElement,
+                    rtn: TableElement,
                     demon: Bool = false,
                     e: Table? = nil,
                     c: Table? = nil,
                     int: Table? = nil
                 ) -> Table {
-                    var e: Table = e
-                    var c: Table = c
-                    var int: Table = int
+                    var e: Table? = e
+                    var c: Table? = c
+                    var int: Table? = int
                     e.set(to: cTable.rest(cTablelen))
                     c.set(to: cTable.rest(cInts))
                     while true {
@@ -699,14 +651,16 @@ extension RoutineTests {
                 }
                 """,
             type: .booleanTrue,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "n",
-                        type: .int
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "n",
+                            type: .int
+                        )
                     )
-                )
-            ],
+                ]
+            ),
             category: .routines,
             isCommittable: true
         )
@@ -736,15 +690,17 @@ extension RoutineTests {
                     }
                 }
                 """,
-            type: .optional(.object),
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "o",
-                        type: .object
-                    )
-                ),
-            ],
+            type: .object.optional,
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "o",
+                            type: .object
+                        )
+                    ),
+                ]
+            ),
             category: .routines,
             isCommittable: true
         )
@@ -780,14 +736,16 @@ extension RoutineTests {
             }
             """#,
             type: .void,
-            parameters: [
-                Instance(
-                    Variable(
-                        id: "n",
-                        type: .int
+            payload: .init(
+                parameters: [
+                    Instance(
+                        Statement(
+                            id: "n",
+                            type: .int
+                        )
                     )
-                )
-            ],
+                ]
+            ),
             category: .routines,
             isCommittable: true
         )

@@ -87,7 +87,7 @@ final class IsNotEqualToTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-                .string("3"),
+                .commented(.string("3")),
             ], with: &localVariables)
         )
     }

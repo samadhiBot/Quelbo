@@ -20,9 +20,11 @@ final class ConditionTests: QuelboTests {
                 id: "bottles",
                 code: "",
                 type: .int,
-                parameters: [
-                    Instance(Variable(id: "n", type: .int))
-                ],
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "n", type: .int))
+                    ]
+                ),
                 category: .routines,
                 isCommittable: true
             ),
@@ -37,9 +39,11 @@ final class ConditionTests: QuelboTests {
                 id: "thisIsIt",
                 code: "",
                 type: .bool,
-                parameters: [
-                    Instance(Variable(id: "object", type: .object))
-                ],
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "object", type: .object))
+                    ]
+                ),
                 category: .routines,
                 isCommittable: true
             ),
@@ -59,27 +63,18 @@ final class ConditionTests: QuelboTests {
         AssertSameFactory(factory, Game.findFactory("COND"))
     }
 
-    func testSingleCondition() throws {
-        localVariables.append(Variable(id: "rarg", type: .int))
+    func testSingleIfCondition() throws {
+        localVariables.append(.init(id: "rarg", type: .int))
 
-        let symbol = try factory.init([
-            .list([
-                .form([
-                    .atom("EQUAL?"),
-                    .local("RARG"),
-                    .global(.atom("M-ENTER"))
-                ]),
-                .form([
-                    .atom("PRINT"),
-                    .string("Rarg equals mEnter")
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <COND (<EQUAL? .RARG ,M-ENTER>
+                <TELL "You are in a dark and damp cellar.">)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 if rarg.equals(mEnter) {
-                    output("Rarg equals mEnter")
+                    output("You are in a dark and damp cellar.")
                 }
                 """,
             type: .void,
@@ -87,67 +82,48 @@ final class ConditionTests: QuelboTests {
         ))
     }
 
-    func testDoubleCondition() throws {
-        localVariables.append(Variable(id: "rarg", type: .int))
+    func testMultipleIfElseIfCondition() throws {
+        localVariables.append(.init(id: "switch", type: .int))
 
-        let symbol = try factory.init([
-            .list([
-                .form([
-                    .atom("EQUAL?"),
-                    .local("RARG"),
-                    .global(.atom("M-ENTER"))
-                ]),
-                .form([
-                    .atom("PRINT"),
-                    .string("Rarg equals mEnter")
-                ])
-            ]),
-            .list([
-                .form([
-                    .atom("IN?"),
-                    .global(.atom("TROLL")),
-                    .global(.atom("HERE"))
-                ]),
-                .form([
-                    .atom("THIS-IS-IT"),
-                    .global(.atom("TROLL"))
-                ])
-            ]),
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <COND
+                (<=? .SWITCH 1>
+                    <TELL "Statement SWITCH = 1" CR>)
+                (<=? .SWITCH 2>
+                    <TELL "Statement SWITCH = 2" CR>)
+                (<=? .SWITCH 3>
+                    <TELL "Statement SWITCH = 3" CR>)
+                (T
+                    <TELL "Statement SWITCH not in (1 2 3)" CR>)
+            >
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if rarg.equals(mEnter) {
-                    output("Rarg equals mEnter")
-                } else if troll.isIn(here) {
-                    thisIsIt(object: troll)
+                if switch.equals(1) {
+                    output("Statement SWITCH = 1")
+                } else if switch.equals(2) {
+                    output("Statement SWITCH = 2")
+                } else if switch.equals(3) {
+                    output("Statement SWITCH = 3")
+                } else {
+                    output("Statement SWITCH not in (1 2 3)")
                 }
                 """,
-            type: .bool,
+            type: .void,
             returnHandling: .suppress
         ))
     }
 
-    func testSingleConditionImplicitReturnable() throws {
+    func testSingleIfConditionImplicitReturnable() throws {
         localVariables.append(contentsOf: [
-            Variable(id: "rarg", type: .int),
-            Variable(id: "other", type: .int)
+            Statement(id: "rarg", type: .int),
+            Statement(id: "other", type: .int)
         ])
 
-        let symbol = try factory.init([
-            .list([
-                .form([
-                    .atom("EQUAL?"),
-                    .local("RARG"),
-                    .global(.atom("M-ENTER"))
-                ]),
-                .form([
-                    .atom("SET"),
-                    .local("RARG"),
-                    .local("OTHER")
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <COND (<EQUAL? .RARG ,M-ENTER> <SET RARG .OTHER>)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -213,7 +189,7 @@ final class ConditionTests: QuelboTests {
     }
 
     func testElsePredicate() throws {
-        localVariables.append(Variable(id: "n", type: .int))
+        localVariables.append(.init(id: "n", type: .int))
 
         let symbol = try factory.init([
             .list([
@@ -282,38 +258,14 @@ final class ConditionTests: QuelboTests {
     }
 
     func testOrNothingElse() throws {
-        let symbol = try factory.init([
-            .list([
-                .form([
-                    .atom("OR"),
-                    .form([
-                        .atom("FSET?"),
-                        .global(.atom("PRSI")),
-                        .global(.atom("OPENBIT"))
-                    ]),
-                    .form([
-                        .atom("OPENABLE?"),
-                        .global(.atom("PRSI"))
-                    ]),
-                    .form([
-                        .atom("FSET?"),
-                        .global(.atom("PRSI")),
-                        .global(.atom("VEHBIT"))
-                    ])
-                ])
-            ]),
-            .list([
-                .atom("T"),
-                .form([
-                    .atom("TELL"),
-                    .string("You can't do that."),
-                    .atom("CR")
-                ]),
-                .form([
-                    .atom("RTRUE")
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+             <COND (<OR <FSET? ,PRSI ,OPENBIT>
+                    <OPENABLE? ,PRSI>
+                    <FSET? ,PRSI ,VEHBIT>>)
+                   (T
+                <TELL "You can't do that." CR>
+                <RTRUE>)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -325,10 +277,10 @@ final class ConditionTests: QuelboTests {
 
                 } else {
                     output("You can't do that.")
-                    return true
+                    return
                 }
                 """,
-            type: .booleanTrue,
+            type: .booleanTrue.nonOptional,
             returnHandling: .suppress
         ))
     }

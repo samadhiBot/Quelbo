@@ -25,8 +25,15 @@ final class VectorTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: #"[1, 2, "AB", "C"]"#,
-            type: .array(.zilElement)
+            code: """
+                [
+                    .int(1),
+                    .int(2),
+                    .string("AB"),
+                    .string("C"),
+                ]
+                """,
+            type: .someTableElement.array
         ))
     }
 }

@@ -11,16 +11,15 @@ import Foundation
 final class Statement: SymbolType {
     private(set) var activation: String?
     private(set) var category: Category?
-    private(set) var children: [Symbol]
     private(set) var codeBlock: (Statement) throws -> String
     private(set) var id: String?
     private(set) var isAgainStatement: Bool
-    private(set) var isAnonymousFunction: Bool
-    private(set) var isBindWithAgainStatement: Bool
+    private(set) var isBindingAndRepeatingStatement: Bool
     private(set) var isCommittable: Bool
+    private(set) var isFunctionCall: Bool
     private(set) var isMutable: Bool?
     private(set) var isReturnStatement: Bool
-    private(set) var parameters: [Instance]
+    private(set) var payload: Payload
     private(set) var repeating: Bool
     private(set) var returnHandling: Symbol.ReturnHandling
     private(set) var type: TypeInfo
@@ -29,14 +28,13 @@ final class Statement: SymbolType {
         id: String? = nil,
         code: @escaping (Statement) throws -> String,
         type: TypeInfo,
-        parameters: [Instance] = [],
-        children: [Symbol] = [],
+        payload: Payload? = nil,
         category: Category? = nil,
         activation: String? = nil,
         isAgainStatement: Bool = false,
-        isAnonymousFunction: Bool = false,
-        isBindWithAgainStatement: Bool = false,
+        isBindingAndRepeatingStatement: Bool = false,
         isCommittable: Bool = false,
+        isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
         isReturnStatement: Bool = false,
@@ -44,16 +42,15 @@ final class Statement: SymbolType {
     ) {
         self.activation = activation
         self.category = category
-        self.children = children
         self.codeBlock = code
         self.id = id
         self.isAgainStatement = isAgainStatement
-        self.isAnonymousFunction = isAnonymousFunction
-        self.isBindWithAgainStatement = isBindWithAgainStatement
+        self.isBindingAndRepeatingStatement = isBindingAndRepeatingStatement
         self.isCommittable = isCommittable
+        self.isFunctionCall = isFunctionCall
         self.isMutable = isMutable
         self.isReturnStatement = isReturnStatement
-        self.parameters = parameters
+        self.payload = payload ?? .empty
         self.repeating = isRepeating
         self.returnHandling = returnHandling
         self.type = type
@@ -69,7 +66,10 @@ final class Statement: SymbolType {
     }
 
     var isRepeating: Bool {
-        repeating || children.contains {
+        guard !isCommittable else {
+            return false
+        }
+        return repeating || payload.symbols.contains {
             guard case .statement(let statement) = $0 else { return false }
             return statement.isAgainStatement
         }
@@ -82,7 +82,7 @@ final class Statement: SymbolType {
         case .implicit:
             returnHandling = .force
         case .suppress:
-            children.forEach {
+            payload.symbols.forEach {
                 if case .statement(let statement) = $0 {
                     statement.assertShouldReturn()
                 }
@@ -98,14 +98,13 @@ extension Symbol {
         id: String? = nil,
         code: @escaping (Statement) throws -> String,
         type: TypeInfo,
-        parameters: [Instance] = [],
-        children: [Symbol] = [],
+        payload: Statement.Payload? = nil,
         category: Category? = nil,
         activation: String? = nil,
         isAgainStatement: Bool = false,
-        isAnonymousFunction: Bool = false,
-        isBindWithAgainStatement: Bool = false,
+        isBindingAndRepeatingStatement: Bool = false,
         isCommittable: Bool = false,
+        isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
         isReturnStatement: Bool = false,
@@ -115,18 +114,34 @@ extension Symbol {
             id: id,
             code: code,
             type: type,
-            parameters: parameters,
-            children: children,
+            payload: payload,
             category: category,
             activation: activation,
             isAgainStatement: isAgainStatement,
-            isAnonymousFunction: isAnonymousFunction,
-            isBindWithAgainStatement: isBindWithAgainStatement,
+            isBindingAndRepeatingStatement: isBindingAndRepeatingStatement,
             isCommittable: isCommittable,
+            isFunctionCall: isFunctionCall,
             isMutable: isMutable,
             isRepeating: isRepeating,
             isReturnStatement: isReturnStatement,
             returnHandling: returnHandling
+        ))
+    }
+
+    static func variable(
+        id: String,
+        type: TypeInfo,
+        category: Category? = nil,
+        isCommittable: Bool = true,
+        isMutable: Bool? = nil
+    ) -> Symbol {
+        .statement(Statement(
+            id: id,
+            code: { _ in id },
+            type: type,
+            category: category,
+            isCommittable: isCommittable,
+            isMutable: isMutable
         ))
     }
 }
@@ -134,25 +149,25 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Statement {
-    func assertHasType(_ assertedType: TypeInfo) throws {
-        guard let reconciled = type.reconcile(with: assertedType) else {
-            throw Symbol.AssertionError.hasTypeAssertionStatementFailed(
-                for: id ?? code,
-                asserted: assertedType,
-                actual: type
+    func assertHasMutability(_ mutability: Bool) throws {
+        switch isMutable {
+        case mutability: return
+        case .none: isMutable = mutability
+        default:
+            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
+                for: "\(Self.self)",
+                asserted: mutability,
+                actual: isMutable
             )
         }
+    }
 
-        self.type = reconciled
+    func assertHasType(_ assertedType: TypeInfo) throws {
+        self.type = try type.reconcile(".statement(\(id ?? code))", with: assertedType)
 
-        for symbol in children {
-            guard
-                case .statement(let statement) = symbol,
-                statement.isReturnStatement
-            else { continue }
-
-            try statement.assertHasType(assertedType)
-        }
+        try payload.symbols.returningExplicitly.assert(
+            .haveType(type)
+        )
     }
 }
 
@@ -165,12 +180,12 @@ extension Statement: CustomDumpReflectable {
             children: [
                 "id": self.id as Any,
                 "code": self.code,
-                "type": self.type as Any,
-                "parameters": self.parameters,
+                "type": self.type,
+//                "payload": self.payload as Any,
                 "category": self.category as Any,
                 "activation": self.activation as Any,
                 "isAgainStatement": self.isAgainStatement,
-                "isBindWithAgainStatement": self.isBindWithAgainStatement,
+                "isBindingAndRepeatingStatement": self.isBindingAndRepeatingStatement,
                 "isCommittable": self.isCommittable,
                 "isMutable": self.isMutable as Any,
                 "isRepeating": self.isRepeating,
@@ -187,20 +202,10 @@ extension Statement: Equatable {
         lhs.id == rhs.id &&
         lhs.code == rhs.code &&
         lhs.type == rhs.type &&
-        (
-            lhs.parameters == rhs.parameters ||
-            lhs.parameters.isEmpty ||
-            rhs.parameters.isEmpty
-        ) &&
-        (
-            lhs.children == rhs.children ||
-            lhs.children.isEmpty ||
-            rhs.children.isEmpty
-        ) &&
         lhs.category == rhs.category &&
         lhs.activation == rhs.activation &&
         lhs.isAgainStatement == rhs.isAgainStatement &&
-        lhs.isBindWithAgainStatement == rhs.isBindWithAgainStatement &&
+        lhs.isBindingAndRepeatingStatement == rhs.isBindingAndRepeatingStatement &&
         lhs.isCommittable == rhs.isCommittable &&
         lhs.isMutable == rhs.isMutable &&
         lhs.isRepeating == rhs.isRepeating &&

@@ -39,64 +39,69 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let pro = blockProcessor!
-            let repeating = repeating || pro.repeating
-            let type = pro.returnType() ?? .void
-
-            var activationDeclaration: String {
-                guard
-                    let activation = pro.activation,
-                    !activation.isEmpty
-                else { return "" }
-
-                return "\(activation): "
-            }
-
-            let isBindWithAgain = activation == nil && pro.isRepeating
-
-            var isRepeating: Bool {
-                if repeating { return true }
-                if activation == nil { return false }
-                return pro.isRepeating
-            }
+            let payload = blockProcessor.payload
+            let activationDeclaration: String = {
+                if let activation = payload.activation, !activation.isEmpty {
+                    return "\(activation): "
+                }
+                return ""
+            }()
+            let isBindingAndRepeating = payload.activation == nil && payload.isRepeating
+            let isRepeating: Bool = {
+                if payload.repeating { return true }
+                if payload.activation == nil { return false }
+                return payload.isRepeating
+            }()
 
             return .statement(
-                code: { _ in
-                    switch (pro.isRepeating, activationDeclaration.isEmpty, isBindWithAgain) {
-                    case (true, false, _):
+                code: {
+                    // print("🔥", $0.payload.isRepeating, activationDeclaration.isEmpty, isBindingAndRepeating)
+                    switch (
+                        $0.payload.isRepeating,
+                        activationDeclaration.isEmpty,
+                        isBindingAndRepeating
+                    ) {
+                    case (true, false, true):
                         return """
                             \(activationDeclaration)\
                             while true {
-                            \(pro.code.indented)
+                            \($0.payload.code.indented)
+                            }
+                            """
+                    case (true, false, false):
+                        return """
+                            \($0.payload.auxiliaryDefsWithDefaultValues)\
+                            \(activationDeclaration)\
+                            while true {
+                            \($0.payload.code.indented)
                             }
                             """
                     case (true, true, false):
                         return """
-                            \(pro.auxiliaryDefsWithDefaultValues)\
+                            \($0.payload.auxiliaryDefsWithDefaultValues)\
                             while true {
-                            \(pro.code.indented)
+                            \($0.payload.code.indented)
                             }
                             """
-                    case (true, true, true):
+                    case (_, true, true):
                         return """
                             do {
-                            \(pro.code.indented)
+                            \($0.payload.code.indented)
                             }
                             """
                     default:
                         return """
                             do {
-                            \(pro.auxiliaryDefs.indented)\
-                            \(pro.code.indented)
+                            \($0.payload.auxiliaryDefs.indented)\
+                            \($0.payload.code.indented)
                             }
                             """
                     }
                 },
-                type: type,
-                parameters: pro.paramSymbols,
-                children: pro.symbols,
-                activation: pro.activation,
-                isBindWithAgainStatement: isBindWithAgain,
+                type: payload.returnType ?? .void,
+                payload: payload,
+                activation: payload.activation,
+                isBindingAndRepeatingStatement: isBindingAndRepeating,
                 isRepeating: isRepeating,
                 returnHandling: .suppress
             )

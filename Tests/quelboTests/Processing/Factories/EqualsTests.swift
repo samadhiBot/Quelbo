@@ -32,7 +32,7 @@ final class EqualsTests: QuelboTests {
 
     func testEqualAtomAndDecimal() throws {
         localVariables.append(
-            Variable(id: "n", type: .int)
+            Statement(id: "n", type: .int)
         )
 
         let symbol = try factory.init([
@@ -98,7 +98,7 @@ final class EqualsTests: QuelboTests {
         XCTAssertThrowsError(
             try factory.init([
                 .decimal(2),
-                .string("3"),
+                .commented(.string("3"))
             ], with: &localVariables)
         )
     }

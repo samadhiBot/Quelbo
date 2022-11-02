@@ -11,18 +11,37 @@ import XCTest
 
 final class FactorySymbolizeTests: QuelboTests {
     let testFactory = TestFactory.self
-    let boardedWindow = Variable(
+
+    let boardedWindow = Instance(.init(
         id: "boardedWindow",
+        code: """
+            /// The `boardedWindow` (BOARDED-WINDOW) object.
+            var boardedWindow = Object(
+                action: boardedWindowFunc,
+                adjectives: ["boarded"],
+                description: "boarded window",
+                flags: [omitDescription],
+                location: localGlobals,
+                synonyms: ["window"]
+            )
+            """,
         type: .object,
-        category: .globals
-    )
+        category: .objects,
+        isCommittable: true
+    ))
 
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(boardedWindow)
-        ])
+        process("""
+            <OBJECT BOARDED-WINDOW
+                (IN LOCAL-GLOBALS)
+                    (SYNONYM WINDOW)
+                (ADJECTIVE BOARDED)
+                (DESC "boarded window")
+                (FLAGS NDESCBIT)
+                (ACTION BOARDED-WINDOW-FCN)>
+        """)
     }
 
     func testSymbolizeAtomReferringToGlobal() throws {
@@ -42,13 +61,14 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizeAtomTForVariableT() throws {
-        localVariables.append(Variable(id: "t", type: .string))
+        let tStatement = Statement(id: "t", type: .string)
+        localVariables.append(tStatement)
 
         let symbol = try TestFactory([
             .atom("T")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "t", type: .string))
+        XCTAssertNoDifference(symbol, .instance(tStatement))
     }
 
     func testSymbolizeBoolTrue() throws {
@@ -116,7 +136,7 @@ final class FactorySymbolizeTests: QuelboTests {
             .global(.atom("BOARDED-WINDOW"))
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(boardedWindow))
+        XCTAssertNoDifference(symbol, .instance(boardedWindow))
     }
 
     func testSymbolizeList() throws {
@@ -129,13 +149,17 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[isFloating, false]",
-            type: .array(.bool)
+            type: .booleanFalse.array
         ))
     }
 
     func testSymbolizeLocal() throws {
         localVariables.append(
-            .init(id: "fooBar", type: .object)
+            .init(
+                id: "fooBar",
+                type: .object,
+                isCommittable: true
+            )
         )
 
         let symbol = try TestFactory([

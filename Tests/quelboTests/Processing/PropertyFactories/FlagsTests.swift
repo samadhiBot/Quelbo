@@ -83,7 +83,7 @@ final class FlagsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "flags",
-            type: .array(.bool)
+            type: .bool.array
         ))
     }
 

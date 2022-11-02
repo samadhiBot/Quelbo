@@ -17,7 +17,7 @@ final class HasFlagTests: QuelboTests {
 
         try! Game.commit([
             .variable(id: "kitchenWindow", type: .object),
-            .variable(id: "openBit", type: .property(.bool)),
+            .variable(id: "openBit", type: .bool.property),
         ])
     }
 

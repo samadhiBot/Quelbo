@@ -50,7 +50,7 @@ extension Game {
         }
 
         func processTokens() throws {
-            Game.Print.heading("􀥏 Processing Zil Tokens")
+            Game.Print.heading("􀥏  Processing Zil Tokens")
 
             do {
                 try process()
@@ -62,7 +62,7 @@ extension Game {
                 }
             } catch {
                 if printSymbolsOnFail {
-                    Game.Print.heading("\n􀦆 Successfully processed symbols:")
+                    Game.Print.heading("\n􀦆  Successfully processed symbols:")
                     Game.Print.symbols()
                 }
 
@@ -71,7 +71,7 @@ extension Game {
                 )
                 let result = """
 
-                    􀘰 Processing failed with \(tokens.count) of \(initialTokenCount) tokens unprocessed \
+                    􀘰  Processing failed with \(tokens.count) of \(initialTokenCount) tokens unprocessed \
                     (\(percentage)% complete)
                     """
 
@@ -123,14 +123,14 @@ extension Game.Processor {
             case .form(let formTokens):
                 do {
                     var tokens = formTokens
-                    var localVariables: [Variable] = []
+                    var localVariables: [Statement] = []
 
                     guard case .atom(let zilString) = tokens.shift() else {
                         throw GameError.unknownDirective(tokens)
                     }
 
-                    Logger.process.debug(
-                        "􀊫 \(zilString, privacy: .public) \(tokens[0].value, privacy: .public)"
+                    Logger.process.info(
+                        "􀊫 \(zilString, privacy: .public) \(tokens.first?.value ?? "", privacy: .public)"
                     )
 
                     let symbol = try Game.process(
@@ -170,29 +170,19 @@ extension Game {
     static func process(
         zil: String,
         tokens: [Token],
-        with localVariables: inout [Variable],
+        with localVariables: inout [Statement],
         type factoryType: Factories.FactoryType? = nil,
         mode factoryMode: Factory.FactoryMode = .process
     ) throws -> Symbol {
-        func logFactory(_ factory: Factory.Type) {
-            if NSClassFromString("XCTest") == nil {
-                Logger.process.debug(
-                    "   􀎕 Factory: \(String(describing: factory), privacy: .public)"
-                )
-            }
-        }
-
         if let factory = Game.findFactory(zil, type: factoryType) {
-            var factoryTokens: [Token] {
+            let factoryTokens: [Token] = {
                 switch tokens.first {
                 case .atom(zil): return tokens.droppingFirst
                 case .decimal: return tokens.droppingFirst
                 case .global(.atom(zil)): return tokens.droppingFirst
                 default: return tokens
                 }
-            }
-            logFactory(factory)
-
+            }()
             return try factory.init(
                 factoryTokens,
                 with: &localVariables,
@@ -201,8 +191,6 @@ extension Game {
         }
 
         if Game.routines.find(zil.lowerCamelCase) != nil {
-            logFactory(Factories.RoutineCall.self)
-
             return try Factories.RoutineCall(
                 tokens,
                 with: &localVariables,
@@ -211,8 +199,6 @@ extension Game {
         }
 
         if Game.findDefinition(zil.lowerCamelCase) != nil {
-            logFactory(Factories.DefinitionEvaluate.self)
-
             let routine = try Factories.DefinitionEvaluate(
                 tokens,
                 with: &localVariables,

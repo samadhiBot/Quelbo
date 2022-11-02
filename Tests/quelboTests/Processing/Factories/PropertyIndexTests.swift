@@ -39,7 +39,7 @@ final class PropertyIndexTests: QuelboTests {
 
     func testPropertyIndexOfObjectInLocal() throws {
         localVariables.append(
-            Variable(id: "dir", type: .direction)
+            Statement(id: "dir", type: .direction)
         )
 
         let symbol = try factory.init([

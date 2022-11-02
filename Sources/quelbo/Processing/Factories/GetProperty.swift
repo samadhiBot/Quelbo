@@ -17,9 +17,17 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(2)))
+            try symbols.assert(
+                .haveCount(.exactly(2))
+            )
 
-            try symbols[0].assert(.hasType(.object))
+            try symbols[0].assert(
+                .hasType(.object)
+            )
+
+            try symbols[1].assert(
+                .isProperty
+            )
         }
 
         override func process() throws -> Symbol {
@@ -31,7 +39,9 @@ extension Factories {
                     "\(object.code).\(property.code)"
                 },
                 type: property.type,
-                children: symbols
+                payload: .init(
+                    symbols: symbols
+                )
             )
         }
     }

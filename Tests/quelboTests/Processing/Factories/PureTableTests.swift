@@ -136,21 +136,21 @@ final class PureTableTests: QuelboTests {
             code: """
                 Table(
                     flags: [.pure],
-                    .table(Table(
+                    .table(
                         flags: [.length, .pure],
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
                         .bool(trollMelee)
-                    )),
-                    .table(Table(
+                    ),
+                    .table(
                         .object(thief),
                         .object(knife),
                         .int(1),
                         .int(0),
                         .bool(thiefMelee)
-                    ))
+                    )
                 )
                 """,
             type: .table,

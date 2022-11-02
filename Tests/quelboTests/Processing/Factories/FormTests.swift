@@ -31,7 +31,7 @@ final class FormTests: QuelboTests {
 
     func testNestedForms() throws {
         localVariables.append(
-            Variable(id: "a", type: .int)
+            Statement(id: "a", type: .int)
         )
 
         let symbol = try factory.init([

@@ -6,6 +6,7 @@
 //
 
 import CustomDump
+import Fizmo
 import XCTest
 @testable import quelbo
 
@@ -20,57 +21,26 @@ final class ProgramBlockTests: QuelboTests {
         ])
     }
 
-    func testFindFactory() throws {
+    func testFindFactory() {
         AssertSameFactory(factory, Game.findFactory("PROG"))
     }
 
-    func testProgRoutine1() throws {
-        let symbol = try Factories.Routine([
-            .atom("TEST-PROG-1"),
-            .list([
-                .string("AUX"),
-                .atom("X")
-            ]),
-            .form([
-                .atom("SET"),
-                .atom("X"),
-                .decimal(2)
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START: ")
-            ]),
-            .form([
-                .atom("PROG"),
-                .list([
-                    .atom("X")
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .decimal(1)
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .commented(.string("Inner X"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .atom("N"),
-                .local("X")
-            ]),
-            .commented(.string("Outer X")),
-            .form([
-                .atom("TELL"),
-                .string(" END"),
-                .atom("CR"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b
+    func testProgRoutine1() {
+        let symbol = process("""
+            ;"Block have own set of atoms"
+            <ROUTINE TEST-PROG-1 ("AUX" X)
+                <SET X 2>
+                <TELL "START: ">
+                <PROG (X)
+                    <SET X 1>
+                    <TELL N .X " "> ;"Inner X"
+                >
+                <TELL N .X> ;"Outer X"
+                <TELL " END" CR CR>
+            >
+            ;"--> START: 1 2 END"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testProg1",
@@ -98,64 +68,45 @@ final class ProgramBlockTests: QuelboTests {
         ))
     }
 
-    func testProgRoutine2() throws {
-        let symbol = try Factories.Routine([
-            .atom("TEST-PROG-2"),
-            .list([
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START: ")
-            ]),
-            .form([
-                .atom("PROG"),
-                .list([
-                    .atom("X")
-                ]),
-                .commented(.string(
-                    "X is not reinitialized between iterations. Default ACTIVATION created."
-                )),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .form([
-                        .atom("+"),
-                        .local("X"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("X"),
-                            .decimal(3)
-                        ]),
-                        .form([
-                            .atom("RETURN")
-                        ])
-                    ])
-                ]),
-                .commented(.string("Bare RETURN without ACTIVATION will exit BLOCK")),
-                .form([
-                    .atom("AGAIN")
-                ]),
-                .commented(.string("AGAIN without ACTIVATION will redo BLOCK"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("RETURN EXIT BLOCK"),
-                .atom("CR"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+    func testProgRoutine1Evaluation() {
+        /// The `testProg1` (TEST-PROG-1) routine.
+        func testProg1() {
+            var x: Int = 0
+            x.set(to: 2)
+            output("START: ")
+            do {
+                var x: Int = x
+                x.set(to: 1)
+                output(x)
+                output(" ")
+                // Inner X
+            }
+            output(x)
+            // Outer X
+            output(" END")
+        }
+
+        testProg1()
+
+        XCTAssertNoDifference(outputFlush(), "START: 1 2 END")
+    }
+
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b
+    func testProgRoutine2() {
+        let symbol = process("""
+            ;"AGAIN, Bare RETURN without ACTIVATION"
+            <ROUTINE TEST-PROG-2 ()
+            <TELL "START: ">
+            <PROG (X) ;"X is not reinitialized between iterations. Default ACTIVATION created."
+                    <SET X <+ .X 1>>
+                    <TELL N .X " ">
+                    <COND (<=? .X 3> <RETURN>)> ;"Bare RETURN without ACTIVATION will exit BLOCK"
+                    <AGAIN> ;"AGAIN without ACTIVATION will redo BLOCK"
+                >
+                <TELL "RETURN EXIT BLOCK" CR CR>
+            >
+            ;"--> START: 1 2 3 RETURN EXIT BLOCK"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testProg2",
@@ -185,82 +136,54 @@ final class ProgramBlockTests: QuelboTests {
         ))
     }
 
-    func testProgRoutine3() throws {
+    func testProgRoutine2Evaluation() {
+        /// The `testProg2` (TEST-PROG-2) routine.
+        func testProg2() {
+            output("START: ")
+            var x: Int = 0
+            while true {
+                // X is not reinitialized between iterations. Default ACTIVATION created.
+                x.set(to: .add(x, 1))
+                output(x)
+                output(" ")
+                if x.equals(3) {
+                    break
+                }
+                // Bare RETURN without ACTIVATION will exit BLOCK
+                continue
+                // AGAIN without ACTIVATION will redo BLOCK
+            }
+            output("RETURN EXIT BLOCK")
+        }
+
+        testProg2()
+
+        XCTAssertNoDifference(outputFlush(), "START: 1 2 3 RETURN EXIT BLOCK")
+    }
+
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b
+    func testProgRoutine3() {
         localVariables.append(
-            Variable(id: "x", type: .int)
+            Statement(id: "x", type: .int)
         )
 
-        let symbol = try Factories.Routine([
-            .atom("TEST-PROG-3"),
-            .list([
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START: ")
-            ]),
-            .form([
-                .atom("PROG"),
-                .list([
-                    .list([
-                        .atom("X"),
-                        .decimal(0)
-                    ])
-                ]),
-                .commented(.string("X is not reinitialized between iterations. Default ACTIVATION created.")),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .form([
-                        .atom("+"),
-                        .local("X"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("X"),
-                            .decimal(3)
-                        ]),
-                        .form([
-                            .atom("COND"),
-                            .list([
-                                .global(.atom("FUNNY-RETURN?")),
-                                .form([
-                                    .atom("TELL"),
-                                    .string("RETURN EXIT ROUTINE"),
-                                    .atom("CR"),
-                                    .atom("CR")
-                                ])
-                            ])
-                        ]),
-                        .form([
-                            .atom("RETURN"),
-                            .atom("T")
-                        ])
-                    ])
-                ]),
-                .commented(.string("RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)")),
-                .form([
-                    .atom("AGAIN")
-                ]),
-                .commented(.string("AGAIN without ACTIVATION will redo BLOCK"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("RETURN EXIT BLOCK"),
-                .atom("CR"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            ;"AGAIN, RETURN with value but without ACTIVATION"
+            <ROUTINE TEST-PROG-3 ()
+                <TELL "START: ">
+                <PROG ((X 0)) ;"X is not reinitialized between iterations. Default ACTIVATION created."
+                    <SET X <+ .X 1>>
+                    <TELL N .X " ">
+                    <COND (<=? .X 3>
+                        <COND (,FUNNY-RETURN?
+                        <TELL "RETURN EXIT ROUTINE" CR CR>)>
+                        <RETURN T>)> ;"RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
+                    <AGAIN> ;"AGAIN without ACTIVATION will redo BLOCK"
+                >
+                <TELL "RETURN EXIT BLOCK" CR CR>
+            >
+            ;"--> START: 1 2 3 RETURN EXIT ROUTINE"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testProg3",
@@ -288,9 +211,40 @@ final class ProgramBlockTests: QuelboTests {
                     output("RETURN EXIT BLOCK")
                 }
                 """,
-            type: .init(dataType: .bool, confidence: .booleanTrue),
+            type: .booleanTrue,
             category: .routines,
             isCommittable: true
         ))
+    }
+
+    func testProgRoutine3Evaluation() {
+        let isFunnyReturn = true
+
+        @discardableResult
+        /// The `testProg3` (TEST-PROG-3) routine.
+        func testProg3() -> Bool {
+            output("START: ")
+            var x: Int = 0
+            while true {
+                // X is not reinitialized between iterations. Default ACTIVATION created.
+                x.set(to: .add(x, 1))
+                output(x)
+                output(" ")
+                if x.equals(3) {
+                    if isFunnyReturn {
+                        output("RETURN EXIT ROUTINE")
+                    }
+                    return true
+                }
+                // RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)
+                continue
+                // AGAIN without ACTIVATION will redo BLOCK
+            }
+            // output("RETURN EXIT BLOCK") [Will never be executed]
+        }
+
+        testProg3()
+
+        XCTAssertNoDifference(outputFlush(), "START: 1 2 3 RETURN EXIT ROUTINE")
     }
 }

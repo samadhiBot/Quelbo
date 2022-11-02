@@ -21,7 +21,7 @@ final class StackPopTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "Stack.pop()",
-            type: .zilElement
+            type: .someTableElement
         ))
     }
 

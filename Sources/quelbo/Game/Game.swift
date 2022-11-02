@@ -17,7 +17,7 @@ class Game {
     private(set) var definitions: [Definition] = []
 
     /// <#Description#>
-    private(set) var globalVariables: [Variable] = Game.reservedGlobals
+    private(set) var globalVariables: [Statement] = Game.reservedGlobals
 
     /// An array of ``Symbol`` symbols processed from the `tokens`.
     private(set) var symbols: [Symbol] = []
@@ -84,18 +84,12 @@ extension Game {
 
             case .statement(let statement):
                 if statement.isCommittable {
-                    if let id = statement.id, let found = shared.symbols.find(id) {
-                        guard statement == found else {
-                            throw GameError.commitStatementConflict(id)
-                        }
+                    if let id = statement.id, shared.symbols.find(id) != nil {
                         continue
                     }
                     shared.symbols.append(symbol)
                 }
-                try commit(statement.children)
-
-            case .variable(let variable):
-                try shared.globalVariables.commit(variable)
+                try commit(statement.payload.symbols)
             }
         }
     }
@@ -130,14 +124,15 @@ extension Game {
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>
-    static func findGlobal(_ id: String) -> Variable? {
-        shared.globalVariables.first { $0.id == id }
+    static func findGlobal(_ id: String) -> Instance? {
+        guard let global = shared.symbols.find(id) else { return nil }
+        return Instance(global)
     }
 
     /// <#Description#>
     static func reset(
         definitions: [Definition] = [],
-        globalVariables: [Variable] = Game.reservedGlobals,
+        globalVariables: [Statement] = Game.reservedGlobals,
         symbols: [Symbol] = [],
         tokens: [Token] = [],
         zMachineVersion: Game.ZMachineVersion = .z3
@@ -147,18 +142,6 @@ extension Game {
         shared.symbols = symbols
         shared.tokens = tokens
         shared.zMachineVersion = zMachineVersion
-    }
-}
-
-extension Array where Element == Symbol {
-    func find(_ id: String) -> Statement? {
-        guard
-            let found = first(where: { $0.id == id }),
-            case .statement(let statement) = found
-        else {
-            return nil
-        }
-        return statement
     }
 }
 
@@ -174,14 +157,57 @@ extension Game {
 // MARK: - Reserved globals
 
 extension Game {
-    static var reservedGlobals: [Variable] {
+    static var reservedGlobals: [Statement] {
         [
-            Variable(id: "actions", type: .array(.string), category: .globals, isMutable: true),
-            Variable(id: "preactions", type: .table, category: .globals, isMutable: true),
-            Variable(id: "prsa", type: .int, category: .globals, isMutable: true),
-            Variable(id: "prsi", type: .object, category: .globals, isMutable: true),
-            Variable(id: "prso", type: .object, category: .globals, isMutable: true),
-            Variable(id: "verbs", type: .table, category: .globals, isMutable: true),
+            Statement(
+                id: "actions",
+                code: { _ in "actions" },
+                type: .string.array,
+                category: .globals,
+                isMutable: true
+            ),
+            Statement(
+                id: "here",
+                code: { _ in "here" },
+                type: .object.optional,
+                category: .rooms,
+                isMutable: true
+            ),
+            Statement(
+                id: "preactions",
+                code: { _ in "preactions" },
+                type: .table,
+                category: .globals,
+                isMutable: true
+            ),
+            Statement(
+                id: "prsa",
+                code: { _ in "prsa" },
+                type: .int.optional,
+                category: .globals,
+                isMutable: true
+            ),
+            Statement(
+                id: "prsi",
+                code: { _ in "prsi" },
+                type: .object,
+                category: .globals,
+                isMutable: true
+            ),
+            Statement(
+                id: "prso",
+                code: { _ in "prso" },
+                type: .object,
+                category: .globals,
+                isMutable: true
+            ),
+            Statement(
+                id: "verbs",
+                code: { _ in "verbs" },
+                type: .table,
+                category: .globals,
+                isMutable: true
+            ),
         ]
     }
 }
@@ -204,7 +230,7 @@ extension Game {
         Game.Print.heading(
             """
 
-            􀀷 Z-machine version
+            􀀷  Z-machine version
             """,
             zMachineVersion.rawValue
         )
@@ -224,5 +250,5 @@ enum GameError: Swift.Error {
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)
-    case variableUpsertConflict(old: Variable, new: Variable)
+    case variableUpsertConflict(old: Statement, new: Statement)
 }

@@ -14,12 +14,17 @@ enum SymbolElementAssertion {
     case hasSameCategory(as: Symbol)
     case hasSameType(as: Symbol)
     case hasType(TypeInfo)
+    case isArray
     case isImmutable
     case isMutable
+    case isOptional
+    case isProperty
+    case isTableElement
     case isVariable
 }
 
 enum SymbolCollectionAssertion {
+    case areTableElements
     case areVariables
     case haveCommonType
     case haveCount(SymbolCollectionCount)
@@ -46,13 +51,23 @@ extension Symbol {
         case .hasSameCategory(as: let other):
             if let otherCategory = other.category { try assertHasCategory(otherCategory) }
         case .hasSameType(as: let other):
+//            print("▶️ self:", handle, type.objID, "other:", other.handle, other.type.objID)
             try assertHasType(other.type)
+//            print("▶️ self:", handle, type.objID, "other:", other.handle, other.type.objID)
         case .hasType(let typeInfo):
             try assertHasType(typeInfo)
+        case .isArray:
+            try assertIsArray()
         case .isImmutable:
             try assertHasMutability(false)
         case .isMutable:
             try assertHasMutability(true)
+        case .isOptional:
+            try assertIsOptional()
+        case .isProperty:
+            try assertIsProperty()
+        case .isTableElement:
+            try assertIsTableElement()
         case .isVariable:
             try assertIsVariable()
         }
@@ -70,6 +85,8 @@ extension Array where Element == Symbol {
         switch assertion {
         case .areVariables:
             try nonCommentSymbols.forEach { try $0.assertIsVariable() }
+        case .areTableElements:
+            try nonCommentSymbols.forEach { try $0.assertIsTableElement() }
         case .haveCommonType:
             try nonCommentSymbols.assertHaveCommonType()
         case .haveCount(let comparator):
@@ -103,8 +120,6 @@ extension Symbol {
             try statement.assertHasCategory(assertionCategory)
         case .instance(let instance):
             try instance.assertHasCategory(assertionCategory)
-        case .variable(let variable):
-            try variable.assertHasCategory(assertionCategory)
         }
     }
 
@@ -118,8 +133,6 @@ extension Symbol {
             try statement.assertHasMutability(mutability)
         case .instance(let instance):
             try instance.assertHasMutability(mutability)
-        case .variable(let variable):
-            try variable.assertHasMutability(mutability)
         }
     }
 
@@ -134,6 +147,8 @@ extension Symbol {
     }
 
     func assertHasType(_ assertedType: TypeInfo) throws {
+        if assertedType === type { return }
+
         switch self {
         case .definition(let definition):
             try definition.assertHasType(assertedType)
@@ -142,17 +157,33 @@ extension Symbol {
         case .statement(let statement):
             try statement.assertHasType(assertedType)
         case .instance(let instance):
-            try instance.assertHasType(assertedType)
-        case .variable(let variable):
-            try variable.assertHasType(assertedType)
+            try instance.variable.assertHasType(assertedType)
         }
+    }
+
+    func assertIsArray() throws {
+        try type.assertIsArray()
+    }
+
+    func assertIsOptional() throws {
+        try type.assertIsOptional()
+    }
+
+    func assertIsProperty() throws {
+        try type.assertIsProperty()
+    }
+
+    func assertIsTableElement() throws {
+        try type.assertIsTableElement()
     }
 
     func assertIsVariable() throws {
         switch self {
-        case .instance, .variable: return
-        default: throw AssertionError.isVariableAssertionFailed(for: "\(self)")
+        case .definition, .literal: break
+        case .statement: if id == nil { break } else { return }
+        case .instance: return
         }
+        throw AssertionError.isVariableAssertionFailed(for: "\(self)")
     }
 }
 
@@ -160,12 +191,26 @@ extension Symbol {
 
 extension Array where Element == Symbol {
     func assertHaveCommonType() throws {
-        guard
-            count > 1,
-            let alpha = self.max(by: { $0.type.confidence < $1.type.confidence })
-        else { return }
+        guard count >= 2 else { return }
 
-        try assert(.haveSameType(as: alpha))
+        let alphas = mostConfident
+        let uniqueTypes = alphas.map(\.type.dataType).unique
+
+        switch uniqueTypes.count {
+        case 0:
+            break
+        case 1:
+            try assert(.haveSameType(as: alphas[0]))
+        case 2:
+            guard
+                alphas.map(\.type.confidence).contains(.booleanFalse),
+                let known = alphas.first(where: { $0.type.confidence != .booleanFalse })
+            else { fallthrough }
+            try known.assert(.isOptional)
+            try assert(.haveSameType(as: known))
+        default:
+            try assert(.areTableElements)
+        }
     }
 
     func assertHaveCount(_ comparator: SymbolCollectionCount) throws {
@@ -181,18 +226,6 @@ extension Array where Element == Symbol {
             symbols: self
         )
     }
-
-    var nonCommentSymbols: [Symbol] {
-        compactMap { symbol in
-            guard
-                case .statement(let statement) = symbol,
-                statement.type == .comment
-            else {
-                return symbol
-            }
-            return nil
-        }
-    }
 }
 
 extension Symbol {
@@ -201,12 +234,21 @@ extension Symbol {
         case hasMutabilityAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case hasReturnValueAssertionFailed(for: String, asserted: Bool, actual: Bool)
         case hasSameTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-        case hasTypeAssertionLiteralFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-        case hasTypeAssertionStatementFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-        case hasTypeAssertionVariableFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+        case hasTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+//        case hasTypeAssertionStatementFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
+//        case hasTypeAssertionVariableFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
         case isImmutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isMutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isVariableAssertionFailed(for: String)
+
+        case isArrayAssertionFailed
+        case isOptionalAssertionFailed
+        case isPropertyAssertionFailed
+        case isTableElementAssertionFailed
+
+
+
+
 
         case areVariablesAssertionFailed(asserted: Bool, actual: Bool)
         case haveCommonTypeFailed

@@ -50,7 +50,7 @@ extension Factories {
             )
 
             try symbols[1].assert(
-                .hasType(.oneOf([.string, .zilAtom]))
+                .hasType(.oneOf([.atom, .string]))
             )
         }
 

@@ -26,7 +26,7 @@ final class ReturnTests: QuelboTests {
     }
 
     func testReturnNoValueNoBlock() throws {
-        localVariables.append(Variable(id: "n", type: .int))
+        localVariables.append(.init(id: "n", type: .int))
 
         let symbol = try Factories.Condition([
             .list([

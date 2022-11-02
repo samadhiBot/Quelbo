@@ -47,7 +47,7 @@ final class PutPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "winner.action = 0",
-            type: .init(dataType: .int, confidence: .integerZero)
+            type: .integerZero
         ))
     }
 

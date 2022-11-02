@@ -49,7 +49,7 @@ final class IsZeroTests: QuelboTests {
 
     func testIsZeroLocal() throws {
         localVariables.append(
-            Variable(id: "bar", type: .int)
+            Statement(id: "bar", type: .int)
         )
 
         let symbol = try factory.init([

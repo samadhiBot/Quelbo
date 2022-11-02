@@ -46,7 +46,7 @@ final class PrintCharacterTests: QuelboTests {
     }
 
     func testPrintCharacterInvalidType() throws {
-        localVariables.append(Variable(id: "troll", type: .object))
+        localVariables.append(.init(id: "troll", type: .object))
 
         XCTAssertThrowsError(
             try factory.init([

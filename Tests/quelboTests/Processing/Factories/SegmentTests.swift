@@ -13,12 +13,15 @@ final class SegmentTests: QuelboTests {
     let factory = Factories.Segment.self
 
     func testSegment() throws {
-        localVariables.append(Variable(id: "foo", type: .string))
+        localVariables.append(.init(id: "foo", type: .string))
 
         let symbol = try factory.init([
             .atom("FOO")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "foo", type: .string))
+        XCTAssertNoDifference(symbol, .instance(.init(
+            id: "foo",
+            type: .string
+        )))
     }
 }

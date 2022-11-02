@@ -18,7 +18,7 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert(
-                .haveCount(.exactly(2))
+                .haveCount(.exactly(1))
             )
 
             try symbols[0].assert(
@@ -28,11 +28,10 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let object = symbols[0]
-            let property = symbols[1]
 
             return .statement(
                 code: { _ in
-                    "\(object.code).propertySize(of: .\(property.code))"
+                    "\(object.handle).propertySize"
                 },
                 type: .int
             )

@@ -18,7 +18,7 @@ final class IsAssignedTests: QuelboTests {
 
     func testIsAssigned() throws {
         localVariables.append(
-            Variable(id: "foo", type: .bool)
+            Statement(id: "foo", type: .bool)
         )
 
         let symbol = try factory.init([

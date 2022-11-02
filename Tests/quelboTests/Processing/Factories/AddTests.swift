@@ -60,7 +60,7 @@ final class AddTests: QuelboTests {
     }
 
     func testAddMutableLocalAndDecimal() throws {
-        localVariables.append(Variable(id: "count", type: .int, isMutable: true))
+        localVariables.append(.init(id: "count", type: .int, isMutable: true))
 
         let symbol = try factory.init([
             .local("COUNT"),
@@ -74,12 +74,16 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(
             findLocalVariable("count"),
-            Variable(id: "count", type: .int)
+            Statement(
+                id: "count",
+                type: .int,
+                isMutable: true
+            )
         )
     }
 
     func testAddDecimalAndLocal() throws {
-        localVariables.append(Variable(id: "count", type: .int, isMutable: true))
+        localVariables.append(.init(id: "count", type: .int, isMutable: true))
 
         let symbol = try factory.init([
             .decimal(1),
@@ -93,7 +97,11 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(
             findLocalVariable("count"),
-            Variable(id: "count", type: .int)
+            Statement(
+                id: "count",
+                type: .int,
+                isMutable: true
+            )
         )
     }
 
@@ -128,7 +136,11 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(
             Game.findGlobal("baseScore"),
-            Variable(id: "baseScore", type: .int)
+            Instance(Statement(
+                id: "baseScore",
+                type: .int,
+                isCommittable: true
+            ))
         )
     }
 
@@ -155,42 +167,44 @@ final class AddTests: QuelboTests {
     func testAddOneToGlobalDefinedAsFalse() throws {
         let pAclause = process("<GLOBAL P-ACLAUSE <>>")
 
-        XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
-            id: "pAclause",
-            type: .booleanFalse,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(pAclause, .statement(
+        let processed = Statement(
             id: "pAclause",
             code: "var pAclause: Bool = false",
             type: .booleanFalse,
             category: .globals,
             isCommittable: true
-        ))
+        )
 
-        let symbol = try factory.init([
-            .global(.atom("P-ACLAUSE")),
-            .decimal(1)
-        ], with: &localVariables).process()
+        XCTAssertNoDifference(pAclause, .statement(processed))
 
-        XCTAssertNoDifference(symbol, .statement(
-            code: ".add(pAclause, 1)",
-            type: .int
-        ))
+        XCTAssertNoDifference(
+            Game.findGlobal("pAclause"),
+            Instance(processed)
+        )
 
-        XCTAssertNoDifference(Game.findGlobal("pAclause"), Variable(
-            id: "pAclause",
-            type: .int,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(
+            process("<+ P-ACLAUSE 1>"),
+            .statement(
+                code: ".add(pAclause, 1)",
+                type: .int
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.findGlobal("pAclause"),
+            Instance(Statement(
+                id: "pAclause",
+                code: "var pAclause: Int?",
+                type: .int.optional,
+                category: .globals,
+                isCommittable: true
+            ))
+        )
 
         XCTAssertNoDifference(pAclause, .statement(
             id: "pAclause",
-            code: "var pAclause: Int = 0",
-            type: .optional(.int),
+            code: "var pAclause: Int?",
+            type: .int.optional,
             category: .globals,
             isCommittable: true
         ))

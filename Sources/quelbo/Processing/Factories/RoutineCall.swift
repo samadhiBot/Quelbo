@@ -29,12 +29,12 @@ extension Factories {
             
             var paramSymbols = try symbolize(routineTokens)
 
-            self.params = routine.parameters.compactMap { symbol in
+            self.params = routine.payload.parameters.compactMap { symbol in
                 guard let value = paramSymbols.shift() else { return nil }
 
                 return .statement(
                     code: { _ in
-                        "\(symbol.code): \(value.code)"
+                        "\(symbol.id): \(value.code)"
                     },
                     type: value.type
                 )
@@ -56,7 +56,8 @@ extension Factories {
                 code: { _ in
                     "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))"
                 },
-                type: routine.type
+                type: routine.type,
+                isFunctionCall: true
             )
         }
     }

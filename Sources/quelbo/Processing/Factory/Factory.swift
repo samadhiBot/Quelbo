@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 /// A base class for symbol factories whose job is to translate a parsed ``Token`` array into a
 /// ``Symbol`` representing a Zil code element.
@@ -17,7 +18,7 @@ class Factory {
     class var factoryType: Factories.FactoryType { .zCode }
 
     /// An array of the local variables at play within a factory.
-    var localVariables: [Variable]
+    var localVariables: [Statement]
 
     /// <#Description#>
     let mode: FactoryMode
@@ -30,12 +31,16 @@ class Factory {
 
     required init(
         _ tokens: [Token],
-        with variables: inout [Variable],
+        with variables: inout [Statement],
         mode factoryMode: FactoryMode = .process
     ) throws {
         self.localVariables = variables
         self.mode = factoryMode
         self.tokens = tokens
+
+        if NSClassFromString("XCTest") == nil {
+            Logger.process.debug("   􀎕 Factory: \(String(describing: self), privacy: .public)")
+        }
 
         try processTokens()
         try processSymbols()
@@ -53,29 +58,33 @@ class Factory {
         ).process()
 
         return Statement(
+            id: evaluated.id,
             code: { _ in
-                evaluated.handle
+                evaluated.code
             },
             type: evaluated.type,
-            children: [evaluated]
+            payload: .init(
+                symbols: [evaluated]
+            )
         )
     }
 
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>
-    func findLocal(_ id: String) -> Variable? {
+    func findLocal(_ id: String) -> Statement? {
         localVariables.first { $0.id == id }
     }
 
     /// <#Description#>
     /// - Parameter zil: <#zil description#>
     /// - Returns: <#description#>
-    func knownVariable(_ zil: String) -> Variable? {
+    func knownVariable(_ zil: String) -> Statement? {
         switch zil {
         case "PRSA":
-            return Variable(
+            return Statement(
                 id: "prsa",
+                code: { _ in "prsa" },
                 type: .int,
                 category: .globals,
                 isMutable: true

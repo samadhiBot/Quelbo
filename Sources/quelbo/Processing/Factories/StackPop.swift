@@ -27,7 +27,7 @@ extension Factories {
                 code: { _ in
                     "Stack.pop()"
                 },
-                type: .zilElement
+                type: .someTableElement
             )
         }
     }

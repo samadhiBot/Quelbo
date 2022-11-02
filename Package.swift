@@ -28,6 +28,16 @@ let package = Package(
                 .product(name: "CustomDump", package: "swift-custom-dump"),
                 .product(name: "Parsing", package: "swift-parsing"),
                 .product(name: "Progress", package: "Progress.swift"),
+            ],
+            swiftSettings: [
+                .unsafeFlags(
+                    ["-Xfrontend", "-warn-long-function-bodies=100"],
+                    .when(configuration: .debug)
+                ),
+                .unsafeFlags(
+                    ["-Xfrontend", "-warn-long-expression-type-checking=100"],
+                    .when(configuration: .debug)
+                ),
             ]
         ),
         .testTarget(

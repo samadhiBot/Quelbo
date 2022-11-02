@@ -21,6 +21,10 @@ final class LocalValueTests: QuelboTests {
             .atom("FOO")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "foo", type: .unknown))
+        XCTAssertNoDifference(symbol, .variable(
+            id: "foo",
+            type: .unknown,
+            isCommittable: false
+        ))
     }
 }

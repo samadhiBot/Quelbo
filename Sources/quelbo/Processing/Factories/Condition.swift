@@ -56,7 +56,9 @@ extension Factories {
                         .values(.separator(" else "))
                 },
                 type: type,
-                children: conditions,
+                payload: .init(
+                    symbols: conditions
+                ),
                 returnHandling: .suppress
             )
         }

@@ -17,10 +17,18 @@ final class GlobalValueTests: QuelboTests {
     }
 
     func testAtom() throws {
+        process("<GLOBAL FOO 42>")
+
         let symbol = try factory.init([
             .atom("FOO")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "foo", type: .unknown))
+        XCTAssertNoDifference(symbol, .instance(.init(
+            id: "foo",
+            code: "var foo: Int = 42",
+            type: .int,
+            category: .globals,
+            isCommittable: true
+        )))
     }
 }

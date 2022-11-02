@@ -18,7 +18,7 @@ final class IsEmptyTests: QuelboTests {
 
     func testIsEmpty() throws {
         localVariables.append(
-            Variable(id: "atms", type: .bool)
+            Statement(id: "atms", type: .bool)
         )
 
         let symbol = try factory.init([

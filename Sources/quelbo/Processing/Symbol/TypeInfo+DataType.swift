@@ -10,6 +10,7 @@ import Foundation
 extension TypeInfo {
     /// <#Description#>
     enum DataType: Hashable {
+        case atom
         case bool
         case comment
         case direction
@@ -22,14 +23,9 @@ extension TypeInfo {
         case string
         case table
         case thing
-        case unknown
         case verb
         case void
-        case zilAtom
-        case zilElement
-        indirect case array(DataType)
         indirect case oneOf(Set<DataType>)
-        indirect case property(DataType)
     }
 }
 
@@ -41,34 +37,27 @@ extension TypeInfo.DataType  {
         switch self {
         case .bool: return .booleanFalse
         case .int, .int16, .int32, .int8: return .integerZero
-        case .unknown: return .unknown
         case .void: return .void
         default: return .certain
         }
     }
 
-    /// Whether the symbol with this data type can take a `.zilElement` value.
-    var canBeZilElement: Bool {
+    /// Whether the symbol with this data type can take a `.someTableElement` value.
+    var canBeTableElement: Bool {
         switch self {
-        case .bool, .int, .int16, .int32, .int8, .object, .string, .table, .verb, .zilElement:
-            return true
-        case .comment, .direction, .routine, .thing, .unknown, .void, .zilAtom:
+        case .atom, .comment, .direction, .routine, .thing, .void:
             return false
-        case .array(let dataType):
-            return dataType.canBeZilElement
         case .oneOf(let set):
-            return set.contains { $0.canBeZilElement }
-        case .property(let dataType):
-            return dataType.canBeZilElement
+            return set.contains { $0.canBeTableElement }
+        default:
+            return true
         }
     }
 
     /// Whether the data type has a return value.
     var hasReturnValue: Bool {
         switch self {
-        case .array(let type): return type.hasReturnValue
-        case .comment, .unknown, .void: return false
-        case .property(let type): return type.hasReturnValue
+        case .comment, .void: return false
         default: return true
         }
     }
@@ -76,74 +65,11 @@ extension TypeInfo.DataType  {
 
 // MARK: - Conformances
 
-extension Set where Element == TypeInfo.DataType {
-    /// <#Description#>
-    /// - Returns: <#description#>
-    var preferred: TypeInfo.DataType {
-        if let found = first(where: {
-            if case .table = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .bool = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .comment = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .direction = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .int = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .int16 = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .int32 = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .int8 = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .object = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .routine = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .string = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .thing = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .unknown = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .void = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .zilElement = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .array = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .oneOf = $0 { return true } else { return false }
-        }) { return found }
-        if let found = first(where: {
-            if case .property = $0 { return true } else { return false }
-        }) { return found }
-
-        return .zilElement
-    }
-}
-
 extension TypeInfo.DataType: CustomStringConvertible {
     var description: String {
         switch self {
-        case .array(let type):
-            return "[\(type)]"
+        case .atom:
+            return "<zilAtom>"
         case .bool:
             return "Bool"
         case .comment:
@@ -161,9 +87,7 @@ extension TypeInfo.DataType: CustomStringConvertible {
         case .object:
             return "Object"
         case .oneOf(let types):
-            return types.preferred.description
-        case .property(let type):
-            return "<Property<\(type)>>"
+            return "<OneOf<\(types)>>"
         case .routine:
             return "Routine"
         case .string:
@@ -172,16 +96,10 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "Table"
         case .thing:
             return "Thing"
-        case .unknown:
-            return "<Unknown>"
         case .verb:
             return "Verb"
         case .void:
             return "Void"
-        case .zilAtom:
-            return "<zilAtom>"
-        case .zilElement:
-            return "ZilElement"
         }
     }
 }

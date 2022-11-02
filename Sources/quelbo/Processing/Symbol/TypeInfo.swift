@@ -5,284 +5,498 @@
 //  Created by Chris Sessions on 9/13/22.
 //
 
-struct TypeInfo: Hashable{
-    /// <#Description#>
-    let dataType: DataType
+import CustomDump
 
-    /// <#Description#>
-    let confidence: Confidence
+class TypeInfo {
+    private(set) var dataType: DataType?
 
-    /// <#Description#>
-    let isOptional: Bool
+    private(set) var confidence: Confidence
 
-    /// <#Description#>
-    let isZilElement: Bool
+    private(set) var isArray: Bool?
+
+    private(set) var isOptional: Bool?
+
+    private(set) var isProperty: Bool?
+
+    private(set) var isTableElement: Bool?
 
     init(
-        dataType: DataType,
-        confidence: Confidence,
-        isOptional: Bool = false,
-        isZilElement: Bool = false
+        dataType: DataType? = nil,
+        confidence: Confidence = .none,
+        isArray: Bool? = nil,
+        isOptional: Bool? = nil,
+        isProperty: Bool? = nil,
+        isTableElement: Bool? = nil
     ) {
         self.dataType = dataType
         self.confidence = confidence
+        self.isArray = isArray
         self.isOptional = isOptional
-        self.isZilElement = isZilElement
+        self.isProperty = isProperty
+        self.isTableElement = isTableElement
     }
 }
 
 // MARK: - Helper initializers
 
 extension TypeInfo {
-    static func array(_ dataType: DataType) -> TypeInfo {
-        .init(dataType: .array(dataType), confidence: .certain)
-    }
-
     static var bool: TypeInfo {
-        .init(dataType: .bool, confidence: .certain)
+        .init(
+            dataType: .bool,
+            confidence: .certain
+        )
     }
 
     static var booleanFalse: TypeInfo {
-        .init(dataType: .bool, confidence: .booleanFalse)
+        .init(
+            dataType: .bool,
+            confidence: .booleanFalse
+        )
     }
 
     static var booleanTrue: TypeInfo {
-        .init(dataType: .bool, confidence: .booleanTrue)
+        .init(
+            dataType: .bool,
+            confidence: .booleanTrue
+        )
     }
 
     static var comment: TypeInfo {
-        .init(dataType: .comment, confidence: .certain)
+        .init(
+            dataType: .comment,
+            confidence: .certain
+        )
     }
 
     static var direction: TypeInfo {
-        .init(dataType: .direction, confidence: .certain)
+        .init(
+            dataType: .direction,
+            confidence: .certain
+        )
     }
 
     static var int: TypeInfo {
-        .init(dataType: .int, confidence: .certain)
+        .init(
+            dataType: .int,
+            confidence: .certain
+        )
     }
 
     static var integerZero: TypeInfo {
-        .init(dataType: .int, confidence: .integerZero)
+        .init(
+            dataType: .int,
+            confidence: .integerZero
+        )
     }
 
     static var object: TypeInfo {
-        .init(dataType: .object, confidence: .certain)
+        .init(
+            dataType: .object,
+            confidence: .certain
+        )
     }
 
     static func oneOf(_ dataTypes: Set<DataType>) -> TypeInfo {
-        .init(dataType: .oneOf(dataTypes), confidence: .certain)
-    }
-
-    static func optional(_ dataType: DataType) -> TypeInfo {
-        .init(dataType: dataType, confidence: .certain, isOptional: true)
-    }
-
-    static func property(_ dataType: DataType) -> TypeInfo {
-        .init(dataType: .property(dataType), confidence: .certain)
+        .init(
+            dataType: .oneOf(dataTypes),
+            confidence: .limited
+        )
     }
 
     static var routine: TypeInfo {
-        .init(dataType: .routine, confidence: .certain)
+        .init(
+            dataType: .routine,
+            confidence: .certain
+        )
+    }
+
+    static var someTableElement: TypeInfo {
+        .init(isTableElement: true)
     }
 
     static var string: TypeInfo {
-        .init(dataType: .string, confidence: .certain)
+        .init(
+            dataType: .string,
+            confidence: .certain
+        )
     }
 
     static var table: TypeInfo {
-        .init(dataType: .table, confidence: .certain)
+        .init(
+            dataType: .table,
+            confidence: .certain
+        )
     }
 
     static var thing: TypeInfo {
-        .init(dataType: .thing, confidence: .certain)
+        .init(
+            dataType: .thing,
+            confidence: .certain
+        )
     }
 
     static var verb: TypeInfo {
-        .init(dataType: .verb, confidence: .certain)
+        .init(
+            dataType: .verb,
+            confidence: .certain
+        )
     }
 
     static var void: TypeInfo {
-        .init(dataType: .void, confidence: .void)
+        .init(
+            dataType: .void,
+            confidence: .void
+        )
     }
 
     static var unknown: TypeInfo {
-        .init(dataType: .unknown, confidence: .unknown)
+        .init(
+            dataType: nil,
+            confidence: .none
+        )
     }
 
     static var zilAtom: TypeInfo {
-        .init(dataType: .zilAtom, confidence: .certain)
+        .init(
+            dataType: .atom,
+            confidence: .certain
+        )
+    }
+}
+
+
+// MARK: - Assertions
+
+extension TypeInfo {
+    func assertIsArray() throws {
+        guard isArray != false else {
+            throw Symbol.AssertionError.isArrayAssertionFailed
+        }
+        self.isArray = true
     }
 
-    static var zilElement: TypeInfo {
-        .init(dataType: .zilElement, confidence: .certain, isZilElement: true)
+    func assertIsOptional() throws {
+        guard isOptional != false else {
+            throw Symbol.AssertionError.isOptionalAssertionFailed
+        }
+        self.isOptional = true
+    }
+
+    func assertIsProperty() throws {
+        guard isProperty != false else {
+            throw Symbol.AssertionError.isPropertyAssertionFailed
+        }
+        self.isProperty = true
+    }
+
+    func assertIsTableElement() throws {
+        guard isTableElement != false && dataType?.canBeTableElement != false else {
+            throw Symbol.AssertionError.isTableElementAssertionFailed
+        }
+        self.isTableElement = true
+    }
+}
+
+// MARK: - Modifiers
+
+extension TypeInfo {
+    var array: TypeInfo {
+        clone(isArray: true)
+    }
+
+    var element: TypeInfo {
+        clone(isArray: false)
+    }
+
+    var optional: TypeInfo {
+        clone(isOptional: true)
+    }
+
+    var nonOptional: TypeInfo {
+        clone(isOptional: false)
+    }
+
+    var property: TypeInfo {
+        clone(isProperty: true)
+    }
+
+    var tableElement: TypeInfo {
+        clone(isTableElement: true)
     }
 }
 
 // MARK: - Helper methods
 
 extension TypeInfo {
-    func withOptional(_ value: Bool) -> TypeInfo {
-        .init(
-            dataType: dataType,
-            confidence: confidence,
-            isOptional: value,
-            isZilElement: isZilElement
-        )
-    }
-
-    var asZElement: TypeInfo {
-        .init(
-            dataType: dataType,
-            confidence: confidence,
-            isZilElement: true
+    func clone(
+        dataType newDataType: DataType? = nil,
+        confidence newConfidence: Confidence? = nil,
+        isArray newIsArray: Bool? = nil,
+        isOptional newIsOptional: Bool? = nil,
+        isProperty newIsProperty: Bool? = nil,
+        isTableElement newIsTableElement: Bool? = nil
+    ) -> TypeInfo {
+        TypeInfo(
+            dataType: newDataType ?? dataType,
+            confidence: newConfidence ?? confidence,
+            isArray: newIsArray ?? isArray,
+            isOptional: newIsOptional ?? isOptional,
+            isProperty: newIsProperty ?? isProperty,
+            isTableElement: newIsTableElement ?? isTableElement
         )
     }
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
-        if isOptional { return " = nil" }
+        if isArray == true { return "\(self) = []" }
 
         switch dataType {
-        case .bool: return " = false"
-        case .comment, .oneOf, .unknown, .void, .zilAtom: return " = \(self)"
-        case .direction, .object, .routine, .table, .thing, .verb: return "? = nil"
-        case .int, .int8, .int16, .int32: return " = 0"
-        case .property: return " = nil"
-        case .string: return " = \"\""
-        case .array: return " = []"
-        case .zilElement: return " = .none"
+        case .atom, .comment, .none, .oneOf, .void:
+            return " = \(self)"
+        case .bool:
+            return "Bool = false"
+        case .direction, .object, .routine, .table, .thing, .verb:
+            return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
+        case .int, .int8, .int16, .int32:
+            return "\(self) = 0"
+        case .string:
+            return "String = \"\""
         }
     }
 
     /// Whether the data type has a return value.
     var hasReturnValue: Bool {
-        dataType.hasReturnValue
+        if dataType?.hasReturnValue == true {
+            return true
+        }
+        if isArray == true && isTableElement == true {
+            return true
+        }
+        return false
     }
 
-    /// <#Description#>
-    /// - Parameter assertedType: <#assertedType description#>
-    /// - Returns: <#description#>
-    func reconcile(with assertedType: TypeInfo) -> TypeInfo? {
-        guard
-            assertedType != self,
-            assertedType.confidence >= self.confidence
-        else { return self }
+    var objID: String {
+        String("\(ObjectIdentifier(self))".dropLast().suffix(4))
+    }
 
-        var maxConfidence: Confidence {
-            max(confidence, assertedType.confidence)
+    var setFlagsCount: Int {
+        [
+            isArray != nil ? 1 : 0,
+            isOptional != nil ? 1 : 0,
+            isProperty != nil ? 1 : 0,
+            isTableElement != nil ? 1 : 0,
+        ].reduce(0, +)
+    }
+}
+
+// MARK: - Reconcile
+
+extension TypeInfo {
+    func merge(
+        with current: TypeInfo,
+        dataType newDataType: DataType? = nil,
+        confidence newConfidence: Confidence? = nil,
+        isArray newIsArray: Bool? = nil,
+        isOptional newIsOptional: Bool? = nil,
+        isProperty newIsProperty: Bool? = nil,
+        isTableElement newIsTableElement: Bool? = nil
+    ) -> TypeInfo {
+        var seemsOptional: Bool? {
+            guard
+                current.confidence == .booleanFalse &&
+                confidence > .booleanFalse &&
+                confidence != .booleanTrue
+            else { return nil }
+            return true
         }
+        // print("▶️ before", self.objID, self.debugDescription)
+        self.dataType = newDataType ?? current.dataType ?? dataType
+        self.confidence = newConfidence ?? max(current.confidence, confidence)
+        // print("❤️‍🔥", newIsArray, current.isArray, isArray)
+        self.isArray = newIsArray ?? current.isArray ?? isArray
+        self.isOptional = newIsOptional ?? current.isOptional ?? isOptional ?? seemsOptional
+        self.isProperty = newIsProperty ?? current.isProperty ?? isProperty
+        // print("🤦‍♂️", newIsTableElement, current.isTableElement, isTableElement)
+        self.isTableElement = newIsTableElement ?? current.isTableElement ?? isTableElement
+        // print("▶️ after", self.objID, self.debugDescription)
 
-        var optional: Bool {
-            switch (self, assertedType) {
-            case (.booleanFalse, .bool), (.integerZero, .int): return isOptional
-            case (.booleanFalse, _), (.integerZero, _): return true
-            default: return isOptional
-            }
-        }
+        current.dataType = self.dataType
+        current.confidence = self.confidence
+        current.isArray = self.isArray
+        current.isOptional = self.isOptional
+        current.isProperty = self.isProperty
+        current.isTableElement = self.isTableElement
 
-        switch (dataType, assertedType.dataType) {
-        case (.comment, _): return self
-        case (_, .comment): return assertedType
-        case (.unknown, _): return assertedType
-        case (_, .unknown): return self
+        return self
+    }
 
-        case (.verb, .int), (.array(.verb), .int): return self
-        case (.int, .verb), (.int, .array(.verb)): return assertedType
+    func reconcile(
+        _ handle: String,
+        with asserted: TypeInfo
+    ) throws -> TypeInfo {
+        print(
+            "❓\(handle):",
+            dataType?.description ?? "nil",
+            "<->",
+            asserted.dataType?.description ?? "nil"
+        )
 
-        case (.array(.unknown), .array): return assertedType
-        case (.array, .array(.unknown)): return self
-        case (.array(.unknown), let other): return .array(other) // TODO: verify this
+        switch (dataType, asserted.dataType) {
+        case (.comment, _),
+            (.int, .verb),
+            (.none, _),
+            (.verb, .int),
+            (_, .comment),
+            (_, dataType):
+            return asserted.merge(with: self)
 
-        case (.array(.zilElement), .array(let other)):
-            guard other.canBeZilElement else { return nil }
-            return assertedType
-        case (.array(let selfType), .array(.zilElement)):
-            guard selfType.canBeZilElement else { return nil }
-            return self
-
-        case (.oneOf(let selfTypes), .oneOf(let other)):
-            let common = selfTypes.union(other)
+        case (.oneOf(let selfTypes), .oneOf(let otherTypes)):
+            let common = selfTypes.union(otherTypes)
             switch common.count {
             case 0:
-                return nil
+                break
             case 1:
-                return .init(
-                    dataType: common.first!,
-                    confidence: maxConfidence,
-                    isOptional: optional
+                guard let oneCommon = common.first else { break }
+                return asserted.merge(
+                    with: self,
+                    dataType: oneCommon,
+                    confidence: .certain
                 )
             default:
-                return .init(
+                return asserted.merge(
+                    with: self,
                     dataType: .oneOf(common),
-                    confidence: maxConfidence,
-                    isOptional: optional
+                    confidence: .limited
                 )
             }
-        case (.oneOf(let array), let other):
-            guard array.contains(other) else { return nil }
-            return .init(
+
+        case (.oneOf(let selfTypes), let other):
+            guard let other, selfTypes.contains(other) else { break }
+            return asserted.merge(
+                with: self,
                 dataType: other,
-                confidence: maxConfidence,
-                isOptional: optional
-            )
-        case (let dataType, .oneOf(let array)):
-            guard array.contains(dataType) else { return nil }
-            return .init(
-                dataType: dataType,
-                confidence: maxConfidence,
-                isOptional: optional
+                confidence: .certain
             )
 
-        case (.property(let selfType), let other):
-            guard selfType == other else { return nil }
-            return .init(
+        case (let dataType, .oneOf(let otherTypes)):
+            guard let dataType, otherTypes.contains(dataType) else { break }
+            return asserted.merge(
+                with: self,
                 dataType: dataType,
-                confidence: maxConfidence
-            )
-
-        case (.zilElement, let other):
-            guard other.canBeZilElement else { return nil }
-            return .init(
-                dataType: dataType,
-                confidence: confidence,
-                isOptional: optional,
-                isZilElement: true
-            )
-
-        case (let selfType, .zilElement):
-            guard selfType.canBeZilElement else { return nil }
-            return .init(
-                dataType: dataType,
-                confidence: confidence,
-                isOptional: optional,
-                isZilElement: true
+                confidence: .certain
             )
 
         default:
-            if assertedType.confidence > confidence {
-                return .init(
-                    dataType: assertedType.dataType,
-                    confidence: assertedType.confidence,
-                    isOptional: optional,
-                    isZilElement: assertedType.isOptional
-                )
-            } else if dataType == assertedType.dataType {
-                return .init(
-                    dataType: self.dataType,
-                    confidence: self.confidence,
-                    isOptional: optional,
-                    isZilElement: self.isOptional
-                )
-            } else {
-                return nil
-            }
+            break
         }
+
+        if asserted.confidence > confidence {
+//            update(
+//                dataType: asserted.dataType,
+//                confidence: asserted.confidence,
+//                isOptional: confidence == .booleanFalse
+//            )
+            return asserted.merge(
+                with: self,
+                dataType: asserted.dataType,
+                confidence: asserted.confidence,
+                isOptional: confidence == .booleanFalse
+            )
+        }
+
+        if asserted.confidence == confidence && isTableElement == true {
+            return asserted.merge(with: self)
+        }
+
+        throw Symbol.AssertionError.hasTypeAssertionFailed(
+            for: handle,
+            asserted: asserted,
+            actual: self
+        )
+    }
+}
+
+// MARK: - Conformances
+
+extension TypeInfo: Comparable {
+    static func < (lhs: TypeInfo, rhs: TypeInfo) -> Bool {
+        guard lhs.confidence == rhs.confidence else {
+            return lhs.confidence < rhs.confidence
+        }
+        return lhs.setFlagsCount < rhs.setFlagsCount
+    }
+}
+
+extension TypeInfo: CustomDebugStringConvertible {
+    var debugDescription: String {
+        var description = ""
+        customDump(self, to: &description)
+        return description
+    }
+}
+
+extension TypeInfo: CustomDumpReflectable {
+    var customDumpMirror: Mirror {
+        .init(
+            self,
+            children: [
+                "dataType": self.dataType as Any,
+                "confidence": self.confidence,
+                "isArray": self.isArray as Any,
+                "isOptional": self.isOptional as Any,
+                "isProperty": self.isProperty as Any,
+                "isTableElement": self.isTableElement as Any,
+            ],
+            displayStyle: .struct
+        )
     }
 }
 
 extension TypeInfo: CustomStringConvertible {
     var description: String {
-        isOptional ? "\(dataType.description)?" : dataType.description
+        var description = dataType?.description ?? (
+            isTableElement == true ? "TableElement" : "<Unknown>"
+        )
+        if isArray == true {
+            description = "[\(description)]"
+        }
+        if isOptional == true {
+            description = "\(description)?"
+        }
+        return description
     }
 }
+
+extension TypeInfo: Hashable {
+    static func == (lhs: TypeInfo, rhs: TypeInfo) -> Bool {
+        lhs.dataType == rhs.dataType &&
+        lhs.confidence == rhs.confidence &&
+        lhs.isArray == rhs.isArray &&
+        lhs.isOptional == rhs.isOptional &&
+        lhs.isProperty == rhs.isProperty &&
+        lhs.isTableElement == rhs.isTableElement
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(isArray)
+        hasher.combine(isOptional)
+        hasher.combine(isProperty)
+        hasher.combine(isTableElement)
+        hasher.combine(confidence)
+        hasher.combine(dataType)
+    }
+}
+
+//extension Array where Element == TypeInfo {
+//    var mostConfident: [TypeInfo] {
+//        reduce([]) { types, type in
+//            guard let firstType = types.first else {
+//                types.append(type)
+//                return
+//            }
+//            if type.confidence > firstType.confidence {
+//                types = [type]
+//            }
+//        }
+//    }
+//}

@@ -56,12 +56,12 @@ final class SetVariableTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "isRobbed.set(to: true)",
-            type: .init(dataType: .bool, confidence: .booleanTrue)
+            type: .booleanTrue
         ))
     }
 
     func testSetVariableCalledT() throws {
-        localVariables.append(Variable(id: "t", type: .int))
+        localVariables.append(.init(id: "t", type: .int))
 
         let symbol = try factory.init([
             .atom("T"),
@@ -80,7 +80,7 @@ final class SetVariableTests: QuelboTests {
 
     func testSetVariableToLocalVariable() throws {
         localVariables.append(
-            Variable(id: "n", type: .string)
+            Statement(id: "n", type: .string)
         )
 
         let symbol = try factory.init([
@@ -96,7 +96,7 @@ final class SetVariableTests: QuelboTests {
 
     func testSetVariableToFunctionResult() throws {
         localVariables.append(
-            Variable(id: "x", type: .object)
+            Statement(id: "x", type: .object)
         )
 
         let symbol = try factory.init([
@@ -115,7 +115,7 @@ final class SetVariableTests: QuelboTests {
 
     func testSetVariableToModifiedSelf() throws {
         localVariables.append(
-            Variable(id: "n", type: .int)
+            Statement(id: "n", type: .int)
         )
 
         let symbol = try factory.init([

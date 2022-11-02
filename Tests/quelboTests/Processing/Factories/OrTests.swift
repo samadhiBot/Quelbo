@@ -76,7 +76,7 @@ final class OrTests: QuelboTests {
 
     func testOrTwoBooleanExpressions() throws {
         localVariables.append(
-            Variable(id: "rarg", type: .int)
+            Statement(id: "rarg", type: .int)
         )
 
         let symbol = try factory.init([

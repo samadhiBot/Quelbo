@@ -18,40 +18,98 @@ extension Array where Element == Symbol {
         map(\.code).values(displayOptions)
     }
 
+    /// <#Description#>
+    /// - Parameter id: <#id description#>
+    /// - Returns: <#description#>
+    func find(_ id: String) -> Statement? {
+        guard
+            let found = first(where: { $0.id == id }),
+            case .statement(let statement) = found
+        else {
+            return nil
+        }
+        return statement
+    }
+
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
         map(\.handle).values(displayOptions)
     }
 
+    var mostConfident: [Symbol] {
+        reduce(into: []) { results, symbol in
+            guard let sample = results.first?.type else {
+                results.append(symbol)
+                return
+            }
+            if symbol.type.confidence > sample.confidence {
+                results = [symbol]
+                return
+            }
+            if symbol.type > sample {
+                results.insert(symbol, at: 0)
+            } else {
+                results.append(symbol)
+            }
+        }
+    }
+
+    var nonCommentSymbols: [Symbol] {
+        compactMap { symbol in
+            if case .statement(let statement) = symbol, statement.type == .comment {
+                return nil
+            }
+            return symbol
+        }
+    }
+
+    var returning: [Symbol] {
+        let returningSymbols = returningExplicitly
+        guard
+            let implicitlyReturningLast = nonCommentSymbols.last,
+            implicitlyReturningLast.returnHandling == .implicit,
+            !returningSymbols.contains(implicitlyReturningLast)
+        else {
+            return returningSymbols
+        }
+        return returningSymbols + [implicitlyReturningLast]
+    }
+
+    var returningExplicitly: [Symbol] {
+        reduce(into: []) { returnSymbols, symbol in
+            if symbol.isReturnStatement {
+                returnSymbols.append(symbol)
+            }
+            if case .statement(let statement) = symbol {
+                returnSymbols.append(
+                    contentsOf: statement.payload.symbols.returningExplicitly
+                )
+            }
+        }
+    }
+
     func returnType() -> TypeInfo? {
-        if let explicit = withReturnStatement.max(
+        let returningStatements = self.returningExplicitly
+        if let explicitReturn = returningStatements.max(
             by: { $0.type.confidence < $1.type.confidence }
         ) {
-            return explicit.type
+            guard returningStatements.count > 1 else {
+                return explicitReturn.type
+            }
+            if returningStatements.map(\.type.confidence).contains(.booleanFalse) {
+                return explicitReturn.type.optional
+            }
+            return explicitReturn.type
         }
-        guard
-            let lastSymbol = nonCommentSymbols.last,
-            lastSymbol.isReturnable
-        else {
-            return nil
+        if let lastSymbol = nonCommentSymbols.last, lastSymbol.isReturnable {
+            return lastSymbol.type
         }
-        return lastSymbol.type
+        return nil
     }
 
     /// Returns the ``Symbol`` array sorted by element ``Symbol/code`` for flag symbols, and by
     /// ``Symbol/description`` for all other symbols.
     var sorted: [Symbol] {
         sorted { $0.code < $1.code }
-    }
-
-    var withReturnStatement: [Symbol] {
-        reduce(into: []) { returnSymbols, symbol in
-            if symbol.isReturnStatement {
-                returnSymbols.append(symbol)
-            }
-            if case .statement(let statement) = symbol {
-                returnSymbols.append(contentsOf: statement.children.withReturnStatement)
-            }
-        }
     }
 }
 

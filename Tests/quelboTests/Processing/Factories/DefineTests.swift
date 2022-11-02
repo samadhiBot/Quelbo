@@ -17,41 +17,21 @@ final class DefineTests: QuelboTests {
     }
 
     func testSimpleDefineWithoutParameters() throws {
+        process("""
+            <CONSTANT READBUF-SIZE 100>
+
+            <DEFINE MAKE-READBUF () <ITABLE NONE ,READBUF-SIZE (BYTE)>>
+
+            <CONSTANT KBD-READBUF <MAKE-READBUF>>
+            <CONSTANT EDIT-READBUF <MAKE-READBUF>>
+        """)
+
         XCTAssertNoDifference(
-            process("<CONSTANT READBUF-SIZE 100>"),
-            .statement(
+            Game.constants.find("readbufSize"),
+            Statement(
                 id: "readbufSize",
                 code: "let readbufSize: Int = 100",
                 type: .int,
-                category: .constants,
-                isCommittable: true
-            )
-        )
-
-        XCTAssertNoDifference(
-            process("<DEFINE MAKE-READBUF () <ITABLE NONE ,READBUF-SIZE (BYTE)>>"),
-            .definition(
-                id: "makeReadbuf",
-                tokens: [
-                    .list([]),
-                    .form([
-                        .atom("ITABLE"),
-                        .atom("NONE"),
-                        .global(.atom("READBUF-SIZE")),
-                        .list([
-                            .atom("BYTE")
-                        ])
-                    ]),
-                ]
-            )
-        )
-
-        XCTAssertNoDifference(
-            process("<CONSTANT KBD-READBUF <MAKE-READBUF>>"),
-            .statement(
-                id: "kbdReadbuf",
-                code: "let kbdReadbuf: Table = makeReadbuf()",
-                type: .table,
                 category: .constants,
                 isCommittable: true
             )
@@ -78,8 +58,37 @@ final class DefineTests: QuelboTests {
         )
 
         XCTAssertNoDifference(
-            process("<CONSTANT EDIT-READBUF <MAKE-READBUF>>"),
-            .statement(
+            Game.findDefinition("makeReadbuf"),
+            Definition(
+                id: "makeReadbuf",
+                tokens: [
+                    .list([]),
+                    .form([
+                        .atom("ITABLE"),
+                        .atom("NONE"),
+                        .global(.atom("READBUF-SIZE")),
+                        .list([
+                            .atom("BYTE")
+                        ])
+                    ]),
+                ]
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.constants.find("kbdReadbuf"),
+            Statement(
+                id: "kbdReadbuf",
+                code: "let kbdReadbuf: Table = makeReadbuf()",
+                type: .table,
+                category: .constants,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.constants.find("editReadbuf"),
+            Statement(
                 id: "editReadbuf",
                 code: "let editReadbuf: Table = makeReadbuf()",
                 type: .table,

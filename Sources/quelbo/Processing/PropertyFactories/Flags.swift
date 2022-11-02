@@ -59,7 +59,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "flags" },
-                    type: .array(.bool)
+                    type: .bool.array
                 )
             }
 
@@ -69,8 +69,10 @@ extension Factories {
                 code: { _ in
                     "flags: [\(flags.codeValues(.commaSeparated))]"
                 },
-                type: .array(.bool),
-                children: symbols
+                type: .bool.array,
+                payload: .init(
+                    symbols: symbols
+                )
             )
         }
     }

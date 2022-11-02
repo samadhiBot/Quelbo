@@ -30,7 +30,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "adjectives" },
-                    type: .array(.string)
+                    type: .string.array
                 )
             }
 
@@ -41,7 +41,7 @@ extension Factories {
                 code: { _ in
                     "adjectives: [\(adjectives.values(.commaSeparated))]"
                 },
-                type: .array(.string)
+                type: .string.array
             )
         }
     }

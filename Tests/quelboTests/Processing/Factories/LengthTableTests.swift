@@ -136,21 +136,21 @@ final class LengthTableTests: QuelboTests {
             code: """
                 Table(
                     flags: [.length],
-                    .table(Table(
+                    .table(
                         flags: [.length],
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
                         .bool(trollMelee)
-                    )),
-                    .table(Table(
+                    ),
+                    .table(
                         .object(thief),
                         .object(knife),
                         .int(1),
                         .int(0),
                         .bool(thiefMelee)
-                    ))
+                    )
                 )
                 """,
             type: .table,

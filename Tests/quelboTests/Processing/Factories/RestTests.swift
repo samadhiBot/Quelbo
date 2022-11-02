@@ -19,13 +19,11 @@ final class RestTests: QuelboTests {
     func testRestOfIntegerList() throws {
         process("<GLOBAL STRUCT1 [1 2 3 4]>")
 
-        let symbol = try factory.init([
-            .atom("STRUCT1"),
-        ], with: &localVariables).process()
+        let symbol = process("<REST STRUCT1>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "struct1.rest()",
-            type: .array(.int)
+            type: .int.array
         ))
     }
 
@@ -34,9 +32,7 @@ final class RestTests: QuelboTests {
             <GLOBAL SOME-TABLE <TABLE 1 2 3 "4">>
         """)
 
-        let symbol = try factory.init([
-            .atom("SOME-TABLE"),
-        ], with: &localVariables).process()
+        let symbol = process("<REST SOME-TABLE>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "someTable.rest()",
@@ -49,15 +45,22 @@ final class RestTests: QuelboTests {
             <GLOBAL STRUCT2 [1 2 "AB" "C"]>
         """)
 
-        let symbol = try factory.init([
-            .atom("STRUCT2"),
-        ], with: &localVariables).process()
+        XCTAssertNoDifference(
+            Game.findGlobal("struct2"),
+            Instance(Statement(
+                id: "struct2",
+                code: "var struct2: [TableElement] = []",
+                type: .someTableElement.array,
+                category: .globals,
+                isCommittable: true
+            ))
+        )
 
         XCTAssertNoDifference(
-            symbol,
+            process("<REST STRUCT2>"),
             .statement(
                 code: "struct2.rest()",
-                type: .array(.zilElement)
+                type: .someTableElement.array
             )
         )
     }
@@ -76,7 +79,7 @@ final class RestTests: QuelboTests {
             symbol,
             .statement(
                 code: "struct3.rest(2)",
-                type: .array(.zilElement)
+                type: .someTableElement.array
             )
         )
     }

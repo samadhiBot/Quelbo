@@ -52,10 +52,24 @@ final class PrintCarriageReturnTests: QuelboTests {
         ))
     }
 
+    func testPrintDecimal() throws {
+        let symbol = try factory.init([
+            .decimal(42)
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: #"""
+                output(42)
+                output("\n")
+                """#,
+            type: .void
+        ))
+    }
+
     func testNonStringThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .decimal(99)
+                .bool(false)
             ], with: &localVariables).process()
         )
     }

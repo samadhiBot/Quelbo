@@ -25,9 +25,11 @@ final class RoutineCallTests: QuelboTests {
                 id: "oneFunc",
                 code: "",
                 type: .int,
-                parameters: [
-                    Instance(Variable(id: "number", type: .int)),
-                ],
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "number", type: .int)),
+                    ]
+                ),
                 category: .routines,
                 isCommittable: true
             ),
@@ -35,10 +37,12 @@ final class RoutineCallTests: QuelboTests {
                 id: "twoFunc",
                 code: "",
                 type: .string,
-                parameters: [
-                    Instance(Variable(id: "answer", type: .string)),
-                    Instance(Variable(id: "number", type: .int)),
-                ],
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "answer", type: .string)),
+                        Instance(Statement(id: "number", type: .int)),
+                    ]
+                ),
                 category: .routines,
                 isCommittable: true
             ),
@@ -46,11 +50,13 @@ final class RoutineCallTests: QuelboTests {
                 id: "threeFunc",
                 code: "",
                 type: .string,
-                parameters: [
-                    Instance(Variable(id: "answer", type: .string)),
-                    Instance(Variable(id: "isValid", type: .bool)),
-                    Instance(Variable(id: "number", type: .int)),
-                ],
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "answer", type: .string)),
+                        Instance(Statement(id: "isValid", type: .bool)),
+                        Instance(Statement(id: "number", type: .int)),
+                    ]
+                ),
                 category: .routines,
                 isCommittable: true
             )

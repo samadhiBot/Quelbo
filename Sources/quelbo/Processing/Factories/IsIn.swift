@@ -29,7 +29,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(child.code).isIn(\(parent.code))"
+                    "\(child.code).isIn(\(parent.handle))"
                 },
                 type: .bool
             )

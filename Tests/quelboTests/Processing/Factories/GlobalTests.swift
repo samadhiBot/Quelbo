@@ -16,22 +16,14 @@ final class GlobalTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "cyclops", type: .object, category: .objects),
-            .variable(id: "cyclopsMelee", type: .bool, category: .routines),
-            .variable(id: "def1", type: .table, category: .globals),
-            .variable(id: "forest1", type: .object, category: .rooms),
-            .variable(id: "forest2", type: .object, category: .rooms),
-            .variable(id: "forest3", type: .object, category: .rooms),
-            .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "path", type: .object, category: .rooms),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "thief", type: .object, category: .objects),
-            .variable(id: "thiefMelee", type: .bool, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines)
-        ])
+        process("""
+            <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
+            <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
+            <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
+            <GLOBAL TROLL-MELEE <TABLE (PURE) "Troll melee message">>
+            <OBJECT CYCLOPS><OBJECT KNIFE><OBJECT SWORD><OBJECT THIEF><OBJECT TROLL>
+            <ROOM CLEARING><ROOM FOREST1><ROOM FOREST2><ROOM FOREST3><ROOM PATH>
+        """)
     }
 
     func testFindFactory() throws {
@@ -51,39 +43,31 @@ final class GlobalTests: QuelboTests {
     func testBoolTrue() throws {
         let symbol = process("<GLOBAL FOO T>")
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .booleanTrue,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: "var foo: Bool = true",
             type: .booleanTrue,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testBoolFalse() throws {
         let symbol = process("<GLOBAL FOO <>>")
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .booleanFalse,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: "var foo: Bool = false",
             type: .booleanFalse,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testCommentedThrows() throws {
@@ -98,33 +82,22 @@ final class GlobalTests: QuelboTests {
     func testDecimal() throws {
         let symbol = process("<GLOBAL FOO 42>")
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .int,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: "var foo: Int = 42",
             type: .int,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testFormTable() throws {
         let symbol = process("<GLOBAL FOO <TABLE FOREST-1 FOREST-2 FOREST-3>>")
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .table,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: """
                 var foo: Table = Table(
@@ -136,7 +109,10 @@ final class GlobalTests: QuelboTests {
             type: .table,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testFormPureLTable() throws {
@@ -144,14 +120,7 @@ final class GlobalTests: QuelboTests {
             <GLOBAL FOO <LTABLE (PURE) FOREST-1 FOREST-2 FOREST-3 PATH CLEARING FOREST-1>>
         """)
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .table,
-            category: .constants,
-            isMutable: false
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: """
                 let foo: Table = Table(
@@ -167,7 +136,10 @@ final class GlobalTests: QuelboTests {
             type: .table,
             category: .constants,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testFormNestedLTables() throws {
@@ -178,44 +150,41 @@ final class GlobalTests: QuelboTests {
                     <TABLE CYCLOPS <> 0 0 CYCLOPS-MELEE>>>
         """)
 
-        XCTAssertNoDifference(Game.findGlobal("villains"), Variable(
-            id: "villains",
-            type: .table,
-            category: .globals
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let villains = Statement(
             id: "villains",
             code: """
                 var villains: Table = Table(
                     flags: [.length],
-                    .table(Table(
+                    .table(
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee)
-                    )),
-                    .table(Table(
+                        .table(trollMelee)
+                    ),
+                    .table(
                         .object(thief),
                         .object(knife),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee)
-                    )),
-                    .table(Table(
+                        .table(thiefMelee)
+                    ),
+                    .table(
                         .object(cyclops),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .bool(cyclopsMelee)
-                    ))
+                        .table(cyclopsMelee)
+                    )
                 )
                 """,
             type: .table,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(villains))
+        XCTAssertNoDifference(Game.findGlobal("villains"), Instance(villains))
     }
 
     func testFormNestedTableWithComments() throws {
@@ -226,13 +195,7 @@ final class GlobalTests: QuelboTests {
                        0 ;<REST ,DEF1 4>>>
         """)
 
-        XCTAssertNoDifference(Game.findGlobal("def1Res"), Variable(
-            id: "def1Res",
-            type: .table,
-            category: .globals
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let def1Res = Statement(
             id: "def1Res",
             code: """
                 var def1Res: Table = Table(
@@ -246,7 +209,10 @@ final class GlobalTests: QuelboTests {
             type: .table,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(def1Res))
+        XCTAssertNoDifference(Game.findGlobal("def1Res"), Instance(def1Res))
     }
 
     func testList() throws {
@@ -254,35 +220,18 @@ final class GlobalTests: QuelboTests {
             <GLOBAL FOO ("BAR" "BAT")>
         """)
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .array(.string),
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: """
                 var foo: [String] = ["BAR", "BAT"]
                 """,
-            type: .array(.string),
+            type: .string.array,
             category: .globals,
             isCommittable: true
-        ))
-    }
+        )
 
-    func testPRSA() throws {
-        process("""
-            <GLOBAL PRSA <>>
-        """)
-
-        XCTAssertNoDifference(Game.findGlobal("prsa"), Variable(
-            id: "prsa",
-            type: .int,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testString() throws {
@@ -290,14 +239,7 @@ final class GlobalTests: QuelboTests {
             <GLOBAL FOO "Forty Two!">
         """)
 
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .string,
-            category: .globals,
-            isMutable: true
-        ))
-
-        XCTAssertNoDifference(symbol, .statement(
+        let foo = Statement(
             id: "foo",
             code: """
                 var foo: String = "Forty Two!"
@@ -305,20 +247,27 @@ final class GlobalTests: QuelboTests {
             type: .string,
             category: .globals,
             isCommittable: true
-        ))
+        )
+
+        XCTAssertNoDifference(symbol, .statement(foo))
+        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
     }
 
     func testWhenBooleanFalseSignifiesObjectPlaceholder() throws {
         process("<GLOBAL FOO <>>")
 
-        // `prso` is recorded as a boolean, but it's understood that `<>` might have been a
+        // `foo` is recorded as a boolean, but it's understood that `<>` might have been a
         // placeholder for another type (as noted in the meta property).
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .booleanFalse,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(
+            Game.findGlobal("foo"),
+            Instance(Statement(
+                id: "foo",
+                code: "var foo: Bool = false",
+                type: .booleanFalse,
+                category: .globals,
+                isCommittable: true
+            ))
+        )
 
         // Move expects `foo` to be an object, not a boolean. This triggers an update of the
         // `foo` game symbol's type from boolean to object.
@@ -333,12 +282,16 @@ final class GlobalTests: QuelboTests {
         ))
 
         // Inspecting the `foo` game symbol confirms that the type update took place.
-        XCTAssertNoDifference(Game.findGlobal("foo"), Variable(
-            id: "foo",
-            type: .object,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(
+            Game.findGlobal("foo"),
+            Instance(Statement(
+                id: "foo",
+                code: "var foo: Object?",
+                type: .object.optional,
+                category: .globals,
+                isCommittable: true
+            ))
+        )
     }
 
     func testWhenBooleanFalseSignifiesBooleanFalse() throws {
@@ -346,31 +299,49 @@ final class GlobalTests: QuelboTests {
 
         // `kitchenWindowFlag` is recorded as a boolean, but it's understood that `<>` might have
         // been a placeholder for another type (as noted in the meta property).
-        XCTAssertNoDifference(Game.findGlobal("kitchenWindowFlag"), Variable(
-            id: "kitchenWindowFlag",
-            type: .booleanFalse,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(
+            Game.findGlobal("kitchenWindowFlag"),
+            Instance(Statement(
+                id: "kitchenWindowFlag",
+                code: "var kitchenWindowFlag: Bool = false",
+                type: .booleanFalse,
+                category: .globals,
+                isCommittable: true
+            ))
+        )
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
         // there's no need to overwrite the `kitchenWindowFlag` type.
-        let set = try Factories.SetVariable([
-            .atom("KITCHEN-WINDOW-FLAG"),
-            .atom("T")
-        ], with: &localVariables).process()
+        let set = process("""
+            <ROUTINE KITCHEN-WINDOW-F ()
+                <SETG KITCHEN-WINDOW-FLAG T>>
+        """)
 
         XCTAssertNoDifference(set, .statement(
-            code: "kitchenWindowFlag.set(to: true)",
-            type: .booleanTrue
+            id: "kitchenWindowFunc",
+            code: """
+                @discardableResult
+                /// The `kitchenWindowFunc` (KITCHEN-WINDOW-F) routine.
+                func kitchenWindowFunc() -> Bool {
+                    return kitchenWindowFlag.set(to: true)
+                }
+                """,
+            type: .booleanTrue,
+            category: .routines,
+            isCommittable: true
         ))
 
         // Inspecting the `kitchenWindowFlag` game symbol confirms that the type remains boolean.
-        XCTAssertNoDifference(Game.findGlobal("kitchenWindowFlag"), Variable(
-            id: "kitchenWindowFlag",
-            type: .booleanTrue,
-            category: .globals,
-            isMutable: true
-        ))
+        XCTAssertNoDifference(
+            Game.findGlobal("kitchenWindowFlag"),
+            Instance(Statement(
+                id: "kitchenWindowFlag",
+                code: "var kitchenWindowFlag: Bool = false",
+                type: .booleanTrue,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true
+            ))
+        )
     }
 }

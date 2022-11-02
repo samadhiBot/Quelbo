@@ -14,6 +14,8 @@ final class PrintContentsTests: QuelboTests {
         super.setUp()
 
         process("""
+            <GLOBAL P-IT-OBJECT <>>
+
             <ROUTINE THIS-IS-IT (OBJ)
                  <SETG P-IT-OBJECT .OBJ>>
 
@@ -39,15 +41,28 @@ final class PrintContentsTests: QuelboTests {
         """, type: .mdl)
     }
 
+    func testPItObject() {
+        XCTAssertNoDifference(
+            Game.findGlobal("pItObject"),
+            Instance(Statement(
+                id: "pItObject",
+                type: .object.optional,
+                category: .globals,
+                isMutable: true
+            ))
+        )
+    }
+
     func testThisIsIt() {
         XCTAssertNoDifference(
             Game.routines.find("thisIsIt"),
             Statement(
                 id: "thisIsIt",
                 code: """
+                    @discardableResult
                     /// The `thisIsIt` (THIS-IS-IT) routine.
                     func thisIsIt(obj: Object) {
-                        return pItObject.set(to: obj)
+                        pItObject.set(to: obj)
                     }
                     """,
                 type: .void,

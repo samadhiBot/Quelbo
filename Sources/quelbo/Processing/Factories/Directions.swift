@@ -75,7 +75,9 @@ extension Factories {
                     """
                 },
                 type: .void,
-                children: symbols,
+                payload: .init(
+                    symbols: symbols
+                ),
                 category: .directions
             )
         }

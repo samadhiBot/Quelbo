@@ -17,16 +17,16 @@ final class QuoteTests: QuelboTests {
     }
 
     func testQuoteAtom() throws {
-        localVariables.append(Variable(id: "obj", type: .object))
+        localVariables.append(.init(id: "obj", type: .object))
 
         let symbol = try factory.init([
             .atom("OBJ")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(
+        XCTAssertNoDifference(symbol, .instance(.init(
             id: "obj",
             type: .object
-        ))
+        )))
     }
 
     func testQuoteForm() throws {
@@ -44,19 +44,19 @@ final class QuoteTests: QuelboTests {
     }
 
     func testQuoteGlobal() throws {
-        let flameBit: Symbol = .variable(
+        let flameBit = Statement(
             id: "flameBit",
             type: .bool,
             category: .globals,
-            isMutable: true
+            isCommittable: true
         )
 
-        try Game.commit(flameBit)
+        try Game.commit(.statement(flameBit))
 
         let symbol = try factory.init([
             .global(.atom("FLAMEBIT"))
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, flameBit)
+        XCTAssertNoDifference(symbol, .instance(flameBit))
     }
 }

@@ -28,62 +28,16 @@ final class IsVersionTests: QuelboTests {
     }
 
     func testConditions() throws {
-        let symbol = try factory.init([
-            .list([
-                .atom("ZIP"),
-                .form([
-                    .atom("SET"),
-                    .atom("RESP"),
-                    .form([
-                        .atom("GETB"),
-                        .global(.atom("READBUF")),
-                        .decimal(1)
-                    ])
-                ])
-            ]),
-            .list([
-                .atom("EZIP"),
-                .form([
-                    .atom("SET"),
-                    .atom("RESP"),
-                    .form([
-                        .atom("GETB"),
-                        .global(.atom("READBUF")),
-                        .decimal(1)
-                    ])
-                ])
-            ]),
-            .list([
-                .atom("ELSE"),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("GETB"),
-                            .global(.atom("READBUF")),
-                            .decimal(1)
-                        ]),
-                        .form([
-                            .atom("SET"),
-                            .atom("RESP"),
-                            .form([
-                                .atom("GETB"),
-                                .global(.atom("READBUF")),
-                                .decimal(2)
-                            ])
-                        ])
-                    ]),
-                    .list([
-                        .atom("ELSE"),
-                        .form([
-                            .atom("SET"),
-                            .atom("RESP"),
-                            .decimal(0)
-                        ])
-                    ])
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <VERSION?
+                (ZIP <SET RESP <GETB ,READBUF 1>>)
+                (EZIP <SET RESP <GETB ,READBUF 1>>)
+                (ELSE
+                 <COND (<GETB ,READBUF 1>
+                        <SET RESP <GETB ,READBUF 2>>)
+                       (ELSE
+                        <SET RESP 0>)>)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -102,8 +56,7 @@ final class IsVersionTests: QuelboTests {
             type: .init(
                 dataType: .int,
                 confidence: .integerZero,
-                isOptional: true,
-                isZilElement: true
+                isOptional: false
             ),
             returnHandling: .suppress
         ))

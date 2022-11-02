@@ -112,14 +112,30 @@ extension Factory {
     func symbolizeAtom(_ zil: String) throws -> Symbol {
         let name = zil.lowerCamelCase
 
-        if let global = Game.findGlobal(name) { return .instance(global) }
-        if let local = findLocal(name) { return .variable(local) }
-        if let known = knownVariable(zil) { return .variable(known) }
-        if zil == "T" { return .literal(true) }
-        if let defined = try findAndEvaluateDefinition(zil) { return .statement(defined) }
-        if mode == .evaluate && Game.findFactory(zil) != nil { return .zilAtom(zil) }
+        if let local = findLocal(name) {
+            return .instance(local)
+        }
+        if let global = Game.findGlobal(name) {
+            return .instance(global)
+        }
+        if let known = knownVariable(zil) {
+            return .instance(known)
+        }
+        if zil == "T" {
+            return .literal(true)
+        }
+        if let defined = try findAndEvaluateDefinition(zil) {
+            return .statement(defined)
+        }
+        if mode == .evaluate && Game.findFactory(zil) != nil {
+            return .zilAtom(zil)
+        }
 
-        return .variable(id: name, type: .unknown)
+        return .statement(
+            id: name,
+            code: { _ in name },
+            type: .unknown
+        )
     }
 
     /// Translates a Zil
@@ -206,10 +222,19 @@ extension Factory {
 
         let id = zil.lowerCamelCase
 
-        if let global = Game.findGlobal(id) { return .variable(global)}
-        if let found = Game.shared.symbols.find(id) { return .statement(found)}
-        if let flag = Game.flags.find(id) { return .statement(flag)}
-        if mode == .evaluate { return .variable(id: id, type: .unknown) }
+        if let flag = Game.flags.find(id) {
+            return .statement(flag)
+        }
+        if let global = Game.findGlobal(id) {
+            return .instance(global)
+        }
+        if mode == .evaluate {
+            return .statement(
+                id: id,
+                code: { _ in id },
+                type: .unknown
+            )
+        }
 
         throw GameError.globalNotFound(id)
     }
@@ -238,7 +263,7 @@ extension Factory {
         guard let found = localVariables.first(where: { $0.id == zil.lowerCamelCase }) else {
             throw SymbolizationError.unknownLocal(zil)
         }
-        return .variable(found)
+        return .statement(found)
     }
 
     /// Translates a Zil Object

@@ -53,7 +53,7 @@ final class MoveTests: QuelboTests {
 
     func testMoveLocalWeaponToHere() throws {
         localVariables.append(
-            Variable(id: "dweapon", type: .booleanFalse)
+            Statement(id: "dweapon", type: .booleanFalse)
         )
 
         let symbol = try factory.init([
@@ -66,10 +66,13 @@ final class MoveTests: QuelboTests {
             type: .void
         ))
 
-        XCTAssertNoDifference(findLocalVariable("dweapon"), Variable(
-            id: "dweapon",
-            type: .object
-        ))
+        XCTAssertNoDifference(
+            findLocalVariable("dweapon"),
+            Statement(
+                id: "dweapon",
+                type: .object.optional
+            )
+        )
     }
 
     func testMoveSandwichToDecimal() throws {

@@ -7,24 +7,23 @@
 
 import Foundation
 
-// MARK: - TypeInfo.Confidence
-
 extension TypeInfo {
     enum Confidence: Int {
-        case unknown
+        case none
+        case limited
         case void
         case booleanFalse
         case integerZero
         case assured
         case booleanTrue
-        case scoped
         case certain
     }
 }
+
+// MARK: - Conformances
 
 extension TypeInfo.Confidence: Comparable {
     static func < (lhs: TypeInfo.Confidence, rhs: TypeInfo.Confidence) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 }
-

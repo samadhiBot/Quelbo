@@ -41,7 +41,7 @@ final class GlobalsTests: QuelboTests {
                     forest,
                 ]
                 """,
-            type: .array(.object)
+            type: .object.array
         ))
     }
 
@@ -50,7 +50,7 @@ final class GlobalsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "globals",
-            type: .array(.object)
+            type: .object.array
         ))
     }
 

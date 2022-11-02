@@ -52,24 +52,16 @@ final class IsInTests: QuelboTests {
     }
 
     func testLookupVillainInTableAndSetThenCheckWhetherIsInHere() throws {
-        process("<GLOBAL HERE 0>")
-
         localVariables.append(
-            Variable(id: "oo", type: .table)
+            Statement(id: "oo", type: .table)
         )
 
-        let symbol = try factory.init([
-            .form([
-                .atom("SET"),
-                .atom("O"),
-                .form([
-                    .atom("GET"),
-                    .local("OO"),
-                    .global(.atom("V-VILLAIN"))
-                ])
-            ]),
-            .global(.atom("HERE"))
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <CONSTANT V-VILLAIN 0>
+            <GLOBAL HERE 0>
+
+            <IN? <SET O <GET .OO ,V-VILLAIN>> ,HERE>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "o.set(to: try oo.get(at: vVillain)).isIn(here)",

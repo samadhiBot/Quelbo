@@ -23,7 +23,7 @@ extension Factories {
             )
 
             try symbols[0].assert(
-                .hasType(.oneOf([.array(.zilElement), .table]))
+                .hasType(.table)
             )
 
             try symbols[1].assert(
@@ -31,7 +31,7 @@ extension Factories {
             )
 
             try symbols[2].assert(
-                .hasType(.zilElement)
+                .isTableElement
             )
         }
 

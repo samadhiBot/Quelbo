@@ -9,7 +9,7 @@ import XCTest
 @testable import quelbo
 
 class QuelboTests: XCTestCase {
-    var localVariables: [Variable]!
+    var localVariables: [Statement]!
 
     let zilParser = Game.Parser()
 
@@ -44,7 +44,7 @@ class QuelboTests: XCTestCase {
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>
-    func findLocalVariable(_ id: String) -> Variable? {
+    func findLocalVariable(_ id: String) -> Statement? {
         localVariables.first { $0.id == id }
     }
 
@@ -70,10 +70,7 @@ class QuelboTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Symbol {
-        let parsed: [Token]
-        do {
-            parsed = try zilParser.parse(zil)
-        } catch {
+        guard let parsed = try? zilParser.parse(zil) else {
             XCTFail(
                 "Parsing failed for Zil source:\n\(zil)",
                 file: file,
@@ -99,6 +96,10 @@ class QuelboTests: XCTestCase {
                     try Game.commit(symbol)
 
                     symbols.append(symbol)
+
+                case .commented, .string:
+                    break
+
                 default:
                     XCTFail(
                         "Test processing is not implemented for this token type:\n\(token)",

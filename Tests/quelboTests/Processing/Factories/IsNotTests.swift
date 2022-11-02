@@ -21,7 +21,7 @@ final class IsNotTests: QuelboTests {
             .variable(id: "theVoid", type: .void, category: .routines),
             .variable(id: "troll", type: .object, category: .objects),
             .variable(id: "trollMelee", type: .bool, category: .routines),
-            .variable(id: "zilly", type: .zilElement, category: .globals),
+            .variable(id: "zilly", type: .someTableElement, category: .globals),
         ])
     }
 
@@ -42,7 +42,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotDirection() throws {
         localVariables.append(
-            Variable(id: "north", type: .direction, category: .directions)
+            Statement(id: "north", type: .direction, category: .directions)
         )
 
         let symbol = try factory.init([
@@ -112,8 +112,8 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotThing() throws {
         localVariables.append(contentsOf: [
-            Variable(id: "prsa", type: .object),
-            Variable(id: "something", type: .thing),
+            Statement(id: "prsa", type: .object),
+            Statement(id: "something", type: .thing),
         ])
 
         let symbol = try factory.init([
@@ -148,7 +148,7 @@ final class IsNotTests: QuelboTests {
         ))
     }
 
-    func testIsNotZilElement() throws {
+    func testIsNotTableElement() throws {
         let symbol = try factory.init([
             .global(.atom("ZILLY"))
         ], with: &localVariables).process()
@@ -176,7 +176,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotOptional() throws {
         localVariables.append(
-            Variable(id: "maybe", type: .optional(.object))
+            Statement(id: "maybe", type: .object.optional)
         )
 
         let symbol = try factory.init([

@@ -69,7 +69,7 @@ extension Factories.PrimitiveType {
         case .atom("VECTOR"):
             return .init(
                 code: { _ in "Array" },
-                type: .array(.unknown)
+                type: .unknown.array
             )
         case .string:
             return .init(

@@ -67,7 +67,7 @@ final class PrimitiveTypeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "Array",
-            type: .array(.unknown)
+            type: .unknown.array
         ))
     }
 

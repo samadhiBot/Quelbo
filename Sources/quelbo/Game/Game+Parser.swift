@@ -47,7 +47,7 @@ extension Game {
                 ]
             )
 
-            Game.Print.heading("􀉂 Parsing Zil source")
+            Game.Print.heading("􀉂  Parsing Zil source")
 
             for file in gameFiles {
                 Logger.parse.info("􀈷 Parsing \(file.name, privacy: .public)")

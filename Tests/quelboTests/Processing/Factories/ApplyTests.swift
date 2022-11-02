@@ -12,46 +12,59 @@ import XCTest
 final class ApplyTests: QuelboTests {
     let factory = Factories.Apply.self
 
-    func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("APPLY"))
-    }
+    override func setUp() {
+        super.setUp()
 
-    func testApply() throws {
         process("""
             <DEFINE FUNC1 (X) <* .X .X>>
             <DEFINE FUNC2 (X) <* .X .X .X>>
 
             <CONSTANT DISPATCH-TBL <VECTOR FUNC1 FUNC2>>
         """)
+    }
 
-        XCTAssertNoDifference(
-            Game.findGlobal("dispatchTbl"),
-            Variable(
-                id: "dispatchTbl",
-                type: .array(.int),
-                category: .constants,
-                isMutable: false
-            )
-        )
+    func testFindFactory() throws {
+        AssertSameFactory(factory, Game.findFactory("APPLY"))
+    }
 
+    func testFunc1() throws {
         XCTAssertNoDifference(
-            Game.constants.find("dispatchTbl"),
+            Game.routines.find("func1"),
             Statement(
-                id: "dispatchTbl",
+                id: "func1",
                 code: """
-                    let dispatchTbl: [Int] = [func1, func2]
+                    @discardableResult
+                    /// The `func1` (FUNC1) routine.
+                    func func1(x: Int) -> Int {
+                        return .multiply(x, x)
+                    }
                     """,
-                type: .array(.int),
-                category: .constants,
+                type: .int,
+                category: .routines,
                 isCommittable: true
             )
         )
+    }
 
+    func testDispatchTbl() throws {
+        XCTAssertNoDifference(
+            Game.findGlobal("dispatchTbl"),
+            Instance(Statement(
+                id: "dispatchTbl",
+                code: "let dispatchTbl: [Int] = [func1, func2]",
+                type: .int.array,
+                category: .constants,
+                isCommittable: true
+            ))
+        )
+    }
+
+    func testApply() throws {
         XCTAssertNoDifference(
             process("<APPLY ,<NTH ,DISPATCH-TBL 1> 2>"),
             .statement(
                 code: "dispatchTbl.nthElement(1)(2)",
-                type: .int
+                type: .int.element
             )
         )
 
@@ -59,7 +72,7 @@ final class ApplyTests: QuelboTests {
             process("<APPLY ,<NTH ,DISPATCH-TBL 2> 2>"),
             .statement(
                 code: "dispatchTbl.nthElement(2)(2)",
-                type: .int
+                type: .int.element
             )
         )
     }

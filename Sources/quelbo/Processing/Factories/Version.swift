@@ -20,8 +20,9 @@ extension Factories {
             let zMachineVersion = try Game.ZMachineVersion(tokens: tokens)
 
             symbols = [
-                .variable(
+                .statement(
                     id: "zMachineVersion",
+                    code: { _ in "zMachineVersion" },
                     type: .string
                 ),
                 .literal(zMachineVersion.rawValue)

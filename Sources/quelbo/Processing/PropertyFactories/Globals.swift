@@ -30,7 +30,7 @@ extension Factories {
             guard symbols.count > 0 else {
                 return .statement(
                     code: { _ in "globals" },
-                    type: .array(.object)
+                    type: .object.array
                 )
             }
 
@@ -41,7 +41,7 @@ extension Factories {
                 code: { _ in
                     "globals: [\(globals.codeValues(.commaSeparated))]"
                 },
-                type: .array(.object)
+                type: .object.array
             )
         }
     }

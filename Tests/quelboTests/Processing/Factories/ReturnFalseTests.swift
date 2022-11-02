@@ -32,11 +32,7 @@ final class ReturnFalseTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "return nil",
-            type: .init(
-                dataType: .object,
-                confidence: .certain,
-                isOptional: true
-            ),
+            type: .object.optional,
             isReturnStatement: true
         ))
     }

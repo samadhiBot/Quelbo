@@ -39,11 +39,15 @@ extension Factories {
             guard !directionSymbols.isEmpty else { return }
 
             symbols.append(.statement(
-                code: { statement in
-                    "directions: [\(statement.children.codeValues(.commaSeparated))]"
+                code: {
+                    let directions = $0.payload.symbols.codeValues(.commaSeparated)
+
+                    return "directions: [\(directions)]"
                 },
-                type: .array(.direction),
-                children: directionSymbols
+                type: .direction.array,
+                payload: .init(
+                    symbols: directionSymbols
+                )
             ))
         }
 
@@ -64,7 +68,9 @@ extension Factories {
                     """
                 },
                 type: .object,
-                children: symbols,
+                payload: .init(
+                    symbols: symbols
+                ),
                 category: category,
                 isCommittable: true
             )

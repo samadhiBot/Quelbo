@@ -18,7 +18,7 @@
 //
 //    func testMapStop() throws {
 //        localVariables.append(
-//            Variable(id: "atms", type: .array(.string))
+//            Statement(id: "atms", type: .string.array)
 //        )
 //
 //        let symbol = try factory.init([
@@ -27,7 +27,7 @@
 //
 //        XCTAssertNoDifference(symbol, .statement(
 //            code: "mapStop(atms)",
-//            type: .array(.string),
+//            type: .string.array,
 //            returnHandling: .force
 //        ))
 //    }

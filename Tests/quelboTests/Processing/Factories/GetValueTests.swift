@@ -31,7 +31,7 @@ final class GetValueTests: QuelboTests {
 
     func testGetLocalValue() throws {
         localVariables.append(
-            Variable(
+            Statement(
                 id: "sandwich",
                 type: .bool
             )

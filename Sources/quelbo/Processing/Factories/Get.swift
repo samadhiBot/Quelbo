@@ -18,32 +18,36 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(2)))
+            try symbols.assert(
+                .haveCount(.exactly(2))
+            )
 
             try symbols[0].assert(
-                .hasType(.oneOf([
-                    .array(.string),
-                    .array(.zilElement),
-                    .table,
-                    .zilElement,
-                ]))
+                .hasType(.table)
             )
+
             try? symbols[0].assert(
                 .isVariable
             )
 
-            try symbols[1].assert(.hasType(.int))
+            try symbols[1].assert(
+                .hasType(.int)
+            )
         }
 
         override func process() throws -> Symbol {
             let table = symbols[0]
             let offset = symbols[1]
+            let type: TypeInfo = {
+                // TODO: check for table type?
+                offset.code == "0" ? .int : .someTableElement
+            }()
 
             return .statement(
                 code: { _ in
                     "try \(table.code).get(at: \(offset.code))"
                 },
-                type: .zilElement
+                type: type
             )
         }
     }

@@ -17,19 +17,14 @@ final class TableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "forest1", type: .object, category: .rooms),
-            .variable(id: "forest2", type: .object, category: .rooms),
-            .variable(id: "forest3", type: .object, category: .rooms),
-            .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "path", type: .object, category: .rooms),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "thief", type: .object, category: .objects),
-            .variable(id: "thiefMelee", type: .bool, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines)
-        ])
+        process("""
+            <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
+            <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
+            <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
+            <GLOBAL TROLL-MELEE <TABLE (PURE) "Troll melee message">>
+            <OBJECT CYCLOPS><OBJECT KNIFE><OBJECT SWORD><OBJECT THIEF><OBJECT TROLL>
+            <ROOM CLEARING><ROOM FOREST1><ROOM FOREST2><ROOM FOREST3><ROOM PATH>
+        """)
     }
 
     func testFindFactory() throws {
@@ -37,11 +32,7 @@ final class TableTests: QuelboTests {
     }
 
     func testTableOfRooms() throws {
-        let symbol = try factory.init([
-            .atom("FOREST-1"),
-            .atom("FOREST-2"),
-            .atom("FOREST-3"),
-        ], with: &localVariables).process()
+        let symbol = process("<TABLE FOREST-1 FOREST-2 FOREST-3>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -57,13 +48,7 @@ final class TableTests: QuelboTests {
     }
 
     func testTableOfDifferentTypes() throws {
-        let symbol = try factory.init([
-            .atom("TROLL"),
-            .atom("SWORD"),
-            .decimal(1),
-            .decimal(0),
-            .atom("TROLL-MELEE")
-        ], with: &localVariables).process()
+        let symbol = process("<TABLE TROLL SWORD 1 0 TROLL-MELEE>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -72,7 +57,7 @@ final class TableTests: QuelboTests {
                     .object(sword),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee)
+                    .table(trollMelee)
                 )
                 """,
             type: .table,
@@ -218,20 +203,20 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .table(Table(
+                    .table(
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee)
-                    )),
-                    .table(Table(
+                        .table(trollMelee)
+                    ),
+                    .table(
                         .object(thief),
                         .object(knife),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee)
-                    ))
+                        .table(thiefMelee)
+                    )
                 )
                 """,
             type: .table,

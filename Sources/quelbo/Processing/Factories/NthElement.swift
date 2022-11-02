@@ -21,25 +21,20 @@ extension Factories {
                 .haveCount(.exactly(2))
             )
 
-            try symbols[1].assert(.hasType(.int))
+            try symbols[1].assert(
+                .hasType(.int)
+            )
         }
 
         override func process() throws -> Symbol {
             let values = symbols[0]
             let index = symbols[1]
 
-            var elementType: TypeInfo
-            if case .array(let type) = values.type.dataType {
-                elementType = .init(dataType: type, confidence: .certain)
-            } else {
-                elementType = values.type
-            }
-
             return .statement(
                 code: { _ in
                     "\(values.code).nthElement(\(index.code))"
                 },
-                type: elementType,
+                type: values.type.element,
                 returnHandling: .force
             )
         }

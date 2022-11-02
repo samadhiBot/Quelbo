@@ -38,36 +38,45 @@ extension Factories {
             )
         }
 
+        func ifStatement(for predicate: Symbol?) -> String {
+            guard let predicate else { return "" }
+
+            let predicateCode = {
+                guard
+                    predicate.type.dataType == .bool &&
+                    predicate.type.isTableElement != true
+                else {
+                    return "_ = \(predicate.code)"
+                }
+                return predicate.code
+            }()
+
+            switch predicateCode {
+            case "else", "t", "true":
+                return ""
+            default:
+                return "if \(predicateCode) "
+            }
+        }
+
         override func process() throws -> Symbol {
-            let ifStatement = ifStatement(for: predicateCode())
-            let pro = blockProcessor!
-            let type = pro.returnType() ?? .void
+            let ifStatement = ifStatement
 
             return .statement(
-                code: { _ in
-                    """
-                    \(ifStatement){
-                    \(pro.code.indented)
-                    }
-                    """
+                code: {
+                    return """
+                        \(ifStatement($0.payload.predicate)){
+                        \($0.payload.code.indented)
+                        }
+                        """
                 },
-                type: type,
-                children: pro.symbols
+                type: blockProcessor.payload.returnType ?? .void,
+                payload: .init(
+                    predicate: predicate,
+                    symbols: blockProcessor.payload.symbols
+                ),
+                returnHandling: .suppress
             )
-        }
-
-        func ifStatement(for predicateCode: String) -> String {
-            switch predicateCode {
-            case "else", "t", "true": return ""
-            default: return "if \(predicateCode) "
-            }
-        }
-
-        func predicateCode() -> String {
-            if predicate.type.dataType == .bool {
-                return predicate.code
-            }
-            return "_ = \(predicate.code)"
         }
     }
 }

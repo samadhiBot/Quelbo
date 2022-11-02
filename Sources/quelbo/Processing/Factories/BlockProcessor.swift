@@ -18,9 +18,9 @@ extension Factories {
     /// functions for detailed information.
     class BlockProcessor: Factory {
         private(set) var activation: String?
-        private(set) var auxiliaries: [Parameter] = []
+        private(set) var auxiliaries: [Instance] = []
         private(set) var implicitReturns: Bool = true
-        private(set) var parameters: [Parameter] = []
+        private(set) var parameters: [Instance] = []
         private(set) var repeating: Bool = false
 
         override func processTokens() throws {
@@ -28,7 +28,11 @@ extension Factories {
 
             if case .atom(let tokenActivation) = tokens.first {
                 let activationName = tokenActivation.lowerCamelCase
-                localVariables.append(Variable(id: activationName, type: .unknown))
+                localVariables.append(.init(
+                    id: activationName,
+                    code: { _ in activationName },
+                    type: .unknown
+                ))
                 activation = activationName
                 tokens.removeFirst()
             }
@@ -42,99 +46,39 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.withReturnStatement.assert(
+            // if implicitReturns {
+            //     try? symbols.returning.assert(.haveCommonType)
+            // }
+
+            try symbols.returningExplicitly.assert(
                 .haveCommonType
             )
 
-            for parameter in parameters {
-                try parameter.assertCommonType()
-            }
+            // for parameter in parameters {
+            //     try parameter.assertCommonType()
+            // }
 
             for symbol in symbols {
                 guard
                     case .statement(let statement) = symbol,
-                    statement.isBindWithAgainStatement
+                    statement.isBindingAndRepeatingStatement
                 else { continue }
 
-                for instance in statement.parameters {
-                    auxiliaries.append(Parameter(
-                        nameSymbol: instance,
-                        defaultValue: nil,
-                        context: .auxiliary
-                    ))
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Factories.BlockProcessor.Context
-
-extension Factories.BlockProcessor {
-    enum Context {
-        case auxiliary
-        case normal
-        case optional
-    }
-}
-
-// MARK: - Factories.BlockProcessor.Parameter
-
-extension Factories.BlockProcessor {
-    struct Parameter: Equatable {
-        let nameSymbol: Instance
-        let defaultValue: Symbol?
-        let context: Context
-
-        func assertCommonType() throws {
-            guard let defaultValue = defaultValue else { return }
-
-            try [.instance(nameSymbol), defaultValue].assert(.haveCommonType)
-        }
-
-        var declaration: String {
-            if let defaultValue = defaultValue {
-                return "\(nameSymbol.code): \(type) = \(defaultValue.code)"
-            }
-            if context == .optional {
-                return "\(nameSymbol.code): \(type)\(type.emptyValueAssignment)"
-            }
-            return "\(nameSymbol.code): \(type)"
-        }
-
-        var emptyValueAssignment: String {
-            let value = {
-                if let value = defaultValue?.code {
-                    return " = \(value)"
-                } else {
-                    return nameSymbol.type.emptyValueAssignment
-                }
-            }()
-            return "var \(nameSymbol.code): \(nameSymbol.type)\(value)"
-        }
-
-        var initialization: String {
-            if let defaultValue = defaultValue {
-                return "var \(nameSymbol.code): \(defaultValue.type) = \(defaultValue.code)"
-            }
-
-            switch context {
-            case .auxiliary:
-                return emptyValueAssignment
-            case .normal, .optional:
-                return "var \(nameSymbol.code): \(type) = \(nameSymbol.code)"
+                auxiliaries.append(contentsOf: statement.payload.parameters.map {
+                    Instance($0.variable, context: .auxiliary)
+                })
             }
         }
 
-        var isMutable: Bool {
-            if let instanceIsMutable = nameSymbol.isMutable {
-                return instanceIsMutable
-            }
-            return nameSymbol.variable.isMutable ?? false
-        }
-
-        var type: TypeInfo {
-            nameSymbol.type
+        var payload: Statement.Payload {
+            .init(
+                activation: activation,
+                auxiliaries: auxiliaries,
+                implicitReturns: implicitReturns,
+                parameters: parameters,
+                repeating: repeating,
+                symbols: symbols
+            )
         }
     }
 }
@@ -172,7 +116,7 @@ extension Factories.BlockProcessor {
     ///
     /// - Throws: When no list is found, or token symbolization fails.
     func processParameters(in paramTokens: [Token]) throws {
-        var context: Context = .normal
+        var context: Instance.Context = .normal
 
         for token in paramTokens {
             var nameToken: Token?
@@ -203,31 +147,40 @@ extension Factories.BlockProcessor {
             }
 
             guard let nameToken = nameToken else { continue }
+
             let nameSymbol = try symbolize(nameToken)
 
-            var valueSymbol: Symbol?
-            if let valueToken = valueToken {
+            let nameVariable: Statement = try {
+                switch nameSymbol {
+                case .instance(let instance):
+                    if let found = localVariables.first(where: { $0 == instance.variable }) {
+                        return found
+                    }
+                    localVariables.append(instance.variable)
+                    return instance.variable
+                case .statement(let variable):
+                    if let found = localVariables.first(where: { $0 == variable }) {
+                        return found
+                    }
+                    localVariables.append(variable)
+                    return variable
+                default:
+                    throw Error.unexpectedNameSymbolType(nameSymbol, paramTokens)
+                }
+            }()
+            
+            let valueSymbol: Symbol? = try {
+                guard let valueToken else { return nil }
                 let value = try symbolize(valueToken)
                 try nameSymbol.assert(.hasSameType(as: value))
-                valueSymbol = value
-            }
+                return value
+            }()
 
-            let nameVariable: Variable
-            switch nameSymbol {
-            case .instance(let instance): nameVariable = instance.variable
-            case .variable(let variable): nameVariable = variable
-            default: throw Error.unexpectedNameSymbolType(nameSymbol, paramTokens)
-            }
-
-            localVariables.append(nameVariable)
-
-            let parameter = Parameter(
-                nameSymbol: Instance(
-                    nameVariable,
-                    isOptional: context == .optional
-                ),
+            let parameter = try Instance(
+                nameVariable,
+                context: context,
                 defaultValue: valueSymbol,
-                context: context
+                isOptional: context == .optional
             )
 
             switch context {
@@ -238,151 +191,6 @@ extension Factories.BlockProcessor {
     }
 }
 
-// MARK: - Methods & Computed properties
-
-extension Factories.BlockProcessor {
-    var auxiliaryDefs: String {
-        let auxVariables = auxiliaries + parameters.filter(\.isMutable)
-        guard !auxVariables.isEmpty else { return "" }
-
-        return auxVariables
-            .map(\.initialization)
-            .joined(separator: "\n")
-            .appending("\n")
-    }
-
-    var auxiliaryDefsWithDefaultValues: String {
-        let auxVariables = auxiliaries + parameters.filter(\.isMutable)
-        guard !auxVariables.isEmpty else { return "" }
-
-        return auxVariables
-            .map(\.emptyValueAssignment)
-            .joined(separator: "\n")
-            .appending("\n")
-    }
-
-    var code: String {
-        var lines = symbols.filter { !$0.code.isEmpty }
-        guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
-            return lines.handles(.singleLineBreak)
-        }
-        let last = lines.remove(at: lastIndex)
-        var codeLines = lines.map(\.code)
-        var lastLine: String {
-            if let returnType = returnType(), last.type != returnType {
-                return last.code
-            }
-            switch last {
-            case .definition:
-                return last.handle
-            case .literal, .instance, .variable:
-                return "return \(last.code)"
-            case .statement(let statement):
-                switch statement.returnHandling {
-                case .force:
-                    return "return \(last.code)"
-                case .implicit:
-                    if statement.isReturnStatement ||
-                       statement.type == .void ||
-                       !implicitReturns
-                    {
-                        return last.code
-                    } else {
-                        return "return \(last.code)"
-                    }
-                case .suppress:
-                    return last.code
-                }
-            }
-        }
-        codeLines.insert(lastLine, at: lastIndex)
-        return codeLines.joined(separator: "\n")
-    }
-
-    var codeHandlingRepeating: String {
-        switch (isRepeating, repeatingBindChild?.activation) {
-        case (true, nil), (true, ""): break
-        case (true, _), (false, _): return code
-        }
-
-        var blockActivation: String {
-            guard
-                let activationName = self.activation,
-                !activationName.isEmpty
-            else { return "" }
-
-            return "\(activationName): "
-        }
-
-        return """
-            \(blockActivation)\
-            while true {
-            \(code.indented)
-            }
-            """
-    }
-
-    func discardableResult() throws -> String {
-        let type = returnType()
-        guard let type = type else { return "" }
-
-        switch type {
-        case .comment, .void: return ""
-        default: return "@discardableResult\n"
-        }
-    }
-
-    var hasActivation: Bool {
-        guard
-            let activation = activation,
-            !activation.isEmpty
-        else { return false }
-
-        return true
-    }
-
-    var repeatingBindChild: Statement? {
-        for child in symbols {
-            guard case .statement(let statement) = child else { continue }
-
-            if statement.isBindWithAgainStatement {
-                return statement
-            }
-        }
-        return nil
-    }
-
-    var isRepeating: Bool {
-        repeating || symbols.contains {
-            guard case .statement(let statement) = $0 else { return false }
-
-            return statement.isAgainStatement || statement.isBindWithAgainStatement
-        }
-    }
-
-    var paramDeclarations: String {
-        parameters
-            .map(\.declaration)
-            .values(.commaSeparatedNoTrailingComma)
-    }
-
-    var paramSymbols: [Instance] {
-        parameters.map(\.nameSymbol)
-    }
-
-    func returnDeclaration() throws -> String {
-        guard let type = returnType() else { return "" }
-
-        switch type {
-        case .comment, .void: return ""
-        default: return " -> \(type)"
-        }
-    }
-
-    func returnType() -> TypeInfo? {
-        symbols.returnType()
-    }
-}
 
 // MARK: - Errors
 

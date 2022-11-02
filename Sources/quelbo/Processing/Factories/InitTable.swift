@@ -43,10 +43,16 @@ extension Factories {
                 self.symbols.append(
                     .statement(
                         code: { statement in
-                            return "defaults: [\(statement.children.codeValues(.commaSeparated))]"
+                            let defaultValues = statement
+                                .payload
+                                .symbols
+                                .codeValues(.commaSeparated)
+                            return "defaults: [\(defaultValues)]"
                         },
-                        type: .zilElement,
-                        children: defaults
+                        type: .someTableElement,
+                        payload: .init(
+                            symbols: defaults
+                        )
                     )
                 )
             }
@@ -59,12 +65,12 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.atLeast(0)),
-                .haveType(.zilElement),
+                .areTableElements,
             ])
 
-            try defaults.assert([
-                .haveType(.zilElement)
-            ])
+            try defaults.assert(
+                .areTableElements
+            )
         }
     }
 }

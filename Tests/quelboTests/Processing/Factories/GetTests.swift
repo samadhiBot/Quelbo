@@ -36,16 +36,21 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try foo.get(at: 2)",
-            type: .zilElement
+            type: .someTableElement
         ))
     }
 
     func testNestedGet() throws {
-        let symbol = process("<GET <GET ,P-ITBL ,P-VERBN> 0>")
+        let symbol = process("""
+            <CONSTANT P-VERBN 1>
+            <GLOBAL P-ITBL <TABLE 0 0 0 0 0 0 0 0 0 0>>
+
+            <GET <GET ,P-ITBL ,P-VERBN> 0>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try pItbl.get(at: pVerbn).get(at: 0)",
-            type: .zilElement
+            type: .int
         ))
     }
 

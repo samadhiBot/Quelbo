@@ -9,52 +9,173 @@ import CustomDump
 import Foundation
 
 final class Instance: SymbolType {
-    let variable: Variable
-    private(set) var isMutable: Bool?
-    private(set) var isOptional: Bool
-    private(set) var isZilElement: Bool
+    let _isArray: Bool?
+    let _isMutable: Bool?
+    let _isOptional: Bool?
+    let _isProperty: Bool?
+    let _isTableElement: Bool?
+    let context: Context
+    let defaultValue: Symbol?
+    let variable: Statement
     private(set) var returnHandling: Symbol.ReturnHandling
 
     init(
-        _ variable: Variable,
-        isOptional: Bool = false,
-        isMutable: Bool? = nil
+        _ variable: Statement,
+        context: Context = .normal,
+        isArray: Bool? = nil,
+        isMutable: Bool? = nil,
+        isOptional: Bool? = nil,
+        isProperty: Bool? = nil,
+        isTableElement: Bool? = nil
     ) {
-        self.isMutable = isMutable // ?? variable.isMutable
-        self.isOptional = isOptional
-        self.isZilElement = false
+        self._isArray = isArray
+        self._isMutable = isMutable
+        self._isOptional = isOptional
+        self._isProperty = isProperty
+        self._isTableElement = isTableElement
+        self.context = context
+        self.defaultValue = nil
         self.returnHandling = .implicit
         self.variable = variable
     }
 
+    init(
+        _ variable: Statement,
+        context: Context = .normal,
+        defaultValue: Symbol? = nil,
+        isArray: Bool? = nil,
+        isMutable: Bool? = nil,
+        isOptional: Bool? = nil,
+        isProperty: Bool? = nil,
+        isTableElement: Bool? = nil
+    ) throws {
+        self._isArray = isArray
+        self._isMutable = isMutable
+        self._isProperty = isProperty
+        self._isTableElement = isTableElement
+        self.context = context
+        self.defaultValue = defaultValue
+        self.returnHandling = .implicit
+        self.variable = variable
+
+        if let defaultValue {
+            self._isOptional = false
+            try [.instance(self), defaultValue].assert(.haveCommonType)
+        } else {
+            self._isOptional = isOptional
+        }
+    }
+
     var category: Category? {
-        nil
+        variable.category
     }
 
     var code: String {
-        if isZilElement {
-            switch variable.category {
-            case .objects: return ".object(\(variable.id))"
-            case .rooms: return ".room(\(variable.id))"
-            default: break
-            }
-            switch variable.type.dataType {
-            case .bool: return ".bool(\(variable.id))"
-            case .int16: return ".int16(\(variable.id))"
-            case .int32: return ".int32(\(variable.id))"
-            case .int8: return ".int8(\(variable.id))"
-            case .int: return ".int(\(variable.id))"
-            case .object: return ".object(\(variable.id))"
-            case .string: return ".string(\(variable.id))"
-            case .table: return ".table(\(variable.id))"
-            default: break
-            }
+        guard isTableElement == true else { return id }
+
+        switch variable.type.dataType {
+        case .bool: return ".bool(\(id))"
+        case .int16: return ".int16(\(id))"
+        case .int32: return ".int32(\(id))"
+        case .int8: return ".int8(\(id))"
+        case .int: return ".int(\(id))"
+        case .object: return variable.category == .rooms ? ".room(\(id))" : ".object(\(id))"
+        case .string: return ".string(\(id))"
+        case .table: return ".table(\(id))"
+        default: return id
         }
-        return variable.code
+    }
+
+    var id: String {
+        guard let id = variable.id else { return "<missing id>" }
+        return id
+    }
+
+    var isArray: Bool? {
+        _isArray ?? variable.type.isArray
+    }
+
+    var isMutable: Bool? {
+        _isMutable ?? variable.isMutable
+    }
+
+    var isOptional: Bool? {
+        _isOptional ?? variable.type.isOptional
+    }
+
+    var isProperty: Bool? {
+        _isProperty ?? variable.type.isProperty
+    }
+
+    var isTableElement: Bool? {
+        _isTableElement ?? variable.type.isTableElement
     }
 
     var type: TypeInfo {
-        isZilElement ? .zilElement : variable.type
+        variable.type
+    }
+
+    var typeDescription: String {
+        var description = type.dataType?.description ?? (
+            isTableElement == true ? "TableElement" : "<Unknown>"
+        )
+        if isArray == true {
+            description = "[\(description)]"
+        }
+        if isOptional == true {
+            description = "\(description)?"
+        }
+        return description
+    }
+}
+
+// MARK: - Instance.Context
+
+extension Instance {
+    enum Context {
+        case auxiliary
+        case normal
+        case optional
+    }
+}
+
+// MARK: - Computed properties
+
+extension Instance {
+    var declaration: String {
+        if let defaultValue {
+            return "\(id): \(typeDescription) = \(defaultValue.code)"
+        }
+        if context == .optional {
+            var description = type.dataType?.description ?? (
+                isTableElement == true ? "TableElement" : "<Unknown>"
+            )
+            if isArray == true {
+                description = "[\(description)]"
+            }
+            return "\(id): \(type.emptyValueAssignment)"
+        }
+        return "\(id): \(typeDescription)"
+    }
+
+    var emptyValueAssignment: String {
+        guard let value = defaultValue?.code else {
+            return "var \(id): \(type.emptyValueAssignment)"
+        }
+        return "var \(id): \(variable.type) = \(value)"
+    }
+
+    var initialization: String {
+        if let defaultValue = defaultValue {
+            return "var \(id): \(defaultValue.type) = \(defaultValue.code)"
+        }
+
+        switch context {
+        case .auxiliary:
+            return emptyValueAssignment
+        case .normal, .optional:
+            return "var \(id): \(typeDescription) = \(code)"
+        }
     }
 }
 
@@ -62,11 +183,37 @@ final class Instance: SymbolType {
 
 extension Symbol {
     static func instance(
-        _ variable: Variable,
-        isOptional: Bool = false
+        _ variable: Statement,
+        context: Instance.Context = .normal,
+        isArray: Bool? = nil,
+        isMutable: Bool? = nil,
+        isOptional: Bool? = nil,
+        isProperty: Bool? = nil,
+        isTableElement: Bool? = nil
     ) -> Symbol {
         .instance(Instance(
             variable,
+            context: context,
+            isArray: isArray,
+            isMutable: isMutable,
+            isOptional: isOptional,
+            isProperty: isProperty,
+            isTableElement: isTableElement
+        ))
+    }
+
+    static func instance(
+        _ variable: Statement,
+        context: Instance.Context = .normal,
+        defaultValue: Symbol,
+        isOptional: Bool = false,
+        isMutable: Bool? = nil
+    ) throws -> Symbol {
+        .instance(try Instance(
+            variable,
+            context: context,
+            defaultValue: defaultValue,
+            isMutable: isMutable,
             isOptional: isOptional
         ))
     }
@@ -75,42 +222,43 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Instance {
-    func assertHasMutability(_ mutability: Bool) throws {
+    func assertHasMutability(_ assertedMutability: Bool) throws {
         switch isMutable {
-        case mutability:
+        case assertedMutability:
             return
         case .none:
-            isMutable = mutability
+            try variable.assertHasMutability(assertedMutability)
         default:
             throw Symbol.AssertionError.hasMutabilityAssertionFailed(
                 for: "\(Self.self)",
-                asserted: mutability,
-                actual: isMutable
+                asserted: assertedMutability,
+                actual: assertedMutability
             )
-        }
-    }
-
-    func assertHasType(_ assertedType: TypeInfo) throws {
-        try variable.assertHasType(assertedType)
-
-        if assertedType.dataType == .zilElement {
-            isZilElement = true
         }
     }
 }
 
-
 // MARK: - Conformances
+
+extension Array where Element == Instance {
+    var mutable: [Instance] {
+        filter { $0.isMutable ?? false }
+    }
+}
 
 extension Instance: CustomDumpReflectable {
     var customDumpMirror: Mirror {
         .init(
             self,
             children: [
+                "_isArray": self._isArray as Any,
+                "_isMutable": self._isMutable as Any,
+                "_isOptional": self._isOptional as Any,
+                "_isProperty": self._isProperty as Any,
+                "_isTableElement": self._isTableElement as Any,
+                "context": self.context,
+                "defaultValue": self.defaultValue as Any,
                 "variable": self.variable,
-                "isMutable": self.isMutable as Any,
-                "isOptional": self.isOptional,
-                "isZilElement": self.isZilElement,
                 "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
@@ -120,10 +268,14 @@ extension Instance: CustomDumpReflectable {
 
 extension Instance: Equatable {
     static func == (lhs: Instance, rhs: Instance) -> Bool {
+        lhs._isArray == rhs._isArray &&
+        lhs._isMutable == rhs._isMutable &&
+        lhs._isOptional == rhs._isOptional &&
+        lhs._isProperty == rhs._isProperty &&
+        lhs._isTableElement == rhs._isTableElement &&
+        lhs.context == rhs.context &&
+        lhs.defaultValue == rhs.defaultValue &&
         lhs.variable == rhs.variable &&
-        lhs.isMutable == rhs.isMutable &&
-        lhs.isOptional == rhs.isOptional &&
-        lhs.isZilElement == rhs.isZilElement &&
         lhs.returnHandling == rhs.returnHandling
     }
 }

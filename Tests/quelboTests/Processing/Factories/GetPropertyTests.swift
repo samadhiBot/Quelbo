@@ -33,7 +33,7 @@ final class GetPropertyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength",
-            type: .int
+            type: .int.property
         ))
     }
 

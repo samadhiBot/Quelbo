@@ -26,9 +26,9 @@ extension Factories {
                 ))
             }
 
-            try? symbols[0].assert(
-                .hasType(.oneOf([.array(.zilElement), .table]))
-            )
+            if symbols[0].type != .table {
+                try symbols[0].assert(.isArray)
+            }
 
             try symbols[1].assert(
                 .hasType(.int)

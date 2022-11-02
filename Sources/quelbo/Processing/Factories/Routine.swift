@@ -37,27 +37,24 @@ extension Factories {
             let name = zilName.lowerCamelCase
             let typeName = isMacro ? "macro" : "routine"
             let zilName = zilName!
-            let pro = blockProcessor!
-            let type = pro.returnType() ?? .void
 
             return .statement(
                 id: name,
-                code: { _ in
+                code: {
                     """
-                    \(try pro.discardableResult())\
-                    /// The `\(name)` (\(zilName)) \(typeName).
-                    func \(name)\
-                    (\(pro.paramDeclarations))\
-                    \(try pro.returnDeclaration()) \
-                    {
-                    \(pro.auxiliaryDefs.indented)\
-                    \(pro.codeHandlingRepeating.indented)
-                    }
-                    """
+                        \($0.payload.discardableResult)\
+                        /// The `\(name)` (\(zilName)) \(typeName).
+                        func \(name)\
+                        (\($0.payload.paramDeclarations))\
+                        \($0.payload.returnDeclaration) \
+                        {
+                        \($0.payload.auxiliaryDefs.indented)\
+                        \($0.payload.codeHandlingRepeating.indented)
+                        }
+                        """
                 },
-                type: type,
-                parameters: pro.paramSymbols,
-                children: pro.symbols,
+                type: blockProcessor.payload.returnType ?? .void,
+                payload: blockProcessor.payload,
                 category: .routines,
                 isCommittable: true
             )

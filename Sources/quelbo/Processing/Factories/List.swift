@@ -24,22 +24,23 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let symbols = symbols
-            var type: TypeInfo {
-                let types = symbols.map { $0.type }.unique
-
+            let typeInfo: TypeInfo = {
+                let types = symbols.map(\.type).unique
                 switch types.count {
-                case 0: return .array(.unknown)
-                case 1: return .array(types[0].dataType)
-                default: return .array(.zilElement)
+                case 0: return .unknown.array
+                case 1: return types[0].array
+                default: return .someTableElement.array
                 }
-            }
+            }()
 
             return .statement(
                 code: { _ in
-                    "[\(symbols.codeValues(.commaSeparated))]"
+                    "[\(symbols.handles(.commaSeparated))]"
                 },
-                type: type,
-                children: symbols
+                type: typeInfo,
+                payload: .init(
+                    symbols: symbols
+                )
             )
         }
     }

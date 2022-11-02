@@ -18,7 +18,7 @@ final class IncrementGreaterThanTests: QuelboTests {
 
     func testIncrementGreaterThan() throws {
         localVariables.append(
-            Variable(id: "foo", type: .int)
+            Statement(id: "foo", type: .int)
         )
 
         let symbol = try factory.init([

@@ -25,7 +25,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "[1, 2, 3]",
-            type: .array(.int)
+            type: .int.array
         ))
     }
 
@@ -38,7 +38,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"["AB", "CD", "EF"]"#,
-            type: .array(.string)
+            type: .string.array
         ))
     }
 
@@ -51,8 +51,15 @@ final class ListTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "[1, 2, \"AB\", \"C\"]",
-            type: .array(.zilElement)
+            code: """
+                [
+                    .int(1),
+                    .int(2),
+                    .string("AB"),
+                    .string("C"),
+                ]
+                """,
+            type: .someTableElement.array
         ))
     }
 }

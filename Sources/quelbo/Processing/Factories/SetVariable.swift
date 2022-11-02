@@ -39,7 +39,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(variable.code).set(to: \(value.code))"
+                    "\(variable.handle).set(to: \(value.handle))"
                 },
                 type: value.type
             )

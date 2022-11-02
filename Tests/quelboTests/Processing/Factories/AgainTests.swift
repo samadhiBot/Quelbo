@@ -88,8 +88,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true,
-            isRepeating: true
+            isCommittable: true
         ))
     }
 
@@ -159,8 +158,7 @@ final class AgainTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true,
-            isRepeating: true
+            isCommittable: true
         ))
     }
 

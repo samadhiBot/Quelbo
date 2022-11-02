@@ -6,6 +6,7 @@
 //
 
 import CustomDump
+import Fizmo
 import XCTest
 @testable import quelbo
 
@@ -25,57 +26,25 @@ final class BindTests: QuelboTests {
         ])
     }
 
-    func testFindFactory() throws {
+    func testFindFactory() {
         AssertSameFactory(factory, Game.findFactory("BIND"))
     }
 
-    func testBindRoutine1() throws {
-        let symbol = try routineFactory.init([
-            .atom("TEST-BIND-1"),
-            .list([
-                .string("AUX"),
-                .atom("X")
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START ")
-            ]),
-            .form([
-                .atom("SET"),
-                .atom("X"),
-                .decimal(1)
-            ]),
-            .form([
-                .atom("BIND"),
-                .list([
-                    .atom("X")
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .decimal(2)
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .commented(.string("--> 2 (Inner X)"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .atom("N"),
-                .local("X"),
-                .string(" ")
-            ]),
-            .commented(.string("--> 1 (Outer X)")),
-            .form([
-                .atom("TELL"),
-                .string("END"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.12jfdx2
+    func testBindRoutine1() {
+        let symbol = process("""
+            <ROUTINE TEST-BIND-1 ("AUX" X)
+                <TELL "START ">
+                <SET X 1>
+                <BIND (X)
+                    <SET X 2>
+                    <TELL N .X " "> ;"--> 2 (Inner X)"
+                >
+                <TELL N .X " "> ;"--> 1 (Outer X)"
+                <TELL "END" CR>
+            >
+            ;"--> START 2 1 END"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testBind1",
@@ -103,64 +72,46 @@ final class BindTests: QuelboTests {
             isCommittable: true
         ))
     }
+    func testBindRoutine1Evaluation() {
+        /// The `testBind1` (TEST-BIND-1) routine.
+        func testBind1() {
+            var x: Int = 0
+            output("START ")
+            x.set(to: 1)
+            do {
+                var x: Int = x
+                x.set(to: 2)
+                output(x)
+                output(" ")
+                // --> 2 (Inner X)
+            }
+            output(x)
+            output(" ")
+            // --> 1 (Outer X)
+            output("END")
+        }
 
-    func testBindRoutine2() throws {
-        let symbol = try routineFactory.init([
-            .atom("TEST-BIND-2"),
-            .list([
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START ")
-            ]),
-            .form([
-                .atom("BIND"),
-                .list([
-                    .atom("X")
-                ]),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .form([
-                        .atom("+"),
-                        .local("X"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("X"),
-                            .decimal(3)
-                        ]),
-                        .form([
-                            .atom("RETURN")
-                        ])
-                    ])
-                ]),
-                .commented(.string("--> exit routine")),
-                .form([
-                    .atom("AGAIN")
-                ]),
-                .commented(.string("--> top of routine"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("END"),
-                .atom("CR")
-            ]),
-            .commented(.string("Never reached"))
-        ], with: &localVariables).process()
+        testBind1()
 
-        // "START 1 START 2 START 3 "
+        XCTAssertNoDifference(outputFlush(), "START 2 1 END")
+    }
+
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.12jfdx2
+    func testBindRoutine2() {
+        let symbol = process("""
+            <ROUTINE TEST-BIND-2 ()
+                <TELL "START ">
+                <BIND (X)
+                    <SET X <+ .X 1>>
+                    <TELL N .X " ">
+                    <COND (<=? .X 3> <RETURN>)> ;"--> exit routine"
+                    <AGAIN> ;"--> top of routine"
+                >
+                <TELL "END" CR> ;"Never reached"
+            >
+            ;"--> START 1 START 2 START 3 "
+        """)
+
         XCTAssertNoDifference(symbol, .statement(
             id: "testBind2",
             code: """
@@ -189,5 +140,32 @@ final class BindTests: QuelboTests {
             category: .routines,
             isCommittable: true
         ))
+    }
+
+    func testBindRoutine2Evaluation() {
+        /// The `testBind2` (TEST-BIND-2) routine.
+        func testBind2() {
+            var x: Int = 0
+            while true {
+                output("START ")
+                do {
+                    x.set(to: .add(x, 1))
+                    output(x)
+                    output(" ")
+                    if x.equals(3) {
+                        break
+                    }
+                    // --> exit routine
+                    continue
+                    // --> top of routine
+                }
+                // output("END") [Will never be executed]
+                // Never reached
+            }
+        }
+
+        testBind2()
+
+        XCTAssertNoDifference(outputFlush(), "START 1 START 2 START 3 ")
     }
 }

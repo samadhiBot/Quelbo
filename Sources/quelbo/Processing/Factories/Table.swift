@@ -25,34 +25,35 @@ extension Factories {
 
         override func processTokens() throws {
             var tokens = tokens
+
             if let flagSymbol = try findFlagSymbol(in: &tokens) {
                 symbols.append(flagSymbol)
             }
+
             symbols.append(contentsOf: try symbolize(tokens))
         }
 
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.atLeast(2)),
-                .haveType(.zilElement),
+                .areTableElements,
             ])
         }
 
         override func process() throws -> Symbol {
             .statement(
-                code: { statement in
-                    let elementValues = statement
-                        .children
+                code: {
+                    let elementValues = $0.payload
+                        .symbols
                         .codeValues(.commaSeparatedNoTrailingComma)
 
-                    if statement.type.isZilElement {
-                        return ".table(Table(\(elementValues)))"
-                    } else {
-                        return "Table(\(elementValues))"
-                    }
+                    return $0.type.isTableElement == true ? ".table(\(elementValues))"
+                                                          : "Table(\(elementValues))"
                 },
                 type: .table,
-                children: symbols,
+                payload: .init(
+                    symbols: symbols
+                ),
                 isMutable: !flags.contains(.pure)
             )
         }
@@ -91,7 +92,7 @@ extension Factories.Table {
             code: { _ in
                 "flags: [\(flagValues)]"
             },
-            type: .zilElement
+            type: .someTableElement
         )
     }
 }

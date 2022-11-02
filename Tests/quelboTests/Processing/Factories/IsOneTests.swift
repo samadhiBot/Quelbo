@@ -48,7 +48,7 @@ final class IsOneTests: QuelboTests {
 
     func testIsOneLocal() throws {
         localVariables.append(
-            Variable(id: "bar", type: .int)
+            Statement(id: "bar", type: .int)
         )
 
         let symbol = try factory.init([
