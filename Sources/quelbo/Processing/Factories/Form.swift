@@ -18,7 +18,7 @@ extension Factories {
 
         override func processTokens() throws {
             self.symbols = [
-                try symbolizeForm(tokens)
+                try symbolizeForm(tokens, mode: .process)
             ]
         }
 

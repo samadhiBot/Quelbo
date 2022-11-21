@@ -132,4 +132,49 @@ final class SubtractTests: QuelboTests {
             type: .int
         ))
     }
+
+    func testEvaluate() throws {
+        XCTAssertNoDifference(
+            evaluate("<- 10 3 2>"),
+            .literal(5)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %<- 10 3 2>>"),
+            .statement(
+                code: "output(5)",
+                type: .void
+            )
+        )
+    }
+
+    func testEvaluateIntoNegative() throws {
+        XCTAssertNoDifference(
+            evaluate("<- 10 11 12>"),
+            .literal(-13)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %<- 10 11 12>>"),
+            .statement(
+                code: "output(-13)",
+                type: .void
+            )
+        )
+    }
+
+    func testEvaluateOneDecimal() throws {
+        XCTAssertNoDifference(
+            evaluate("<- 42>"),
+            .literal(-42)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %<- 42>>"),
+            .statement(
+                code: "output(-42)",
+                type: .void
+            )
+        )
+    }
 }

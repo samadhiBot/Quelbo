@@ -25,6 +25,7 @@ extension TypeInfo {
         case thing
         case verb
         case void
+        case word
         indirect case oneOf(Set<DataType>)
     }
 }
@@ -100,6 +101,8 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "Verb"
         case .void:
             return "Void"
+        case .word:
+            return "Word"
         }
     }
 }

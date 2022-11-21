@@ -37,7 +37,7 @@ final class BuzzTests: QuelboTests {
                     "except",
                     "\.",
                     "\,",
-                    "\"",
+                    "\\"",
                     "yes",
                     "no",
                     "y",

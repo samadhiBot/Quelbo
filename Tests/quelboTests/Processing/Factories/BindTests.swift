@@ -59,11 +59,11 @@ final class BindTests: QuelboTests {
                         x.set(to: 2)
                         output(x)
                         output(" ")
-                        // --> 2 (Inner X)
+                        // "--> 2 (Inner X)"
                     }
                     output(x)
                     output(" ")
-                    // --> 1 (Outer X)
+                    // "--> 1 (Outer X)"
                     output("END")
                 }
                 """,
@@ -127,12 +127,12 @@ final class BindTests: QuelboTests {
                             if x.equals(3) {
                                 break
                             }
-                            // --> exit routine
+                            // "--> exit routine"
                             continue
-                            // --> top of routine
+                            // "--> top of routine"
                         }
                         output("END")
-                        // Never reached
+                        // "Never reached"
                     }
                 }
                 """,

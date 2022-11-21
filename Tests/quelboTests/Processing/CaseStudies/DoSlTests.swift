@@ -48,8 +48,8 @@ final class DoSlTests: QuelboTests {
                         obj: Object,
                         bit1: Int,
                         bit2: Int
-                    ) -> Object {
-                        var bts: <Unknown> = <Unknown>
+                    ) -> Bool {
+                        var bts: Any
                         var obj: Object = obj
                         if _ = .bitwiseCompare(
                             pSlocbits,
@@ -74,12 +74,12 @@ final class DoSlTests: QuelboTests {
                                     lvl: pSrcbot
                                 )
                             } else {
-                                return
+                                return true
                             }
                         }
                     }
                     """,
-                type: .void,
+                type: .booleanTrue,
                 category: .routines,
                 isCommittable: true
             )

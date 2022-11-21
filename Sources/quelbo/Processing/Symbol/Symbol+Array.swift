@@ -8,6 +8,10 @@
 import Foundation
 
 extension Array where Element == Symbol {
+    var allValuesHaveSameType: Bool {
+        map(\.type.dataType).unique.count <= 1
+    }
+
     /// Returns a formatted string containing the ``Symbol/code`` values for a ``Symbol`` array.
     ///
     /// - Parameter displayOptions: One or more ``Symbol/CodeValuesDisplayOption`` values that
@@ -15,7 +19,12 @@ extension Array where Element == Symbol {
     ///
     /// - Returns: A formatted string containing the code values contained in the symbol array.
     func codeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        map(\.code).values(displayOptions)
+        allValuesHaveSameType ? map(\.code).values(displayOptions)
+                              : map(\.codeMultiType).values(displayOptions)
+    }
+
+    func codeMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
+        map(\.codeMultiType).values(displayOptions)
     }
 
     /// <#Description#>
@@ -32,7 +41,8 @@ extension Array where Element == Symbol {
     }
 
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        map(\.handle).values(displayOptions)
+        allValuesHaveSameType ? map(\.handle).values(displayOptions)
+                              : map(\.handleMultiType).values(displayOptions)
     }
 
     var mostConfident: [Symbol] {
@@ -54,24 +64,7 @@ extension Array where Element == Symbol {
     }
 
     var nonCommentSymbols: [Symbol] {
-        compactMap { symbol in
-            if case .statement(let statement) = symbol, statement.type == .comment {
-                return nil
-            }
-            return symbol
-        }
-    }
-
-    var returning: [Symbol] {
-        let returningSymbols = returningExplicitly
-        guard
-            let implicitlyReturningLast = nonCommentSymbols.last,
-            implicitlyReturningLast.returnHandling == .implicit,
-            !returningSymbols.contains(implicitlyReturningLast)
-        else {
-            return returningSymbols
-        }
-        return returningSymbols + [implicitlyReturningLast]
+        filter { $0.type != .comment }
     }
 
     var returningExplicitly: [Symbol] {
@@ -79,15 +72,23 @@ extension Array where Element == Symbol {
             if symbol.isReturnStatement {
                 returnSymbols.append(symbol)
             }
-            if case .statement(let statement) = symbol {
-                returnSymbols.append(
-                    contentsOf: statement.payload.symbols.returningExplicitly
-                )
+            if let payload = symbol.payload {
+                returnSymbols.append(contentsOf: payload.symbols.returningExplicitly)
             }
         }
     }
 
     func returnType() -> TypeInfo? {
+        if let explicitReturn = returnTypeExplicit() {
+            return explicitReturn
+        }
+        if let lastSymbol = nonCommentSymbols.last, lastSymbol.isReturnable {
+            return lastSymbol.type
+        }
+        return nil
+    }
+
+    func returnTypeExplicit() -> TypeInfo? {
         let returningStatements = self.returningExplicitly
         if let explicitReturn = returningStatements.max(
             by: { $0.type.confidence < $1.type.confidence }
@@ -99,9 +100,6 @@ extension Array where Element == Symbol {
                 return explicitReturn.type.optional
             }
             return explicitReturn.type
-        }
-        if let lastSymbol = nonCommentSymbols.last, lastSymbol.isReturnable {
-            return lastSymbol.type
         }
         return nil
     }

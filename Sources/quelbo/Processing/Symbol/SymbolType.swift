@@ -19,7 +19,7 @@ protocol SymbolType: Equatable, CustomDebugStringConvertible {
 
 extension SymbolType {
     func assertHasCategory(_ assertionCategory: Category) throws {
-        if let category = category, assertionCategory != category {
+        if let category, assertionCategory != category {
             throw Symbol.AssertionError.hasCategoryAssertionFailed(
                 for: "\(Self.self)",
                 asserted: assertionCategory,

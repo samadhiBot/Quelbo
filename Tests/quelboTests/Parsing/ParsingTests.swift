@@ -103,7 +103,7 @@ final class ParsingTests: QuelboTests {
                     .form([
                         .atom("EQUAL?"),
                         .local("WRD"),
-                        .global(.atom("W?$BUZZ"))
+                        .word("$BUZZ")
                     ]),
                     .atom("T")
                 ])
@@ -316,6 +316,17 @@ final class ParsingTests: QuelboTests {
         )
     }
 
+    func testStringWithQuotation() throws {
+        let parsed = try zilParser.parse(#"""
+            " seems confused. \"I don't see any "
+        """#).first
+
+        XCTAssertNoDifference(
+            parsed,
+            .string(" seems confused. \"I don't see any ")
+        )
+    }
+
     func testType() throws {
         let parsed = try zilParser.parse("""
             #BYTE
@@ -344,5 +355,13 @@ final class ParsingTests: QuelboTests {
         """).first
 
         XCTAssertNoDifference(parsed, .verb("LOOK-INSIDE"))
+    }
+
+    func testWord() throws {
+        let parsed = try zilParser.parse("""
+            ,W?COMMA
+        """).first
+
+        XCTAssertNoDifference(parsed, .word("COMMA"))
     }
 }

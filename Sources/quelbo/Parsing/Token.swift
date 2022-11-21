@@ -60,6 +60,9 @@ indirect enum Token: Hashable {
 
     /// Represents a Zil verb.
     case verb(String)
+
+    /// Represents a Zil word.
+    case word(String)
 }
 
 extension Token {
@@ -83,6 +86,7 @@ extension Token {
         case .type(let value):       return "\(value)"
         case .vector(let tokens):    return "\(tokens.map { $0.value })"
         case .verb(let value):       return "\(value)"
+        case .word(let value):       return "\(value)"
         }
     }
 }
@@ -107,6 +111,30 @@ extension Token: CustomStringConvertible {
         case .type(let value):       return ".type(\(value))"
         case .vector(let tokens):    return ".vector(\(tokens.map(\.description).values())"
         case .verb(let value):       return ".verb(\(value))"
+        case .word(let value):       return ".word(\(value))"
+        }
+    }
+
+    var zil: String {
+        switch self {
+        case .atom(let value):       return value
+        case .bool(let value):       return "\(value)"
+        case .character(let value):  return value
+        case .commented(let token):  return ";\(token.zil)"
+        case .decimal(let value):    return "\(value)"
+        case .eval(let token):       return "%\(token.zil)"
+        case .form(let tokens):      return "<\(tokens.map(\.zil).values())>"
+        case .global(let token):     return ",\(token.zil)"
+        case .list(let tokens):      return "(\(tokens.map(\.zil).values()))"
+        case .local(let value):      return ".\(value)"
+        case .property(let value):   return ",P?\(value)"
+        case .quote(let token):      return "'\(token.zil)"
+        case .segment(let token):    return "\(token.zil)"
+        case .string(let value):     return "\"\(value)\""
+        case .type(let value):       return "#\(value)"
+        case .vector(let tokens):    return "[\(tokens.map(\.zil).values())]"
+        case .verb(let value):       return ",V?\(value)"
+        case .word(let value):       return ",W?\(value)"
         }
     }
 }
@@ -133,10 +161,10 @@ extension Array where Element == Token {
         }
     }
 
-    var miniHash: String {
-        let computed = Insecure.MD5.hash(
-            data: map(\.description).joined().data(using: .utf8)!
-        )
-        return "\("\(computed)".suffix(4))"
-    }
+//    var miniHash: String {
+//        let computed = Insecure.MD5.hash(
+//            data: map(\.description).joined().data(using: .utf8)!
+//        )
+//        return "\("\(computed)".suffix(4))"
+//    }
 }

@@ -20,10 +20,21 @@ extension Factories {
             try symbols.assert(.haveCount(.exactly(0)))
         }
 
+        override func evaluate() throws -> Symbol {
+            return .false
+        }
+
         override func process() throws -> Symbol {
             .statement(
-                code: { statement in
-                    "return \(statement.type == .booleanFalse ? "false" : "nil")"
+                code: {
+                    if $0.type.dataType == .bool {
+                        return "return false"
+                    }
+                    if $0.type.isOptional == true {
+                        return "return nil"
+                    }
+                    return ""
+
                 },
                 type: .booleanFalse,
                 isReturnStatement: true

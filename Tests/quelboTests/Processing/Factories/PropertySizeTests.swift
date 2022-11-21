@@ -38,7 +38,7 @@ final class PropertySizeTests: QuelboTests {
             findLocalVariable("tx"),
             .init(
                 id: "tx",
-                type: .object
+                type: .unknown.property
             )
         )
     }

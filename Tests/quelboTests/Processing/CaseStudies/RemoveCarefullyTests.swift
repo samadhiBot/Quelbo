@@ -85,7 +85,7 @@ final class RemoveCarefullyTests: QuelboTests {
                             lit.set(to: true)
                         } else {
                             if ohere.equals(rm) {
-                                if .object(player).isIn(rm) {
+                                if player.isIn(rm) {
                                     output("DO-SL")
                                 }
                             }

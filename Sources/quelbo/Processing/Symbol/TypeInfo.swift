@@ -6,6 +6,7 @@
 //
 
 import CustomDump
+import Foundation
 
 class TypeInfo {
     private(set) var dataType: DataType?
@@ -156,6 +157,14 @@ extension TypeInfo {
         )
     }
 
+    static var word: TypeInfo {
+        .init(
+            dataType: .word,
+            confidence: .certain
+        )
+    }
+
+
     static var zilAtom: TypeInfo {
         .init(
             dataType: .atom,
@@ -205,7 +214,8 @@ extension TypeInfo {
     }
 
     var element: TypeInfo {
-        clone(isArray: false)
+        if dataType == .table { return .someTableElement }
+        return clone(isArray: false)
     }
 
     var optional: TypeInfo {
@@ -251,14 +261,16 @@ extension TypeInfo {
         if isArray == true { return "\(self) = []" }
 
         switch dataType {
-        case .atom, .comment, .none, .oneOf, .void:
+        case .atom, .comment, .oneOf, .void:
             return " = \(self)"
         case .bool:
             return "Bool = false"
-        case .direction, .object, .routine, .table, .thing, .verb:
+        case .direction, .object, .routine, .table, .thing, .verb, .word:
             return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
         case .int, .int8, .int16, .int32:
             return "\(self) = 0"
+        case .none:
+            return "\(self)"
         case .string:
             return "String = \"\""
         }
@@ -273,6 +285,19 @@ extension TypeInfo {
             return true
         }
         return false
+    }
+
+    /// Whether a type crossed with a different type indicate an optional value.
+    ///
+    /// - Parameter other: The other type.
+    ///
+    /// - Returns: Whether a type crossed with a different type indicate an optional value.
+    func isOptional(versus other: TypeInfo) -> Bool {
+        (confidence == .integerZero &&
+         other.confidence > .integerZero) ||
+        (confidence == .booleanFalse &&
+         other.confidence > .booleanFalse &&
+         other.confidence != .booleanTrue)
     }
 
     var objID: String {
@@ -293,7 +318,7 @@ extension TypeInfo {
 
 extension TypeInfo {
     func merge(
-        with current: TypeInfo,
+        with type: TypeInfo,
         dataType newDataType: DataType? = nil,
         confidence newConfidence: Confidence? = nil,
         isArray newIsArray: Bool? = nil,
@@ -301,45 +326,48 @@ extension TypeInfo {
         isProperty newIsProperty: Bool? = nil,
         isTableElement newIsTableElement: Bool? = nil
     ) -> TypeInfo {
-        var seemsOptional: Bool? {
-            guard
-                current.confidence == .booleanFalse &&
-                confidence > .booleanFalse &&
-                confidence != .booleanTrue
-            else { return nil }
-            return true
-        }
-        // print("▶️ before", self.objID, self.debugDescription)
-        self.dataType = newDataType ?? current.dataType ?? dataType
-        self.confidence = newConfidence ?? max(current.confidence, confidence)
-        // print("❤️‍🔥", newIsArray, current.isArray, isArray)
-        self.isArray = newIsArray ?? current.isArray ?? isArray
-        self.isOptional = newIsOptional ?? current.isOptional ?? isOptional ?? seemsOptional
-        self.isProperty = newIsProperty ?? current.isProperty ?? isProperty
-        // print("🤦‍♂️", newIsTableElement, current.isTableElement, isTableElement)
-        self.isTableElement = newIsTableElement ?? current.isTableElement ?? isTableElement
-        // print("▶️ after", self.objID, self.debugDescription)
+        // print("\t▶️ before", self.objID, self.debugDescription)
+        self.dataType = newDataType ?? type.dataType ?? dataType
+        self.confidence = newConfidence ?? max(type.confidence, confidence)
+        self.isArray = newIsArray ?? type.isArray ?? isArray
+        // print("\t❤️‍🔥", newIsOptional, type.isOptional, isOptional, isOptional(versus: type))
+        self.isOptional = newIsOptional ?? type.isOptional ?? isOptional ??
+                          isOptional(versus: type) ? true : nil
+        self.isProperty = newIsProperty ?? type.isProperty ?? isProperty
+        // print("\t🍴", newIsTableElement, type.isTableElement, isTableElement)
+        self.isTableElement = newIsTableElement ?? type.isTableElement ?? isTableElement
+        // print("\t▶️ after", self.objID, self.debugDescription)
 
-        current.dataType = self.dataType
-        current.confidence = self.confidence
-        current.isArray = self.isArray
-        current.isOptional = self.isOptional
-        current.isProperty = self.isProperty
-        current.isTableElement = self.isTableElement
+        type.dataType = self.dataType
+        type.confidence = self.confidence
+        type.isArray = self.isArray
+        type.isOptional = self.isOptional
+        type.isProperty = self.isProperty
+        type.isTableElement = self.isTableElement
 
         return self
     }
 
     func reconcile(
-        _ handle: String,
+        _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
-        print(
-            "❓\(handle):",
-            dataType?.description ?? "nil",
-            "<->",
-            asserted.dataType?.description ?? "nil"
-        )
+        func logged(_ typeInfo: TypeInfo) -> TypeInfo {
+            guard NSClassFromString("XCTest") != nil else { return typeInfo }
+
+            let identifier = handle()
+                .replacingOccurrences(of: "\n", with: "")
+                .replacingOccurrences(of: "    ", with: " ")
+            print(
+                "\t􀄢\(identifier):",
+                dataType?.description ?? "nil",
+                "􀚌",
+                asserted.dataType?.description ?? "nil",
+                "􁉂",
+                "\(typeInfo.confidence == .certain ? "􀎠" : "")\(typeInfo)"
+            )
+            return typeInfo
+        }
 
         switch (dataType, asserted.dataType) {
         case (.comment, _),
@@ -348,7 +376,7 @@ extension TypeInfo {
             (.verb, .int),
             (_, .comment),
             (_, dataType):
-            return asserted.merge(with: self)
+            return logged(asserted.merge(with: self))
 
         case (.oneOf(let selfTypes), .oneOf(let otherTypes)):
             let common = selfTypes.union(otherTypes)
@@ -357,59 +385,63 @@ extension TypeInfo {
                 break
             case 1:
                 guard let oneCommon = common.first else { break }
-                return asserted.merge(
+                return logged(asserted.merge(
                     with: self,
-                    dataType: oneCommon,
-                    confidence: .certain
-                )
+                    dataType: oneCommon
+                ))
             default:
-                return asserted.merge(
+                return logged(asserted.merge(
                     with: self,
                     dataType: .oneOf(common),
                     confidence: .limited
-                )
+                ))
             }
 
         case (.oneOf(let selfTypes), let other):
             guard let other, selfTypes.contains(other) else { break }
-            return asserted.merge(
+            return logged(asserted.merge(
                 with: self,
-                dataType: other,
-                confidence: .certain
-            )
+                dataType: other
+            ))
 
-        case (let dataType, .oneOf(let otherTypes)):
-            guard let dataType, otherTypes.contains(dataType) else { break }
-            return asserted.merge(
-                with: self,
-                dataType: dataType,
-                confidence: .certain
-            )
+        case (_, .oneOf(let otherTypes)):
+            if let dataType, otherTypes.contains(dataType) {
+                return logged(asserted.merge(
+                    with: self,
+                    dataType: dataType
+                ))
+            }
+            if isOptional(versus: asserted) {
+                return logged(asserted.merge(
+                    with: self,
+                    isOptional: true
+                ))
+            }
+
+        case (_, .void):
+            return logged(self)
 
         default:
-            break
+            if asserted.confidence < confidence {
+                return logged(asserted.merge(with: self))
+            }
         }
 
         if asserted.confidence > confidence {
-//            update(
-//                dataType: asserted.dataType,
-//                confidence: asserted.confidence,
-//                isOptional: confidence == .booleanFalse
-//            )
-            return asserted.merge(
+            return logged(asserted.merge(
                 with: self,
                 dataType: asserted.dataType,
                 confidence: asserted.confidence,
-                isOptional: confidence == .booleanFalse
-            )
+                isOptional: isOptional(versus: asserted) ? true : nil
+            ))
         }
 
         if asserted.confidence == confidence && isTableElement == true {
-            return asserted.merge(with: self)
+            return logged(asserted.merge(with: self))
         }
 
         throw Symbol.AssertionError.hasTypeAssertionFailed(
-            for: handle,
+            for: handle(),
             asserted: asserted,
             actual: self
         )
@@ -455,7 +487,7 @@ extension TypeInfo: CustomDumpReflectable {
 extension TypeInfo: CustomStringConvertible {
     var description: String {
         var description = dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "<Unknown>"
+            isTableElement == true ? "TableElement" : "Any"
         )
         if isArray == true {
             description = "[\(description)]"

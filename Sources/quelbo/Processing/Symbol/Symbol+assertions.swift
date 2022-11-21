@@ -51,9 +51,7 @@ extension Symbol {
         case .hasSameCategory(as: let other):
             if let otherCategory = other.category { try assertHasCategory(otherCategory) }
         case .hasSameType(as: let other):
-//            print("▶️ self:", handle, type.objID, "other:", other.handle, other.type.objID)
             try assertHasType(other.type)
-//            print("▶️ self:", handle, type.objID, "other:", other.handle, other.type.objID)
         case .hasType(let typeInfo):
             try assertHasType(typeInfo)
         case .isArray:
@@ -119,7 +117,7 @@ extension Symbol {
         case .statement(let statement):
             try statement.assertHasCategory(assertionCategory)
         case .instance(let instance):
-            try instance.assertHasCategory(assertionCategory)
+            try instance.variable.assertHasCategory(assertionCategory)
         }
     }
 
@@ -180,7 +178,7 @@ extension Symbol {
     func assertIsVariable() throws {
         switch self {
         case .definition, .literal: break
-        case .statement: if id == nil { break } else { return }
+        case .statement: if id != nil { return }
         case .instance: return
         }
         throw AssertionError.isVariableAssertionFailed(for: "\(self)")
@@ -203,8 +201,8 @@ extension Array where Element == Symbol {
             try assert(.haveSameType(as: alphas[0]))
         case 2:
             guard
-                alphas.map(\.type.confidence).contains(.booleanFalse),
-                let known = alphas.first(where: { $0.type.confidence != .booleanFalse })
+                uniqueTypes.contains(.bool), // TODO: confidence .booleanFalse || .booleanTrue || .integerZero ?
+                let known = alphas.first(where: { $0.type != .bool })
             else { fallthrough }
             try known.assert(.isOptional)
             try assert(.haveSameType(as: known))

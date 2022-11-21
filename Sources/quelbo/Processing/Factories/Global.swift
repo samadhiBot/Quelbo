@@ -60,6 +60,7 @@ extension Factories {
                 },
                 type: value.type,
                 payload: .init(
+                    evaluation: value.evaluation,
                     symbols: [variable, value]
                 ),
                 category: variable.isMutable ?? false ? .globals : .constants,

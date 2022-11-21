@@ -10,16 +10,17 @@ import Foundation
 
 final class Literal: SymbolType {
     let _code: String
-    private(set) var type: TypeInfo
+    let returnHandling: Symbol.ReturnHandling
     private(set) var isMutable: Bool?
-    private(set) var returnHandling: Symbol.ReturnHandling
+    private(set) var type: TypeInfo
 
     init(
         code: String,
-        type: TypeInfo
+        type: TypeInfo,
+        returnHandling: Symbol.ReturnHandling = .implicit
     ) {
         self._code = code
-        self.returnHandling = .implicit
+        self.returnHandling = returnHandling
         self.type = type
     }
 
@@ -28,20 +29,6 @@ final class Literal: SymbolType {
     }
 
     var code: String {
-        if type.isTableElement == true {
-            switch type.dataType {
-            case .bool: return ".bool(\(_code))"
-            case .int16: return ".int16(\(_code))"
-            case .int32: return ".int32(\(_code))"
-            case .int8: return ".int8(\(_code))"
-            case .int: return ".int(\(_code))"
-            case .object: return ".object(\(_code))"
-            case .string: return ".string(\(_code))"
-            case .table: return ".table(\(_code))"
-            default: break
-            }
-        }
-
         switch (_code, type.dataType) {
         case ("false", .bool): return "false"
         case ("false", .int): return "0"
@@ -65,6 +52,56 @@ final class Literal: SymbolType {
 
         default: return _code
         }
+    }
+
+    var codeMultiType: String {
+        guard type.isTableElement == true else { return code }
+
+        switch type.dataType {
+        case .bool: return ".bool(\(_code))"
+        case .int16: return ".int16(\(_code))"
+        case .int32: return ".int32(\(_code))"
+        case .int8: return ".int8(\(_code))"
+        case .int: return ".int(\(_code))"
+        case .object: return ".object(\(_code))"
+        case .string: return ".string(\(_code))"
+        case .table: return ".table(\(_code))"
+        default: return code
+        }
+    }
+}
+
+// MARK: - Literal true/false initializers
+
+extension Literal {
+    /// <#Description#>
+    static var `false`: Literal {
+        .init(
+            code: "false",
+            type: .booleanFalse
+//            returnHandling: .force
+        )
+    }
+
+    /// <#Description#>
+    static var `true`: Literal {
+        .init(
+            code: "true",
+            type: .booleanTrue
+//            returnHandling: .force
+        )
+    }
+}
+
+extension Symbol {
+    /// <#Description#>
+    static var `false`: Symbol {
+        .literal(.false)
+    }
+
+    /// <#Description#>
+    static var `true`: Symbol {
+        .literal(.true)
     }
 }
 
@@ -135,6 +172,13 @@ extension Symbol {
         ))
     }
 
+    static func word(_ word: String) -> Symbol {
+        .literal(Literal(
+            code: word,
+            type: .word
+        ))
+    }
+
     static func zilAtom(_ zil: String) -> Symbol {
         .literal(Literal(
             code: zil,
@@ -171,6 +215,6 @@ extension Literal: Equatable {
     static func == (lhs: Literal, rhs: Literal) -> Bool {
         lhs._code == rhs._code &&
         lhs.returnHandling == rhs.returnHandling &&
-        lhs.type == rhs.type
+        lhs.type.dataType == rhs.type.dataType
     }
 }

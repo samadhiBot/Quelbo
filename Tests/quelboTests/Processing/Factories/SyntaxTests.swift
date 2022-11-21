@@ -30,16 +30,6 @@ final class SyntaxTests: QuelboTests {
             category: .syntax,
             isCommittable: true
         ))
-
-        XCTAssertNoDifference(
-            Game.shared.symbols.first?.code,
-            """
-            Syntax(
-                verb: "quit",
-                actionRoutine: vQuit
-            )
-            """
-        )
     }
 
     func testContemplateSyntax() throws {

@@ -55,10 +55,10 @@ final class ProgramBlockTests: QuelboTests {
                         x.set(to: 1)
                         output(x)
                         output(" ")
-                        // Inner X
+                        // "Inner X"
                     }
                     output(x)
-                    // Outer X
+                    // "Outer X"
                     output(" END")
                 }
                 """,
@@ -79,10 +79,10 @@ final class ProgramBlockTests: QuelboTests {
                 x.set(to: 1)
                 output(x)
                 output(" ")
-                // Inner X
+                // "Inner X"
             }
             output(x)
-            // Outer X
+            // "Outer X"
             output(" END")
         }
 
@@ -116,16 +116,16 @@ final class ProgramBlockTests: QuelboTests {
                     output("START: ")
                     var x: Int = 0
                     while true {
-                        // X is not reinitialized between iterations. Default ACTIVATION created.
+                        // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
                             break
                         }
-                        // Bare RETURN without ACTIVATION will exit BLOCK
+                        // "Bare RETURN without ACTIVATION will exit BLOCK"
                         continue
-                        // AGAIN without ACTIVATION will redo BLOCK
+                        // "AGAIN without ACTIVATION will redo BLOCK"
                     }
                     output("RETURN EXIT BLOCK")
                 }
@@ -142,16 +142,16 @@ final class ProgramBlockTests: QuelboTests {
             output("START: ")
             var x: Int = 0
             while true {
-                // X is not reinitialized between iterations. Default ACTIVATION created.
+                // "X is not reinitialized between iterations. Default ACTIVATION created."
                 x.set(to: .add(x, 1))
                 output(x)
                 output(" ")
                 if x.equals(3) {
                     break
                 }
-                // Bare RETURN without ACTIVATION will exit BLOCK
+                // "Bare RETURN without ACTIVATION will exit BLOCK"
                 continue
-                // AGAIN without ACTIVATION will redo BLOCK
+                // "AGAIN without ACTIVATION will redo BLOCK"
             }
             output("RETURN EXIT BLOCK")
         }
@@ -194,7 +194,7 @@ final class ProgramBlockTests: QuelboTests {
                     output("START: ")
                     var x: Int = 0
                     while true {
-                        // X is not reinitialized between iterations. Default ACTIVATION created.
+                        // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
@@ -204,9 +204,9 @@ final class ProgramBlockTests: QuelboTests {
                             }
                             return true
                         }
-                        // RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)
+                        // "RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
                         continue
-                        // AGAIN without ACTIVATION will redo BLOCK
+                        // "AGAIN without ACTIVATION will redo BLOCK"
                     }
                     output("RETURN EXIT BLOCK")
                 }
@@ -226,7 +226,7 @@ final class ProgramBlockTests: QuelboTests {
             output("START: ")
             var x: Int = 0
             while true {
-                // X is not reinitialized between iterations. Default ACTIVATION created.
+                // "X is not reinitialized between iterations. Default ACTIVATION created."
                 x.set(to: .add(x, 1))
                 output(x)
                 output(" ")
@@ -236,9 +236,9 @@ final class ProgramBlockTests: QuelboTests {
                     }
                     return true
                 }
-                // RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)
+                // "RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
                 continue
-                // AGAIN without ACTIVATION will redo BLOCK
+                // "AGAIN without ACTIVATION will redo BLOCK"
             }
             // output("RETURN EXIT BLOCK") [Will never be executed]
         }

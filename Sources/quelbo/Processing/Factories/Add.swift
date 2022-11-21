@@ -27,6 +27,34 @@ extension Factories {
             ])
         }
 
+        override func evaluate() throws -> Symbol {
+            var elements = try symbols.map {
+                guard
+                    let code = $0.evaluation?.code,
+                    let integer = Int(code)
+                else {
+                    throw Error.invalidMathEvaluationArgument($0)
+                }
+                return integer
+            }
+            guard var result = elements.shift() else {
+                throw Error.expectedAtLeastOneElement
+            }
+            if elements.isEmpty && function == "subtract" {
+                return .literal(-result)
+            }
+            while let element = elements.shift() {
+                switch function {
+                case "add": result += element
+                case "divide": result /= element
+                case "multiply": result *= element
+                case "subtract": result -= element
+                default: throw Error.invalidMathEvaluationFunction(function)
+                }
+            }
+            return .literal(result)
+        }
+
         override func process() throws -> Symbol {
             let arguments = symbols
             let function = function
@@ -38,5 +66,15 @@ extension Factories {
                 type: .int
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.Add {
+    enum Error: Swift.Error {
+        case invalidMathEvaluationArgument(Symbol)
+        case invalidMathEvaluationFunction(String)
+        case expectedAtLeastOneElement
     }
 }

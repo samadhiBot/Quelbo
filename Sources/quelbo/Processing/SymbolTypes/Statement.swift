@@ -91,9 +91,16 @@ final class Statement: SymbolType {
     }
 }
 
-// MARK: - Symbol Statement initializer
+// MARK: - Symbol Statement initializers
 
 extension Symbol {
+    static var emptyStatement: Symbol {
+        .statement(
+            code: { _ in "" },
+            type: .unknown
+        )
+    }
+
     static func statement(
         id: String? = nil,
         code: @escaping (Statement) throws -> String,
@@ -149,6 +156,26 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Statement {
+    func assertHasCategory(_ assertionCategory: Category) throws {
+        guard let category else {
+            self.category = assertionCategory
+            return
+        }
+        guard assertionCategory != category else {
+            return
+        }
+        switch (category, assertionCategory) {
+        case (.rooms, .globals):
+            return
+        default:
+            throw Symbol.AssertionError.hasCategoryAssertionFailed(
+                for: "\(Self.self)",
+                asserted: assertionCategory,
+                actual: category
+            )
+        }
+    }
+
     func assertHasMutability(_ mutability: Bool) throws {
         switch isMutable {
         case mutability: return
@@ -172,6 +199,14 @@ extension Statement {
 }
 
 // MARK: - Conformances
+
+extension Array where Element == Statement {
+    func routineSelfReference(for id: String) -> Statement? {
+        first { statement in
+            statement.id == id && statement.isFunctionCall
+        }
+    }
+}
 
 extension Statement: CustomDumpReflectable {
     var customDumpMirror: Mirror {

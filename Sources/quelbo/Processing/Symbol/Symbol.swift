@@ -33,14 +33,51 @@ extension Symbol {
         }
     }
 
+    var codeMultiType: String {
+        switch self {
+        case .definition(let definition): return definition.code
+        case .instance(let instance): return instance.codeMultiType
+        case .literal(let literal): return literal.codeMultiType
+        case .statement(let statement): return statement.code
+        }
+    }
+
+    var definition: Definition? {
+        guard case .definition(let definition) = self else { return nil }
+        return definition
+    }
+
+    var evaluation: Literal? {
+        switch self {
+        case .definition: return nil
+        case .literal(let literal): return literal
+        case .statement(let statement): return statement.payload.evaluation
+        case .instance(let instance): return instance.variable.payload.evaluation
+        }
+    }
+
     var handle: String {
         switch self {
         case .definition(let definition):
             return definition.id
         case .instance(let instance):
-            return instance.variable.id ?? "<missing id>"
+            return instance.variable.id ?? instance.variable.code
         case .literal(let literal):
             return literal.code
+        case .statement(let statement):
+            if statement.isFunctionCall { return statement.code}
+            return statement.id ?? statement.code
+        }
+    }
+
+    var handleMultiType: String {
+        switch self {
+        case .definition(let definition):
+            return definition.id
+        case .instance(let instance):
+            return instance.variable.id ?? instance.variable.code
+        case .literal(let literal):
+            return literal.codeMultiType
         case .statement(let statement):
             if statement.isFunctionCall { return statement.code}
             return statement.id ?? statement.code
@@ -94,10 +131,16 @@ extension Symbol {
         return String("\(objID)".dropLast().suffix(4))
     }
 
+    var payload: Statement.Payload? {
+        guard case .statement(let statement) = self else { return nil }
+        return statement.payload
+    }
+
     var returnHandling: ReturnHandling {
         switch self {
         case .definition: return .suppress
-        case .literal, .instance: return .implicit
+        case .literal(let literal): return literal.returnHandling
+        case .instance: return .implicit
         case .statement(let statement): return statement.returnHandling
         }
     }

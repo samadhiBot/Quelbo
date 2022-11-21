@@ -114,13 +114,14 @@ struct ZilSyntax {
         }
 
         let string = Parse {
-            "\"".utf8
+            #"""#.utf8
             Many(into: "") { string, fragment in
                 string.append(contentsOf: fragment)
             } element: {
                 OneOf {
-                    Prefix(1...) { $0 != .init(ascii: "\"") && $0 != .init(ascii: "\\") }
-                        .map { String(Substring($0)).translateMultiline }
+                    Prefix(1...) {
+                        $0 != .init(ascii: "\"") && $0 != .init(ascii: "\\")
+                    }.map { String(Substring($0)).translateMultiline }
                     Parse {
                         "\\".utf8
                         OneOf {
@@ -137,7 +138,7 @@ struct ZilSyntax {
                     }
                 }
             } terminator: {
-                "\"".utf8
+                #"""#.utf8
             }
         }
 
@@ -162,6 +163,11 @@ struct ZilSyntax {
             atom
         }
 
+        let word = Parse {
+            ",W?".utf8
+            atom
+        }
+
         parser = Parse {
             Skip { Whitespace() }
             OneOf {
@@ -174,6 +180,7 @@ struct ZilSyntax {
                     form.map(Token.form)
                     property.map(Token.property)
                     verb.map(Token.verb)
+                    word.map(Token.word)
                     global.map(Token.global)
                 }
                 OneOf {

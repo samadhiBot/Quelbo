@@ -13,6 +13,7 @@ extension Statement {
     struct Payload: Equatable {
         let activation: String?
         let auxiliaries: [Instance]
+        let evaluation: Literal?
         let implicitReturns: Bool
         let parameters: [Instance]
         let predicate: Symbol?
@@ -22,6 +23,7 @@ extension Statement {
         init(
             activation: String? = nil,
             auxiliaries: [Instance] = [],
+            evaluation: Literal? = nil,
             implicitReturns: Bool = false,
             parameters: [Instance] = [],
             predicate: Symbol? = nil,
@@ -30,6 +32,7 @@ extension Statement {
         ) {
             self.activation = activation
             self.auxiliaries = auxiliaries
+            self.evaluation = evaluation
             self.implicitReturns = implicitReturns
             self.parameters = parameters
             self.predicate = predicate
@@ -62,16 +65,13 @@ extension Statement {
         }
 
         var code: String {
-            var lines = symbols.filter { !$0.code.isEmpty }
+            var lines = symbols
             guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
                 return lines.handles(.singleLineBreak)
             }
             let last = lines.remove(at: lastIndex)
             var codeLines = lines.map(\.code)
             var lastLine: String {
-                if let returnType = returnType, last.type != returnType {
-                    return last.handle
-                }
                 switch last {
                 case .definition:
                     return last.handle
@@ -82,21 +82,23 @@ extension Statement {
                     case .force:
                         return "return \(last.handle)"
                     case .implicit:
-                        if statement.isReturnStatement ||
-                           statement.type == .void ||
-                           !implicitReturns
-                        {
-                            return last.handle
-                        } else {
+                        guard
+                            statement.isReturnStatement ||
+                            statement.type.dataType == .void ||
+                            !implicitReturns
+                        else {
                             return "return \(last.handle)"
                         }
+                        return last.handle
                     case .suppress:
                         return last.handle
                     }
                 }
             }
             codeLines.insert(lastLine, at: lastIndex)
-            return codeLines.joined(separator: "\n")
+            return codeLines
+                .filter { !$0.isEmpty }
+                .joined(separator: "\n")
         }
 
         var codeHandlingRepeating: String {
@@ -173,6 +175,10 @@ extension Statement {
 
         var returnType: TypeInfo? {
             symbols.returnType()
+        }
+
+        var returnTypeExplicit: TypeInfo? {
+            symbols.returnTypeExplicit()
         }
     }
 }

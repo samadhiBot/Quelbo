@@ -55,7 +55,7 @@ extension Game {
             do {
                 try process()
 
-                if let target = target {
+                if let target {
                     try Game.Package(path: target).build()
                 } else {
                     Game.Print.symbols()
@@ -113,8 +113,8 @@ extension Game.Processor {
 
         tokens.forEach { token in
             switch token {
-            case .atom, .bool, .character, .decimal, .eval, .global, .list,
-                 .local, .property, .quote, .segment, .type, .vector, .verb:
+            case .atom, .bool, .character, .decimal, .eval, .global, .list, .local, 
+                 .property, .quote, .segment, .type, .vector, .verb, .word:
                 Logger.process.warning("􀁜 Unexpected: \(token.value, privacy: .public)")
 
             case .commented, .string:
@@ -187,7 +187,7 @@ extension Game {
                 factoryTokens,
                 with: &localVariables,
                 mode: factoryMode
-            ).process()
+            ).processOrEvaluate()
         }
 
         if Game.routines.find(zil.lowerCamelCase) != nil {
@@ -195,7 +195,7 @@ extension Game {
                 tokens,
                 with: &localVariables,
                 mode: factoryMode
-            ).process()
+            ).processOrEvaluate()
         }
 
         if Game.findDefinition(zil.lowerCamelCase) != nil {
@@ -203,11 +203,19 @@ extension Game {
                 tokens,
                 with: &localVariables,
                 mode: factoryMode
-            ).process()
+            ).processOrEvaluate()
 
             try Game.commit(routine)
 
             return try Factories.RoutineCall(
+                tokens,
+                with: &localVariables,
+                mode: factoryMode
+            ).processOrEvaluate()
+        }
+
+        if localVariables.routineSelfReference(for: zil) != nil {
+            return try Factories.RoutineSelfReference(
                 tokens,
                 with: &localVariables,
                 mode: factoryMode

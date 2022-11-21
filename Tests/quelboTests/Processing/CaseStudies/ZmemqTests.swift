@@ -26,7 +26,7 @@ final class ZmemqTests: QuelboTests {
         """)
     }
 
-    func testBuzz() throws {
+    func testZmemq() throws {
         XCTAssertNoDifference(
             Game.routines.find("zmemq"),
             Statement(

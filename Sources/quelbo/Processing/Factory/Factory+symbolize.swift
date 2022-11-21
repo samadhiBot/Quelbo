@@ -26,61 +26,82 @@ extension Factory {
         while let token = tokens.shift() {
             switch token {
             case .atom(let string):
-                symbols.append(try symbolizeAtom(string))
-
+                symbols.append(
+                    try symbolizeAtom(string, mode: factoryMode ?? mode)
+                )
             case .bool(let bool):
-                symbols.append(.literal(bool))
-
+                symbols.append(
+                    .literal(bool)
+                )
             case .character(let character):
-                symbols.append(.literal(character))
-
+                symbols.append(
+                    .literal(character)
+                )
             case .commented(let token):
-                symbols.append(.statement(
-                    code: { _ in token.value.commented },
-                    type: .comment
-                ))
-
+                symbols.append(
+                    .statement(
+                        code: { _ in token.zil.commented },
+                        type: .comment
+                    )
+                )
             case .decimal(let int):
-                symbols.append(.literal(int))
-
+                symbols.append(
+                    .literal(int)
+                )
             case .eval(let token):
-                symbols.append(try symbolizeEval(token))
-
+                symbols.append(
+                    try symbolizeEval(token)
+                )
             case .form(let tokens):
-                symbols.append(try symbolizeForm(tokens, mode: factoryMode))
-
+                symbols.append(
+                    try symbolizeForm(tokens, mode: factoryMode ?? mode)
+                )
             case .global(let token):
-                symbols.append(try symbolizeGlobal(token))
-
+                symbols.append(
+                    try symbolizeGlobal(token, mode: factoryMode ?? mode)
+                )
             case .list(let tokens):
-                symbols.append(try symbolizeList(tokens))
-
+                symbols.append(
+                    try symbolizeList(tokens, mode: factoryMode ?? mode)
+                )
             case .local(let string):
-                symbols.append(try symbolizeLocal(string))
-
+                symbols.append(
+                    try symbolizeLocal(string)
+                )
             case .property(let string):
-                symbols.append(try symbolizeProperty(string, siblings: &tokens))
-
+                symbols.append(
+                    try symbolizeProperty(string, siblings: &tokens)
+                )
             case .quote(let token):
-                symbols.append(try symbolizeQuote(token))
-
+                symbols.append(
+                    .definition(id: "%quote", tokens: [token])
+                )
             case .segment(let token):
-                symbols.append(try symbolizeSegment(token))
-
+                symbols.append(
+                    try symbolizeSegment(token)
+                )
             case .string(let string):
-                symbols.append(.literal(string))
-
+                symbols.append(
+                    .literal(string)
+                )
             case .type(let token):
-                symbols.append(try symbolizeType(token, siblings: &tokens))
-
+                symbols.append(
+                    try symbolizeType(token, siblings: &tokens)
+                )
             case .vector(let tokens):
-                symbols.append(try symbolizeList(tokens))
-
+                symbols.append(
+                    try symbolizeList(tokens, mode: factoryMode ?? mode)
+                )
             case .verb(let rawVerb):
-                symbols.append(.verb(rawVerb))
+                symbols.append(
+                    .verb(rawVerb)
+                )
+            case .word(let rawWord):
+                symbols.append(
+                    .word(rawWord)
+                )
             }
         }
-
         return symbols
     }
 
@@ -96,7 +117,7 @@ extension Factory {
         _ token: Token,
         mode factoryMode: FactoryMode? = nil
     ) throws -> Symbol {
-        let symbols = try symbolize([token], mode: factoryMode ?? mode)
+        let symbols = try symbolize([token], mode: factoryMode)
         guard symbols.count == 1 else {
             throw SymbolizationError.singleTokenSymbolizationFailed(token)
         }
@@ -109,7 +130,10 @@ extension Factory {
     /// - Parameter zil: The original Zil atom name.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil atom.
-    func symbolizeAtom(_ zil: String) throws -> Symbol {
+    func symbolizeAtom(
+        _ zil: String,
+        mode factoryMode: FactoryMode
+    ) throws -> Symbol {
         let name = zil.lowerCamelCase
 
         if let local = findLocal(name) {
@@ -121,13 +145,13 @@ extension Factory {
         if let known = knownVariable(zil) {
             return .instance(known)
         }
-        if zil == "T" {
-            return .literal(true)
+        if ["T", "ELSE"].contains(zil) {
+            return .true
         }
         if let defined = try findAndEvaluateDefinition(zil) {
             return .statement(defined)
         }
-        if mode == .evaluate && Game.findFactory(zil) != nil {
+        if factoryMode == .evaluate && Game.findFactory(zil) != nil {
             return .zilAtom(zil)
         }
 
@@ -158,7 +182,7 @@ extension Factory {
     /// - Returns: A ``Symbol`` representation of the Zil form.
     func symbolizeForm(
         _ formTokens: [Token],
-        mode factoryMode: FactoryMode? = nil
+        mode factoryMode: FactoryMode
     ) throws -> Symbol {
         var tokens = formTokens
 
@@ -202,7 +226,7 @@ extension Factory {
             tokens: tokens,
             with: &localVariables,
             type: .zCode,
-            mode: factoryMode ?? mode
+            mode: factoryMode
         )
     }
 
@@ -215,7 +239,10 @@ extension Factory {
     ///   - index: The index at which the global occurs in a block of Zil code.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil global atom.
-    func symbolizeGlobal(_ token: Token) throws -> Symbol {
+    func symbolizeGlobal(
+        _ token: Token,
+        mode factoryMode: FactoryMode
+    ) throws -> Symbol {
         guard case .atom(let zil) = token else {
             return try symbolize(token)
         }
@@ -228,13 +255,6 @@ extension Factory {
         if let global = Game.findGlobal(id) {
             return .instance(global)
         }
-        if mode == .evaluate {
-            return .statement(
-                id: id,
-                code: { _ in id },
-                type: .unknown
-            )
-        }
 
         throw GameError.globalNotFound(id)
     }
@@ -246,8 +266,15 @@ extension Factory {
     /// - Parameter listTokens: A `Token` array consisting of the Zil list elements.
     ///
     /// - Returns: A ``Symbol`` representation of the Zil list.
-    func symbolizeList(_ listTokens: [Token]) throws -> Symbol {
-        try Factories.List(listTokens, with: &localVariables).process()
+    func symbolizeList(
+        _ listTokens: [Token],
+        mode factoryMode: FactoryMode
+    ) throws -> Symbol {
+        try Factories.List(
+            listTokens,
+            with: &localVariables,
+            mode: factoryMode
+        ).processOrEvaluate()
     }
 
     /// Translates a Zil
@@ -295,21 +322,6 @@ extension Factory {
     }
 
     /// Translates a Zil
-    /// [Quote](https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#752-quote-1)
-    /// token into a Quelbo ``Symbol``.
-    ///
-    /// - Parameter quote: The quoted Zil element.
-    ///
-    /// - Returns: A ``Symbol`` representation of a Zil quote.
-    func symbolizeQuote(_ token: Token) throws -> Symbol {
-        try Factories.Quote(
-            [token],
-            with: &localVariables,
-            mode: mode
-        ).process()
-    }
-
-    /// Translates a Zil
     /// [Segment](https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#77-segments-1)
     /// token into a Quelbo ``Symbol``.
     ///
@@ -317,7 +329,11 @@ extension Factory {
     ///
     /// - Returns: A ``Symbol`` representation of a Zil segment.
     func symbolizeSegment(_ token: Token) throws -> Symbol {
-        try Factories.Segment([token], with: &localVariables).process()
+        try Factories.Segment(
+            [token],
+            with: &localVariables,
+            mode: mode
+        ).processOrEvaluate()
     }
 
     /// Translates a Zil
@@ -340,7 +356,11 @@ extension Factory {
             guard case .list(let tokens) = siblings.shift() else {
                 throw SymbolizationError.missingDeclarationValue(siblings)
             }
-            return try Factories.DeclareType(tokens, with: &localVariables).process()
+            return try Factories.DeclareType(
+                tokens,
+                with: &localVariables,
+                mode: mode
+            ).processOrEvaluate()
         default:
             throw SymbolizationError.unknownType(type)
         }

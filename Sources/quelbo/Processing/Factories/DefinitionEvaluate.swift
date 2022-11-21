@@ -37,7 +37,7 @@ extension Factories {
                 )
             }
 
-            if let activation = activation {
+            if let activation {
                 definitionTokens.insert(.atom(activation), at: 0)
             }
             definitionTokens.insert(.atom(zilName), at: 0)

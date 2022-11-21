@@ -11,6 +11,9 @@ extension Factories {
     /// A symbol factory for calls to functions and routines defined in a game.
     ///
     class RoutineCall: Factory {
+        /// A trailing comment, used by subclass factories.
+        var comment: String { "" }
+
         /// The functions or routine defined in a game.
         var routine: Statement!
 
@@ -34,14 +37,17 @@ extension Factories {
 
                 return .statement(
                     code: { _ in
-                        "\(symbol.id): \(value.code)"
+                        "\(symbol.id): \(value.handle)"
                     },
                     type: value.type
                 )
             }
         }
 
-        @discardableResult
+        override func evaluate() throws -> Symbol {
+            try process()
+        }
+
         override func process() throws -> Symbol {
             guard
                 let routine = routine,
@@ -49,12 +55,13 @@ extension Factories {
             else {
                 throw Error.unknownRoutineName(symbols)
             }
+            let comment = params.isEmpty ? "" : comment
             let params = params
 
             return .statement(
                 id: routineID,
                 code: { _ in
-                    "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))"
+                    "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))\(comment)"
                 },
                 type: routine.type,
                 isFunctionCall: true

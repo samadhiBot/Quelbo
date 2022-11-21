@@ -51,6 +51,27 @@ final class TellTests: QuelboTests {
         ))
     }
 
+    func testTellNestedQuotation() throws {
+        let symbol = process(#"""
+            <TELL
+                "The cyclops says \"Mmm Mmm. I love hot peppers! But oh, could I use
+                a drink. Perhaps I could drink the blood of that thing.\"  From the
+                gleam in his eye, it could be surmised that you are \"that thing\"." CR>
+        """#)
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: #"""
+                output("""
+                    The cyclops says "Mmm Mmm. I love hot peppers! But oh, could \
+                    I use a drink. Perhaps I could drink the blood of that \
+                    thing." From the gleam in his eye, it could be surmised that \
+                    you are "that thing".
+                    """)
+                """#,
+            type: .void
+        ))
+    }
+
     func testThrows() throws {
         XCTAssertThrowsError(
             try factory.init([

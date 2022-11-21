@@ -53,11 +53,7 @@ final class IsVersionTests: QuelboTests {
                    }
                }
                """,
-            type: .init(
-                dataType: .int,
-                confidence: .integerZero,
-                isOptional: false
-            ),
+            type: .void,
             returnHandling: .suppress
         ))
     }

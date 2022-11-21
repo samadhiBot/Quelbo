@@ -6,6 +6,7 @@
 //
 
 import CustomDump
+import Fizmo
 import XCTest
 @testable import quelbo
 
@@ -21,64 +22,25 @@ final class RepeatTests: QuelboTests {
         ])
     }
 
-    func testFindFactory() throws {
+    func testFindFactory() {
         AssertSameFactory(factory, Game.findFactory("REPEAT"))
     }
 
-    func testRepeatFirstZilfExample() throws {
-        let symbol = try routineFactory.init([
-            .atom("TEST-REPEAT-1"),
-            .list([
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START: ")
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                    .atom("X")
-                ]),
-                .commented(
-                    .string("X is not reinitialized between iterations. Default ACTIVATION created.")
-                ),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .form([
-                        .atom("+"),
-                        .local("X"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("X"),
-                            .decimal(3)
-                        ]),
-                        .form([
-                            .atom("RETURN")
-                        ])
-                    ])
-                ]),
-                .commented(.string("Bare RETURN without ACTIVATION will exit BLOCK"))
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("RETURN EXIT BLOCK"),
-                .atom("CR"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.hkkpf6
+    func testRepeatFirstZilfExample() {
+        let symbol = process("""
+            ;"Bare RETURN without ACTIVATION"
+            <ROUTINE TEST-REPEAT-1 ()
+            <TELL "START: ">
+            <REPEAT (X) ;"X is not reinitialized between iterations. Default ACTIVATION created."
+                    <SET X <+ .X 1>>
+                    <TELL N .X " ">
+                    <COND (<=? .X 3> <RETURN>)> ;"Bare RETURN without ACTIVATION will exit BLOCK"
+                >
+                <TELL "RETURN EXIT BLOCK" CR CR>
+            >
+            ;"--> START: 1 2 3 RETURN EXIT BLOCK"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testRepeat1",
@@ -88,14 +50,14 @@ final class RepeatTests: QuelboTests {
                     output("START: ")
                     var x: Int = 0
                     while true {
-                        // X is not reinitialized between iterations. Default ACTIVATION created.
+                        // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
                             break
                         }
-                        // Bare RETURN without ACTIVATION will exit BLOCK
+                        // "Bare RETURN without ACTIVATION will exit BLOCK"
                     }
                     output("RETURN EXIT BLOCK")
                 }
@@ -106,85 +68,47 @@ final class RepeatTests: QuelboTests {
         ))
     }
 
-    func testRepeatSecondZilfExample() throws {
-        let symbol = try routineFactory.init([
-            .atom("TEST-REPEAT-2"),
-            .list([
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("START: ")
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                    .list([
-                        .atom("X"),
-                        .decimal(0)
-                    ])
-                ]),
-                .commented(.string(
-                    """
-                    X is not reinitialized between iterations.
-                    Default ACTIVATION created.
-                    """
-                )),
-                .form([
-                    .atom("SET"),
-                    .atom("X"),
-                    .form([
-                        .atom("+"),
-                        .local("X"),
-                        .decimal(1)
-                    ])
-                ]),
-                .form([
-                    .atom("TELL"),
-                    .atom("N"),
-                    .local("X"),
-                    .string(" ")
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("=?"),
-                            .local("X"),
-                            .decimal(3)
-                        ]),
-                        .form([
-                            .atom("COND"),
-                            .list([
-                                .global(.atom("FUNNY-RETURN?")),
-                                .form([
-                                    .atom("TELL"),
-                                    .string("RETURN EXIT ROUTINE"),
-                                    .atom("CR"),
-                                    .atom("CR")
-                                ])
-                            ])
-                        ]),
-                        .form([
-                            .atom("RETURN"),
-                            .atom("T")
-                        ])
-                    ])
-                ]),
-                .commented(.string(
-                    """
-                    RETURN with value but without
-                    ACTIVATION will exit ROUTINE
-                    (FUNNY-RETURN = TRUE)
-                    """
-                ))
-            ]),
-            .form([
-                .atom("TELL"),
-                .string("RETURN EXIT BLOCK"),
-                .atom("CR"),
-                .atom("CR")
-            ])
-        ], with: &localVariables).process()
+    func testRepeatFirstZilfEvaluation() {
+        /// The `testRepeat1` (TEST-REPEAT-1) routine.
+        func testRepeat1() {
+            output("START: ")
+            var x: Int = 0
+            while true {
+                // X is not reinitialized between iterations. Default ACTIVATION created.
+                x.set(to: .add(x, 1))
+                output(x)
+                output(" ")
+                if x.equals(3) {
+                    break
+                }
+                // Bare RETURN without ACTIVATION will exit BLOCK
+            }
+            output("RETURN EXIT BLOCK")
+        }
+
+        testRepeat1()
+
+        XCTAssertNoDifference(outputFlush(), "START: 1 2 3 RETURN EXIT BLOCK")
+    }
+
+    // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.hkkpf6
+    func testRepeatSecondZilfExample() {
+        let symbol = process("""
+            ;"RETURN with value but without ACTIVATION"
+            <ROUTINE TEST-REPEAT-2 ()
+                <TELL "START: ">
+                <REPEAT ((X 0)) ;"X is not reinitialized between iterations. Default ACTIVATION created."
+                    <SET X <+ .X 1>>
+                    <TELL N .X " ">
+                    <COND (<=? .X 3>
+                        <COND (,FUNNY-RETURN?
+                        <TELL "RETURN EXIT ROUTINE" CR CR>)>
+                        <RETURN T>)> ;"RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
+                >
+                <TELL "RETURN EXIT BLOCK" CR CR>
+            >
+            ;"--> START: 1 2 3 RETURN EXIT ROUTINE"
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "testRepeat2",
@@ -195,8 +119,7 @@ final class RepeatTests: QuelboTests {
                     output("START: ")
                     var x: Int = 0
                     while true {
-                        // X is not reinitialized between iterations.
-                        // Default ACTIVATION created.
+                        // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
@@ -206,9 +129,7 @@ final class RepeatTests: QuelboTests {
                             }
                             return true
                         }
-                        // RETURN with value but without
-                        // ACTIVATION will exit ROUTINE
-                        // (FUNNY-RETURN = TRUE)
+                        // "RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
                     }
                     output("RETURN EXIT BLOCK")
                 }
@@ -218,4 +139,34 @@ final class RepeatTests: QuelboTests {
             isCommittable: true
         ))
     }
+
+    func testRepeatSecondZilfEvaluation() {
+        let isFunnyReturn = true
+
+        @discardableResult
+        /// The `testRepeat2` (TEST-REPEAT-2) routine.
+        func testRepeat2() -> Bool {
+            output("START: ")
+            var x: Int = 0
+            while true {
+                // "X is not reinitialized between iterations. Default ACTIVATION created."
+                x.set(to: .add(x, 1))
+                output(x)
+                output(" ")
+                if x.equals(3) {
+                    if isFunnyReturn {
+                        output("RETURN EXIT ROUTINE")
+                    }
+                    return true
+                }
+                // "RETURN with value but without ACTIVATION will exit ROUTINE (FUNNY-RETURN = TRUE)"
+            }
+            // output("RETURN EXIT BLOCK") [Will never be executed]
+        }
+
+        testRepeat2()
+
+        XCTAssertNoDifference(outputFlush(), "START: 1 2 3 RETURN EXIT ROUTINE")
+    }
+
 }

@@ -46,8 +46,10 @@ final class PrintContentsTests: QuelboTests {
             Game.findGlobal("pItObject"),
             Instance(Statement(
                 id: "pItObject",
+                code: "var pItObject: Object?",
                 type: .object.optional,
                 category: .globals,
+                isCommittable: true,
                 isMutable: true
             ))
         )
@@ -61,11 +63,11 @@ final class PrintContentsTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `thisIsIt` (THIS-IS-IT) routine.
-                    func thisIsIt(obj: Object) {
-                        pItObject.set(to: obj)
+                    func thisIsIt(obj: Object) -> Object? {
+                        return pItObject.set(to: obj)
                     }
                     """,
-                type: .void,
+                type: .object.optional,
                 category: .routines,
                 isCommittable: true
             )
@@ -84,7 +86,7 @@ final class PrintContentsTests: QuelboTests {
                         var f: Object? = nil
                         var n: Object? = nil
                         var is1St: Bool = true
-                        var isIt: Bool = false
+                        var isIt: Object? = nil
                         var isTwo: Bool = false
                         if _ = f.set(to: obj.firstChild) {
                             while true {

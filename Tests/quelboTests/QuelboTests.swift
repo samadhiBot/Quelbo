@@ -41,6 +41,19 @@ class QuelboTests: XCTestCase {
         )
     }
 
+    func evaluate(
+        _ zil: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Symbol {
+        process(
+            zil,
+            mode: .evaluate,
+            file: file,
+            line: line
+        )
+    }
+
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>
@@ -67,67 +80,72 @@ class QuelboTests: XCTestCase {
     func process(
         _ zil: String,
         type FactoryType: Factories.FactoryType? = nil,
+        mode factoryMode: Factory.FactoryMode = .process,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Symbol {
-        guard let parsed = try? zilParser.parse(zil) else {
-            XCTFail(
-                "Parsing failed for Zil source:\n\(zil)",
-                file: file,
-                line: line
-            )
-            return .literal(false)
-        }
+        do {
+            let parsed = try zilParser.parse(zil)
 
-        var symbols: [Symbol] = []
-        for token in parsed {
-            do {
-                switch token {
-                case .form(let tokens):
-                    guard case .atom(let zilString) = tokens.first else {
-                        throw GameError.unknownDirective(tokens)
+            var symbols: [Symbol] = []
+            for token in parsed {
+                do {
+                    switch token {
+                    case .form(let tokens):
+                        guard case .atom(let zilString) = tokens.first else {
+                            throw GameError.unknownDirective(tokens)
+                        }
+                        let symbol = try Game.process(
+                            zil: zilString,
+                            tokens: tokens,
+                            with: &localVariables,
+                            type: .mdl,
+                            mode: factoryMode
+                        )
+                        try Game.commit(symbol)
+
+                        symbols.append(symbol)
+
+                    case .commented, .string:
+                        break
+
+                    default:
+                        XCTFail(
+                            "Test processing is not implemented for this token type:\n\(token)",
+                            file: file,
+                            line: line
+                        )
+                        return .false
                     }
-                    let symbol = try Game.process(
-                        zil: zilString,
-                        tokens: tokens,
-                        with: &localVariables,
-                        type: .mdl
-                    )
-                    try Game.commit(symbol)
-
-                    symbols.append(symbol)
-
-                case .commented, .string:
-                    break
-
-                default:
+                } catch {
                     XCTFail(
-                        "Test processing is not implemented for this token type:\n\(token)",
+                        "Test processing encountered the following error: \(error)",
                         file: file,
                         line: line
                     )
-                    return .literal(false)
+                    return .false
                 }
-            } catch {
+            }
+
+            guard let lastSymbol = symbols.last else {
                 XCTFail(
-                    "Test processing encountered the following error: \(error)",
+                    "Test processing failed to produce any symbols for:\n\(zil)",
                     file: file,
                     line: line
                 )
-                return .literal(false)
+                return .false
             }
-        }
 
-        guard let lastSymbol = symbols.last else {
+            return lastSymbol
+
+        } catch {
             XCTFail(
-                "Test processing failed to produce any symbols for:\n\(zil)",
+                "Parsing failed for Zil source:\n\(error)",
                 file: file,
                 line: line
             )
-            return .literal(false)
+            return .false
         }
-
-        return lastSymbol
     }
 }
 

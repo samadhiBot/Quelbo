@@ -45,7 +45,7 @@ extension Factories {
                 code: {
                     let elementValues = $0.payload
                         .symbols
-                        .codeValues(.commaSeparatedNoTrailingComma)
+                        .codeMultiTypeValues(.commaSeparatedNoTrailingComma)
 
                     return $0.type.isTableElement == true ? ".table(\(elementValues))"
                                                           : "Table(\(elementValues))"

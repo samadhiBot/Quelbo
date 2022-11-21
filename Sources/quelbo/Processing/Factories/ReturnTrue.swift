@@ -23,7 +23,13 @@ extension Factories {
         override func process() throws -> Symbol {
             .statement(
                 code: {
-                    "return\($0.type == .booleanTrue ? " true" : "")"
+                    if $0.type.dataType == .bool {
+                        return "return true"
+                    }
+                    if $0.type.isOptional == true {
+                        return "return nil"
+                    }
+                    return ""
                 },
                 type: .booleanTrue,
                 isReturnStatement: true

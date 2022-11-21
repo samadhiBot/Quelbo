@@ -10,16 +10,11 @@ import XCTest
 @testable import quelbo
 
 final class MungRoomTests: QuelboTests {
-    override func setUp() {
-        super.setUp()
-
+    func testMungRoomZork1() {
         process("""
             <SETG ZORK-NUMBER 1>
 
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT
-                       OPENBIT SEARCHBIT TRANSBIT ONBIT RLANDBIT FIGHTBIT
-                       STAGGERED WEARBIT)>
+            <OBJECT GLOBAL-OBJECTS (FLAGS RMUNGBIT)>
 
             <ROUTINE MUNG-ROOM (RM STR)
                  %<COND (<==? ,ZORK-NUMBER 2>
@@ -28,10 +23,46 @@ final class MungRoomTests: QuelboTests {
                     (ELSE T)>
                  <FSET .RM ,RMUNGBIT>
                  <PUTP .RM ,P?LDESC .STR>>
-        """, type: .mdl)
+        """)
+
+        XCTAssertNoDifference(
+            Game.routines.find("mungRoom"),
+            Statement(
+                id: "mungRoom",
+                code: """
+                    /// The `mungRoom` (MUNG-ROOM) routine.
+                    func mungRoom(
+                        rm: Object,
+                        str: String
+                    ) {
+                        rm.isDestroyed.set(true)
+                        rm.longDescription = str
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true
+            )
+        )
     }
 
-    func testMungRoom() {
+    func testMungRoomZork2() {
+        process("""
+            <SETG ZORK-NUMBER 2>
+
+            <ROOM INSIDE-BARROW>
+
+            <OBJECT GLOBAL-OBJECTS (FLAGS RMUNGBIT)>
+
+            <ROUTINE MUNG-ROOM (RM STR)
+                 %<COND (<==? ,ZORK-NUMBER 2>
+                     '<COND (<EQUAL? .RM ,INSIDE-BARROW>
+                         <RFALSE>)>)
+                    (ELSE T)>
+                 <FSET .RM ,RMUNGBIT>
+                 <PUTP .RM ,P?LDESC .STR>>
+        """)
+
         XCTAssertNoDifference(
             Game.routines.find("mungRoom"),
             Statement(
@@ -43,12 +74,8 @@ final class MungRoomTests: QuelboTests {
                         rm: Object,
                         str: String
                     ) -> Bool {
-                        if zorkNumber.equals(2) {
-                            if rm.equals(insideBarrow) {
-                                return false
-                            }
-                        } else {
-                            return true
+                        if rm.equals(insideBarrow) {
+                            return false
                         }
                         rm.isDestroyed.set(true)
                         rm.longDescription = str

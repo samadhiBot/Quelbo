@@ -71,6 +71,10 @@ final class Instance: SymbolType {
     }
 
     var code: String {
+        id
+    }
+
+    var codeMultiType: String {
         guard isTableElement == true else { return id }
 
         switch variable.type.dataType {
@@ -117,7 +121,7 @@ final class Instance: SymbolType {
 
     var typeDescription: String {
         var description = type.dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "<Unknown>"
+            isTableElement == true ? "TableElement" : "Any"
         )
         if isArray == true {
             description = "[\(description)]"
@@ -148,7 +152,7 @@ extension Instance {
         }
         if context == .optional {
             var description = type.dataType?.description ?? (
-                isTableElement == true ? "TableElement" : "<Unknown>"
+                isTableElement == true ? "TableElement" : "Any"
             )
             if isArray == true {
                 description = "[\(description)]"
@@ -159,17 +163,16 @@ extension Instance {
     }
 
     var emptyValueAssignment: String {
-        guard let value = defaultValue?.code else {
-            return "var \(id): \(type.emptyValueAssignment)"
+        if let defaultValue {
+            return "var \(id): \(variable.type) = \(defaultValue.handle)"
         }
-        return "var \(id): \(variable.type) = \(value)"
+        return "var \(id): \(type.emptyValueAssignment)"
     }
 
     var initialization: String {
-        if let defaultValue = defaultValue {
-            return "var \(id): \(defaultValue.type) = \(defaultValue.code)"
+        if let defaultValue {
+            return "var \(id): \(defaultValue.type) = \(defaultValue.handle)"
         }
-
         switch context {
         case .auxiliary:
             return emptyValueAssignment

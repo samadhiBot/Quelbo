@@ -11,8 +11,8 @@ extension Factories {
     /// A symbol factory for a single conditional predicate and associated expressions within a
     /// Quelbo ``Condition``.
     class Conditional: Factory {
-        var blockProcessor: BlockProcessor!
-        var predicate: Symbol!
+        var blockProcessor: BlockProcessor?
+        var predicate: Symbol?
 
         override func processTokens() throws {
             var conditionTokens = tokens
@@ -21,19 +21,31 @@ extension Factories {
                 throw Error.missingConditionPredicate
             }
 
-            predicate = try symbolize(predicateToken)
+            self.predicate = try symbolize(predicateToken, mode: mode)
 
-            conditionTokens.insert(.list([]), at: 0)
-            blockProcessor = try Factories.BlockProcessor(
-                conditionTokens,
-                with: &localVariables,
-                mode: mode
-            )
-            blockProcessor.assert(implicitReturns: false)
+            switch mode {
+            case .evaluate:
+                guard predicate == .true else { return }
+                let evaluated = try symbolize(conditionTokens, mode: mode)
+                if evaluated == [.true] {
+                    symbols = [.emptyStatement]
+                } else {
+                    symbols = evaluated
+                }
+
+            case .process:
+                conditionTokens.insert(.list([]), at: 0)
+                self.blockProcessor = try Factories.BlockProcessor(
+                    conditionTokens,
+                    with: &localVariables,
+                    mode: mode
+                )
+                blockProcessor?.assert(implicitReturns: false)
+            }
         }
 
         override func processSymbols() throws {
-            try? predicate.assert(
+            try? predicate?.assert(
                 .hasType(.bool)
             )
         }
@@ -59,21 +71,35 @@ extension Factories {
             }
         }
 
+        override func evaluate() throws -> Symbol {
+            guard
+                predicate?.evaluation == .true,
+                let definition = symbols.first
+            else { return .false }
+
+            return definition
+        }
+
         override func process() throws -> Symbol {
             let ifStatement = ifStatement
 
             return .statement(
-                code: {
+                code: { statement in
+                    let code = {
+                        let code = statement.payload.code
+                        return code.isEmpty ? "// do nothing" : code
+                    }()
+                    
                     return """
-                        \(ifStatement($0.payload.predicate)){
-                        \($0.payload.code.indented)
+                        \(ifStatement(statement.payload.predicate)){
+                        \(code.indented)
                         }
                         """
                 },
-                type: blockProcessor.payload.returnType ?? .void,
+                type: blockProcessor?.payload.symbols.returnTypeExplicit() ?? .void,
                 payload: .init(
                     predicate: predicate,
-                    symbols: blockProcessor.payload.symbols
+                    symbols: blockProcessor?.payload.symbols ?? []
                 ),
                 returnHandling: .suppress
             )
@@ -86,5 +112,6 @@ extension Factories {
 extension Factories.Conditional {
     enum Error: Swift.Error {
         case missingConditionPredicate
+        case unevaluatedPredicate(Symbol)
     }
 }

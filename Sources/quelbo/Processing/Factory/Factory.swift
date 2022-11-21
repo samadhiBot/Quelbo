@@ -17,6 +17,9 @@ class Factory {
     /// Specifies what type of command the factory translates.
     class var factoryType: Factories.FactoryType { .zCode }
 
+//    /// <#Description#>
+//    private(set) var evalError: Swift.Error?
+
     /// An array of the local variables at play within a factory.
     var localVariables: [Statement]
 
@@ -46,6 +49,11 @@ class Factory {
         try processSymbols()
 
         variables = localVariables
+    }
+
+    @discardableResult
+    func evaluate() throws -> Symbol {
+        throw Error.unimplementedEvaluate(self)
     }
 
     func findAndEvaluateDefinition(_ zil: String) throws -> Statement? {
@@ -103,7 +111,7 @@ class Factory {
     ///
     /// - Throws: When the `tokens` array cannot be symbolized.
     func processTokens() throws {
-        self.symbols = try symbolize(tokens)
+        self.symbols = try symbolize(tokens, mode: mode)
     }
 
     /// <#Description#>
@@ -120,14 +128,20 @@ class Factory {
     func process() throws -> Symbol {
         throw Error.unimplementedFactory(self)
     }
+
+    @discardableResult
+    func processOrEvaluate() throws -> Symbol {
+        switch mode {
+        case .evaluate: return try evaluate()
+        case .process: return try process()
+        }
+    }
 }
 
 extension Factory {
     /// <#Description#>
     enum FactoryMode: Equatable {
-        case evaluate
-
-        case process
+        case evaluate, process
     }
 }
 
@@ -143,6 +157,7 @@ extension Factory: Equatable {
 
 extension Factory {
     enum Error: Swift.Error {
+        case unimplementedEvaluate(Factory)
         case unimplementedFactory(Factory)
     }
 }

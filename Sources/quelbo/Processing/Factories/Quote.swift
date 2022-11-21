@@ -16,10 +16,18 @@ extension Factories {
             ["QUOTE"]
         }
 
+        override func processTokens() throws {
+            self.symbols = try symbolize(tokens, mode: .process)
+        }
+
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.exactly(1))
             )
+        }
+
+        override func evaluate() throws -> Symbol {
+            symbols[0]
         }
 
         override func process() throws -> Symbol {

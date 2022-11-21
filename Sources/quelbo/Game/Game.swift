@@ -16,9 +16,6 @@ class Game {
     /// <#Description#>
     private(set) var definitions: [Definition] = []
 
-    /// <#Description#>
-    private(set) var globalVariables: [Statement] = Game.reservedGlobals
-
     /// An array of ``Symbol`` symbols processed from the `tokens`.
     private(set) var symbols: [Symbol] = []
 
@@ -132,14 +129,12 @@ extension Game {
     /// <#Description#>
     static func reset(
         definitions: [Definition] = [],
-        globalVariables: [Statement] = Game.reservedGlobals,
         symbols: [Symbol] = [],
         tokens: [Token] = [],
         zMachineVersion: Game.ZMachineVersion = .z3
     ) {
         shared.definitions = definitions
-        shared.globalVariables = globalVariables
-        shared.symbols = symbols
+        shared.symbols = Game.reservedGlobals + symbols
         shared.tokens = tokens
         shared.zMachineVersion = zMachineVersion
     }
@@ -154,63 +149,6 @@ extension Game {
         .map { $0 as! Factory.Type }
 }
 
-// MARK: - Reserved globals
-
-extension Game {
-    static var reservedGlobals: [Statement] {
-        [
-            Statement(
-                id: "actions",
-                code: { _ in "actions" },
-                type: .string.array,
-                category: .globals,
-                isMutable: true
-            ),
-            Statement(
-                id: "here",
-                code: { _ in "here" },
-                type: .object.optional,
-                category: .rooms,
-                isMutable: true
-            ),
-            Statement(
-                id: "preactions",
-                code: { _ in "preactions" },
-                type: .table,
-                category: .globals,
-                isMutable: true
-            ),
-            Statement(
-                id: "prsa",
-                code: { _ in "prsa" },
-                type: .int.optional,
-                category: .globals,
-                isMutable: true
-            ),
-            Statement(
-                id: "prsi",
-                code: { _ in "prsi" },
-                type: .object,
-                category: .globals,
-                isMutable: true
-            ),
-            Statement(
-                id: "prso",
-                code: { _ in "prso" },
-                type: .object,
-                category: .globals,
-                isMutable: true
-            ),
-            Statement(
-                id: "verbs",
-                code: { _ in "verbs" },
-                type: .table,
-                category: .globals,
-                isMutable: true
-            ),
-        ]
-    }
-}
 // MARK: - setZMachineVersion
 
 extension Game {

@@ -114,4 +114,19 @@ final class MultiplyTests: QuelboTests {
             ], with: &localVariables)
         )
     }
+
+    func testEvaluate() throws {
+        XCTAssertNoDifference(
+            evaluate("<* 2 3 4>"),
+            .literal(24)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %<* 2 3 4>>"),
+            .statement(
+                code: "output(24)",
+                type: .void
+            )
+        )
+    }
 }

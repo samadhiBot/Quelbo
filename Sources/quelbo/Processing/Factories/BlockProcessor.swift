@@ -46,17 +46,9 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            // if implicitReturns {
-            //     try? symbols.returning.assert(.haveCommonType)
-            // }
-
             try symbols.returningExplicitly.assert(
                 .haveCommonType
             )
-
-            // for parameter in parameters {
-            //     try parameter.assertCommonType()
-            // }
 
             for symbol in symbols {
                 guard

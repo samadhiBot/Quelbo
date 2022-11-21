@@ -22,16 +22,16 @@ extension Factories {
             )
 
             try symbols[0].assert(
-                .hasType(.object)
+                .isProperty
             )
         }
 
         override func process() throws -> Symbol {
-            let object = symbols[0]
+            let property = symbols[0]
 
             return .statement(
                 code: { _ in
-                    "\(object.handle).propertySize"
+                    "\(property.handle).propertySize"
                 },
                 type: .int
             )

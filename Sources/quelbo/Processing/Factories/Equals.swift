@@ -27,6 +27,16 @@ extension Factories {
             ])
         }
 
+        override func evaluate() throws -> Symbol {
+            guard let firstElement = symbols.first?.evaluation else {
+                return .false
+            }
+            for element in symbols.map(\.evaluation) {
+                guard element == firstElement else { return .false }
+            }
+            return .true
+        }
+
         override func process() throws -> Symbol {
             let first = symbols[0]
             let function = function

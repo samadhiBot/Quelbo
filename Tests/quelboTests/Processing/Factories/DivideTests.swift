@@ -114,4 +114,19 @@ final class DivideTests: QuelboTests {
             ], with: &localVariables)
         )
     }
+
+    func testEvaluate() throws {
+        XCTAssertNoDifference(
+            evaluate("</ 100 5 2>"),
+            .literal(10)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %</ 100 5 2>>"),
+            .statement(
+                code: "output(10)",
+                type: .void
+            )
+        )
+    }
 }

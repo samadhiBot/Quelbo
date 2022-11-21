@@ -57,7 +57,7 @@ final class FactorySymbolizeTests: QuelboTests {
             .atom("T")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .literal(true))
+        XCTAssertNoDifference(symbol, .true)
     }
 
     func testSymbolizeAtomTForVariableT() throws {
@@ -125,10 +125,7 @@ final class FactorySymbolizeTests: QuelboTests {
             )
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .statement(
-            code: ".add(2, 3)",
-            type: .int
-        ))
+        XCTAssertNoDifference(symbol, .literal(5))
     }
 
     func testSymbolizeGlobal() throws {
@@ -218,9 +215,14 @@ final class FactorySymbolizeTests: QuelboTests {
             ]))
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .statement(
-            code: ".random(100)",
-            type: .int
+        XCTAssertNoDifference(symbol, .definition(
+            id: "%quote",
+            tokens: [
+                .form([
+                    .atom("RANDOM"),
+                    .decimal(100),
+                ])
+            ]
         ))
     }
 

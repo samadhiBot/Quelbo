@@ -27,6 +27,14 @@ extension Factories {
             var tokens = isMacro ? tokens.evaluated : tokens
 
             self.zilName = try findName(in: &tokens)
+
+            localVariables.append(.init(
+                id: zilName,
+                code: { _ in "" },
+                type: .unknown,
+                isFunctionCall: true
+            ))
+
             self.blockProcessor = try Factories.BlockProcessor(
                 tokens,
                 with: &localVariables

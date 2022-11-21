@@ -76,9 +76,9 @@ extension Factories {
         }
 
         func code() throws -> String {
-            if let destination = destination {
-                if let condition = condition {
-                    if let message = message {
+            if let destination {
+                if let condition {
+                    if let message {
                         return """
                             .\(name): .conditionalElse(\(destination),
                                 if: \(condition),
@@ -90,10 +90,10 @@ extension Factories {
                 }
                 return ".\(name): .to(\(destination))"
             }
-            if let message = message {
+            if let message {
                 return ".\(name): .blocked(\(message))"
             }
-            if let perFunction = perFunction {
+            if let perFunction {
                 return ".\(name): .per(\(perFunction))"
             }
             throw Error.invalidDirectionParameters(tokens)

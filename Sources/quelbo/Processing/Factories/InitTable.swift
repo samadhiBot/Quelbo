@@ -46,7 +46,7 @@ extension Factories {
                             let defaultValues = statement
                                 .payload
                                 .symbols
-                                .codeValues(.commaSeparated)
+                                .codeMultiTypeValues(.commaSeparated)
                             return "defaults: [\(defaultValues)]"
                         },
                         type: .someTableElement,
@@ -57,7 +57,7 @@ extension Factories {
                 )
             }
 
-            if let flagSymbol = flagSymbol {
+            if let flagSymbol {
                 symbols.append(flagSymbol)
             }
         }

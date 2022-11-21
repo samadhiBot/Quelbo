@@ -69,7 +69,7 @@ final class PrintCarriageReturnTests: QuelboTests {
     func testNonStringThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
-                .bool(false)
+                .bool(true)
             ], with: &localVariables).process()
         )
     }

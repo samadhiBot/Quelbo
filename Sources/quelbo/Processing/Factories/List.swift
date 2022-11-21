@@ -22,10 +22,17 @@ extension Factories {
             )
         }
 
+        override func evaluate() throws -> Symbol {
+            .definition(
+                id: "%list",
+                tokens: tokens
+            )
+        }
+
         override func process() throws -> Symbol {
             let symbols = symbols
             let typeInfo: TypeInfo = {
-                let types = symbols.map(\.type).unique
+                let types = symbols.nonCommentSymbols.map(\.type).unique
                 switch types.count {
                 case 0: return .unknown.array
                 case 1: return types[0].array

@@ -252,4 +252,19 @@ final class AddTests: QuelboTests {
             ], with: &localVariables)
         )
     }
+
+    func testEvaluate() throws {
+        XCTAssertNoDifference(
+            evaluate("<+ 2 3 4>"),
+            .literal(9)
+        )
+
+        XCTAssertNoDifference(
+            process("<PRINTN %<+ 2 3 4>>"),
+            .statement(
+                code: "output(9)",
+                type: .void
+            )
+        )
+    }
 }

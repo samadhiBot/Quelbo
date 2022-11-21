@@ -131,7 +131,7 @@ final class ConditionTests: QuelboTests {
                     rarg.set(to: other)
                 }
                 """,
-            type: .int,
+            type: .void,
             returnHandling: .suppress
         ))
     }
@@ -160,20 +160,11 @@ final class ConditionTests: QuelboTests {
     }
 
     func testTruePredicate() throws {
-        let symbol = try factory.init([
-            .list([
-                .form([
-                    .atom("EQUAL?"),
-                    .global(.atom("HERE")),
-                    .global(.atom("CLEARING"))
-                ]),
-                .string("The grating opens.")
-            ]),
-            .list([
-                .atom("T"),
-                .string("The grating opens to reveal trees above you.")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <COND
+                (<EQUAL? ,HERE ,CLEARING> "The grating opens.")
+                (T "The grating opens to reveal trees above you.")>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -183,7 +174,7 @@ final class ConditionTests: QuelboTests {
                 return "The grating opens to reveal trees above you."
             }
             """,
-            type: .string,
+            type: .void,
             returnHandling: .suppress
         ))
     }
@@ -274,14 +265,39 @@ final class ConditionTests: QuelboTests {
                     isOpenable(),
                     prsi.hasFlag(vehBit)
                 ) {
-
+                    // do nothing
                 } else {
                     output("You can't do that.")
-                    return
+                    return true
                 }
                 """,
-            type: .booleanTrue.nonOptional,
+            type: .booleanTrue,
             returnHandling: .suppress
         ))
     }
+
+    func testEvalCondition() throws {
+        let symbol = process("""
+            <SETG ZORK-NUMBER 1>
+
+            <ROUTINE COND-EVAL
+                %<COND (<==? ,ZORK-NUMBER 1> '<TELL "Welcome to Zork 1">)
+                    (<==? ,ZORK-NUMBER 2> '<TELL "Welcome to Zork 2">)
+                    (T '<TELL "Welcome to Zork 3">)>>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "condEval",
+            code: """
+                /// The `condEval` (COND-EVAL) routine.
+                func condEval() {
+                    output("Welcome to Zork 1")
+                }
+                """,
+            type: .void,
+            category: .routines,
+            isCommittable: true
+        ))
+    }
+
 }

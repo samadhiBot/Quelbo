@@ -82,7 +82,7 @@ extension String {
                     \"""
                 """.rightTrimmed
         } else {
-            return "\"\(text)\""
+            return "\"\(text.replacingOccurrences(of: "\"", with: #"\""#))\""
         }
     }
 

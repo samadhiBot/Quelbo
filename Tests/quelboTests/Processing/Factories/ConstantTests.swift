@@ -200,9 +200,9 @@ final class ConstantTests: QuelboTests {
                 let def1Res: Table = Table(
                     .table(def1),
                     .int(0),
-                    // ["REST", "DEF1", "2"],
+                    // <REST ,DEF1 2>,
                     .int(0),
-                    // ["REST", "DEF1", "4"]
+                    // <REST ,DEF1 4>
                 )
                 """,
             type: .table,
