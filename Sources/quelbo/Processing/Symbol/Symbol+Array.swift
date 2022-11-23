@@ -82,10 +82,16 @@ extension Array where Element == Symbol {
         if let explicitReturn = returnTypeExplicit() {
             return explicitReturn
         }
-        if let lastSymbol = nonCommentSymbols.last, lastSymbol.isReturnable {
+        guard
+            let lastSymbol = nonCommentSymbols.last,
+            lastSymbol.isReturnable
+        else {
+            return nil
+        }
+        if lastSymbol.type.dataType != nil {
             return lastSymbol.type
         }
-        return nil
+        return lastSymbol.type.isTableElement == true ? .tableElement : nil
     }
 
     func returnTypeExplicit() -> TypeInfo? {

@@ -367,9 +367,8 @@ final class ObjectTests: QuelboTests {
     func testGlobalObjects() throws {
         let symbol = process("""
             <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT
-                       OPENBIT SEARCHBIT TRANSBIT ONBIT RLANDBIT FIGHTBIT
-                       STAGGERED WEARBIT)>
+                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
+                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
         """)
 
         let expected = Statement(

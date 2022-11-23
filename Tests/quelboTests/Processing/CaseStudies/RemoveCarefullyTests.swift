@@ -12,6 +12,7 @@ import XCTest
 final class RemoveCarefullyTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        IsLitTests().setUp()
 
         process("""
             <GLOBAL HERE 0>
@@ -19,22 +20,9 @@ final class RemoveCarefullyTests: QuelboTests {
             <GLOBAL P-IT-OBJECT <>>
             <GLOBAL PLAYER <>>
 
-            <OBJECT GLOBAL-OBJECTS (FLAGS ONBIT)>
-
-            ;"This is an abridged version of LIT? with extraneous details removed"
-            <ROUTINE LIT? (RM "OPTIONAL" (RMBIT T) "AUX" OHERE (LIT <>))
-                <SET OHERE ,HERE>
-                <SETG HERE .RM>
-                <COND (<AND .RMBIT
-                        <FSET? .RM ,ONBIT>>
-                       <SET LIT T>)
-                      (T
-                       <COND (<EQUAL? .OHERE .RM>
-                          <COND (<IN? ,PLAYER .RM>
-                             <TELL "DO-SL">)>)>
-                       <SET LIT T>)>
-                <SETG HERE .OHERE>
-                .LIT>
+            <OBJECT GLOBAL-OBJECTS
+                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
+                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE REMOVE-CAREFULLY (OBJ "AUX" OLIT)
                  <COND (<EQUAL? .OBJ ,P-IT-OBJECT>
@@ -59,46 +47,6 @@ final class RemoveCarefullyTests: QuelboTests {
                 isCommittable: true,
                 isMutable: true
             ))
-        )
-    }
-
-    func testIsLit() throws {
-        XCTAssertNoDifference(
-            Game.routines.find("isLit"),
-            Statement(
-                id: "isLit",
-                code: """
-                    @discardableResult
-                    /// The `isLit` (LIT?) routine.
-                    func isLit(
-                        rm: Object,
-                        rmBit: Bool = true
-                    ) -> Bool {
-                        var ohere: Object? = nil
-                        var lit: Bool = false
-                        ohere.set(to: here)
-                        here.set(to: rm)
-                        if .and(
-                            rmBit,
-                            rm.hasFlag(isOn)
-                        ) {
-                            lit.set(to: true)
-                        } else {
-                            if ohere.equals(rm) {
-                                if player.isIn(rm) {
-                                    output("DO-SL")
-                                }
-                            }
-                            lit.set(to: true)
-                        }
-                        here.set(to: ohere)
-                        return lit
-                    }
-                    """,
-                type: .bool,
-                category: .routines,
-                isCommittable: true
-            )
         )
     }
 

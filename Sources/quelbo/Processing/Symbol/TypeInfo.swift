@@ -129,6 +129,13 @@ extension TypeInfo {
         )
     }
 
+    static var tableElement: TypeInfo {
+        .init(
+            dataType: .tableElement,
+            confidence: .certain
+        )
+    }
+
     static var thing: TypeInfo {
         .init(
             dataType: .thing,
@@ -265,7 +272,7 @@ extension TypeInfo {
             return " = \(self)"
         case .bool:
             return "Bool = false"
-        case .direction, .object, .routine, .table, .thing, .verb, .word:
+        case .direction, .object, .routine, .table, .tableElement, .thing, .verb, .word:
             return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
         case .int, .int8, .int16, .int32:
             return "\(self) = 0"
@@ -281,7 +288,7 @@ extension TypeInfo {
         if dataType?.hasReturnValue == true {
             return true
         }
-        if isArray == true && isTableElement == true {
+        if isTableElement == true {
             return true
         }
         return false

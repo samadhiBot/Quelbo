@@ -14,7 +14,9 @@ final class MungRoomTests: QuelboTests {
         process("""
             <SETG ZORK-NUMBER 1>
 
-            <OBJECT GLOBAL-OBJECTS (FLAGS RMUNGBIT)>
+            <OBJECT GLOBAL-OBJECTS
+                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
+                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE MUNG-ROOM (RM STR)
                  %<COND (<==? ,ZORK-NUMBER 2>
@@ -52,7 +54,9 @@ final class MungRoomTests: QuelboTests {
 
             <ROOM INSIDE-BARROW>
 
-            <OBJECT GLOBAL-OBJECTS (FLAGS RMUNGBIT)>
+            <OBJECT GLOBAL-OBJECTS
+                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
+                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE MUNG-ROOM (RM STR)
                  %<COND (<==? ,ZORK-NUMBER 2>

@@ -22,6 +22,7 @@ extension TypeInfo {
         case routine
         case string
         case table
+        case tableElement
         case thing
         case verb
         case void
@@ -95,6 +96,8 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "String"
         case .table:
             return "Table"
+        case .tableElement:
+            return "TableElement"
         case .thing:
             return "Thing"
         case .verb:

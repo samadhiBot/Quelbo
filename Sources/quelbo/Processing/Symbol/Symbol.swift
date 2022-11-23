@@ -59,7 +59,7 @@ extension Symbol {
     var handle: String {
         switch self {
         case .definition(let definition):
-            return definition.id
+            return definition.code
         case .instance(let instance):
             return instance.variable.id ?? instance.variable.code
         case .literal(let literal):

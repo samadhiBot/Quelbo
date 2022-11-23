@@ -16,7 +16,9 @@ final class IsAccessibleTests: QuelboTests {
         process("""
             <GLOBAL WINNER 0>
 
-            <OBJECT GLOBAL-OBJECTS (FLAGS INVISIBLE OPENBIT)>
+            <OBJECT GLOBAL-OBJECTS
+                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
+                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
             <OBJECT LOCAL-GLOBALS (IN GLOBAL-OBJECTS)>
             <OBJECT ROOMS (IN TO ROOMS)>
 
@@ -134,7 +136,7 @@ final class IsAccessibleTests: QuelboTests {
                             return true
                         } else if .and(
                             l.hasFlag(isOpen),
-                            isAccessible(l) /* 􀤊 Requires manual insertion of parameter names */
+                            isAccessible(obj: l)
                         ) {
                             return true
                         } else {

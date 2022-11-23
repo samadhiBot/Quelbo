@@ -11,13 +11,17 @@ import Foundation
 final class Definition: SymbolType, Identifiable {
     let id: String
     let tokens: [Token]
+    private(set) var evaluatedCode: String?
+    private(set) var localVariables: [Statement]
     private(set) var type: TypeInfo
 
     init(
         id: String,
-        tokens: [Token]
+        tokens: [Token],
+        localVariables: [Statement] = []
     ) {
         self.id = id
+        self.localVariables = localVariables
         self.tokens = tokens
         self.type = .unknown
     }
@@ -25,7 +29,21 @@ final class Definition: SymbolType, Identifiable {
     var category: Category? { .definitions }
 
     var code: String {
-        id
+        if let evaluatedCode {
+            return evaluatedCode
+        }
+        do {
+            let code = try Factories.RoutineCall(
+                tokens,
+                with: &localVariables,
+                mode: .evaluate
+            ).processOrEvaluate().code
+
+            self.evaluatedCode = code
+            return code
+        } catch {
+            return "// \(id) evaluation error: \(error)"
+        }
     }
 
     var isMutable: Bool? { false }
@@ -36,11 +54,13 @@ final class Definition: SymbolType, Identifiable {
 extension Symbol {
     static func definition(
         id: String,
-        tokens: [Token]
+        tokens: [Token],
+        localVariables: [Statement] = []
     ) -> Symbol {
         .definition(Definition(
             id: id,
-            tokens: tokens
+            tokens: tokens,
+            localVariables: localVariables
         ))
     }
 }

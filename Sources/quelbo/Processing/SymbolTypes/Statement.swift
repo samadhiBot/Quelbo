@@ -12,6 +12,7 @@ final class Statement: SymbolType {
     private(set) var activation: String?
     private(set) var category: Category?
     private(set) var codeBlock: (Statement) throws -> String
+    private(set) var evaluatedCode: String?
     private(set) var id: String?
     private(set) var isAgainStatement: Bool
     private(set) var isBindingAndRepeatingStatement: Bool
@@ -57,9 +58,16 @@ final class Statement: SymbolType {
     }
 
     var code: String {
+        if let evaluatedCode {
+            return evaluatedCode
+        }
         do {
-            return try codeBlock(self)
+            let code = try codeBlock(self)
                 .replacingOccurrences(of: "try try", with: "try")
+            if type.confidence == .certain {
+//                self.evaluatedCode = code
+            }
+            return code
         } catch {
             return "Statement:code:\(error)"
         }

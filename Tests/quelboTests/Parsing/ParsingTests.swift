@@ -11,7 +11,7 @@ import XCTest
 
 final class ParsingTests: QuelboTests {
     func testAtom() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             WHITE-HOUSE
         """).first
 
@@ -19,7 +19,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testAtomIsFirst() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             1ST?
         """).first
 
@@ -27,7 +27,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testAtomIsOne() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             1?
         """).first
 
@@ -35,7 +35,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testAtomIsZero() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             0?
         """).first
 
@@ -43,7 +43,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testBoolFalse() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             <>
         """).first
 
@@ -51,7 +51,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCharacter() throws {
-        let parsed = try zilParser.parse(#"""
+        let parsed = try Self.zilParser.parse(#"""
             !\z
         """#).first
 
@@ -59,7 +59,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedAtom() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ;COFFIN-CURE
         """).first
 
@@ -67,7 +67,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedForm() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ;<ITABLE BYTE 120>
         """).first
 
@@ -84,7 +84,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedGlobal() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ;,ACT?ASK
         """).first
 
@@ -92,7 +92,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedList() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ;(<EQUAL? .WRD ,W?$BUZZ> T)
         """).first
 
@@ -112,7 +112,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedMultiple() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             <VERB? TELL ;WHERE ;WHAT ;WHO>
         """).first
 
@@ -129,7 +129,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testCommentedString() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ;"-TOSSED"
         """).first
 
@@ -137,7 +137,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testEval() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             %<COND (<==? ,ZORK-NUMBER 3>)>
         """).first
 
@@ -159,7 +159,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testForm() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             <TELL "You will be lost without me!" CR>
         """).first
 
@@ -174,7 +174,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testGlobal() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ,ON-LAKE
         """).first
 
@@ -182,7 +182,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testInt() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             42
         """).first
 
@@ -190,7 +190,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testList() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             (FLAGS RLANDBIT ONBIT SACREDBIT)
         """).first
 
@@ -206,7 +206,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testLocal() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             .RARG
         """).first
 
@@ -214,7 +214,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testProperty() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ,P?STRENGTH
         """).first
 
@@ -222,7 +222,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testQuotedForm() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             '<NULL-F>
         """).first
 
@@ -237,7 +237,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testQuotedList() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             '(,DEAD
                 <COND (.VB
                     <TELL "Your hand passes through its object." CR>)>
@@ -269,7 +269,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testSegmentedForm() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             !<IFFLAG (DEBUG '(XTRACE)) (ELSE '())>
         """).first
 
@@ -298,7 +298,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testSegmentedGlobal() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             !,EXTRA-FLAGS
         """).first
 
@@ -306,7 +306,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testString() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             "There is an object which looks like a tube of toothpaste here."
         """).first
 
@@ -317,7 +317,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testStringWithQuotation() throws {
-        let parsed = try zilParser.parse(#"""
+        let parsed = try Self.zilParser.parse(#"""
             " seems confused. \"I don't see any "
         """#).first
 
@@ -328,7 +328,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testType() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             #BYTE
         """).first
 
@@ -336,7 +336,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testVector() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             [BITS .BITS]
         """).first
 
@@ -350,7 +350,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testVerb() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ,V?LOOK-INSIDE
         """).first
 
@@ -358,7 +358,7 @@ final class ParsingTests: QuelboTests {
     }
 
     func testWord() throws {
-        let parsed = try zilParser.parse("""
+        let parsed = try Self.zilParser.parse("""
             ,W?COMMA
         """).first
 

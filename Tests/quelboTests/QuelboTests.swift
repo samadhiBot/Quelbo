@@ -9,9 +9,9 @@ import XCTest
 @testable import quelbo
 
 class QuelboTests: XCTestCase {
-    var localVariables: [Statement]!
+    var localVariables: [Statement] = []
 
-    let zilParser = Game.Parser()
+    static let zilParser = Game.Parser()
 
     override func setUp() {
         super.setUp()
@@ -65,7 +65,7 @@ class QuelboTests: XCTestCase {
     /// - Parameter source: <#source description#>
     /// - Returns: <#description#>
     func parse(_ source: String) throws -> [Token] {
-        let parsed = try zilParser.parse(source)
+        let parsed = try Self.zilParser.parse(source)
         if parsed.count == 1, case .form(let tokens) = parsed[0] {
             return tokens
         }
@@ -85,7 +85,7 @@ class QuelboTests: XCTestCase {
         line: UInt = #line
     ) -> Symbol {
         do {
-            let parsed = try zilParser.parse(zil)
+            let parsed = try Self.zilParser.parse(zil)
 
             var symbols: [Symbol] = []
             for token in parsed {
@@ -148,6 +148,18 @@ class QuelboTests: XCTestCase {
         }
     }
 }
+
+// MARK: - ZorkNumber
+
+extension QuelboTests {
+    enum ZorkNumber: Int {
+        case zork1 = 1
+        case zork2 = 2
+        case zork3 = 3
+    }
+}
+
+// MARK: - TestError
 
 extension QuelboTests {
     enum TestError: Error {

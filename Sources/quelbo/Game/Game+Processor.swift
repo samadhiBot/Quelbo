@@ -214,14 +214,10 @@ extension Game {
             ).processOrEvaluate()
         }
 
-        if localVariables.routineSelfReference(for: zil) != nil {
-            return try Factories.RoutineSelfReference(
-                tokens,
-                with: &localVariables,
-                mode: factoryMode
-            ).process()
-        }
-
-        throw GameError.factoryNotFound(zil)
+        return .definition(
+            id: "%\(zil.lowerCamelCase)-\(UUID().uuidString)",
+            tokens: tokens,
+            localVariables: localVariables
+        )
     }
 }
