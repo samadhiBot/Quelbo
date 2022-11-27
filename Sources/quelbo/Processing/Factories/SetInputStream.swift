@@ -31,7 +31,7 @@ extension Factories {
                 }
             }
 
-            guard let flag = flag else {
+            guard let flag else {
                 throw Error.invalidInputStream(stream.code)
             }
 

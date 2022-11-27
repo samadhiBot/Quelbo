@@ -17,15 +17,10 @@ final class InsertFileTests: QuelboTests {
     }
 
     func testString() throws {
-        let symbol = try factory.init([
-            .string("parser")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <INSERT-FILE "GMACROS" T>
+        """)
 
-        XCTAssertNoDifference(symbol, .statement(
-            code: """
-                // Insert file "parser"
-                """,
-            type: .comment
-        ))
+        XCTAssertNoDifference(symbol, .emptyStatement)
     }
 }

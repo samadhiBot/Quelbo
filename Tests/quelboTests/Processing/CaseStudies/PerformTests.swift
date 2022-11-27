@@ -12,6 +12,7 @@ import XCTest
 final class PerformTests: QuelboTests {
     override func setUp() {
         super.setUp()
+
         NotHereTests().setUp()
 
         process("""
@@ -129,7 +130,7 @@ final class PerformTests: QuelboTests {
                             output(actions.nthElement(.add(.multiply(a, 2), 1)))
                             if _ = .and(
                                 o,
-                                .isNot(a.equals(WALK))
+                                .isNot(a.equals(walk))
                             ) {
                                 output("""
 
@@ -208,7 +209,7 @@ final class PerformTests: QuelboTests {
                                 v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(WALK)),
+                                .isNot(a.equals(walk)),
                                 o.parent,
                                 o.parent.containerFunction,
                                 v.set(to: ddApply(
@@ -220,7 +221,7 @@ final class PerformTests: QuelboTests {
                                 v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(WALK)),
+                                .isNot(a.equals(walk)),
                                 v.set(to: dApply(
                                     str: "PRSO",
                                     fcn: o.action

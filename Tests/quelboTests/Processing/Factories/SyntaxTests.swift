@@ -20,6 +20,7 @@ final class SyntaxTests: QuelboTests {
         let symbol = process("<SYNTAX QUIT = V-QUIT>")
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:quit",
             code: """
                 Syntax(
                     verb: "quit",
@@ -36,6 +37,7 @@ final class SyntaxTests: QuelboTests {
         let symbol = process("<SYNTAX CONTEMPLATE OBJECT = V-THINK-ABOUT>")
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:contemplate-object",
             code: """
                 Syntax(
                     verb: "contemplate",
@@ -55,6 +57,7 @@ final class SyntaxTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:take-object",
             code: """
                 Syntax(
                     verb: "take",
@@ -77,6 +80,7 @@ final class SyntaxTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:take-off-object",
             code: """
                 Syntax(
                     verb: "take",
@@ -109,6 +113,7 @@ final class SyntaxTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:water-object",
             code: """
                 Syntax(
                     verb: "water",
@@ -147,6 +152,7 @@ final class SyntaxTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:put-object-in-object",
             code: """
                 Syntax(
                     verb: "put",
@@ -180,6 +186,7 @@ final class SyntaxTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:wake-object",
             code: """
                 Syntax(
                     verb: "wake",
@@ -196,27 +203,21 @@ final class SyntaxTests: QuelboTests {
     }
 
     func testWakeUpSyntax() throws {
-        let symbol = try factory.init([
-            .atom("WAKE"),
-            .atom("UP"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("PERSONBIT")
-            ]),
-            .atom("="),
-            .atom("V-WAKE")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX WAKE UP OBJECT (FIND ACTORBIT) (ON-GROUND IN-ROOM) = V-ALARM>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:wake-up-object",
             code: """
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
                         preposition: "up",
-                        where: isPerson
+                        where: isActor,
+                        search: [.inRoom, .onGround]
                     ),
-                    actionRoutine: vWake
+                    actionRoutine: vAlarm
                 )
                 """,
             type: .void,
@@ -244,6 +245,7 @@ final class SyntaxTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "syntax:wake-object-up-object",
             code: """
                 Syntax(
                     verb: "wake",
@@ -261,5 +263,107 @@ final class SyntaxTests: QuelboTests {
             category: .syntax,
             isCommittable: true
         ))
+    }
+
+    func testCompetingUps() throws {
+        DoWalkTests().setUp()
+
+        process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>
+
+            <SYNTAX WAKE UP OBJECT (FIND ACTORBIT) (ON-GROUND IN-ROOM) = V-ALARM>
+
+            <SYNONYM UP U>
+
+            <ROOM FOREST
+                (DESC "Forest")
+                (UP "There is no tree here suitable for climbing.")>
+
+            <ROUTINE WALK-UP-FCN (RARG "AUX" WRD)
+                <COND (<EQUAL? .WRD ,W?U ,W?UP> <DO-WALK ,P?UP>)>>
+        """)
+
+        XCTAssertNoDifference(
+            Game.properties.find("up"),
+            Statement(
+                id: "up",
+                code: "",
+                type: .object,
+                category: .properties,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.syntax.find("syntax:wake-up-object"),
+            Statement(
+                id: "syntax:wake-up-object",
+                code: """
+                    Syntax(
+                        verb: "wake",
+                        directObject: Syntax.Object(
+                            preposition: "up",
+                            where: isActor,
+                            search: [.inRoom, .onGround]
+                        ),
+                        actionRoutine: vAlarm
+                    )
+                    """,
+                type: .void,
+                category: .syntax,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.syntax.find("synonym:up"),
+            Statement(
+                id: "synonym:up",
+                code: """
+                    Syntax.set("up", synonyms: ["u"])
+                    """,
+                type: .string,
+                category: .syntax,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.rooms.find("forest"),
+            Statement(
+                id: "forest",
+                code: """
+                    /// The `forest` (FOREST) room.
+                    var forest = Room(
+                        description: "Forest",
+                        directions: [
+                            .up: .blocked("There is no tree here suitable for climbing."),
+                        ]
+                    )
+                    """,
+                type: .object,
+                category: .rooms,
+                isCommittable: true
+            )
+        )
+
+        XCTAssertNoDifference(
+            Game.routines.find("walkUpFunc"),
+            Statement(
+                id: "walkUpFunc",
+                code: """
+                    /// The `walkUpFunc` (WALK-UP-FCN) routine.
+                    func walkUpFunc(rarg: Any) {
+                        var wrd: Word? = nil
+                        if wrd.equals(u, up) {
+                            doWalk(dir: up)
+                        }
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true
+            )
+        )
     }
 }

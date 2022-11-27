@@ -8,7 +8,7 @@
 import CustomDump
 import Foundation
 
-protocol SymbolType: Equatable, CustomDebugStringConvertible {
+protocol SymbolType: Equatable {
     var category: Category? { get }
     var code: String { get }
     var isMutable: Bool? { get }
@@ -46,15 +46,5 @@ extension SymbolType {
 extension SymbolType {
     var typeDescription: String {
         type.description
-    }
-}
-
-// MARK: - Conformances
-
-extension SymbolType {
-    var debugDescription: String {
-        var description = ""
-        customDump(self, to: &description)
-        return description
     }
 }

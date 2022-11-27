@@ -23,9 +23,9 @@ extension Factories {
         override func processTokens() throws {
             var routineTokens = tokens
 
-            let zilName = try findName(in: &routineTokens).lowerCamelCase
+            let zilName = try findName(in: &routineTokens)
 
-            guard let routine = Game.routines.find(zilName) else {
+            guard let routine = Game.routines.find(zilName.lowerCamelCase) else {
                 throw Error.unknownRoutine(zilName, routineTokens)
             }
             self.routine = routine

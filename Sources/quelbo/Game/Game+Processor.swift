@@ -20,6 +20,9 @@ extension Game {
         let printSymbolsOnFail: Bool
 
         /// <#Description#>
+        let printUnprocessedTokensOnFail: Bool
+
+        /// <#Description#>
         private(set) var progressBar: ProgressBar
 
         /// <#Description#>
@@ -34,9 +37,11 @@ extension Game {
         init(
             tokens: [Token],
             target: String?,
-            printSymbolsOnFail: Bool
+            printSymbolsOnFail: Bool,
+            printUnprocessedTokensOnFail: Bool
         ) {
             self.printSymbolsOnFail = printSymbolsOnFail
+            self.printUnprocessedTokensOnFail = printUnprocessedTokensOnFail
             self.target = target
             self.tokens = tokens
             self.initialTokenCount = tokens.count
@@ -60,19 +65,26 @@ extension Game {
                 } else {
                     Game.Print.symbols()
                 }
+
             } catch {
                 if printSymbolsOnFail {
                     Game.Print.heading("\n􀦆  Successfully processed symbols:")
                     Game.Print.symbols()
                 }
 
+                if printUnprocessedTokensOnFail {
+                    Game.Print.heading(
+                        "􀱏  Unprocessed tokens:",
+                        tokens.map(\.zil).values(.doubleLineBreak)
+                    )
+                }
+
                 let percentage = Int(
                     100 * Double(initialTokenCount - tokens.count) / Double(initialTokenCount)
                 )
                 let result = """
-
                     􀘰  Processing failed with \(tokens.count) of \(initialTokenCount) tokens unprocessed \
-                    (\(percentage)% complete)
+                    (\(percentage)% complete) with \(errors.count) errors
                     """
 
                 Game.Print.heading(result)
@@ -88,11 +100,15 @@ extension Game {
 extension Game.Processor {
     private func process() throws {
         let total = initialTokenCount
+        var iteration = 0
 
         while !tokens.isEmpty {
             let remaining = tokens.count
+            iteration += 1
 
-            Logger.process.info("􀣋 Processing tokens: \(remaining) of \(total) remaining")
+            Game.Print.heading(
+                "􀣋 Processing tokens: \(remaining) of \(total) remaining (iteration \(iteration))"
+            )
             progressBar.setValue(initialTokenCount - remaining)
 
             try processZilTokens()
@@ -102,9 +118,11 @@ extension Game.Processor {
                     errors.sorted().unique
                 )
             }
+
+            print("")
         }
 
-        Logger.process.info("􀦆 Processing complete!")
+        Game.Print.heading("􀦆 Processing complete!")
     }
 
     private func processZilTokens() throws {
@@ -142,7 +160,7 @@ extension Game.Processor {
                     try Game.commit(symbol)
 
                     Logger.process.info(
-                        "   􀋃 Processed: \(symbol.debugDescription, privacy: .public)"
+                        "\t􀋃 Processed: \(symbol.debugDescription, privacy: .public)"
                     )
 
                     progressBar.next()
@@ -151,7 +169,7 @@ extension Game.Processor {
                     var description = ""
                     customDump(error, to: &description)
 
-                    Logger.process.warning("   􀇿 \(description, privacy: .public)")
+                    Logger.process.warning("\t􀇿 \(description, privacy: .public)")
 
                     errors.append("\(description)")
 

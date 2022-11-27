@@ -18,6 +18,7 @@ extension Factories {
         }
 
         var directionSymbols: [Symbol] = []
+
         var zilName: String!
 
         var category: Category {
@@ -38,17 +39,19 @@ extension Factories {
         override func processSymbols() throws {
             guard !directionSymbols.isEmpty else { return }
 
-            symbols.append(.statement(
-                code: {
-                    let directions = $0.payload.symbols.codeValues(.commaSeparated)
+            symbols.append(
+                .statement(
+                    code: {
+                        let directions = $0.payload.symbols.codeValues(.commaSeparated)
 
-                    return "directions: [\(directions)]"
-                },
-                type: .direction.array,
-                payload: .init(
-                    symbols: directionSymbols
+                        return "directions: [\(directions)]"
+                    },
+                    type: .object.array,
+                    payload: .init(
+                        symbols: directionSymbols
+                    )
                 )
-            ))
+            )
         }
 
         override func process() throws -> Symbol {
@@ -69,7 +72,7 @@ extension Factories {
                 },
                 type: .object,
                 payload: .init(
-                    symbols: symbols
+                    symbols: properties
                 ),
                 category: category,
                 isCommittable: true

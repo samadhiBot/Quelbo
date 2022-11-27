@@ -16,15 +16,21 @@ struct Quelbo: ParsableCommand {
 
     @Flag(
         name: .short,
-        help: "Whether to print the ZIL tokens derived in the parsing phase."
+        help: "Specify to print the ZIL tokens derived in the parsing phase."
     )
     var printTokens = false
 
     @Flag(
         name: .customShort("s"),
-        help: "Whether to print the processed game tokens when processing fails."
+        help: "Specify to print the processed game tokens when processing fails."
     )
     var printSymbolsOnFail = false
+
+    @Flag(
+        name: .customShort("u"),
+        help: "Specify to print the unprocessed game tokens when processing fails."
+    )
+    var printUnprocessedTokensOnFail = false
 
     @Option(
         name: .shortAndLong,
@@ -43,6 +49,10 @@ struct Quelbo: ParsableCommand {
 
         try game.setZMachineVersion()
 
-        try game.processTokens(to: target, with: printSymbolsOnFail)
+        try game.processTokens(
+            to: target,
+            printSymbolsOnFail: printSymbolsOnFail,
+            printUnprocessedTokensOnFail: printUnprocessedTokensOnFail
+        )
     }
 }

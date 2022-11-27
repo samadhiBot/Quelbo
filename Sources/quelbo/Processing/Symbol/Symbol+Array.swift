@@ -27,6 +27,20 @@ extension Array where Element == Symbol {
         map(\.codeMultiType).values(displayOptions)
     }
 
+    var evaluationErrors: [Swift.Error] {
+        compactMap { symbol in
+            guard
+                case .definition(let definition) = symbol,
+                let evaluationError = definition.evaluationError
+            else { return nil }
+            return evaluationError
+        }
+    }
+
+    var determined: [Symbol] {
+        filter(\.status.isDetermined)
+    }
+
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>

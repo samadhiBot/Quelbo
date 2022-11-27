@@ -20,14 +20,15 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert([
                 .haveCount(.atLeast(1)),
-                .haveType(.direction),
+                .haveType(.object),
             ])
         }
 
         override func processTokens() throws {
             var tokens = tokens
 
-            while let zilName = try? findName(in: &tokens) {
+            while !tokens.isEmpty {
+                let zilName = try findName(in: &tokens)
                 var code = ""
                 var name = zilName.lowerCamelCase
 
@@ -43,15 +44,15 @@ extension Factories {
                         """
                 }
 
-                symbols.append(.statement(
+                let direction = Statement(
                     id: name,
-                    code: { _ in
-                        code
-                    },
-                    type: .direction,
+                    code: { _ in code },
+                    type: .object,
                     category: .properties,
                     isCommittable: true
-                ))
+                )
+
+                symbols.append(.statement(direction))
             }
 
             guard tokens.isEmpty else {
@@ -67,18 +68,22 @@ extension Factories {
             let customDirections = symbols.filter { !$0.code.isEmpty }
 
             return .statement(
+                id: "_customDirections_",
                 code: { _ in
-                    """
-                    extension Direction {
-                    \(customDirections.codeValues(.singleLineBreak, .indented))
-                    }
-                    """
+                    guard !customDirections.isEmpty else { return "" }
+
+                    return """
+                        extension Direction {
+                        \(customDirections.codeValues(.singleLineBreak, .indented))
+                        }
+                        """
                 },
                 type: .void,
                 payload: .init(
                     symbols: symbols
                 ),
-                category: .directions
+                category: .directions,
+                isCommittable: true
             )
         }
     }

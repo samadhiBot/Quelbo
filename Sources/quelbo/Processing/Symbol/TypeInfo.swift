@@ -36,6 +36,14 @@ class TypeInfo {
         self.isProperty = isProperty
         self.isTableElement = isTableElement
     }
+
+    var status: Status {
+        switch confidence {
+        case .none: return .undetermined
+        case .booleanFalse, .integerZero, .limited, .assured, .booleanTrue: return .mutable
+        case .void, .certain: return .fixed
+        }
+    }
 }
 
 // MARK: - Helper initializers
@@ -65,13 +73,6 @@ extension TypeInfo {
     static var comment: TypeInfo {
         .init(
             dataType: .comment,
-            confidence: .certain
-        )
-    }
-
-    static var direction: TypeInfo {
-        .init(
-            dataType: .direction,
             confidence: .certain
         )
     }
@@ -272,12 +273,12 @@ extension TypeInfo {
             return " = \(self)"
         case .bool:
             return "Bool = false"
-        case .direction, .object, .routine, .table, .tableElement, .thing, .verb, .word:
-            return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
         case .int, .int8, .int16, .int32:
             return "\(self) = 0"
         case .none:
             return "\(self)"
+        case .object, .routine, .table, .tableElement, .thing, .verb, .word:
+            return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
         case .string:
             return "String = \"\""
         }
@@ -525,17 +526,3 @@ extension TypeInfo: Hashable {
         hasher.combine(dataType)
     }
 }
-
-//extension Array where Element == TypeInfo {
-//    var mostConfident: [TypeInfo] {
-//        reduce([]) { types, type in
-//            guard let firstType = types.first else {
-//                types.append(type)
-//                return
-//            }
-//            if type.confidence > firstType.confidence {
-//                types = [type]
-//            }
-//        }
-//    }
-//}

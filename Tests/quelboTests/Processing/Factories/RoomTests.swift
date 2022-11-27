@@ -15,20 +15,9 @@ final class RoomTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .statement(
-                id: "land",
-                code: """
-                    /// Represents an exit toward land.
-                    public static let land = Direction(
-                        id: "land",
-                        synonyms: ["LAND"]
-                    )
-                    """,
-                type: .direction,
-                category: .properties
-            ),
-        ])
+        process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>
+        """)
     }
 
     func testFindFactory() throws {

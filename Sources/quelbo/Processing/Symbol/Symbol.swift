@@ -5,6 +5,7 @@
 //  Created by Chris Sessions on 7/9/22.
 //
 
+import CustomDump
 import Foundation
 
 enum Symbol: SymbolType {
@@ -145,6 +146,15 @@ extension Symbol {
         }
     }
 
+    var status: Status {
+        switch self {
+        case .definition(let definition): return definition.status
+        case .instance(let instance): return instance.type.status
+        case .literal(let literal): return literal.type.status
+        case .statement(let statement): return statement.status
+        }
+    }
+
     var type: TypeInfo {
         switch self {
         case .definition(let definition): return definition.type
@@ -152,5 +162,18 @@ extension Symbol {
         case .literal(let literal): return literal.type
         case .statement(let statement): return statement.type
         }
+    }
+}
+
+extension Symbol: CustomDebugStringConvertible {
+    var debugDescription: String {
+        var description = ""
+        switch self {
+        case .definition(let definition): customDump(definition, to: &description)
+        case .literal(let literal): customDump(literal, to: &description)
+        case .statement(let statement): customDump(statement, to: &description)
+        case .instance(let instance): customDump(instance, to: &description)
+        }
+        return description
     }
 }

@@ -94,11 +94,11 @@ extension Factory {
                 )
             case .verb(let rawVerb):
                 symbols.append(
-                    .verb(rawVerb)
+                    .verb(rawVerb.lowercased())
                 )
             case .word(let rawWord):
                 symbols.append(
-                    .word(rawWord)
+                    .word(rawWord.lowercased())
                 )
             }
         }
@@ -160,6 +160,21 @@ extension Factory {
             code: { _ in name },
             type: .unknown
         )
+    }
+
+    /// <#Description#>
+    /// - Parameter tokens: <#tokens description#>
+    /// - Returns: <#description#>
+    func symbolizeAtomsToStrings(_ tokens: [Token]) throws -> [Symbol] {
+        var tokens = tokens
+        var symbols: [Symbol] = []
+
+        while !tokens.isEmpty, let name = try? findName(in: &tokens) {
+            symbols.append(
+                .literal(name.lowercased())
+            )
+        }
+        return symbols
     }
 
     /// Translates a Zil
@@ -316,7 +331,7 @@ extension Factory {
             code: { _ in
                 code
             },
-            type: .direction,
+            type: .object,
             category: .properties
         )
     }

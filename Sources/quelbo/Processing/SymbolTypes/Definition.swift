@@ -12,6 +12,7 @@ final class Definition: SymbolType, Identifiable {
     let id: String
     let tokens: [Token]
     private(set) var evaluatedCode: String?
+    private(set) var evaluationError: Swift.Error?
     private(set) var localVariables: [Statement]
     private(set) var type: TypeInfo
 
@@ -29,24 +30,35 @@ final class Definition: SymbolType, Identifiable {
     var category: Category? { .definitions }
 
     var code: String {
-        if let evaluatedCode {
-            return evaluatedCode
-        }
+        if let evaluatedCode { return evaluatedCode }
+
         do {
-            let code = try Factories.RoutineCall(
+            let routineCall = try Factories.RoutineCall(
                 tokens,
                 with: &localVariables,
                 mode: .evaluate
-            ).processOrEvaluate().code
+            ).processOrEvaluate()
+
+            let code = routineCall.code
 
             self.evaluatedCode = code
+            self.evaluationError = nil
+            self.type = routineCall.type
+
             return code
+
         } catch {
-            return "// \(id) evaluation error: \(error)"
+            self.evaluationError = error
+            return "/* \(id) evaluation error: \(error) */"
         }
     }
 
     var isMutable: Bool? { false }
+
+    var status: Status {
+        if evaluatedCode == nil { return .undetermined }
+        return type.status
+    }
 }
 
 // MARK: - Symbol Definition initializer

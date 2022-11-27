@@ -24,6 +24,10 @@ extension Factories {
             try symbols[0].assert(
                 .hasType(.object)
             )
+
+            try symbols[1].assert(
+                .isProperty
+            )
         }
 
         override func process() throws -> Symbol {
@@ -32,9 +36,9 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).nextProperty(after: .\(property.code))"
+                    "\(object.code).property(after: .\(property.code))"
                 },
-                type: .int
+                type: .unknown
             )
         }
     }

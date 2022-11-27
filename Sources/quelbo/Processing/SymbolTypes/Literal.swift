@@ -79,7 +79,6 @@ extension Literal {
         .init(
             code: "false",
             type: .booleanFalse
-//            returnHandling: .force
         )
     }
 
@@ -88,7 +87,6 @@ extension Literal {
         .init(
             code: "true",
             type: .booleanTrue
-//            returnHandling: .force
         )
     }
 }

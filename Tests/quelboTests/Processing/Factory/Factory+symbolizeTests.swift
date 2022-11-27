@@ -191,7 +191,7 @@ final class FactorySymbolizeTests: QuelboTests {
         try Game.commit(.statement(
             id: "north",
             code: "",
-            type: .direction,
+            type: .object,
             category: .properties,
             isCommittable: true
         ))
@@ -202,7 +202,7 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "north",
-            type: .direction,
+            type: .object,
             category: .properties
         ))
     }

@@ -138,7 +138,7 @@ extension Factories.BlockProcessor {
                 break
             }
 
-            guard let nameToken = nameToken else { continue }
+            guard let nameToken else { continue }
 
             let nameSymbol = try symbolize(nameToken)
 
@@ -154,6 +154,17 @@ extension Factories.BlockProcessor {
                     if let found = localVariables.first(where: { $0 == variable }) {
                         return found
                     }
+                    localVariables.append(variable)
+                    return variable
+                case .true:
+                    if let found = findLocal("t") {
+                        return found
+                    }
+                    let variable = Statement(
+                        id: "t",
+                        code: { _ in "t" },
+                        type: .unknown
+                    )
                     localVariables.append(variable)
                     return variable
                 default:

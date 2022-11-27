@@ -23,17 +23,43 @@ final class GetPropertyTests: QuelboTests {
 
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("GETP"))
+        AssertSameFactory(factory, Game.findFactory("GETPT"))
     }
 
     func testGetProperty() throws {
-        let symbol = try factory.init([
-            .atom("TROLL"),
-            .property("STRENGTH")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <GETP TROLL ,P?STRENGTH>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength",
             type: .int.property
+        ))
+    }
+
+    func testGetPropertyAddress() throws {
+        let symbol = process("""
+            <GETPT TROLL ,P?STRENGTH>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "troll.strength",
+            type: .int.property
+        ))
+    }
+
+    func testPropertyAddressOfObjectInLocal() throws {
+        localVariables.append(
+            Statement(id: "dir", type: .object)
+        )
+
+        let symbol = process("""
+            <GETPT ,HERE .DIR>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "here.property(dir)",
+            type: .object.property
         ))
     }
 

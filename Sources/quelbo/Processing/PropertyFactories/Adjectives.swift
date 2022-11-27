@@ -20,10 +20,8 @@ extension Factories {
             ["ADJECTIVE"]
         }
 
-        override func processSymbols() throws {
-            try symbols.assert(
-                .haveType(.oneOf([.string, .direction]))
-            )
+        override func processTokens() throws {
+            self.symbols = try symbolizeAtomsToStrings(tokens)
         }
 
         override func process() throws -> Symbol {
@@ -34,7 +32,7 @@ extension Factories {
                 )
             }
 
-            let adjectives = symbols.map(\.code.quoted)
+            let adjectives = symbols.map(\.code)
 
             return .statement(
                 id: "adjectives",

@@ -27,10 +27,10 @@ class QuelboTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        guard let factory1 = factory1 else {
+        guard let factory1 else {
             return XCTFail("The first factory was not found.", file: file, line: line)
         }
-        guard let factory2 = factory2 else {
+        guard let factory2 else {
             return XCTFail("The second factory was not found.", file: file, line: line)
         }
         XCTAssertEqual(

@@ -83,19 +83,11 @@ final class Statement: SymbolType {
         }
     }
 
-    func assertShouldReturn() {
-        switch returnHandling {
-        case .force:
-            break
-        case .implicit:
-            returnHandling = .force
-        case .suppress:
-            payload.symbols.forEach {
-                if case .statement(let statement) = $0 {
-                    statement.assertShouldReturn()
-                }
-            }
-        }
+    var status: Status {
+        min(
+            type.status,
+            payload.symbols.map(\.status).min() ?? .fixed
+        )
     }
 }
 
@@ -203,6 +195,21 @@ extension Statement {
         try payload.symbols.returningExplicitly.assert(
             .haveType(type)
         )
+    }
+
+    func assertShouldReturn() {
+        switch returnHandling {
+        case .force:
+            break
+        case .implicit:
+            returnHandling = .force
+        case .suppress:
+            payload.symbols.forEach {
+                if case .statement(let statement) = $0 {
+                    statement.assertShouldReturn()
+                }
+            }
+        }
     }
 }
 

@@ -42,12 +42,14 @@ class Game {
     ///   - printSymbolsOnFail: <#printSymbolsOnFail description#>
     func processTokens(
         to target: String? = nil,
-        with printSymbolsOnFail: Bool = false
+        printSymbolsOnFail: Bool,
+        printUnprocessedTokensOnFail: Bool
     ) throws {
         let processor = Game.Processor(
             tokens: tokens,
             target: target,
-            printSymbolsOnFail: printSymbolsOnFail
+            printSymbolsOnFail: printSymbolsOnFail,
+            printUnprocessedTokensOnFail: printUnprocessedTokensOnFail
         )
         try processor.processTokens()
     }
@@ -80,8 +82,8 @@ extension Game {
                 break
 
             case .statement(let statement):
-                if statement.isCommittable {
-                    if let id = statement.id, shared.symbols.find(id) != nil {
+                if statement.isCommittable, let id = statement.id {
+                    guard shared.symbols.find(id) == nil else {
                         continue
                     }
                     shared.symbols.append(symbol)

@@ -23,7 +23,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".north: .to(northOfHouse)",
-            type: .direction
+            type: .object
         ))
     }
 
@@ -38,7 +38,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".land: .to(streamView)",
-            type: .direction
+            type: .object
         ))
     }
 
@@ -51,7 +51,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".up: .per(upChimneyFunc)",
-            type: .direction
+            type: .object
         ))
     }
 
@@ -65,7 +65,7 @@ final class MoveDirectionTests: QuelboTests {
             code: """
                 .east: .blocked("The door is boarded and you can't remove the boards.")
                 """,
-            type: .direction
+            type: .object
         ))
     }
 
@@ -83,7 +83,7 @@ final class MoveDirectionTests: QuelboTests {
                     seems to be getting worse.
                     """)
                 """#,
-            type: .direction
+            type: .object
         ))
     }
 
@@ -98,7 +98,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".southWest: .conditional(stoneBarrow, if: wonFlag)",
-            type: .direction
+            type: .object
         ))
     }
 
@@ -120,7 +120,7 @@ final class MoveDirectionTests: QuelboTests {
                     else: "You would drown."
                 )
                 """,
-            type: .direction
+            type: .object
         ))
     }
 
@@ -137,7 +137,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".west: .conditional(kitchen, if: kitchenWindow.isOpen)",
-            type: .direction
+            type: .object
         ))
     }
 

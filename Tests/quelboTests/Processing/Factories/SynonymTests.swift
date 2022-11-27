@@ -21,9 +21,14 @@ final class SynonymTestsTests: QuelboTests {
     }
 
     func testSynonym() throws {
-        let symbol = process("<SYNONYM NW NORTHWEST>")
+        let symbol = process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>
+
+            <SYNONYM NW NORTHWEST>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "synonym:nw",
             code: """
                 Syntax.set("nw", synonyms: ["northwest"])
                 """,
@@ -37,6 +42,7 @@ final class SynonymTestsTests: QuelboTests {
         let symbol = process("<SYNONYM UNDER UNDERNEATH BENEATH BELOW>")
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "synonym:under",
             code: """
                 Syntax.set("under", synonyms: [
                     "below",
@@ -46,6 +52,36 @@ final class SynonymTestsTests: QuelboTests {
                 """,
             type: .string,
             category: .syntax,
+            isCommittable: true
+        ))
+    }
+
+    func testSynonymSameAsObject() throws {
+        let symbol = process("""
+            <OBJECT WALL (DESC "surrounding wall")>
+
+            <OBJECT GRANITE-WALL
+                (IN GLOBAL-OBJECTS)
+                (SYNONYM WALL)
+                (ADJECTIVE GRANITE)
+                (DESC "granite wall")
+                (ACTION GRANITE-WALL-F)>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "graniteWall",
+            code: """
+                    /// The `graniteWall` (GRANITE-WALL) object.
+                    var graniteWall = Object(
+                        action: graniteWallFunc,
+                        adjectives: ["granite"],
+                        description: "granite wall",
+                        location: globalObjects,
+                        synonyms: ["wall"]
+                    )
+                    """,
+            type: .object,
+            category: .objects,
             isCommittable: true
         ))
     }

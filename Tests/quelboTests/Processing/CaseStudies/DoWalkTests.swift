@@ -13,50 +13,19 @@ final class DoWalkTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        DescribeRoomTests().setUp(for: .zork1)
-        DescribeObjectTests().setUp(for: .zork1)
+        PerformTests().setUp()
 
         process("""
-            <ROUTINE DESCRIBE-OBJECTS ("OPTIONAL" (V? <>))
-                 <COND (,LIT
-                    <COND (<FIRST? ,HERE>
-                           <PRINT-CONT ,HERE <SET V? <OR .V? ,VERBOSE>> -1>)>)
-                       (T
-                    <TELL "Only bats can see in the dark. And you're not one." CR>)>>
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT>
 
-            <ROUTINE DO-WALK ()
-                 <COND (<DESCRIBE-ROOM T>
-                    <DESCRIBE-OBJECTS T>)>>
+            <ROUTINE DO-WALK (DIR)
+                 <SETG P-WALK-DIR .DIR>
+                 <PERFORM ,V?WALK .DIR>>
+
+            <ROUTINE BARROW-FCN ()
+                 <COND (<VERB? THROUGH>
+                    <DO-WALK ,P?WEST>)>>
         """)
-    }
-
-    func testDescribeObjects() throws {
-        XCTAssertNoDifference(
-            Game.routines.find("describeObjects"),
-            Statement(
-                id: "describeObjects",
-                code: """
-                    /// The `describeObjects` (DESCRIBE-OBJECTS) routine.
-                    func describeObjects(isV: Bool = false) {
-                        var isV: Bool = false
-                        if lit {
-                            if _ = here.firstChild {
-                                printCont(
-                                    obj: here,
-                                    isV: isV.set(to: .or(isV, verbose)),
-                                    level: -1
-                                )
-                            }
-                        } else {
-                            output("Only bats can see in the dark. And you're not one.")
-                        }
-                    }
-                    """,
-                type: .void,
-                category: .routines,
-                isCommittable: true
-            )
-        )
     }
 
     func testDoWalk() throws {
@@ -65,10 +34,30 @@ final class DoWalkTests: QuelboTests {
             Statement(
                 id: "doWalk",
                 code: """
+                    @discardableResult
                     /// The `doWalk` (DO-WALK) routine.
-                    func doWalk() {
-                        if describeRoom(isLook: true) {
-                            describeObjects(isV: true)
+                    func doWalk(dir: Any) -> Bool {
+                        pWalkDir.set(to: dir)
+                        return perform(a: walk, o: dir)
+                    }
+                    """,
+                type: .bool,
+                category: .routines,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testBarrowFunc() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("barrowFunc"),
+            Statement(
+                id: "barrowFunc",
+                code: """
+                    /// The `barrowFunc` (BARROW-FCN) routine.
+                    func barrowFunc() {
+                        if isVerb(.through) {
+                            doWalk(dir: west)
                         }
                     }
                     """,

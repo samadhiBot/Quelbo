@@ -16,8 +16,18 @@ extension Factories {
             ["BUZZ"]
         }
 
+        override func processTokens() throws {
+            self.symbols = try symbolizeAtomsToStrings(tokens)
+        }
+
+        override func processSymbols() throws {
+            try symbols.assert(
+                .haveCount(.atLeast(1))
+            )
+        }
+
         override func process() throws -> Symbol {
-            let buzzwords = symbols.map(\.code.quoted)
+            let buzzwords = symbols.map(\.code)
 
             return .statement(
                 code: { _ in

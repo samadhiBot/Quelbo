@@ -13,7 +13,7 @@ extension Factories {
     /// function.
     class GetProperty: Factory {
         override class var zilNames: [String] {
-            ["GETP"]
+            ["GETP", "GETPT"]
         }
 
         override func processSymbols() throws {
@@ -33,10 +33,15 @@ extension Factories {
         override func process() throws -> Symbol {
             let object = symbols[0]
             let property = symbols[1]
+            let isDirectProperty: Bool = {
+                if case .property = tokens[1] { return true }
+                return false
+            }()
 
             return .statement(
                 code: { _ in
-                    "\(object.code).\(property.code)"
+                    isDirectProperty ? "\(object.code).\(property.code)"
+                                     : "\(object.code).property(\(property.code))"
                 },
                 type: property.type,
                 payload: .init(

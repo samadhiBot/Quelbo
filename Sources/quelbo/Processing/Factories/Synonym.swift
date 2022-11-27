@@ -26,23 +26,27 @@ extension Factories {
             ]
         }
 
+        override func processTokens() throws {
+            self.symbols = try symbolizeAtomsToStrings(tokens)
+        }
+
         override func processSymbols() throws {
-            try symbols.assert([
-                .haveCount(.atLeast(2)),
-                .haveType(.string)
-            ])
+            try symbols.assert(
+                .haveCount(.atLeast(2))
+            )
         }
 
         override func process() throws -> Symbol {
-            let word = symbols[0]
+            let word = symbols[0].code.replacingOccurrences(of: "\"", with: "")
             let synonyms = symbols[1..<symbols.count]
-                .map(\.code.quoted)
+                .map(\.code)
                 .sorted()
 
             return .statement(
+                id: "synonym:\(word)",
                 code: { _ in
                     """
-                    Syntax.set("\(word.code)", synonyms: [\(synonyms.values(.commaSeparated))])
+                    Syntax.set("\(word)", synonyms: [\(synonyms.values(.commaSeparated))])
                     """
                 },
                 type: .string,

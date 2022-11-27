@@ -189,7 +189,7 @@ extension Symbol {
 
 extension Array where Element == Symbol {
     func assertHaveCommonType() throws {
-        guard count >= 2 else { return }
+        guard count > 1 else { return }
 
         let alphas = mostConfident
         let uniqueTypes = alphas.map(\.type.dataType).unique

@@ -20,10 +20,8 @@ extension Factories {
             ["SYNONYM"]
         }
 
-        override func processSymbols() throws {
-            try symbols.assert(
-                .haveType(.string)
-            )
+        override func processTokens() throws {
+            self.symbols = try symbolizeAtomsToStrings(tokens)
         }
 
         override func process() throws -> Symbol {
@@ -34,7 +32,7 @@ extension Factories {
                 )
             }
 
-            let synonyms = symbols.map(\.code.quoted)
+            let synonyms = symbols.map(\.code)
 
             return .statement(
                 id: "synonyms",
@@ -46,3 +44,12 @@ extension Factories {
         }
     }
 }
+
+// MARK: - Errors
+
+extension Factories.Synonyms {
+    enum Error: Swift.Error {
+        case unexpectedSynonymToken(Token)
+    }
+}
+

@@ -42,7 +42,7 @@ final class IsNotTests: QuelboTests {
 
     func testIsNotDirection() throws {
         localVariables.append(
-            Statement(id: "north", type: .direction, category: .directions)
+            Statement(id: "north", type: .object, category: .directions)
         )
 
         let symbol = try factory.init([

@@ -25,14 +25,13 @@ final class PropertyNextTests: QuelboTests {
     }
 
     func testPropertyNext() throws {
-        let symbol = try factory.init([
-            .atom("TROLL"),
-            .property("STRENGTH")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <NEXTP TROLL STRENGTH>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "troll.nextProperty(after: .strength)",
-            type: .int
+            code: "troll.property(after: .strength)",
+            type: .unknown
         ))
     }
 

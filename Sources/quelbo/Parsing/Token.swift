@@ -5,7 +5,6 @@
 //  Created by Chris Sessions on 3/7/22.
 //
 
-import CryptoKit
 import Foundation
 
 /// The set of tokens that can be parsed from ZIL source code.
@@ -160,11 +159,4 @@ extension Array where Element == Token {
             }
         }
     }
-
-//    var miniHash: String {
-//        let computed = Insecure.MD5.hash(
-//            data: map(\.description).joined().data(using: .utf8)!
-//        )
-//        return "\("\(computed)".suffix(4))"
-//    }
 }

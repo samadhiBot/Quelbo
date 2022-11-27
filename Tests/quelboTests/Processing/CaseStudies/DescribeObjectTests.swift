@@ -347,7 +347,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if .and(
                             obj.equals(spellVictim),
-                            spellUsed.equals(FLOAT)
+                            spellUsed.equals(float)
                         ) {
                             output(" (floating in midair)")
                         }

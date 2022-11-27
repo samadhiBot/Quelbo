@@ -17,16 +17,14 @@ extension Factories {
             ["SYNTAX"]
         }
 
-        var verb: String = ""
         var definition: [String] = []
 
         override func processTokens() throws {
             var tokens = tokens
-            guard case .atom(let verbZil) = tokens.shift() else {
+            guard case .atom(let verb) = tokens.shift() else {
                 throw Error.missingSyntaxVerb(tokens)
             }
-            self.verb = verbZil.lowerCamelCase
-            definition.append("verb: \(verb.quoted)")
+            definition.append("verb: \(verb.lowerCamelCase.quoted)")
 
             if let directObject = try findObject(in: &tokens) {
                 definition.append("directObject: \(directObject)")
@@ -53,6 +51,7 @@ extension Factories {
             let definition = definition
 
             return .statement(
+                id: identifier,
                 code: { _ in
                     "Syntax(\(definition.values(.commaSeparatedNoTrailingComma)))"
                 },
@@ -65,6 +64,16 @@ extension Factories {
 }
 
 extension Factories.Syntax {
+    var identifier: String {
+        var elements: [String] = []
+        for token in tokens {
+            guard case .atom(let string) = token else { continue }
+            if string == "=" { break }
+            elements.append(string.lowerCamelCase)
+        }
+        return "syntax:\(elements.joined(separator: "-"))"
+    }
+
     func findObject(in tokens: inout [Token]) throws -> String? {
         var definition: [String] = []
         if case .atom("=") = tokens.first {

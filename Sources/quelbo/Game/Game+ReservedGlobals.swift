@@ -25,6 +25,11 @@ extension Game {
                 isMutable: true
             ),
             .statement(
+                id: "lowDirection",
+                code: { _ in "lowDirection" },
+                type: .int
+            ),
+            .statement(
                 id: "nullFunc",
                 code: { _ in
                     """

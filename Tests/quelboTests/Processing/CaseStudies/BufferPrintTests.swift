@@ -94,19 +94,19 @@ final class BufferPrintTests: QuelboTests {
                                 break
                             } else {
                                 wrd.set(to: try beg.get(at: 0))
-                                if wrd.equals(COMMA) {
+                                if wrd.equals(comma) {
                                     output(", ")
                                 } else if nosp {
                                     nosp.set(to: false)
                                 } else {
                                     output(" ")
                                 }
-                                if wrd.equals(PERIOD, COMMA) {
+                                if wrd.equals(period, comma) {
                                     nosp.set(to: true)
-                                } else if wrd.equals(ME) {
+                                } else if wrd.equals(me) {
                                     output(me.description)
                                     pn.set(to: true)
-                                } else if wrd.equals(INTNUM) {
+                                } else if wrd.equals(intnum) {
                                     output(pNumber)
                                     pn.set(to: true)
                                 } else {
@@ -120,7 +120,7 @@ final class BufferPrintTests: QuelboTests {
                                     if .or(pOflag, pMerged) {
                                         output(wrd)
                                     } else if .and(
-                                        wrd.equals(IT),
+                                        wrd.equals(it),
                                         isAccessible(obj: pItObject)
                                     ) {
                                         output(pItObject.description)

@@ -14,9 +14,10 @@ extension Game {
         static func comment(_ title: String, _ code: String) -> String {
             """
             // \(title)
-            // ============================================================
+            // =====================================================================
 
             \(code)
+
             """
         }
 
@@ -34,45 +35,52 @@ extension Game {
             )
         }
 
-        static var output: String {
-            var output: [String] = []
-
-            if !Game.directions.isEmpty {
-                output.append(
-                    Self.comment("Directions", Game.directions.codeValues(.singleLineBreak))
-                )
-            }
-            if !Game.constants.isEmpty {
-                output.append(
-                    Self.comment("Constants", Game.constants.codeValues(.singleLineBreak))
-                )
-            }
-            if !Game.globals.isEmpty {
-                output.append(
-                    Self.comment("Globals", Game.globals.codeValues(.singleLineBreak))
-                )
-            }
-            if !Game.objects.isEmpty {
-                output.append(
-                    Self.comment("Objects", Game.objects.sorted(by: { $0.code < $1.code }).codeValues(.doubleLineBreak))
-                )
-            }
-            if !Game.rooms.isEmpty {
-                output.append(
-                    Self.comment("Rooms", Game.rooms.codeValues(.doubleLineBreak))
-                )
-            }
-            if !Game.routines.isEmpty {
-                output.append(
-                    Self.comment("Routines", Game.routines.codeValues(.doubleLineBreak))
-                )
-            }
-
-            return output.joined(separator: "\n\n")
-        }
-
         static func symbols() {
-            print(output)
+            let directions = Game.directions.sorted
+            if !directions.isEmpty {
+                print(
+                    Self.comment("Directions", directions.codeValues(.singleLineBreak))
+                )
+            }
+
+            let constants = Game.constants.sorted
+            if !constants.isEmpty {
+                print(
+                    Self.comment("Constants", constants.codeValues(.singleLineBreak))
+                )
+            }
+
+            let globals = Game.globals.sorted
+            if !globals.isEmpty {
+                print(
+                    Self.comment("Globals", globals.codeValues(.singleLineBreak))
+                )
+            }
+
+            let objects = Game.objects.sorted
+            if !objects.isEmpty {
+                print(
+                    Self.comment(
+                        "Objects",
+                        objects.sorted(by: { $0.code < $1.code })
+                               .codeValues(.doubleLineBreak)
+                    )
+                )
+            }
+
+            let rooms = Game.rooms.sorted
+            if !rooms.isEmpty {
+                print(
+                    Self.comment("Rooms", rooms.codeValues(.doubleLineBreak))
+                )
+            }
+
+            let routines = Game.routines.sorted
+            if !routines.isEmpty {
+                print(
+                    Self.comment("Routines", routines.codeValues(.doubleLineBreak))
+                )
+            }
         }
 
         static func tokens(_ tokens: [Token]) {

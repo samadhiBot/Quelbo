@@ -16,7 +16,7 @@ final class AdjectivesTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            .variable(id: "west", type: .direction, category: .properties),
+            .variable(id: "west", type: .object, category: .properties),
         ])
     }
 
@@ -25,44 +25,70 @@ final class AdjectivesTests: QuelboTests {
     }
 
     func testAdjectives() throws {
-        let symbol = try factory.init([
-            .atom("WHITE"),
-            .atom("BEAUTI"),
-            .atom("COLONI")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <OBJECT WHITE-HOUSE (ADJECTIVE WHITE BEAUTI COLONI)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "adjectives",
+            id: "whiteHouse",
             code: """
-                adjectives: [
-                    "white",
-                    "beauti",
-                    "coloni",
-                ]
+                /// The `whiteHouse` (WHITE-HOUSE) object.
+                var whiteHouse = Object(
+                    adjectives: [
+                        "white",
+                        "beauti",
+                        "coloni",
+                    ]
+                )
                 """,
-            type: .string.array
+            type: .object,
+            category: .objects,
+            isCommittable: true
         ))
     }
 
     func testAdjectivesWithWordThatMatchesDefinedProperty() throws {
-        let symbol = try factory.init([
-            .atom("WOODEN"),
-            .atom("GOTHIC"),
-            .atom("STRANGE"),
-            .atom("WEST")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>
+
+            <OBJECT WOODEN-DOOR (ADJECTIVE WOODEN GOTHIC STRANGE WEST)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "adjectives",
+            id: "woodenDoor",
             code: """
-                adjectives: [
-                    "wooden",
-                    "gothic",
-                    "strange",
-                    "west",
-                ]
+                /// The `woodenDoor` (WOODEN-DOOR) object.
+                var woodenDoor = Object(
+                    adjectives: [
+                        "wooden",
+                        "gothic",
+                        "strange",
+                        "west",
+                    ]
+                )
                 """,
-            type: .string.array
+            type: .object,
+            category: .objects,
+            isCommittable: true
+        ))
+    }
+
+    func testAdjectivesWithComment() throws {
+        let symbol = process("""
+            <OBJECT TREE (ADJECTIVE LARGE STORM ;"-TOSSED")>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "tree",
+            code: """
+                /// The `tree` (TREE) object.
+                var tree = Object(
+                    adjectives: ["large", "storm"]
+                )
+                """,
+            type: .object,
+            category: .objects,
+            isCommittable: true
         ))
     }
 
@@ -73,13 +99,5 @@ final class AdjectivesTests: QuelboTests {
             code: "adjectives",
             type: .string.array
         ))
-    }
-
-    func testInvalidTypeThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .decimal(42),
-            ], with: &localVariables).process()
-        )
     }
 }

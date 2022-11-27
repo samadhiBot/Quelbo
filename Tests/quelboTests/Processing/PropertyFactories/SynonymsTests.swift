@@ -39,12 +39,4 @@ final class SynonymsTests: QuelboTests {
             type: .string.array
         ))
     }
-
-    func testInvalidTypeThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .decimal(42),
-            ], with: &localVariables).process()
-        )
-    }
 }
