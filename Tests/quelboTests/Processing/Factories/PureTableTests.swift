@@ -53,7 +53,8 @@ final class PureTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -78,7 +79,8 @@ final class PureTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -108,7 +110,8 @@ final class PureTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -154,7 +157,8 @@ final class PureTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 }

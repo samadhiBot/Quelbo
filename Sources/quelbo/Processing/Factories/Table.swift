@@ -34,10 +34,10 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.atLeast(2)),
-                .areTableElements,
-            ])
+                .areTableElements
+            )
         }
 
         override func process() throws -> Symbol {
@@ -47,8 +47,11 @@ extension Factories {
                         .symbols
                         .codeMultiTypeValues(.commaSeparatedNoTrailingComma)
 
-                    return $0.type.isTableElement == true ? ".table(\(elementValues))"
-                                                          : "Table(\(elementValues))"
+                    if $0.type.isTableElement == true {
+                        return ".table(\(elementValues))"
+                    } else {
+                        return "Table(\(elementValues))"
+                    }
                 },
                 type: .table,
                 payload: .init(

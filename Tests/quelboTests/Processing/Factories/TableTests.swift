@@ -43,7 +43,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -61,7 +62,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -88,7 +90,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -110,7 +113,8 @@ final class TableTests: QuelboTests {
             )
             """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -140,7 +144,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -176,7 +181,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -220,7 +226,8 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 }

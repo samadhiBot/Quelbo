@@ -45,7 +45,8 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
 
         XCTAssertNoDifference(
@@ -53,7 +54,8 @@ final class DefineMacroTests: QuelboTests {
             .statement(
                 id: "inc",
                 code: "inc(atm: foo)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
 
@@ -62,11 +64,17 @@ final class DefineMacroTests: QuelboTests {
             .statement(
                 id: "inc",
                 code: "inc(atm: bar, n: 42)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
     }
 
+    /*
+     FIXED: testIsOpenableMacro
+         - [x] Base return handling should be `.implicit` for macros, based on their behavior in Zork.
+         - [x] Payload `code` lastLine return presence and containing `dataType` should align.
+     */
     func testIsOpenableMacro() throws {
         process("<GLOBAL PRSI <>>")
 
@@ -90,7 +98,8 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .bool,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
 
         XCTAssertNoDifference(
@@ -98,7 +107,8 @@ final class DefineMacroTests: QuelboTests {
             .statement(
                 id: "isOpenable",
                 code: "isOpenable(obj: prsi)",
-                type: .bool
+                type: .bool,
+                returnHandling: .implicit
             )
         )
     }
@@ -123,7 +133,8 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .int,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
 
         XCTAssertNoDifference(
@@ -131,7 +142,8 @@ final class DefineMacroTests: QuelboTests {
             .statement(
                 id: "double",
                 code: "double(any: 21)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
     }
@@ -161,7 +173,8 @@ final class DefineMacroTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
 
         XCTAssertNoDifference(
@@ -169,7 +182,8 @@ final class DefineMacroTests: QuelboTests {
             .statement(
                 id: "bottles",
                 code: "bottles(n: 99)",
-                type: .void
+                type: .void,
+                returnHandling: .implicit
             )
         )
     }

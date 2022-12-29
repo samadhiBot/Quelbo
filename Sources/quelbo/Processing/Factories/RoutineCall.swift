@@ -36,23 +36,43 @@ extension Factories {
                 guard let value = paramSymbols.shift() else { return nil }
 
                 return .statement(
-                    code: { _ in
-                        "\(symbol.id): \(value.handle)"
+                    code: {
+                        guard
+                            let param = $0.payload.symbols.first,
+                            let value = $0.payload.symbols.last
+                        else {
+                            return """
+                                /* #evaluationError: RoutineCall param \
+                                \($0.payload.symbols.handles(.commaSeparated)) */
+                                """
+                        }
+                        return "\(param.handle): \(value.handle)"
                     },
-                    type: value.type
+                    type: value.type,
+                    payload: .init(
+                        symbols: [
+                            .instance(symbol),
+                            value
+                        ]
+                    )
                 )
             }
         }
 
-        override func evaluate() throws -> Symbol {
-            try process()
+        override func processSymbols() throws {
+            for param in params {
+                try param.payload?.symbols.assert(
+                    .haveCommonType
+                )
+
+                try param.payload?.symbols.last?.assert(
+                    .hasReturnValue
+                )
+            }
         }
 
         override func process() throws -> Symbol {
-            guard
-                let routine = routine,
-                let routineID = routine.id
-            else {
+            guard let routine, let routineID = routine.id else {
                 throw Error.unknownRoutineName(symbols)
             }
             let comment = params.isEmpty ? "" : comment
@@ -64,6 +84,7 @@ extension Factories {
                     "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))\(comment)"
                 },
                 type: routine.type,
+                payload: .init(symbols: params),
                 isFunctionCall: true
             )
         }

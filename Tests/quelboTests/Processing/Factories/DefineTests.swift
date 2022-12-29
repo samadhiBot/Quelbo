@@ -53,7 +53,8 @@ final class DefineTests: QuelboTests {
                     """,
                 type: .table,
                 category: Category.routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
 
@@ -102,31 +103,12 @@ final class DefineTests: QuelboTests {
         // https://mdl-language.readthedocs.io/en/latest/07-structured-objects/#755-form-and-iform
         let definition = process("""
             <DEFINE INC-FORM (A)
-                    <FORM SET .A <FORM + 1 <FORM LVAL .A>>>>
+                <FORM SET .A <FORM + 1 <FORM LVAL .A>>>>
         """)
 
         XCTAssertNoDifference(definition, .definition(
             id: "incForm",
-            tokens: [
-                .list([
-                    .atom("A")
-                ]),
-                .form([
-                    .atom("FORM"),
-                    .atom("SET"),
-                    .local("A"),
-                    .form([
-                        .atom("FORM"),
-                        .atom("+"),
-                        .decimal(1),
-                        .form([
-                            .atom("FORM"),
-                            .atom("LVAL"),
-                            .local("A")
-                        ])
-                    ])
-                ])
-            ]
+            tokens: try parse("(A) <FORM SET .A <FORM + 1 <FORM LVAL .A>>>")
         ))
 
         // `incForm` isn't processed until it has been called
@@ -137,7 +119,8 @@ final class DefineTests: QuelboTests {
             .statement(
                 id: "incForm",
                 code: "incForm(foo: foo)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
 
@@ -155,7 +138,8 @@ final class DefineTests: QuelboTests {
                     """,
                 type: .int,
                 category: Category.routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
 
@@ -177,7 +161,8 @@ final class DefineTests: QuelboTests {
             .statement(
                 id: "double",
                 code: "double(foo: foo)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
 
@@ -194,7 +179,8 @@ final class DefineTests: QuelboTests {
                     """,
                 type: .int,
                 category: Category.routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
 
@@ -252,7 +238,8 @@ final class DefineTests: QuelboTests {
                     """,
                 type: .int,
                 category: Category.routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

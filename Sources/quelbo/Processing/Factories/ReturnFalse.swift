@@ -34,10 +34,9 @@ extension Factories {
                         return "return nil"
                     }
                     return ""
-
                 },
                 type: .booleanFalse,
-                isReturnStatement: true
+                returnHandling: .forced
             )
         }
     }

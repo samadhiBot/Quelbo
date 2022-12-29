@@ -54,7 +54,7 @@ final class IsVersionTests: QuelboTests {
                }
                """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 }

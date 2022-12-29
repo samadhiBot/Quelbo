@@ -54,15 +54,6 @@ final class GetTests: QuelboTests {
         ))
     }
 
-    func testNonTableThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .string("FOO"),
-                .decimal(2)
-            ], with: &localVariables).process()
-        )
-    }
-
     func testNonIndexThrows() throws {
         XCTAssertThrowsError(
             try factory.init([

@@ -20,10 +20,6 @@ final class RemoveCarefullyTests: QuelboTests {
             <GLOBAL P-IT-OBJECT <>>
             <GLOBAL PLAYER <>>
 
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
-
             <ROUTINE REMOVE-CAREFULLY (OBJ "AUX" OLIT)
                  <COND (<EQUAL? .OBJ ,P-IT-OBJECT>
                     <SETG P-IT-OBJECT <>>)>
@@ -87,7 +83,8 @@ final class RemoveCarefullyTests: QuelboTests {
                     ]
                 ),
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

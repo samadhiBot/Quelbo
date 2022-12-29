@@ -28,7 +28,7 @@
 //        XCTAssertNoDifference(symbol, .statement(
 //            code: "mapStop(atms)",
 //            type: .string.array,
-//            returnHandling: .force
+//            returnHandling: .forced
 //        ))
 //    }
 //}

@@ -75,7 +75,7 @@ extension Game {
                 if printUnprocessedTokensOnFail {
                     Game.Print.heading(
                         "􀱏  Unprocessed tokens:",
-                        tokens.map(\.zil).values(.doubleLineBreak)
+                        tokens.map(\.zil).sorted().values(.doubleLineBreak)
                     )
                 }
 
@@ -83,8 +83,9 @@ extension Game {
                     100 * Double(initialTokenCount - tokens.count) / Double(initialTokenCount)
                 )
                 let result = """
-                    􀘰  Processing failed with \(tokens.count) of \(initialTokenCount) tokens unprocessed \
-                    (\(percentage)% complete) with \(errors.count) errors
+
+                    􀘰  Processing failed with \(tokens.count) of \(initialTokenCount) tokens \
+                    unprocessed (\(percentage)% complete) with \(errors.count) errors
                     """
 
                 Game.Print.heading(result)

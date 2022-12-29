@@ -13,12 +13,10 @@ final class ShakeLoopTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
+        GlobalObjectsTests().setUp()
+
         process("""
             <SETG ZORK-NUMBER 1>
-
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <OBJECT PSEUDO-OBJECT
                 (IN LOCAL-GLOBALS)
@@ -91,13 +89,15 @@ final class ShakeLoopTests: QuelboTests {
                         while true {
                             if _ = x.set(to: prso.firstChild) {
                                 x.hasBeenTouched.set(true)
-                                x.move(to: if here.equals(upATree) {
-                                    return path
-                                } else if .isNot(here.hasFlag(isDryLand)) {
-                                    return pseudoObject
-                                } else {
-                                    return here
-                                })
+                                x.move(to: {
+                                    if here.equals(upATree) {
+                                        return path
+                                    } else if .isNot(here.hasFlag(isDryLand)) {
+                                        return pseudoObject
+                                    } else {
+                                        return here
+                                    }
+                                }())
                             } else {
                                 break
                             }
@@ -106,7 +106,8 @@ final class ShakeLoopTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

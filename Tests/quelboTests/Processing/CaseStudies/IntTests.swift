@@ -72,13 +72,14 @@ final class IntTests: QuelboTests {
                             } else if try c.get(at: cRtn).equals(rtn) {
                                 return c
                             }
-                            return c.set(to: c.rest(cIntlen))
+                            c.set(to: c.rest(cIntlen))
                         }
                     }
                     """,
                 type: .table,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

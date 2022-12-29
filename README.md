@@ -18,15 +18,17 @@ Quelbo is part of a longer term experiment to create Swift versions of Zork and 
 
 ```bash
 ॐ  swift run quelbo -h
-
-USAGE: quelbo <path> [-p] [-s] [--target <target>]
+Building for debugging...
+Build complete! (0.11s)
+USAGE: quelbo <path> [-p] [-s] [-u] [--target <target>]
 
 ARGUMENTS:
   <path>                  The path to a ZIL file or a directory containing one or more ZIL files.
 
 OPTIONS:
-  -p                      Whether to print the ZIL tokens derived in the parsing phase.
-  -s                      Whether to print the processed game tokens when processing fails.
+  -p                      Print the ZIL tokens derived in the parsing phase.
+  -s                      Print the processed game tokens when processing fails.
+  -u                      Print the unprocessed game tokens when processing fails.
   -t, --target <target>   A target directory path to write results. If unspecified, Quelbo prints results.
   -h, --help              Show help information.
 ```

@@ -35,7 +35,7 @@ extension Factories {
                     "\(values.code).nthElement(\(index.code))"
                 },
                 type: values.type.element,
-                returnHandling: .force
+                returnHandling: .forced
             )
         }
     }

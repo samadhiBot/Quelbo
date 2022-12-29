@@ -34,7 +34,8 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try mytable.put(element: 123, at: 1)",
-            type: .int.tableElement
+            type: .int.tableElement,
+            returnHandling: .suppressed
         ))
     }
 
@@ -47,7 +48,8 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"try mytable.put(element: "hello", at: 1)"#,
-            type: .string.tableElement
+            type: .string.tableElement,
+            returnHandling: .suppressed
         ))
     }
 
@@ -65,7 +67,8 @@ final class PutTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try rfrob.put(element: msg, at: 1)",
-            type: .int.tableElement
+            type: .int.tableElement,
+            returnHandling: .suppressed
         ))
     }
 

@@ -44,7 +44,9 @@ extension Symbol {
     }
 
     var definition: Definition? {
-        guard case .definition(let definition) = self else { return nil }
+        guard case .definition(let definition) = self else {
+            return nil
+        }
         return definition
     }
 
@@ -103,21 +105,10 @@ extension Symbol {
     }
 
     var isRepeating: Bool {
-        switch self {
-        case .definition, .literal, .instance: return false
-        case .statement(let statement): return statement.isRepeating
+        guard case .statement(let statement) = self else {
+            return false
         }
-    }
-
-    var isReturnable: Bool {
-        type.hasReturnValue
-    }
-
-    var isReturnStatement: Bool {
-        switch self {
-        case .definition, .literal, .instance: return false
-        case .statement(let statement): return statement.isReturnStatement
-        }
+        return statement.isRepeating
     }
 
     var objID: String {
@@ -133,25 +124,22 @@ extension Symbol {
     }
 
     var payload: Statement.Payload? {
-        guard case .statement(let statement) = self else { return nil }
+        guard case .statement(let statement) = self else {
+            return nil
+        }
         return statement.payload
     }
 
     var returnHandling: ReturnHandling {
         switch self {
-        case .definition: return .suppress
-        case .literal(let literal): return literal.returnHandling
-        case .instance: return .implicit
-        case .statement(let statement): return statement.returnHandling
-        }
-    }
-
-    var status: Status {
-        switch self {
-        case .definition(let definition): return definition.status
-        case .instance(let instance): return instance.type.status
-        case .literal(let literal): return literal.type.status
-        case .statement(let statement): return statement.status
+        case .definition(let definition):
+            return definition.returnHandling
+        case .literal(let literal):
+            return literal.returnHandling
+        case .statement(let statement):
+            return statement.returnHandling
+        case .instance(let instance):
+            return instance.returnHandling
         }
     }
 

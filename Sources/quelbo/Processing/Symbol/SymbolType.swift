@@ -21,7 +21,7 @@ extension SymbolType {
     func assertHasCategory(_ assertionCategory: Category) throws {
         if let category, assertionCategory != category {
             throw Symbol.AssertionError.hasCategoryAssertionFailed(
-                for: "\(Self.self)",
+                for: "\(code)",
                 asserted: assertionCategory,
                 actual: category
             )

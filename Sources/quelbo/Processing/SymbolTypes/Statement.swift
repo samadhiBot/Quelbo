@@ -12,14 +12,12 @@ final class Statement: SymbolType {
     private(set) var activation: String?
     private(set) var category: Category?
     private(set) var codeBlock: (Statement) throws -> String
-    private(set) var evaluatedCode: String?
     private(set) var id: String?
     private(set) var isAgainStatement: Bool
     private(set) var isBindingAndRepeatingStatement: Bool
     private(set) var isCommittable: Bool
     private(set) var isFunctionCall: Bool
     private(set) var isMutable: Bool?
-    private(set) var isReturnStatement: Bool
     private(set) var payload: Payload
     private(set) var repeating: Bool
     private(set) var returnHandling: Symbol.ReturnHandling
@@ -38,7 +36,6 @@ final class Statement: SymbolType {
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        isReturnStatement: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) {
         self.activation = activation
@@ -50,7 +47,6 @@ final class Statement: SymbolType {
         self.isCommittable = isCommittable
         self.isFunctionCall = isFunctionCall
         self.isMutable = isMutable
-        self.isReturnStatement = isReturnStatement
         self.payload = payload ?? .empty
         self.repeating = isRepeating
         self.returnHandling = returnHandling
@@ -58,16 +54,9 @@ final class Statement: SymbolType {
     }
 
     var code: String {
-        if let evaluatedCode {
-            return evaluatedCode
-        }
         do {
-            let code = try codeBlock(self)
+            return try codeBlock(self)
                 .replacingOccurrences(of: "try try", with: "try")
-            if type.confidence == .certain {
-//                self.evaluatedCode = code
-            }
-            return code
         } catch {
             return "Statement:code:\(error)"
         }
@@ -81,13 +70,6 @@ final class Statement: SymbolType {
             guard case .statement(let statement) = $0 else { return false }
             return statement.isAgainStatement
         }
-    }
-
-    var status: Status {
-        min(
-            type.status,
-            payload.symbols.map(\.status).min() ?? .fixed
-        )
     }
 }
 
@@ -114,7 +96,6 @@ extension Symbol {
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        isReturnStatement: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) -> Symbol {
         .statement(Statement(
@@ -130,7 +111,6 @@ extension Symbol {
             isFunctionCall: isFunctionCall,
             isMutable: isMutable,
             isRepeating: isRepeating,
-            isReturnStatement: isReturnStatement,
             returnHandling: returnHandling
         ))
     }
@@ -140,7 +120,8 @@ extension Symbol {
         type: TypeInfo,
         category: Category? = nil,
         isCommittable: Bool = true,
-        isMutable: Bool? = nil
+        isMutable: Bool? = nil,
+        returnHandling: Symbol.ReturnHandling = .implicit
     ) -> Symbol {
         .statement(Statement(
             id: id,
@@ -148,7 +129,8 @@ extension Symbol {
             type: type,
             category: category,
             isCommittable: isCommittable,
-            isMutable: isMutable
+            isMutable: isMutable,
+            returnHandling: returnHandling
         ))
     }
 }
@@ -169,7 +151,7 @@ extension Statement {
             return
         default:
             throw Symbol.AssertionError.hasCategoryAssertionFailed(
-                for: "\(Self.self)",
+                for: "\(id ?? code)",
                 asserted: assertionCategory,
                 actual: category
             )
@@ -189,26 +171,59 @@ extension Statement {
         }
     }
 
+    func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
+        switch (assertedHandling, returnHandling) {
+        case (.forced, .implicit):
+            self.returnHandling = .forced
+        case (.forced, .passthrough):
+            self.returnHandling = .forcedPassthrough
+            try payload.assertHasReturnHandling(.forced, from: returnHandling)
+        case (.forced, .forcedPassthrough):
+            try payload.assertHasReturnHandling(.forced, from: returnHandling)
+        case (.forced, .suppressedPassthrough):
+            try payload.assertHasReturnHandling(.forced, from: returnHandling)
+        case (.suppressed, .forced):
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: id ?? code,
+                asserted: assertedHandling,
+                actual: returnHandling
+            )
+        case (.forced, .forced),
+             (.forced, .suppressed),
+             (.implicit, .implicit),
+             (.suppressed, .suppressedPassthrough):
+            break
+        default:
+            assertionFailure(
+                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
+            )
+        }
+    }
+
     func assertHasType(_ assertedType: TypeInfo) throws {
         self.type = try type.reconcile(".statement(\(id ?? code))", with: assertedType)
 
-        try payload.symbols.returningExplicitly.assert(
-            .haveType(type)
-        )
+        if returnHandling.isPassthrough {
+            try payload.symbols.returningSymbols.assert(
+                .haveType(type)
+            )
+        }
     }
 
-    func assertShouldReturn() {
+    func assertShouldReturn() throws {
         switch returnHandling {
-        case .force:
+        case .forced, .forcedPassthrough:
             break
         case .implicit:
-            returnHandling = .force
-        case .suppress:
-            payload.symbols.forEach {
-                if case .statement(let statement) = $0 {
-                    statement.assertShouldReturn()
+            returnHandling = .forced
+        case .passthrough, .suppressedPassthrough:
+            for symbol in payload.symbols {
+                if case .statement(let statement) = symbol {
+                    try statement.assertShouldReturn()
                 }
             }
+        case .suppressed:
+            throw Symbol.AssertionError.shouldReturnAssertionFailed
         }
     }
 }
@@ -231,7 +246,6 @@ extension Statement: CustomDumpReflectable {
                 "id": self.id as Any,
                 "code": self.code,
                 "type": self.type,
-//                "payload": self.payload as Any,
                 "category": self.category as Any,
                 "activation": self.activation as Any,
                 "isAgainStatement": self.isAgainStatement,
@@ -239,7 +253,6 @@ extension Statement: CustomDumpReflectable {
                 "isCommittable": self.isCommittable,
                 "isMutable": self.isMutable as Any,
                 "isRepeating": self.isRepeating,
-                "isReturnStatement": self.isReturnStatement,
                 "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
@@ -259,7 +272,6 @@ extension Statement: Equatable {
         lhs.isCommittable == rhs.isCommittable &&
         lhs.isMutable == rhs.isMutable &&
         lhs.isRepeating == rhs.isRepeating &&
-        lhs.isReturnStatement == rhs.isReturnStatement &&
         lhs.returnHandling == rhs.returnHandling
     }
 }

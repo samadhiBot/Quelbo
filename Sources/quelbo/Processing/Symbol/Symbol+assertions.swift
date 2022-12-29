@@ -28,8 +28,10 @@ enum SymbolCollectionAssertion {
     case areVariables
     case haveCommonType
     case haveCount(SymbolCollectionCount)
+    case haveReturnHandling(Symbol.ReturnHandling)
     case haveReturnValues
     case haveSameType(as: Symbol)
+    case haveSingleReturnType
     case haveType(TypeInfo)
 }
 
@@ -71,7 +73,7 @@ extension Symbol {
         }
     }
 
-    func assert(_ assertions: [SymbolElementAssertion]) throws {
+    func assert(_ assertions: SymbolElementAssertion...) throws {
         for assertion in assertions {
             try assert(assertion)
         }
@@ -89,16 +91,20 @@ extension Array where Element == Symbol {
             try nonCommentSymbols.assertHaveCommonType()
         case .haveCount(let comparator):
             try nonCommentSymbols.assertHaveCount(comparator)
+        case .haveReturnHandling(let handling):
+            try nonCommentSymbols.forEach { try $0.assertHasReturnHandling(handling) }
         case .haveReturnValues:
             try nonCommentSymbols.forEach { try $0.assertHasReturnValue() }
         case .haveSameType(as: let other):
             try nonCommentSymbols.forEach { try $0.assertHasType(other.type) }
+        case .haveSingleReturnType:
+            try nonCommentSymbols.assertHaveSingleReturnType()
         case .haveType(let typeInfo):
             try nonCommentSymbols.forEach { try $0.assertHasType(typeInfo) }
         }
     }
 
-    func assert(_ assertions: [SymbolCollectionAssertion]) throws {
+    func assert(_ assertions: SymbolCollectionAssertion...) throws {
         for assertion in assertions {
             try assert(assertion)
         }
@@ -135,12 +141,26 @@ extension Symbol {
     }
 
     func assertHasReturnValue() throws {
-        guard type.hasReturnValue == true else {
+        guard type.hasReturnValue || returnHandling > .suppressed else {
             throw AssertionError.hasReturnValueAssertionFailed(
                 for: handle,
                 asserted: true,
                 actual: false
             )
+        }
+        try assertHasReturnHandling(.forced)
+    }
+
+    func assertHasReturnHandling(_ handling: Symbol.ReturnHandling) throws {
+        switch self {
+        case .definition(let definition):
+            try definition.assertHasReturnHandling(handling)
+        case .literal(let literal):
+            try literal.assertHasReturnHandling(handling)
+        case .statement(let statement):
+            try statement.assertHasReturnHandling(handling)
+        case .instance(let instance):
+            try instance.assertHasReturnHandling(handling)
         }
     }
 
@@ -191,23 +211,30 @@ extension Array where Element == Symbol {
     func assertHaveCommonType() throws {
         guard count > 1 else { return }
 
-        let alphas = mostConfident
-        let uniqueTypes = alphas.map(\.type.dataType).unique
+        let alphas = withMaxConfidence
+        let uniqueTypes = alphas.compactMap(\.type.dataType).unique
 
         switch uniqueTypes.count {
-        case 0:
-            break
-        case 1:
-            try assert(.haveSameType(as: alphas[0]))
+        /*
+         FIXED: testBufferPrint
+            - `EQUAL?` elements share the same type instance, even when all symbol types are unknown when processed
+         */
+        case 0, 1:
+            try assert(
+                .haveSameType(as: alphas[0])
+            )
         case 2:
-            guard
-                uniqueTypes.contains(.bool), // TODO: confidence .booleanFalse || .booleanTrue || .integerZero ?
-                let known = alphas.first(where: { $0.type != .bool })
-            else { fallthrough }
-            try known.assert(.isOptional)
-            try assert(.haveSameType(as: known))
+            if let optionalType = alphas.sharedOptionalType {
+                try assert(
+                    .haveType(optionalType)
+                )
+            } else {
+                fallthrough
+            }
         default:
-            try assert(.areTableElements)
+            try? assert(
+                .areTableElements
+            )
         }
     }
 
@@ -224,17 +251,75 @@ extension Array where Element == Symbol {
             symbols: self
         )
     }
+
+    func assertHaveSingleReturnType() throws {
+        let (explicitlyReturning, nonReturning) = {
+            let returningSymbols = explicitlyReturningSymbols
+            if !returningSymbols.isEmpty {
+                return returningSymbols.splitByReturnHandling
+            }
+            if let lastSymbol = implicitlyReturningLastSymbol {
+                return ([lastSymbol], [])
+            }
+            return ([], [])
+        }()
+        let alphas = explicitlyReturning.withMaxConfidence
+        let uniqueTypes = alphas.compactMap(\.type.dataType).unique
+
+        /*
+         Swift.print(
+             "😀 assertHaveSingleReturnType",
+             "\nsymbols:\n\(self.map({ "\($0.handle) [\($0.returnHandling)]" }).joined(separator: "\n").indented)",
+             "\nreturningSymbols:\n\(returningSymbols.handles(.singleLineBreak).indented)",
+             "\nexplicitlyReturning:\n\(explicitlyReturning.handles(.singleLineBreak).indented)",
+             "\nnonReturning:\n\(nonReturning.handles(.singleLineBreak).indented)",
+             "\nalphas:\n\(alphas.handles(.singleLineBreak).indented)",
+             "\nuniqueTypes:", uniqueTypes
+         )
+         */
+
+        func assertType(_ type: TypeInfo) throws {
+            try explicitlyReturning.assert(
+                .haveType(type),
+                .haveReturnHandling(.forced)
+            )
+
+            try nonReturning.assert(
+                .haveReturnHandling(.suppressed)
+            )
+        }
+
+        switch uniqueTypes.count {
+        case 0:
+            return
+        case 1:
+            try assertType(alphas[0].type)
+        case 2:
+            if let optionalType = alphas.sharedOptionalType {
+                try assertType(optionalType)
+            } else {
+                fallthrough
+            }
+        default:
+            try assert(
+                .areTableElements
+            )
+        }
+    }
 }
 
 extension Symbol {
     enum AssertionError: Swift.Error {
         case hasCategoryAssertionFailed(for: String, asserted: Category, actual: Category)
         case hasMutabilityAssertionFailed(for: String, asserted: Bool, actual: Bool?)
+        case hasReturnHandlingAssertionFailed(
+            for: String,
+            asserted: Symbol.ReturnHandling,
+            actual: Symbol.ReturnHandling
+        )
         case hasReturnValueAssertionFailed(for: String, asserted: Bool, actual: Bool)
         case hasSameTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
         case hasTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-//        case hasTypeAssertionStatementFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-//        case hasTypeAssertionVariableFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
         case isImmutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isMutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isVariableAssertionFailed(for: String)
@@ -243,13 +328,9 @@ extension Symbol {
         case isOptionalAssertionFailed
         case isPropertyAssertionFailed
         case isTableElementAssertionFailed
-
-
-
-
+        case shouldReturnAssertionFailed
 
         case areVariablesAssertionFailed(asserted: Bool, actual: Bool)
-        case haveCommonTypeFailed
         case haveCountAssertionFailed(
             asserted: SymbolCollectionCount,
             actual: Int,

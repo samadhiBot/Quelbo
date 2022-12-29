@@ -41,6 +41,12 @@ extension Factories {
             )
         }
 
+        override func processSymbols() throws {
+            try blockProcessor.symbols.assert(
+                .haveSingleReturnType
+            )
+        }
+
         override func process() throws -> Symbol {
             let name = zilName.lowerCamelCase
             let typeName = isMacro ? "macro" : "routine"
@@ -64,7 +70,8 @@ extension Factories {
                 type: blockProcessor.payload.returnType ?? .void,
                 payload: blockProcessor.payload,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         }
     }

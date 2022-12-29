@@ -44,7 +44,8 @@ extension Factories {
                 code: { _ in
                     "try \(table.code).put(element: \(value.code), at: \(offset.code))"
                 },
-                type: value.type
+                type: value.type,
+                returnHandling: .suppressed
             )
         }
     }

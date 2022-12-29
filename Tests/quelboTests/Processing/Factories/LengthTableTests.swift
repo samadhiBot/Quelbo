@@ -53,7 +53,8 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -78,7 +79,8 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
 
@@ -108,7 +110,8 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: false
+            isMutable: false,
+            returnHandling: .implicit
         ))
     }
 
@@ -154,7 +157,39 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true
+            isMutable: true,
+            returnHandling: .implicit
         ))
     }
+
+    func testGlobalLengthTable() throws {
+        process("""
+            <GLOBAL HELLOS
+                <LTABLE 0 "Hello."
+                       "Good day."
+                       "Nice weather we've been having lately."
+                       "Goodbye.">>
+        """)
+
+        XCTAssertNoDifference(
+            Game.globals.find("hellos"),
+            Statement(
+                id: "hellos",
+                code: """
+                    var hellos: Table = Table(
+                        flags: [.length],
+                        .int(0),
+                        .string("Hello."),
+                        .string("Good day."),
+                        .string("Nice weather we've been having lately."),
+                        .string("Goodbye.")
+                    )
+                    """,
+                type: .table,
+                category: .globals,
+                isCommittable: true
+            )
+        )
+    }
+
 }

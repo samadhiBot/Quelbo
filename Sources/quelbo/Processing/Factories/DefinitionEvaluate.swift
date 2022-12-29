@@ -11,6 +11,9 @@ extension Factories {
     /// A symbol factory for calls to functions and routines defined in a game.
     ///
     class DefinitionEvaluate: Factory {
+        /// <#Description#>
+        var evaluatedMacro: Symbol!
+
         override func processTokens() throws {
             var callerParams = tokens
             let zilName = try findName(in: &callerParams)
@@ -45,19 +48,24 @@ extension Factories {
             let routine = try Factories.Routine(
                 definitionTokens,
                 with: &localVariables
-            ).process()
-            try Game.commit(routine)
+            )
+            routine.blockProcessor.assert(
+                returnHandling: .implicit
+            )
+            try Game.commit(
+                try routine.process()
+            )
 
             let evaluated = try Factories.RoutineCall(
                 [.atom(zilName)] + callerParams,
                 with: &localVariables
-            ).process()
+            )
 
-            symbols.append(evaluated)
+            self.evaluatedMacro = try evaluated.process()
         }
 
         override func process() throws -> Symbol {
-            symbols[0]
+            evaluatedMacro
         }
     }
 }

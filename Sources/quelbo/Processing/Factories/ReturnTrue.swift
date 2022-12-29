@@ -32,7 +32,7 @@ extension Factories {
                     return ""
                 },
                 type: .booleanTrue,
-                isReturnStatement: true
+                returnHandling: .forced
             )
         }
     }

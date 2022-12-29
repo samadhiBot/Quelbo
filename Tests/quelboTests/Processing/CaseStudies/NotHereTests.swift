@@ -12,6 +12,7 @@ import XCTest
 final class NotHereTests: QuelboTests {
     override func setUp() {
         super.setUp()
+
         BufferPrintTests().setUp()
 
         process(#"""
@@ -31,7 +32,6 @@ final class NotHereTests: QuelboTests {
             <OBJECT NOT-HERE-OBJECT
                 (DESC "such thing" ;"[not here]")
                 (ACTION NOT-HERE-OBJECT-F)>
-
 
             <ROUTINE NOT-HERE-PRINT (PRSO?)
              <COND (,P-OFLAG
@@ -98,7 +98,7 @@ final class NotHereTests: QuelboTests {
                     func notHereObjectFunc() -> Bool {
                         var tbl: Table? = nil
                         var isPrso: Bool = true
-                        var obj: Any
+                        // var obj: <Unknown>
                         // "This COND is game independent (except the TELL)"
                         if .and(
                             prso.equals(notHereObject),
@@ -131,7 +131,8 @@ final class NotHereTests: QuelboTests {
                     """#,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

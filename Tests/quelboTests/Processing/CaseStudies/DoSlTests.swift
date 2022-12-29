@@ -13,15 +13,14 @@ final class DoSlTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
+        SearchListTests().setUp()
+
         process("""
             <CONSTANT P-SRCALL 1>
             <CONSTANT P-SRCBOT 2>
             <CONSTANT P-SRCTOP 0>
             <GLOBAL P-SLOCBITS 0>
             <GLOBAL P-TABLE 0>
-
-            <ROUTINE SEARCH-LIST (OBJ TBL LVL "AUX" FLS NOBJ)
-                <SET OBJ <FIRST? .OBJ>>>
 
             <ROUTINE DO-SL (OBJ BIT1 BIT2 "AUX" BTS)
                 <COND (<BTST ,P-SLOCBITS <+ .BIT1 .BIT2>>
@@ -49,8 +48,7 @@ final class DoSlTests: QuelboTests {
                         bit1: Int,
                         bit2: Int
                     ) -> Bool {
-                        var bts: Any
-                        var obj: Object = obj
+                        // var bts: <Unknown>
                         if _ = .bitwiseCompare(
                             pSlocbits,
                             .add(bit1, bit2)
@@ -81,7 +79,8 @@ final class DoSlTests: QuelboTests {
                     """,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

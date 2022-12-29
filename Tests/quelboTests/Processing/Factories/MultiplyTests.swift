@@ -42,7 +42,8 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".multiply(9, 3)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -55,7 +56,8 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".multiply(20, 5, 2)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -72,7 +74,8 @@ final class MultiplyTests: QuelboTests {
                     biggerNumber
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -84,7 +87,8 @@ final class MultiplyTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".multiply(cyclowrath, 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -103,7 +107,8 @@ final class MultiplyTests: QuelboTests {
                     otvalFrob()
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

@@ -106,6 +106,123 @@ final class PerformTests: QuelboTests {
         """)
     }
 
+    func testIt() throws {
+        XCTAssertNoDifference(
+            Game.objects.find("it"),
+            Statement(
+                id: "it",
+                code: """
+                    /// The `it` (IT) object.
+                    var it = Object(
+                        description: "random object",
+                        flags: [
+                            hasBeenTouched,
+                            omitDescription,
+                        ],
+                        location: globalObjects,
+                        synonyms: [
+                            "it",
+                            "them",
+                            "her",
+                            "him",
+                        ]
+                    )
+                    """,
+                type: .object.optional.tableElement,
+                category: .objects,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testDApply() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("dApply"),
+            Statement(
+                id: "dApply",
+                code: #"""
+                    @discardableResult
+                    /// The `dApply` (D-APPLY) routine.
+                    func dApply(
+                        str: String,
+                        fcn: Int,
+                        foo: Int? = 0
+                    ) -> Int? {
+                        var res: Int? = 0
+                        if .isNot(fcn) {
+                            return 0
+                        } else {
+                            if debug {
+                                if .isNot(str) {
+                                    output("\n")
+                                } else {
+                                    output("\n")
+                                    output(str)
+                                    output(" -> ")
+                                }
+                            }
+                            res.set(to: {
+                                if foo.isAssigned {
+                                    fcn(foo)
+                                } else {
+                                    fcn()
+                                }
+                            }())
+                            if .and(debug, str) {
+                                if res.equals(2) {
+                                    output("Fatal")
+                                } else if .isNot(res) {
+                                    output("Not handled")
+                                } else {
+                                    output("Handled")
+                                }
+                            }
+                            return res
+                        }
+                    }
+                    """#,
+                type: .int.optional,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
+    func testDDApply() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("ddApply"),
+            Statement(
+                id: "ddApply",
+                code: """
+                    @discardableResult
+                    /// The `ddApply` (DD-APPLY) routine.
+                    func ddApply(
+                        str: String,
+                        obj: Object,
+                        fcn: Int,
+                        foo: Int = 0
+                    ) -> Int? {
+                        if debug {
+                            output("[")
+                            output(obj.description)
+                            output("=]")
+                        }
+                        return dApply(
+                            str: str,
+                            fcn: fcn,
+                            foo: foo
+                        )
+                    }
+                    """,
+                type: .int.optional,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
     func testPerform() throws {
         XCTAssertNoDifference(
             Game.routines.find("perform"),
@@ -118,9 +235,9 @@ final class PerformTests: QuelboTests {
                         a: Int,
                         o: Object = nil,
                         i: Object = nil
-                    ) -> Bool {
-                        var v: Bool = false
-                        var oa: Int? = 0
+                    ) -> Int? {
+                        var v: Int? = 0
+                        var oa: Verb? = nil
                         var oo: Object? = nil
                         var oi: Object? = nil
                         var o: Object? = nil
@@ -128,9 +245,9 @@ final class PerformTests: QuelboTests {
                         if debug {
                             output("** PERFORM: PRSA = ")
                             output(actions.nthElement(.add(.multiply(a, 2), 1)))
-                            if _ = .and(
+                            if .and(
                                 o,
-                                .isNot(a.equals(walk))
+                                .isNot(a.equals(.walk))
                             ) {
                                 output("""
 
@@ -165,40 +282,40 @@ final class PerformTests: QuelboTests {
                         prsa.set(to: a)
                         prso.set(to: o)
                         if _ = .and(
-                            prso,
+                            .object(prso),
                             .isNot(isVerb(.walk))
                         ) {
                             pItObject.set(to: prso)
                         }
                         prsi.set(to: i)
-                        if .and(
+                        if _ = .and(
                             notHereObject.equals(prso, prsi),
                             v.set(to: dApply(
                                 str: "Not Here",
                                 fcn: notHereObjectFunc
                             ))
                         ) {
-                            v
+                            return v
                         } else {
                             o.set(to: prso)
                             i.set(to: prsi)
-                            if v.set(to: ddApply(
+                            if _ = v.set(to: ddApply(
                                 str: "Actor",
                                 obj: winner,
                                 fcn: winner.action
                             )) {
-                                v
-                            } else if v.set(to: dApply(
+                                return v
+                            } else if _ = v.set(to: dApply(
                                 str: "Room (M-BEG)",
                                 fcn: winner.parent.action,
                                 foo: mBeg
                             )) {
-                                v
-                            } else if v.set(to: dApply(
+                                return v
+                            } else if _ = v.set(to: dApply(
                                 str: "Preaction",
                                 fcn: try preactions.get(at: a)
                             )) {
-                                v
+                                return v
                             } else if _ = .and(
                                 i,
                                 v.set(to: dApply(
@@ -206,10 +323,10 @@ final class PerformTests: QuelboTests {
                                     fcn: i.action
                                 ))
                             ) {
-                                v
+                                return v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(walk)),
+                                .isNot(a.equals(.walk)),
                                 o.parent,
                                 o.parent.containerFunction,
                                 v.set(to: ddApply(
@@ -218,21 +335,21 @@ final class PerformTests: QuelboTests {
                                     fcn: o.parent.containerFunction
                                 ))
                             ) {
-                                v
+                                return v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(walk)),
+                                .isNot(a.equals(.walk)),
                                 v.set(to: dApply(
                                     str: "PRSO",
                                     fcn: o.action
                                 ))
                             ) {
-                                v
-                            } else if v.set(to: dApply(
-                                str: false,
+                                return v
+                            } else if _ = v.set(to: dApply(
+                                str: nil,
                                 fcn: try actions.get(at: a)
                             )) {
-                                v
+                                return v
                             }
                         }
                         prsa.set(to: oa)
@@ -241,9 +358,10 @@ final class PerformTests: QuelboTests {
                         return v
                     }
                     """#,
-                type: .bool,
+                type: .int.optional,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

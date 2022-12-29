@@ -23,7 +23,6 @@ extension Statement {
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        isReturnStatement: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) {
         self.init(
@@ -39,7 +38,6 @@ extension Statement {
             isFunctionCall: isFunctionCall,
             isMutable: isMutable,
             isRepeating: isRepeating,
-            isReturnStatement: isReturnStatement,
             returnHandling: returnHandling
         )
     }
@@ -61,7 +59,6 @@ extension Symbol {
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
-        isReturnStatement: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) -> Symbol {
         .statement(Statement(
@@ -77,7 +74,6 @@ extension Symbol {
             isFunctionCall: isFunctionCall,
             isMutable: isMutable,
             isRepeating: isRepeating,
-            isReturnStatement: isReturnStatement,
             returnHandling: returnHandling
         ))
     }

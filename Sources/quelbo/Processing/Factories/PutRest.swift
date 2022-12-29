@@ -17,10 +17,13 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(2)))
+            try symbols.assert(
+                .haveCount(.exactly(2))
+            )
 
-            try? symbols[0].assert(.hasType(.unknown.array))
-            try? symbols[1].assert(.hasType(.unknown.array))
+            for symbol in symbols {
+                try symbol.assert(.isArray)
+            }
         }
 
         override func process() throws -> Symbol {

@@ -10,14 +10,14 @@ import Foundation
 
 final class Literal: SymbolType {
     let _code: String
-    let returnHandling: Symbol.ReturnHandling
     private(set) var isMutable: Bool?
+    private(set) var returnHandling: Symbol.ReturnHandling
     private(set) var type: TypeInfo
 
     init(
         code: String,
         type: TypeInfo,
-        returnHandling: Symbol.ReturnHandling = .implicit
+        returnHandling: Symbol.ReturnHandling = .forced
     ) {
         self._code = code
         self.returnHandling = returnHandling
@@ -31,24 +31,17 @@ final class Literal: SymbolType {
     var code: String {
         switch (_code, type.dataType) {
         case ("false", .bool): return "false"
-        case ("false", .int): return "0"
-        case ("false", .int32): return "0"
-        case ("false", .int16): return "0"
-        case ("false", .int8): return "0"
+        case ("false", .int), ("false", .int32), ("false", .int16), ("false", .int8): return "0"
         case ("false", _): return "nil"
 
         case ("true", .bool): return "true"
-        case ("true", .int): return "1"
-        case ("true", .int32): return "1"
-        case ("true", .int16): return "1"
-        case ("true", .int8): return "1"
+        case ("true", .int), ("true", .int32), ("true", .int16), ("true", .int8): return "1"
 
         case ("0", .bool): return "false"
-        case ("0", .int): return "0"
-        case ("0", .int32): return "0"
-        case ("0", .int16): return "0"
-        case ("0", .int8): return "0"
+        case ("0", .int), ("0", .int32), ("0", .int16), ("0", .int8): return "0"
         case ("0", _): return "nil"
+
+        case (_, .word), (_, .verb): return ".\(_code)"
 
         default: return _code
         }
@@ -117,41 +110,73 @@ extension Symbol {
     }
 
     static func literal(_ int64: Int) -> Symbol {
-        .literal(Literal(
+        let confidence: TypeInfo.Confidence = {
+            switch int64 {
+            case 0: return .integerZero
+            case 1: return .integerOne
+            default: return .certain
+            }
+        }()
+
+        return .literal(Literal(
             code: int64.description,
             type: .init(
                 dataType: .int,
-                confidence: int64 == 0 ? .integerZero : .certain
+                confidence: confidence
             )
         ))
     }
 
     static func literal(_ int32: Int32) -> Symbol {
-        .literal(Literal(
+        let confidence: TypeInfo.Confidence = {
+            switch int32 {
+            case 0: return .integerZero
+            case 1: return .integerOne
+            default: return .certain
+            }
+        }()
+
+        return .literal(Literal(
             code: int32.description,
             type: .init(
                 dataType: .int32,
-                confidence: int32 == 0 ? .integerZero : .certain
+                confidence: confidence
             )
         ))
     }
 
     static func literal(_ int16: Int16) -> Symbol {
-        .literal(Literal(
+        let confidence: TypeInfo.Confidence = {
+            switch int16 {
+            case 0: return .integerZero
+            case 1: return .integerOne
+            default: return .certain
+            }
+        }()
+
+        return .literal(Literal(
             code: int16.description,
             type: .init(
                 dataType: .int16,
-                confidence: int16 == 0 ? .integerZero : .certain
+                confidence: confidence
             )
         ))
     }
 
     static func literal(_ int8: Int8) -> Symbol {
-        .literal(Literal(
+        let confidence: TypeInfo.Confidence = {
+            switch int8 {
+            case 0: return .integerZero
+            case 1: return .integerOne
+            default: return .certain
+            }
+        }()
+
+        return .literal(Literal(
             code: int8.description,
             type: .init(
                 dataType: .int8,
-                confidence: int8 == 0 ? .integerZero : .certain
+                confidence: confidence
             )
         ))
     }
@@ -188,6 +213,19 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Literal {
+    func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
+        switch (assertedHandling, returnHandling) {
+        case (.forced, .suppressed), (.suppressed, .forced):
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: code,
+                asserted: assertedHandling,
+                actual: returnHandling
+            )
+        default:
+            self.returnHandling = assertedHandling
+        }
+    }
+
     func assertHasType(_ assertedType: TypeInfo) throws {
         self.type = try type.reconcile(".literal(\(_code))", with: assertedType)
     }
@@ -202,7 +240,6 @@ extension Literal: CustomDumpReflectable {
             children: [
                 "code": self.code,
                 "type": self.type as Any,
-                "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
         )
@@ -212,7 +249,6 @@ extension Literal: CustomDumpReflectable {
 extension Literal: Equatable {
     static func == (lhs: Literal, rhs: Literal) -> Bool {
         lhs._code == rhs._code &&
-        lhs.returnHandling == rhs.returnHandling &&
         lhs.type.dataType == rhs.type.dataType
     }
 }

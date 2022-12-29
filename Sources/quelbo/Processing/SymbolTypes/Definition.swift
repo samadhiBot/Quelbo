@@ -14,6 +14,7 @@ final class Definition: SymbolType, Identifiable {
     private(set) var evaluatedCode: String?
     private(set) var evaluationError: Swift.Error?
     private(set) var localVariables: [Statement]
+    private(set) var returnHandling: Symbol.ReturnHandling
     private(set) var type: TypeInfo
 
     init(
@@ -23,6 +24,7 @@ final class Definition: SymbolType, Identifiable {
     ) {
         self.id = id
         self.localVariables = localVariables
+        self.returnHandling = .implicit
         self.tokens = tokens
         self.type = .unknown
     }
@@ -36,29 +38,27 @@ final class Definition: SymbolType, Identifiable {
             let routineCall = try Factories.RoutineCall(
                 tokens,
                 with: &localVariables,
-                mode: .evaluate
+                mode: .process
             ).processOrEvaluate()
+            try routineCall.payload?.symbols.assert(
+                .haveReturnHandling(returnHandling)
+            )
 
             let code = routineCall.code
 
             self.evaluatedCode = code
             self.evaluationError = nil
-            self.type = routineCall.type
+            self.type = try type.reconcile(id, with: routineCall.type)
 
             return code
 
         } catch {
             self.evaluationError = error
-            return "/* \(id) evaluation error: \(error) */"
+            return "/* _evaluationError_ \(id): \(error) */"
         }
     }
 
     var isMutable: Bool? { false }
-
-    var status: Status {
-        if evaluatedCode == nil { return .undetermined }
-        return type.status
-    }
 }
 
 // MARK: - Symbol Definition initializer
@@ -82,6 +82,19 @@ extension Symbol {
 extension Definition {
     func assertHasType(_ assertedType: TypeInfo) throws {
         self.type = assertedType
+    }
+
+    func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
+        switch (assertedHandling, returnHandling) {
+        case (.forced, .suppressed), (.suppressed, .forced):
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: id,
+                asserted: assertedHandling,
+                actual: returnHandling
+            )
+        default:
+            self.returnHandling = assertedHandling
+        }
     }
 }
 

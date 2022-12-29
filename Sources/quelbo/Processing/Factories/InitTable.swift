@@ -63,10 +63,10 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.atLeast(0)),
-                .areTableElements,
-            ])
+                .areTableElements
+            )
 
             try defaults.assert(
                 .areTableElements

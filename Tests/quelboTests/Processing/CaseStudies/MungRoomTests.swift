@@ -10,13 +10,15 @@ import XCTest
 @testable import quelbo
 
 final class MungRoomTests: QuelboTests {
+    override func setUp() {
+        super.setUp()
+
+        GlobalObjectsTests().setUp()
+    }
+
     func testMungRoomZork1() {
         process("""
             <SETG ZORK-NUMBER 1>
-
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE MUNG-ROOM (RM STR)
                  %<COND (<==? ,ZORK-NUMBER 2>
@@ -43,7 +45,8 @@ final class MungRoomTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -53,10 +56,6 @@ final class MungRoomTests: QuelboTests {
             <SETG ZORK-NUMBER 2>
 
             <ROOM INSIDE-BARROW>
-
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE MUNG-ROOM (RM STR)
                  %<COND (<==? ,ZORK-NUMBER 2>
@@ -87,7 +86,8 @@ final class MungRoomTests: QuelboTests {
                     """,
                 type: .booleanFalse,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

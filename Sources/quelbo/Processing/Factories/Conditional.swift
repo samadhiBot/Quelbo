@@ -40,7 +40,6 @@ extension Factories {
                     with: &localVariables,
                     mode: mode
                 )
-                blockProcessor?.assert(implicitReturns: false)
             }
         }
 
@@ -96,12 +95,12 @@ extension Factories {
                         }
                         """
                 },
-                type: blockProcessor?.payload.symbols.returnTypeExplicit() ?? .void,
+                type: blockProcessor?.payload.returnType ?? .void,
                 payload: .init(
                     predicate: predicate,
                     symbols: blockProcessor?.payload.symbols ?? []
                 ),
-                returnHandling: .suppress
+                returnHandling: .suppressedPassthrough
             )
         }
     }

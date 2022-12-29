@@ -80,7 +80,8 @@ final class PuttyTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

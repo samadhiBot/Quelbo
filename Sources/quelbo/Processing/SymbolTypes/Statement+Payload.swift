@@ -10,33 +10,33 @@ import Foundation
 
 extension Statement {
     /// <#Description#>
-    struct Payload: Equatable {
+    class Payload {
         let activation: String?
         let auxiliaries: [Instance]
         let evaluation: Literal?
-        let implicitReturns: Bool
         let parameters: [Instance]
         let predicate: Symbol?
         let repeating: Bool
         let symbols: [Symbol]
+        private(set) var returnHandling: Symbol.ReturnHandling
 
         init(
             activation: String? = nil,
             auxiliaries: [Instance] = [],
             evaluation: Literal? = nil,
-            implicitReturns: Bool = false,
             parameters: [Instance] = [],
             predicate: Symbol? = nil,
             repeating: Bool = false,
+            returnHandling: Symbol.ReturnHandling = .implicit,
             symbols: [Symbol] = []
         ) {
             self.activation = activation
             self.auxiliaries = auxiliaries
             self.evaluation = evaluation
-            self.implicitReturns = implicitReturns
             self.parameters = parameters
             self.predicate = predicate
             self.repeating = repeating
+            self.returnHandling = returnHandling
             self.symbols = symbols
         }
 
@@ -69,42 +69,33 @@ extension Statement {
             guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
                 return lines.handles(.singleLineBreak)
             }
+
             let last = lines.remove(at: lastIndex)
             var codeLines = lines.map(\.code)
-            var lastLine: String {
-                switch last {
-                case .definition:
+            let lastLine = {
+                let handle = last.handle
+                guard
+                    last.returnHandling > .implicit,
+                    last.type.hasReturnValue,
+                    !handle.hasPrefix("return")
+                else {
                     return last.handle
-                case .literal, .instance:
-                    return "return \(last.handle)"
-                case .statement(let statement):
-                    switch statement.returnHandling {
-                    case .force:
-                        return "return \(last.handle)"
-                    case .implicit:
-                        guard
-                            statement.isReturnStatement ||
-                            statement.type.dataType == .void ||
-                            !implicitReturns
-                        else {
-                            return "return \(last.handle)"
-                        }
-                        return last.handle
-                    case .suppress:
-                        return last.handle
-                    }
                 }
-            }
+                return "return \(last.handle)"
+            }()
             codeLines.insert(lastLine, at: lastIndex)
+
             return codeLines
                 .filter { !$0.isEmpty }
-                .joined(separator: "\n")
+                .values(.singleLineBreak)
         }
 
         var codeHandlingRepeating: String {
             switch (isRepeating, repeatingBindChild?.activation) {
-            case (true, nil), (true, ""): break
-            case (true, _), (false, _): return code
+            case (true, nil), (true, ""):
+                break
+            case (true, _), (false, _):
+                return code
             }
 
             var blockActivation: String {
@@ -126,8 +117,10 @@ extension Statement {
 
         var discardableResult: String {
             switch returnType?.dataType {
-            case .comment, .none, .void: return ""
-            default: return "@discardableResult\n"
+            case .comment, .none, .void:
+                return ""
+            default:
+                return "@discardableResult\n"
             }
         }
 
@@ -138,17 +131,6 @@ extension Statement {
             else { return false }
 
             return true
-        }
-
-        var repeatingBindChild: Statement? {
-            for child in symbols {
-                guard case .statement(let statement) = child else { continue }
-
-                if statement.isBindingAndRepeatingStatement {
-                    return statement
-                }
-            }
-            return nil
         }
 
         var isRepeating: Bool {
@@ -165,20 +147,74 @@ extension Statement {
                 .values(.commaSeparatedNoTrailingComma)
         }
 
+        var repeatingBindChild: Statement? {
+            for child in symbols {
+                guard case .statement(let statement) = child else { continue }
+
+                if statement.isBindingAndRepeatingStatement {
+                    return statement
+                }
+            }
+            return nil
+        }
+
         var returnDeclaration: String {
-            guard let type = returnType else { return "" }
-            switch type.dataType {
-            case .comment, .void: return ""
-            default: return " -> \(type)"
+            guard let returnType else { return "" }
+
+            switch returnType.dataType {
+            case .comment, .void:
+                return ""
+            default:
+                return " -> \(returnType)"
             }
         }
 
         var returnType: TypeInfo? {
-            symbols.returnType()
+            symbols
+                .returningSymbols
+                .returnType
         }
+    }
+}
 
-        var returnTypeExplicit: TypeInfo? {
-            symbols.returnTypeExplicit()
+// MARK: - Special assertion handlers
+
+extension Statement.Payload {
+    func assertHasReturnHandling(
+        _ assertedHandling: Symbol.ReturnHandling,
+        from parentHandling: Symbol.ReturnHandling
+    ) throws {
+        switch (assertedHandling, returnHandling) {
+        case (.forced, .implicit):
+            self.returnHandling = .forced
+            try symbols.assert(
+                .haveReturnHandling(.forced)
+            )
+        case (.forced, .passthrough):
+            self.returnHandling = .forcedPassthrough
+            try symbols.assert(
+                .haveSingleReturnType
+            )
+        case (.forced, .forcedPassthrough):
+            try symbols.assert(
+                .haveSingleReturnType
+            )
+        case (.forced, .suppressedPassthrough):
+            if parentHandling != .suppressedPassthrough {
+                try symbols.assert(
+                    .haveSingleReturnType
+                )
+            }
+        case (.suppressed, .forced):
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: "Payload",
+                asserted: assertedHandling,
+                actual: returnHandling
+            )
+        default:
+            assertionFailure(
+                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
+            )
         }
     }
 }
@@ -193,12 +229,33 @@ extension Statement.Payload: CustomDumpReflectable {
                 "activation": self.activation as Any,
                 "auxiliaries": self.auxiliaries,
                 "symbols": self.symbols,
-                "implicitReturns": self.implicitReturns,
                 "parameters": self.parameters,
                 "predicate": self.parameters,
                 "repeating": self.repeating,
+                "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
         )
+    }
+}
+
+extension Statement.Payload: Equatable {
+    static func == (lhs: Statement.Payload, rhs: Statement.Payload) -> Bool {
+        lhs.activation == rhs.activation &&
+        lhs.auxiliaries == rhs.auxiliaries &&
+        lhs.evaluation == rhs.evaluation &&
+        lhs.parameters == rhs.parameters &&
+        lhs.predicate == rhs.predicate &&
+        lhs.repeating == rhs.repeating &&
+        lhs.symbols == rhs.symbols &&
+        lhs.returnHandling == rhs.returnHandling
+    }
+}
+
+// MARK: - Errors
+
+extension Statement.Payload {
+    enum Error: Swift.Error {
+        case returnHandlingAssertionFailed(for: Statement.Payload)
     }
 }

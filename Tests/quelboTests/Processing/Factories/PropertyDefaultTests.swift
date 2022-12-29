@@ -33,13 +33,4 @@ final class PropertyDefaultTests: QuelboTests {
             type: .int
         ))
     }
-
-    func testUnknownReturnValueThrows() throws {
-        XCTAssertThrowsError(
-            _ = try factory.init([
-                .atom("FOO"),
-                .atom("unexpected")
-            ], with: &localVariables).process()
-        )
-    }
 }

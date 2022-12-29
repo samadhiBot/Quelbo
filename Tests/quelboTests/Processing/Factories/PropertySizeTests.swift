@@ -25,9 +25,10 @@ final class PropertySizeTests: QuelboTests {
     }
 
     func testPropertySize() throws {
-        localVariables.append(.init(id: "tx", type: .unknown))
-
-        let symbol = process("<PTSIZE .TX>")
+        let symbol = process(
+            "<PTSIZE .TX>",
+            with: [Statement(id: "tx", type: .unknown)]
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: "tx.propertySize",

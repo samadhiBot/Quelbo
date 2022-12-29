@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "quelbo",
     platforms: [
-        .macOS(.v12),
+        .macOS(.v13),
     ],
     dependencies: [
         .package(url: "https://github.com/JohnSundell/Files", from: "4.2.0"),

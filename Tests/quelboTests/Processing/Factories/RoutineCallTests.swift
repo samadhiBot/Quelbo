@@ -71,7 +71,8 @@ final class RoutineCallTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "bagOfCoinsFunc",
             code: "bagOfCoinsFunc()",
-            type: .void
+            type: .void,
+            returnHandling: .implicit
         ))
     }
 
@@ -84,7 +85,8 @@ final class RoutineCallTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "oneFunc",
             code: "oneFunc(number: 42)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -103,7 +105,8 @@ final class RoutineCallTests: QuelboTests {
                     number: 42
                 )
                 """,
-            type: .string
+            type: .string,
+            returnHandling: .implicit
         ))
     }
 
@@ -127,7 +130,8 @@ final class RoutineCallTests: QuelboTests {
                     number: oneFunc(number: 42)
                 )
                 """,
-            type: .string
+            type: .string,
+            returnHandling: .implicit
         ))
     }
 }

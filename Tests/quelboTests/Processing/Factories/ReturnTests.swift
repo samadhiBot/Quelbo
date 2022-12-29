@@ -47,7 +47,7 @@ final class ReturnTests: QuelboTests {
                 }
                 """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
@@ -58,7 +58,8 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "break",
-            type: .void
+            type: .void,
+            returnHandling: .suppressed
         ))
     }
 
@@ -70,7 +71,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
             type: .bool,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -79,7 +80,8 @@ final class ReturnTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "break",
-            type: .void
+            type: .void,
+            returnHandling: .suppressed
         ))
     }
 
@@ -91,7 +93,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
             type: .booleanTrue,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -103,7 +105,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
             type: .booleanTrue,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -115,7 +117,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return false",
             type: .booleanFalse,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -127,7 +129,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return 42",
             type: .int,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -139,7 +141,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: #"return "grue""#,
             type: .string,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -151,7 +153,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return foo",
             type: .int,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -163,7 +165,7 @@ final class ReturnTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return forest1",
             type: .object,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 }

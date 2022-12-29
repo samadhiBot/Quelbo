@@ -64,7 +64,8 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -132,7 +133,8 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -213,7 +215,8 @@ final class ProgramBlockTests: QuelboTests {
                 """,
             type: .booleanTrue,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 

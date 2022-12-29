@@ -316,6 +316,17 @@ final class ParsingTests: QuelboTests {
         )
     }
 
+    func testStringFullStop() throws {
+        let parsed = try Self.zilParser.parse("""
+            "."
+        """).first
+
+        XCTAssertNoDifference(
+            parsed,
+            .string(".")
+        )
+    }
+
     func testStringWithQuotation() throws {
         let parsed = try Self.zilParser.parse(#"""
             " seems confused. \"I don't see any "

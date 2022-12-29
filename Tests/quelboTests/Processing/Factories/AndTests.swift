@@ -44,11 +44,7 @@ final class AndTests: QuelboTests {
     }
 
     func testAndThreeLiterals() throws {
-        let symbol = try factory.init([
-            .bool(true),
-            .bool(false),
-            .bool(true)
-        ], with: &localVariables).process()
+        let symbol = process("<AND T <> T>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".and(true, false, true)",
@@ -57,11 +53,7 @@ final class AndTests: QuelboTests {
     }
 
     func testAndDecimals() throws {
-        let symbol = try factory.init([
-            .decimal(1),
-            .decimal(0),
-            .decimal(2),
-        ], with: &localVariables).process()
+        let symbol = process("<AND 1 0 2>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".and(1, 0, 2)",

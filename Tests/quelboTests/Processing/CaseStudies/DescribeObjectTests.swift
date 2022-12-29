@@ -10,12 +10,19 @@ import XCTest
 @testable import quelbo
 
 final class DescribeObjectTests: QuelboTests {
+    override func setUp() {
+        super.setUp()
+
+        GlobalObjectsTests().setUp()
+    }
+
     func setUp(for zorkNumber: ZorkNumber) {
         var versionSpecificDefs: String {
             switch zorkNumber {
             case .zork1: return """
                     <OBJECT TROPHY-CASE (FLAGS TRANSBIT CONTBIT NDESCBIT TRYTAKEBIT SEARCHBIT)>
                 """
+                
             case .zork2: return """
                     <CONSTANT S-FANTASIZE 12>
 
@@ -68,10 +75,6 @@ final class DescribeObjectTests: QuelboTests {
             <GLOBAL WINNER 0>
 
             <OBJECT ADVENTURER (FLAGS NDESCBIT INVISIBLE SACREDBIT ACTORBIT)>
-            <OBJECT MISSING-FLAGS (FLAGS VEHBIT)>
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
             <OBJECT ROOMS (IN TO ROOMS)>
 
             <ROUTINE FIRSTER (OBJ LEVEL)
@@ -218,16 +221,15 @@ final class DescribeObjectTests: QuelboTests {
                         isV: Bool,
                         level: Int
                     ) -> Bool {
-                        var str: String = nil
+                        var str: String? = nil
                         var av: Object? = nil
-                        var level: Int = level
                         descObject.set(to: obj)
-                        if .and(
+                        if _ = .and(
                             level.isZero,
                             obj.descriptionFunction(mObjdesc)
                         ) {
                             return true
-                        } else if .and(
+                        } else if _ = .and(
                             level.isZero,
                             .or(
                                 .and(
@@ -284,7 +286,8 @@ final class DescribeObjectTests: QuelboTests {
                     """#,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -304,16 +307,15 @@ final class DescribeObjectTests: QuelboTests {
                         isV: Bool,
                         level: Int
                     ) -> Bool {
-                        var str: String = nil
+                        var str: String? = nil
                         var av: Object? = nil
-                        var level: Int = level
                         descObject.set(to: obj)
-                        if .and(
+                        if _ = .and(
                             level.isZero,
                             obj.descriptionFunction(mObjdesc)
                         ) {
                             return true
-                        } else if .and(
+                        } else if _ = .and(
                             level.isZero,
                             .or(
                                 .and(
@@ -347,7 +349,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if .and(
                             obj.equals(spellVictim),
-                            spellUsed.equals(float)
+                            spellUsed.equals(.float)
                         ) {
                             output(" (floating in midair)")
                         }
@@ -375,7 +377,8 @@ final class DescribeObjectTests: QuelboTests {
                     """#,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -426,7 +429,7 @@ final class DescribeObjectTests: QuelboTests {
                                     isPv.set(to: true)
                                 } else if y.equals(winner) {
                                     // do nothing
-                                } else if .and(
+                                } else if _ = .and(
                                     .isNot(y.hasFlag(isInvisible)),
                                     .isNot(y.hasFlag(hasBeenTouched)),
                                     str.set(to: y.firstDescription)
@@ -450,13 +453,13 @@ final class DescribeObjectTests: QuelboTests {
                                         }
                                     }
                                 }
-                                return y.set(to: y.nextSibling)
+                                y.set(to: y.nextSibling)
                             }
                         }
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if .and(
+                                if _ = .and(
                                     isPv,
                                     av,
                                     av.firstChild
@@ -516,7 +519,7 @@ final class DescribeObjectTests: QuelboTests {
                                     // "not in Zork III"
                                 }
                             }
-                            return y.set(to: y.nextSibling)
+                            y.set(to: y.nextSibling)
                         }
                         if .and(is1St, shit) {
                             return false
@@ -525,9 +528,10 @@ final class DescribeObjectTests: QuelboTests {
                         }
                     }
                     """,
-                type: .booleanTrue,
+                type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -588,7 +592,7 @@ final class DescribeObjectTests: QuelboTests {
                                     isPv.set(to: true)
                                 } else if y.equals(winner) {
                                     // do nothing
-                                } else if .and(
+                                } else if _ = .and(
                                     .isNot(y.hasFlag(isInvisible)),
                                     .isNot(y.hasFlag(hasBeenTouched)),
                                     str.set(to: y.firstDescription)
@@ -612,13 +616,13 @@ final class DescribeObjectTests: QuelboTests {
                                         }
                                     }
                                 }
-                                return y.set(to: y.nextSibling)
+                                y.set(to: y.nextSibling)
                             }
                         }
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if .and(
+                                if _ = .and(
                                     isPv,
                                     av,
                                     av.firstChild
@@ -678,7 +682,7 @@ final class DescribeObjectTests: QuelboTests {
                                     // "not in Zork III"
                                 }
                             }
-                            return y.set(to: y.nextSibling)
+                            y.set(to: y.nextSibling)
                         }
                         if .and(is1St, shit) {
                             return false
@@ -687,9 +691,10 @@ final class DescribeObjectTests: QuelboTests {
                         }
                     }
                     """,
-                type: .booleanTrue,
+                type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

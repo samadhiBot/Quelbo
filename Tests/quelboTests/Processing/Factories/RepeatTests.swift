@@ -64,7 +64,8 @@ final class RepeatTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -136,7 +137,8 @@ final class RepeatTests: QuelboTests {
                 """,
             type: .booleanTrue,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 

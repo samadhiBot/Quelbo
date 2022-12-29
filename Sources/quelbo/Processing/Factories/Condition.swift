@@ -70,7 +70,7 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try? symbols.assert(
+            try symbols.assert(
                 .haveCommonType
             )
         }
@@ -94,21 +94,34 @@ extension Factories {
 
         override func process() throws -> Symbol {
             let conditionals = symbols
+            let returnType = symbols
+                .returningSymbols
+                .returnType
 
             return .statement(
-                code: { _ in
-                    conditionals
+                code: {
+                    let conditional = $0.payload.symbols
                         .compactMap {
                             let code = $0.code
                             return code.isEmpty ? nil : code
                         }
                         .values(.separator(" else "))
+
+                    if $0.payload.returnHandling == .forcedPassthrough {
+                        return """
+                            {
+                            \(conditional.indented)
+                            }()
+                            """
+                    }
+                    return conditional
                 },
-                type: conditionals.returningExplicitly.returnType() ?? .void,
+                type: returnType ?? .void,
                 payload: .init(
+                    returnHandling: .passthrough,
                     symbols: conditionals
                 ),
-                returnHandling: .suppress
+                returnHandling: .passthrough
             )
         }
     }

@@ -37,10 +37,6 @@ extension Array where Element == Symbol {
         }
     }
 
-    var determined: [Symbol] {
-        filter(\.status.isDetermined)
-    }
-
     /// <#Description#>
     /// - Parameter id: <#id description#>
     /// - Returns: <#description#>
@@ -59,67 +55,79 @@ extension Array where Element == Symbol {
                               : map(\.handleMultiType).values(displayOptions)
     }
 
-    var mostConfident: [Symbol] {
-        reduce(into: []) { results, symbol in
-            guard let sample = results.first?.type else {
-                results.append(symbol)
-                return
-            }
-            if symbol.type.confidence > sample.confidence {
-                results = [symbol]
-                return
-            }
-            if symbol.type > sample {
-                results.insert(symbol, at: 0)
-            } else {
-                results.append(symbol)
-            }
-        }
-    }
-
     var nonCommentSymbols: [Symbol] {
         filter { $0.type != .comment }
     }
 
-    var returningExplicitly: [Symbol] {
+    var explicitlyReturningSymbols: [Symbol] {
         reduce(into: []) { returnSymbols, symbol in
-            if symbol.isReturnStatement {
+            if symbol.returnHandling == .forced {
                 returnSymbols.append(symbol)
             }
-            if let payload = symbol.payload {
-                returnSymbols.append(contentsOf: payload.symbols.returningExplicitly)
+            if symbol.returnHandling.isPassthrough, let payload = symbol.payload {
+                returnSymbols.append(
+                    contentsOf: payload.symbols.explicitlyReturningSymbols
+                )
             }
         }
     }
 
-    func returnType() -> TypeInfo? {
-        if let explicitReturn = returnTypeExplicit() {
-            return explicitReturn
-        }
+    var implicitlyReturningLastSymbol: Symbol? {
         guard
             let lastSymbol = nonCommentSymbols.last,
-            lastSymbol.isReturnable
+            lastSymbol.returnHandling > .suppressed,
+            lastSymbol.type.hasReturnValue
         else {
             return nil
         }
-        if lastSymbol.type.dataType != nil {
-            return lastSymbol.type
-        }
-        return lastSymbol.type.isTableElement == true ? .tableElement : nil
+        return lastSymbol
     }
 
-    func returnTypeExplicit() -> TypeInfo? {
-        let returningStatements = self.returningExplicitly
-        if let explicitReturn = returningStatements.max(
-            by: { $0.type.confidence < $1.type.confidence }
-        ) {
-            guard returningStatements.count > 1 else {
-                return explicitReturn.type
+    var returningSymbols: [Symbol] {
+        let returningSymbols = explicitlyReturningSymbols
+
+        if !returningSymbols.isEmpty  {
+            return returningSymbols
+        }
+
+        guard
+            let lastSymbol = implicitlyReturningLastSymbol,
+            lastSymbol.returnHandling > .implicit
+        else {
+            return []
+        }
+        return [lastSymbol]
+    }
+
+    var returnType: TypeInfo? {
+        let alphas = withMaxConfidence
+        let uniqueTypes = alphas.map(\.type.dataType).unique
+        switch uniqueTypes.count {
+        case 1:
+            return alphas[0].type
+        case 2:
+            if let optionalType = alphas.sharedOptionalType {
+                return optionalType
             }
-            if returningStatements.map(\.type.confidence).contains(.booleanFalse) {
-                return explicitReturn.type.optional
-            }
-            return explicitReturn.type
+            return nil
+        default:
+            return nil
+        }
+    }
+
+    var sharedOptionalType: TypeInfo? {
+        guard map(\.type).unique.count == 2 else {
+            return nil
+        }
+        if map(\.type.confidence).contains(.booleanFalse),
+           let other = first(where: { $0.type.confidence > .booleanFalse })
+        {
+            return other.type.optional
+        }
+        if map(\.type.confidence).contains(.integerZero),
+           let other = first(where: { $0.type.confidence > .integerZero })
+        {
+            return other.type.optional
         }
         return nil
     }
@@ -128,6 +136,51 @@ extension Array where Element == Symbol {
     /// ``Symbol/description`` for all other symbols.
     var sorted: [Symbol] {
         sorted { $0.code < $1.code }
+    }
+
+    var splitByReturnHandling: ([Symbol], [Symbol]) {
+        let explicitlyReturning = withMaxReturnHandling
+        return (
+            explicitlyReturning,
+            filter { !explicitlyReturning.contains($0) }
+        )
+    }
+
+    var withNoTypeConfidence: [Symbol] {
+        filter { $0.type.confidence == .none }
+    }
+
+    var withMaxConfidence: [Symbol] {
+        nonCommentSymbols.reduce(into: []) { results, symbol in
+//            guard ![.comment, .unknown].contains(symbol.type) else {
+//                return
+//            }
+            guard let sample = results.first?.type else {
+                results = [symbol]
+                return
+            }
+            if symbol.type.confidence > sample.confidence {
+                results = [symbol]
+            } else if symbol.type > sample {
+                results.insert(symbol, at: 0)
+            } else {
+                results.append(symbol)
+            }
+        }
+    }
+
+    var withMaxReturnHandling: [Symbol] {
+        reduce(into: []) { results, symbol in
+            guard let maxHandling = results.first?.returnHandling else {
+                results = [symbol]
+                return
+            }
+            if symbol.returnHandling > maxHandling {
+                results = [symbol]
+            } else if symbol.returnHandling == maxHandling {
+                results.append(symbol)
+            }
+        }
     }
 }
 

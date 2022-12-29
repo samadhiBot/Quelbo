@@ -16,19 +16,19 @@ struct Quelbo: ParsableCommand {
 
     @Flag(
         name: .short,
-        help: "Specify to print the ZIL tokens derived in the parsing phase."
+        help: "Print the ZIL tokens derived in the parsing phase."
     )
     var printTokens = false
 
     @Flag(
         name: .customShort("s"),
-        help: "Specify to print the processed game tokens when processing fails."
+        help: "Print the processed game tokens when processing fails."
     )
     var printSymbolsOnFail = false
 
     @Flag(
         name: .customShort("u"),
-        help: "Specify to print the unprocessed game tokens when processing fails."
+        help: "Print the unprocessed game tokens when processing fails."
     )
     var printUnprocessedTokensOnFail = false
 

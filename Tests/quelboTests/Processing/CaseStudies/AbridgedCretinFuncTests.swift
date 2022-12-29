@@ -55,7 +55,8 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -102,7 +103,8 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     """,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -147,7 +149,8 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

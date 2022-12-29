@@ -68,7 +68,8 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".subtract(9, 3)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -81,7 +82,8 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".subtract(20, 5, 2)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -98,7 +100,8 @@ final class SubtractTests: QuelboTests {
                     biggerNumber
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -110,7 +113,8 @@ final class SubtractTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".subtract(cyclowrath, 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -129,7 +133,8 @@ final class SubtractTests: QuelboTests {
                     otvalFrob()
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

@@ -21,10 +21,10 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.atLeast(1)),
                 .haveType(.int)
-            ])
+            )
 
             try? symbols[0].assert(.isMutable)
         }

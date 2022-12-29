@@ -17,10 +17,10 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.exactly(2)),
-                .haveType(.table),
-            ])
+                .haveType(.table)
+            )
         }
 
         override func process() throws -> Symbol {

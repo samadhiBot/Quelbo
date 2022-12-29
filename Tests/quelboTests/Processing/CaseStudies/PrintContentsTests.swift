@@ -69,7 +69,8 @@ final class PrintContentsTests: QuelboTests {
                     """,
                 type: .object.optional,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -123,7 +124,8 @@ final class PrintContentsTests: QuelboTests {
                     """,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

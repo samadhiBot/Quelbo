@@ -13,7 +13,15 @@ final class PickOneTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        process("""
+        GlobalObjectsTests().setUp()
+
+        process(#"""
+            <GLOBAL HELLOS
+                <LTABLE 0 "Hello."
+                       "Good day."
+                       "Nice weather we've been having lately."
+                       "Goodbye.">>
+
             <ROUTINE PICK-ONE (FROB
                     "AUX" (L <GET .FROB 0>) (CNT <GET .FROB 1>) RND MSG RFROB)
                 <SET L <- .L 1>>
@@ -27,7 +35,41 @@ final class PickOneTests: QuelboTests {
                 <COND (<==? .CNT .L> <SET CNT 0>)>
                 <PUT .FROB 0 .CNT>
                 .MSG>
-        """)
+
+            <ROUTINE V-HELLO ()
+                 <COND (,PRSO
+                    <COND (<FSET? ,PRSO ,ACTORBIT>
+                           <TELL
+            "The " D ,PRSO " bows his head to you in greeting." CR>)
+                          (T
+                           <TELL
+            "It's a well known fact that only schizophrenics say \"Hello\" to a "
+            D ,PRSO "." CR>)>)
+                       (T
+                    <TELL <PICK-ONE ,HELLOS> CR>)>>
+        """#)
+    }
+
+    func testHellos() throws {
+        XCTAssertNoDifference(
+            Game.globals.find("hellos"),
+            Statement(
+                id: "hellos",
+                code: """
+                    var hellos: Table = Table(
+                        flags: [.length],
+                        .int(0),
+                        .string("Hello."),
+                        .string("Good day."),
+                        .string("Nice weather we've been having lately."),
+                        .string("Goodbye.")
+                    )
+                    """,
+                type: .table,
+                category: .globals,
+                isCommittable: true
+            )
+        )
     }
 
     func testPickOne() throws {
@@ -42,7 +84,7 @@ final class PickOneTests: QuelboTests {
                         var l: Int = try frob.get(at: 0)
                         var cnt: Int = try frob.get(at: 1)
                         var rnd: Int = 0
-                        var msg: TableElement
+                        var msg: TableElement? = nil
                         var rfrob: Table? = nil
                         var frob: Table = frob
                         l.set(to: .subtract(l, 1))
@@ -60,9 +102,44 @@ final class PickOneTests: QuelboTests {
                         return msg
                     }
                     """,
-                type: .tableElement,
+                type: .oneOf([.int, .string, .tableElement]).tableElement,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
+    func testVHello() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("vHello"),
+            Statement(
+                id: "vHello",
+                code: #"""
+                    /// The `vHello` (V-HELLO) routine.
+                    func vHello() {
+                        if _ = prso {
+                            if prso.hasFlag(isActor) {
+                                output("The ")
+                                output(prso.description)
+                                output(" bows his head to you in greeting.")
+                            } else {
+                                output("""
+                                    It's a well known fact that only schizophrenics say "Hello" \
+                                    to a
+                                    """)
+                                output(prso.description)
+                                output(".")
+                            }
+                        } else {
+                            output(pickOne(frob: hellos))
+                        }
+                    }
+                    """#,
+                type: .void,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

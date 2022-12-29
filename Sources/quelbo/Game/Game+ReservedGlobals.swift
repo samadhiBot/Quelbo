@@ -53,7 +53,7 @@ extension Game {
             .statement(
                 id: "prsa",
                 code: { _ in "prsa" },
-                type: .int.optional,
+                type: .verb,
                 category: .globals,
                 isMutable: true
             ),

@@ -20,6 +20,10 @@ extension Factories {
             try symbols.assert(
                 .haveCount(.atLeast(1))
             )
+
+            try symbols.withNoTypeConfidence.assert(
+                .haveType(.bool)
+            )
         }
 
         var function: String {
@@ -34,7 +38,7 @@ extension Factories {
                 code: { _ in
                     ".\(function)(\(operands.codeValues(.commaSeparatedNoTrailingComma)))"
                 },
-                type: operands[0].type
+                type: operands.map(\.type).max() ?? .bool
             )
         }
     }

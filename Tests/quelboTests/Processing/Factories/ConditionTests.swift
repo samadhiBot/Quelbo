@@ -64,12 +64,13 @@ final class ConditionTests: QuelboTests {
     }
 
     func testSingleIfCondition() throws {
-        localVariables.append(.init(id: "rarg", type: .int))
-
-        let symbol = process("""
-            <COND (<EQUAL? .RARG ,M-ENTER>
-                <TELL "You are in a dark and damp cellar.">)>
-        """)
+        let symbol = process(
+            """
+                <COND (<EQUAL? .RARG ,M-ENTER>
+                    <TELL "You are in a dark and damp cellar.">)>
+            """,
+            with: [Statement(id: "rarg", type: .int)]
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -78,25 +79,26 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
     func testMultipleIfElseIfCondition() throws {
-        localVariables.append(.init(id: "switch", type: .int))
-
-        let symbol = process("""
-            <COND
-                (<=? .SWITCH 1>
-                    <TELL "Statement SWITCH = 1" CR>)
-                (<=? .SWITCH 2>
-                    <TELL "Statement SWITCH = 2" CR>)
-                (<=? .SWITCH 3>
-                    <TELL "Statement SWITCH = 3" CR>)
-                (T
-                    <TELL "Statement SWITCH not in (1 2 3)" CR>)
-            >
-        """)
+        let symbol = process(
+            """
+                <COND
+                    (<=? .SWITCH 1>
+                        <TELL "Statement SWITCH = 1" CR>)
+                    (<=? .SWITCH 2>
+                        <TELL "Statement SWITCH = 2" CR>)
+                    (<=? .SWITCH 3>
+                        <TELL "Statement SWITCH = 3" CR>)
+                    (T
+                        <TELL "Statement SWITCH not in (1 2 3)" CR>)
+                >
+            """,
+            with: [Statement(id: "switch", type: .int)]
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -111,19 +113,20 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
     func testSingleIfConditionImplicitReturnable() throws {
-        localVariables.append(contentsOf: [
-            Statement(id: "rarg", type: .int),
-            Statement(id: "other", type: .int)
-        ])
-
-        let symbol = process("""
-            <COND (<EQUAL? .RARG ,M-ENTER> <SET RARG .OTHER>)>
-        """)
+        let symbol = process(
+            """
+                <COND (<EQUAL? .RARG ,M-ENTER> <SET RARG .OTHER>)>
+            """,
+            with: [
+                Statement(id: "rarg", type: .int),
+                Statement(id: "other", type: .int)
+            ]
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -132,7 +135,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
@@ -155,11 +158,12 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
-    func testTruePredicate() throws {
+    func testTruePredicate()
+    throws {
         let symbol = process("""
             <COND
                 (<EQUAL? ,HERE ,CLEARING> "The grating opens.")
@@ -168,14 +172,14 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-            if here.equals(clearing) {
-                return "The grating opens."
-            } else {
-                return "The grating opens to reveal trees above you."
-            }
-            """,
-            type: .void,
-            returnHandling: .suppress
+                if here.equals(clearing) {
+                    return "The grating opens."
+                } else {
+                    return "The grating opens to reveal trees above you."
+                }
+                """,
+            type: .string,
+            returnHandling: .passthrough
         ))
     }
 
@@ -220,7 +224,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
@@ -244,7 +248,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
@@ -272,7 +276,7 @@ final class ConditionTests: QuelboTests {
                 }
                 """,
             type: .booleanTrue,
-            returnHandling: .suppress
+            returnHandling: .passthrough
         ))
     }
 
@@ -296,7 +300,8 @@ final class ConditionTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 

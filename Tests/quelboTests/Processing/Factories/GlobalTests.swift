@@ -31,15 +31,6 @@ final class GlobalTests: QuelboTests {
         AssertSameFactory(factory, Game.findFactory("SETG", type: .mdl))
     }
 
-    func testUnknownAtomThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .atom("unexpected")
-            ], with: &localVariables).process()
-        )
-    }
-
     func testBoolTrue() throws {
         let symbol = process("<GLOBAL FOO T>")
 
@@ -312,24 +303,28 @@ final class GlobalTests: QuelboTests {
 
         // Set has no type expectation, but interprets `T` as a boolean true value. Therefore
         // there's no need to overwrite the `kitchenWindowFlag` type.
-        let set = process("""
+        process("""
             <ROUTINE KITCHEN-WINDOW-F ()
                 <SETG KITCHEN-WINDOW-FLAG T>>
         """)
 
-        XCTAssertNoDifference(set, .statement(
-            id: "kitchenWindowFunc",
-            code: """
-                @discardableResult
-                /// The `kitchenWindowFunc` (KITCHEN-WINDOW-F) routine.
-                func kitchenWindowFunc() -> Bool {
-                    return kitchenWindowFlag.set(to: true)
-                }
-                """,
-            type: .booleanTrue,
-            category: .routines,
-            isCommittable: true
-        ))
+        XCTAssertNoDifference(
+            Game.routines.find("kitchenWindowFunc"),
+            Statement(
+                id: "kitchenWindowFunc",
+                code: """
+                    @discardableResult
+                    /// The `kitchenWindowFunc` (KITCHEN-WINDOW-F) routine.
+                    func kitchenWindowFunc() -> Bool {
+                        return kitchenWindowFlag.set(to: true)
+                    }
+                    """,
+                type: .booleanTrue,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
 
         // Inspecting the `kitchenWindowFlag` game symbol confirms that the type remains boolean.
         XCTAssertNoDifference(

@@ -14,6 +14,7 @@ extension TypeInfo {
         case integerZero
         case limited
         case assured
+        case integerOne
         case booleanTrue
         case void
         case certain

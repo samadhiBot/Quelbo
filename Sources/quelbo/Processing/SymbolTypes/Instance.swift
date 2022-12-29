@@ -35,7 +35,7 @@ final class Instance: SymbolType {
         self._isTableElement = isTableElement
         self.context = context
         self.defaultValue = nil
-        self.returnHandling = .implicit
+        self.returnHandling = .forced
         self.variable = variable
     }
 
@@ -55,12 +55,15 @@ final class Instance: SymbolType {
         self._isTableElement = isTableElement
         self.context = context
         self.defaultValue = defaultValue
-        self.returnHandling = .implicit
+        self.returnHandling = .forced
         self.variable = variable
 
         if let defaultValue {
             self._isOptional = false
-            try [.instance(self), defaultValue].assert(.haveCommonType)
+            try [.instance(self), defaultValue].assert(
+                .haveCommonType
+            )
+            try defaultValue.assertHasReturnValue()
         } else {
             self._isOptional = isOptional
         }
@@ -121,12 +124,12 @@ final class Instance: SymbolType {
 
     var typeDescription: String {
         var description = type.dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "Any"
+            isTableElement == true ? "TableElement" : "⛔️"
         )
         if isArray == true {
             description = "[\(description)]"
         }
-        if isOptional == true {
+        if isOptional == true && type.dataType != .bool {
             description = "\(description)?"
         }
         return description
@@ -151,12 +154,6 @@ extension Instance {
             return "\(id): \(typeDescription) = \(defaultValue.code)"
         }
         if context == .optional {
-            var description = type.dataType?.description ?? (
-                isTableElement == true ? "TableElement" : "Any"
-            )
-            if isArray == true {
-                description = "[\(description)]"
-            }
             return "\(id): \(type.emptyValueAssignment)"
         }
         return "\(id): \(typeDescription)"
@@ -165,6 +162,9 @@ extension Instance {
     var emptyValueAssignment: String {
         if let defaultValue {
             return "var \(id): \(variable.type) = \(defaultValue.handle)"
+        }
+        if type.dataType == nil && isTableElement != true || type.dataType == .void {
+            return "// var \(id): <Unknown>"
         }
         return "var \(id): \(type.emptyValueAssignment)"
     }
@@ -237,6 +237,19 @@ extension Instance {
                 asserted: assertedMutability,
                 actual: assertedMutability
             )
+        }
+    }
+
+    func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
+        switch (assertedHandling, returnHandling) {
+        case (.forced, .suppressed), (.suppressed, .forced):
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: id,
+                asserted: assertedHandling,
+                actual: returnHandling
+            )
+        default:
+            self.returnHandling = assertedHandling
         }
     }
 }

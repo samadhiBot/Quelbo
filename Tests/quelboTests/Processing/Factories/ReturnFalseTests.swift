@@ -22,7 +22,7 @@ final class ReturnFalseTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return false",
             type: .booleanFalse,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 
@@ -33,7 +33,7 @@ final class ReturnFalseTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return nil",
             type: .object.optional,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 

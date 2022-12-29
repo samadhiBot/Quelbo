@@ -170,7 +170,8 @@ final class SwordTests: QuelboTests {
                     """,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

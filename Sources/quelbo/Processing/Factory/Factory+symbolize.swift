@@ -94,11 +94,11 @@ extension Factory {
                 )
             case .verb(let rawVerb):
                 symbols.append(
-                    .verb(rawVerb.lowercased())
+                    .verb(rawVerb.lowerCamelCase)
                 )
             case .word(let rawWord):
                 symbols.append(
-                    .word(rawWord.lowercased())
+                    .word(rawWord.lowerCamelCase)
                 )
             }
         }
@@ -142,9 +142,6 @@ extension Factory {
         if let global = Game.findGlobal(name) {
             return .instance(global)
         }
-        if let known = knownVariable(zil) {
-            return .instance(known)
-        }
         if ["T", "ELSE"].contains(zil) {
             return .true
         }
@@ -158,7 +155,8 @@ extension Factory {
         return .statement(
             id: name,
             code: { _ in name },
-            type: .unknown
+            type: .unknown,
+            returnHandling: .forced
         )
     }
 

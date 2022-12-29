@@ -22,22 +22,21 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.exactly(2)),
                 .haveCommonType
-            ])
+            )
 
             try symbols[1].assert(
                 .hasReturnValue
             )
 
             let mutable = symbols[1].isMutable != false
-
-            try symbols[0].assert([
+            try symbols[0].assert(
                 .hasCategory(mutable ? .globals : .constants),
                 .isVariable,
-                mutable ? .isMutable : .isImmutable,
-            ])
+                mutable ? .isMutable : .isImmutable
+            )
         }
 
         @discardableResult

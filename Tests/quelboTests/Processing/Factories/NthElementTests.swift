@@ -24,7 +24,7 @@ final class NthElementTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: #"["AB", "CD", "EF"].nthElement(2)"#,
             type: .string.element,
-            returnHandling: .force
+            returnHandling: .forced
         ))
     }
 

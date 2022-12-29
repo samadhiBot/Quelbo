@@ -25,7 +25,8 @@ final class FormTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, 2)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

@@ -239,7 +239,8 @@ final class FactorySymbolizeTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(2, 3)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

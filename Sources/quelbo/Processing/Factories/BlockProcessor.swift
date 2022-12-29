@@ -19,9 +19,10 @@ extension Factories {
     class BlockProcessor: Factory {
         private(set) var activation: String?
         private(set) var auxiliaries: [Instance] = []
-        private(set) var implicitReturns: Bool = true
         private(set) var parameters: [Instance] = []
         private(set) var repeating: Bool = false
+
+        private(set) var returnHandling: Symbol.ReturnHandling = .suppressedPassthrough
 
         override func processTokens() throws {
             var tokens = tokens
@@ -46,10 +47,6 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.returningExplicitly.assert(
-                .haveCommonType
-            )
-
             for symbol in symbols {
                 guard
                     case .statement(let statement) = symbol,
@@ -66,9 +63,9 @@ extension Factories {
             .init(
                 activation: activation,
                 auxiliaries: auxiliaries,
-                implicitReturns: implicitReturns,
                 parameters: parameters,
                 repeating: repeating,
+                returnHandling: returnHandling,
                 symbols: symbols
             )
         }
@@ -80,14 +77,18 @@ extension Factories {
 extension Factories.BlockProcessor {
     func assert(
         activation: String? = nil,
-        implicitReturns: Bool = true,
-        repeating: Bool = false
+        repeating: Bool? = nil,
+        returnHandling: Symbol.ReturnHandling? = nil
     ) {
         if self.activation == nil {
             self.activation = activation
         }
-        self.implicitReturns = implicitReturns
-        self.repeating = repeating
+        if let repeating {
+            self.repeating = repeating
+        }
+        if let returnHandling {
+            self.returnHandling = returnHandling
+        }
     }
 
     /// Scans through a ``Token`` array until it finds a parameter list, then returns a translated
@@ -178,6 +179,8 @@ extension Factories.BlockProcessor {
                 try nameSymbol.assert(.hasSameType(as: value))
                 return value
             }()
+
+            try valueSymbol?.assertHasReturnValue()
 
             let parameter = try Instance(
                 nameVariable,

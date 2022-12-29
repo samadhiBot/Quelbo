@@ -279,8 +279,9 @@ final class SyntaxTests: QuelboTests {
                 (DESC "Forest")
                 (UP "There is no tree here suitable for climbing.")>
 
-            <ROUTINE WALK-UP-FCN (RARG "AUX" WRD)
-                <COND (<EQUAL? .WRD ,W?U ,W?UP> <DO-WALK ,P?UP>)>>
+            <ROUTINE CONTRIVED-WALK-UP-FCN (WRD)
+                <COND (<EQUAL? .WRD ,W?U ,W?UP>
+                    <TELL "There are no stairs leading up." CR>)>>
         """)
 
         XCTAssertNoDifference(
@@ -348,21 +349,21 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(
-            Game.routines.find("walkUpFunc"),
+            Game.routines.find("contrivedWalkUpFunc"),
             Statement(
-                id: "walkUpFunc",
+                id: "contrivedWalkUpFunc",
                 code: """
-                    /// The `walkUpFunc` (WALK-UP-FCN) routine.
-                    func walkUpFunc(rarg: Any) {
-                        var wrd: Word? = nil
-                        if wrd.equals(u, up) {
-                            doWalk(dir: up)
+                    /// The `contrivedWalkUpFunc` (CONTRIVED-WALK-UP-FCN) routine.
+                    func contrivedWalkUpFunc(wrd: Word) {
+                        if wrd.equals(.u, .up) {
+                            output("There are no stairs leading up.")
                         }
                     }
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

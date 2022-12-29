@@ -81,6 +81,7 @@ class QuelboTests: XCTestCase {
         _ zil: String,
         type FactoryType: Factories.FactoryType? = nil,
         mode factoryMode: Factory.FactoryMode = .process,
+        with injectedLocalVariables: [Statement] = [],
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Symbol {
@@ -89,6 +90,7 @@ class QuelboTests: XCTestCase {
 
             var symbols: [Symbol] = []
             for token in parsed {
+                self.localVariables = injectedLocalVariables
                 do {
                     switch token {
                     case .form(let tokens):

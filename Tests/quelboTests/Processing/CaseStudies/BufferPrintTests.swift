@@ -12,6 +12,7 @@ import XCTest
 final class BufferPrintTests: QuelboTests {
     override func setUp() {
         super.setUp()
+
         IsAccessibleTests().setUp()
 
         process("""
@@ -70,22 +71,49 @@ final class BufferPrintTests: QuelboTests {
         """)
     }
 
+    func testWordPrint() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("wordPrint"),
+            Statement(
+                id: "wordPrint",
+                code: """
+                    /// The `wordPrint` (WORD-PRINT) routine.
+                    func wordPrint(cnt: Int, buf: Int) {
+                        var cnt: Int = cnt
+                        var buf: Int = buf
+                        while true {
+                            if cnt.decrement().isLessThan(0) {
+                                break
+                            } else {
+                                output(try pInbuf.get(at: buf))
+                                buf.set(to: .add(buf, 1))
+                            }
+                        }
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
     func testBufferPrint() throws {
         XCTAssertNoDifference(
             Game.routines.find("bufferPrint"),
             Statement(
                 id: "bufferPrint",
                 code: """
-                    @discardableResult
                     /// The `bufferPrint` (BUFFER-PRINT) routine.
                     func bufferPrint(
                         beg: Table,
                         end: Table,
-                        cp: Any
-                    ) -> Table {
+                        cp: Bool
+                    ) {
                         var nosp: Bool = true
                         var wrd: Int = 0
-                        var isFirst?: Bool = true
+                        var isFirst: Bool = true
                         var pn: Bool = false
                         var isQ: Bool = false
                         var beg: Table = beg
@@ -94,24 +122,24 @@ final class BufferPrintTests: QuelboTests {
                                 break
                             } else {
                                 wrd.set(to: try beg.get(at: 0))
-                                if wrd.equals(comma) {
+                                if wrd.equals(.comma) {
                                     output(", ")
                                 } else if nosp {
                                     nosp.set(to: false)
                                 } else {
                                     output(" ")
                                 }
-                                if wrd.equals(period, comma) {
+                                if wrd.equals(.period, .comma) {
                                     nosp.set(to: true)
-                                } else if wrd.equals(me) {
+                                } else if wrd.equals(.me) {
                                     output(me.description)
                                     pn.set(to: true)
-                                } else if wrd.equals(intnum) {
+                                } else if wrd.equals(.intnum) {
                                     output(pNumber)
                                     pn.set(to: true)
                                 } else {
                                     if .and(
-                                        isFirst?,
+                                        isFirst,
                                         .isNot(pn),
                                         cp
                                     ) {
@@ -120,7 +148,7 @@ final class BufferPrintTests: QuelboTests {
                                     if .or(pOflag, pMerged) {
                                         output(wrd)
                                     } else if .and(
-                                        wrd.equals(it),
+                                        wrd.equals(.it),
                                         isAccessible(obj: pItObject)
                                     ) {
                                         output(pItObject.description)
@@ -130,16 +158,17 @@ final class BufferPrintTests: QuelboTests {
                                             buf: try beg.get(at: 3)
                                         )
                                     }
-                                    isFirst?.set(to: false)
+                                    isFirst.set(to: false)
                                 }
                             }
-                            return beg.set(to: beg.rest(pWordlen))
+                            beg.set(to: beg.rest(pWordlen))
                         }
                     }
                     """,
-                type: .table,
+                type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

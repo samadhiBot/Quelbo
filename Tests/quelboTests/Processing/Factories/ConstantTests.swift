@@ -30,15 +30,6 @@ final class ConstantTests: QuelboTests {
         AssertSameFactory(factory, Game.findFactory("CONSTANT"))
     }
 
-    func testUnknownAtomThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("FOO"),
-                .atom("unexpected")
-            ], with: &localVariables).process()
-        )
-    }
-
     func testBoolTrue() throws {
         let symbol = process("<CONSTANT FOO T>")
 

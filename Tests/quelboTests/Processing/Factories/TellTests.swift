@@ -72,6 +72,26 @@ final class TellTests: QuelboTests {
         ))
     }
 
+    func testTellNestedQuotationWithFormatting() throws {
+        let symbol = process(#"""
+            <TELL
+                "It's a well known fact that only schizophrenics say \"Hello\" to a "
+                D ,PRSO "." CR>
+        """#)
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: #"""
+                output("""
+                    It's a well known fact that only schizophrenics say "Hello" \
+                    to a
+                    """)
+                output(prso.description)
+                output(".")
+                """#,
+            type: .void
+        ))
+    }
+
     func testThrows() throws {
         XCTAssertThrowsError(
             try factory.init([

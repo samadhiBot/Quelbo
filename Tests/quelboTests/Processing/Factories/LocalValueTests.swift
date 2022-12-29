@@ -24,7 +24,8 @@ final class LocalValueTests: QuelboTests {
         XCTAssertNoDifference(symbol, .variable(
             id: "foo",
             type: .unknown,
-            isCommittable: false
+            isCommittable: false,
+            returnHandling: .forced
         ))
     }
 }

@@ -36,14 +36,6 @@ class TypeInfo {
         self.isProperty = isProperty
         self.isTableElement = isTableElement
     }
-
-    var status: Status {
-        switch confidence {
-        case .none: return .undetermined
-        case .booleanFalse, .integerZero, .limited, .assured, .booleanTrue: return .mutable
-        case .void, .certain: return .fixed
-        }
-    }
 }
 
 // MARK: - Helper initializers
@@ -269,7 +261,7 @@ extension TypeInfo {
         if isArray == true { return "\(self) = []" }
 
         switch dataType {
-        case .atom, .comment, .oneOf, .void:
+        case .atom, .comment, .void:
             return " = \(self)"
         case .bool:
             return "Bool = false"
@@ -279,6 +271,12 @@ extension TypeInfo {
             return "\(self)"
         case .object, .routine, .table, .tableElement, .thing, .verb, .word:
             return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
+        case .oneOf(let dataTypes):
+            let leastSpecific = dataTypes.min(by: { $0.baseConfidence < $1.baseConfidence })
+            return TypeInfo(
+                dataType: leastSpecific,
+                confidence: leastSpecific?.baseConfidence ?? .none
+            ).emptyValueAssignment
         case .string:
             return "String = \"\""
         }
@@ -360,28 +358,24 @@ extension TypeInfo {
         _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
+        let initialType = dataType?.description ?? "nil"
+        let assertedType = asserted.dataType?.description ?? "nil"
+
         func logged(_ typeInfo: TypeInfo) -> TypeInfo {
             guard NSClassFromString("XCTest") != nil else { return typeInfo }
 
             let identifier = handle()
                 .replacingOccurrences(of: "\n", with: "")
                 .replacingOccurrences(of: "    ", with: " ")
-            print(
-                "\t􀄢\(identifier):",
-                dataType?.description ?? "nil",
-                "􀚌",
-                asserted.dataType?.description ?? "nil",
-                "􁉂",
-                "\(typeInfo.confidence == .certain ? "􀎠" : "")\(typeInfo)"
-            )
+
+            print("\t􀄢\(identifier): \(initialType)􀚌\(assertedType) 􁉂 \(typeInfo.debugDescription)")
+
             return typeInfo
         }
 
         switch (dataType, asserted.dataType) {
         case (.comment, _),
-            (.int, .verb),
             (.none, _),
-            (.verb, .int),
             (_, .comment),
             (_, dataType):
             return logged(asserted.merge(with: self))
@@ -448,6 +442,7 @@ extension TypeInfo {
             return logged(asserted.merge(with: self))
         }
 
+        _ = logged(.unknown)
         throw Symbol.AssertionError.hasTypeAssertionFailed(
             for: handle(),
             asserted: asserted,
@@ -469,9 +464,11 @@ extension TypeInfo: Comparable {
 
 extension TypeInfo: CustomDebugStringConvertible {
     var debugDescription: String {
-        var description = ""
-        customDump(self, to: &description)
-        return description
+        var modifiers: [String] = []
+        if isProperty == true { modifiers.append("􀀢") }
+        if isTableElement == true { modifiers.append("􀀪") }
+        if confidence == .certain { modifiers.append("􀎠") }
+        return modifiers.joined(separator: "") + description
     }
 }
 
@@ -495,12 +492,17 @@ extension TypeInfo: CustomDumpReflectable {
 extension TypeInfo: CustomStringConvertible {
     var description: String {
         var description = dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "Any"
+            isTableElement == true ? "TableElement" : "⛔️"
         )
+        if case .oneOf(let dataTypes) = dataType {
+            description = dataTypes
+                .min(by: { $0.baseConfidence < $1.baseConfidence })?
+                .description ?? "⛔️"
+        }
         if isArray == true {
             description = "[\(description)]"
         }
-        if isOptional == true {
+        if isOptional == true && dataType != .bool {
             description = "\(description)?"
         }
         return description

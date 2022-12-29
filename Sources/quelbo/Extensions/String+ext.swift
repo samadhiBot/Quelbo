@@ -47,11 +47,7 @@ extension String {
         return multiline.joined(separator: "\n")
     }
 
-    /// Returns the `String` with each line indented four spaces per `indentLevel`.
-    ///
-    /// - Parameter indentLevel: The number of levels to indent the `String`.
-    ///
-    /// - Returns: The indented `String`.
+    /// Returns the `String` with each line indented by four spaces.
     var indented: String {
         guard !isEmpty else { return "" }
 
@@ -126,8 +122,7 @@ extension String {
             string.removeLast()
             string.append("ROUTINE")
         } else if string.hasSuffix("?") {
-            string.removeLast()
-            string = "IS-\(string)"
+            string = "IS-\(string.replacingOccurrences(of: "?", with: ""))"
         } else if string.hasSuffix("!") {
             // See `ZilSyntaxTests.testSegmentFormWithClosingBang`
             string.removeLast()

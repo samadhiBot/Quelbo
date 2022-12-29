@@ -36,14 +36,15 @@ final class DoWalkTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `doWalk` (DO-WALK) routine.
-                    func doWalk(dir: Any) -> Bool {
+                    func doWalk(dir: Object) -> Int? {
                         pWalkDir.set(to: dir)
-                        return perform(a: walk, o: dir)
+                        return perform(a: .walk, o: dir)
                     }
                     """,
-                type: .bool,
+                type: .int.optional,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -63,7 +64,8 @@ final class DoWalkTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

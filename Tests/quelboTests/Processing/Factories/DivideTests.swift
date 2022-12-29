@@ -42,7 +42,8 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".divide(9, 3)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -55,7 +56,8 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".divide(20, 5, 2)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -72,7 +74,8 @@ final class DivideTests: QuelboTests {
                     biggerNumber
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -84,7 +87,8 @@ final class DivideTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".divide(cyclowrath, 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -103,7 +107,8 @@ final class DivideTests: QuelboTests {
                     otvalFrob()
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

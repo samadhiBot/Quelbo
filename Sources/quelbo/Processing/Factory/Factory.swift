@@ -84,24 +84,6 @@ class Factory {
         localVariables.first { $0.id == id }
     }
 
-    /// <#Description#>
-    /// - Parameter zil: <#zil description#>
-    /// - Returns: <#description#>
-    func knownVariable(_ zil: String) -> Statement? {
-        switch zil {
-        case "PRSA":
-            return Statement(
-                id: "prsa",
-                code: { _ in "prsa" },
-                type: .int,
-                category: .globals,
-                isMutable: true
-            )
-        default:
-            return nil
-        }
-    }
-
     /// Processes the ``tokens`` array into a ``Symbol`` array.
     ///
     /// `processTokens()` is called during initialization. Factories with special symbol processing

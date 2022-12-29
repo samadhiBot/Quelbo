@@ -17,20 +17,20 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
-                .haveCommonType,
+            try symbols.assert(
                 .haveCount(.exactly(2)),
-            ])
+                .haveCommonType
+            )
 
             try symbols[1].assert(
                 .hasReturnValue
             )
 
-            try symbols[0].assert([
+            try symbols[0].assert(
                 .hasCategory(.constants),
                 .isImmutable,
-                .isVariable,
-            ])
+                .isVariable
+            )
         }
     }
 }

@@ -22,7 +22,7 @@ final class ReturnTrueTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "return true",
             type: .booleanTrue,
-            isReturnStatement: true
+            returnHandling: .forced
         ))
     }
 

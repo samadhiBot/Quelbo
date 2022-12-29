@@ -26,7 +26,9 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCommonType)
+            try symbols.assert(
+                .haveCommonType
+            )
         }
 
         override func process() throws -> Symbol {

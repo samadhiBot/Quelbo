@@ -36,7 +36,7 @@ extension Factories {
                     "\(object.code).\(property.id ?? property.code) = \(value.code)"
                 },
                 type: .void,
-                returnHandling: .suppress
+                returnHandling: .suppressed
             )
         }
     }

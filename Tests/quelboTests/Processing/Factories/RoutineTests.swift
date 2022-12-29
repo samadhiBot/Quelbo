@@ -56,7 +56,8 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -69,14 +70,16 @@ final class RoutineTests: QuelboTests {
         let expected = Statement(
             id: "go",
             code: """
+                @discardableResult
                 /// The `go` (GO) routine.
-                func go() {
-                    sing(n: 99)
+                func go() -> Bool {
+                    return sing(n: 99)
                 }
                 """,
-            type: .void,
+            type: .booleanTrue,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -122,7 +125,8 @@ final class RoutineTests: QuelboTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -161,7 +165,8 @@ final class RoutineTests: QuelboTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -199,7 +204,8 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .string,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -232,7 +238,8 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .booleanTrue,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -270,7 +277,8 @@ final class RoutineTests: QuelboTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -324,7 +332,8 @@ final class RoutineTests: QuelboTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -365,7 +374,8 @@ final class RoutineTests: QuelboTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
@@ -395,7 +405,7 @@ final class RoutineTests: QuelboTests {
                 ) {
                     var len: Int = try remark.get(at: 0)
                     var cnt: Int = 0
-                    var str: Int = 0
+                    var str: String = ""
                     while true {
                         if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                             break
@@ -414,7 +424,8 @@ final class RoutineTests: QuelboTests {
                 """#,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -491,78 +502,25 @@ final class RoutineTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
     func testSingRoutine() throws {
         try! Game.commit(.statement(bottlesRoutine))
 
-        let symbol = try factory.init([
-            .atom("SING"),
-            .list([
-                .atom("N")
-            ]),
-            .form([
-                .atom("REPEAT"),
-                .list([
-                ]),
-                .form([
-                    .atom("BOTTLES"),
-                    .local("N")
-                ]),
-                .form([
-                    .atom("PRINTI"),
-                    .string("""
-                         of beer on the wall,
-                        """)
-                ]),
-                .form([
-                    .atom("BOTTLES"),
-                    .local("N")
-                ]),
-                .form([
-                    .atom("PRINTI"),
-                    .string("""
-                         of beer,
-                        Take one down, pass it around,
-                        """)
-                ]),
-                .form([
-                    .atom("COND"),
-                    .list([
-                        .form([
-                            .atom("DLESS?"),
-                            .atom("N"),
-                            .decimal(1)
-                        ]),
-                        .form([
-                            .atom("PRINTR"),
-                            .string("No more bottles of beer on the wall!")
-                        ]),
-                        .form([
-                            .atom("RETURN")
-                        ])
-                    ]),
-                    .list([
-                        .atom("ELSE"),
-                        .form([
-                            .atom("BOTTLES"),
-                            .local("N")
-                        ]),
-                        .form([
-                            .atom("PRINTI"),
-                            .string(
-                                """
-                                 of beer on the wall!
-
-                                """
-                            )
-                        ])
-                    ])
-                ])
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE SING (N)
+                <REPEAT ()
+                    <BOTTLES .N>
+                    <PRINTI " of beer on the wall,|">
+                    <BOTTLES .N>
+                    <PRINTI " of beer,|Take one down, pass it around,|">
+                    <COND
+                        (<DLESS? N 1> <PRINTR "No more bottles of beer on the wall!"> <RTRUE>)
+                        (ELSE <BOTTLES .N> <PRINTI " of beer on the wall!||">)>>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(singSymbol))
     }
@@ -621,13 +579,14 @@ final class RoutineTests: QuelboTests {
                         } else if try c.get(at: cRtn).equals(rtn) {
                             return c
                         }
-                        return c.set(to: c.rest(cIntlen))
+                        c.set(to: c.rest(cIntlen))
                     }
                 }
                 """,
             type: .table,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 }
@@ -662,7 +621,8 @@ extension RoutineTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
     }
 
@@ -702,7 +662,8 @@ extension RoutineTests {
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
     }
 
@@ -710,44 +671,48 @@ extension RoutineTests {
         Statement(
             id: "sing",
             code: #"""
-            /// The `sing` (SING) routine.
-            func sing(n: Int) {
-                var n: Int = n
-                while true {
-                    bottles(n: n)
-                    output(" of beer on the wall,")
-                    bottles(n: n)
-                    output("""
-                         of beer,
-                        Take one down, pass it around,
-                        """)
-                    if n.decrement().isLessThan(1) {
-                        output("No more bottles of beer on the wall!")
-                        output("\n")
-                        break
-                    } else {
+                @discardableResult
+                /// The `sing` (SING) routine.
+                func sing(n: Int) -> Bool {
+                    var n: Int = n
+                    while true {
                         bottles(n: n)
                         output("""
-                             of beer on the wall!
+                             of beer on the wall,
 
                             """)
+                        bottles(n: n)
+                        output("""
+                             of beer,
+                            Take one down, pass it around,
+
+                            """)
+                        if n.decrement().isLessThan(1) {
+                            output("No more bottles of beer on the wall!")
+                            output("\n")
+                            return true
+                        } else {
+                            bottles(n: n)
+                            output("""
+                                 of beer on the wall!
+
+
+                                """)
+                        }
                     }
                 }
-            }
-            """#,
-            type: .void,
+                """#,
+            type: .booleanTrue,
             payload: .init(
                 parameters: [
                     Instance(
-                        Statement(
-                            id: "n",
-                            type: .int
-                        )
+                        Statement(id: "n", type: .int)
                     )
                 ]
             ),
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         )
     }
 }

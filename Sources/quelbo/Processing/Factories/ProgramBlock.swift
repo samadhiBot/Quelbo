@@ -38,24 +38,31 @@ extension Factories {
             )
         }
 
+        override func processSymbols() throws {
+            if !blockProcessor.repeating {
+                try blockProcessor.symbols.assert(
+                    .haveSingleReturnType
+                )
+            }
+        }
+
         override func process() throws -> Symbol {
-            let payload = blockProcessor.payload
             let activationDeclaration: String = {
-                if let activation = payload.activation, !activation.isEmpty {
+                if let activation = blockProcessor.payload.activation, !activation.isEmpty {
                     return "\(activation): "
                 }
                 return ""
             }()
-            let isBindingAndRepeating = payload.activation == nil && payload.isRepeating
+            let isBindingAndRepeating = blockProcessor.payload.activation == nil &&
+                                        blockProcessor.payload.isRepeating
             let isRepeating: Bool = {
-                if payload.repeating { return true }
-                if payload.activation == nil { return false }
-                return payload.isRepeating
+                if blockProcessor.payload.repeating { return true }
+                if blockProcessor.payload.activation == nil { return false }
+                return blockProcessor.payload.isRepeating
             }()
 
             return .statement(
                 code: {
-                    // print("🔥", $0.payload.isRepeating, activationDeclaration.isEmpty, isBindingAndRepeating)
                     switch (
                         $0.payload.isRepeating,
                         activationDeclaration.isEmpty,
@@ -98,12 +105,12 @@ extension Factories {
                             """
                     }
                 },
-                type: payload.returnType ?? .void,
-                payload: payload,
-                activation: payload.activation,
+                type: blockProcessor.payload.returnType ?? .unknown,
+                payload: blockProcessor.payload,
+                activation: blockProcessor.payload.activation,
                 isBindingAndRepeatingStatement: isBindingAndRepeating,
                 isRepeating: isRepeating,
-                returnHandling: .suppress
+                returnHandling: .suppressedPassthrough
             )
         }
     }

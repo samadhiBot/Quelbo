@@ -10,6 +10,12 @@ import XCTest
 @testable import quelbo
 
 final class DescribeRoomTests: QuelboTests {
+    override func setUp() {
+        super.setUp()
+
+        GlobalObjectsTests().setUp()
+    }
+
     func setUp(for zorkNumber: ZorkNumber) {
         var versionSpecificDefs: String {
             switch zorkNumber {
@@ -37,10 +43,6 @@ final class DescribeRoomTests: QuelboTests {
             <GLOBAL SUPER-BRIEF <>>
             <GLOBAL WINNER 0>
 
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
-            <OBJECT MISSING-FLAGS (FLAGS MAZEBIT VEHBIT)>
             <OBJECT ROOMS (IN TO ROOMS)>
 
             <ROUTINE NULL-F ("OPTIONAL" A1 A2) <RFALSE>>
@@ -114,7 +116,8 @@ final class DescribeRoomTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -165,12 +168,12 @@ final class DescribeRoomTests: QuelboTests {
                         ) {
                             av.set(to: winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if .and(
+                            if _ = .and(
                                 isV,
                                 here.action(mLook)
                             ) {
                                 return true
-                            } else if .and(
+                            } else if _ = .and(
                                 isV,
                                 str.set(to: here.longDescription)
                             ) {
@@ -190,7 +193,8 @@ final class DescribeRoomTests: QuelboTests {
                     """#,
                 type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -240,12 +244,12 @@ final class DescribeRoomTests: QuelboTests {
                         ) {
                             av.set(to: winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if .and(
+                            if _ = .and(
                                 isV,
                                 here.action(mLook)
                             ) {
                                 return true
-                            } else if .and(
+                            } else if _ = .and(
                                 isV,
                                 str.set(to: here.longDescription)
                             ) {
@@ -265,7 +269,8 @@ final class DescribeRoomTests: QuelboTests {
                     """#,
                 type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }
@@ -319,12 +324,12 @@ final class DescribeRoomTests: QuelboTests {
                         ) {
                             av.set(to: winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if .and(
+                            if _ = .and(
                                 isV,
                                 here.action(mLook)
                             ) {
                                 return true
-                            } else if .and(
+                            } else if _ = .and(
                                 isV,
                                 str.set(to: here.longDescription)
                             ) {
@@ -344,7 +349,8 @@ final class DescribeRoomTests: QuelboTests {
                     """#,
                 type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

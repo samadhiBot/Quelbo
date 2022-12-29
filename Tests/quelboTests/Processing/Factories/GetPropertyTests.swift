@@ -49,13 +49,12 @@ final class GetPropertyTests: QuelboTests {
     }
 
     func testPropertyAddressOfObjectInLocal() throws {
-        localVariables.append(
-            Statement(id: "dir", type: .object)
+        let symbol = process(
+            """
+                <GETPT ,HERE .DIR>
+            """,
+            with: [Statement(id: "dir", type: .object)]
         )
-
-        let symbol = process("""
-            <GETPT ,HERE .DIR>
-        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "here.property(dir)",

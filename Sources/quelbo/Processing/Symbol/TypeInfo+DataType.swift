@@ -39,6 +39,7 @@ extension TypeInfo.DataType  {
         switch self {
         case .bool: return .booleanFalse
         case .int, .int16, .int32, .int8: return .integerZero
+        case .tableElement: return .none
         case .void: return .void
         default: return .certain
         }

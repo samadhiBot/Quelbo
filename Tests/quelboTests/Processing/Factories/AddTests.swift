@@ -25,7 +25,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(2, 3)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -38,7 +39,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(2, 3, 4)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -55,7 +57,8 @@ final class AddTests: QuelboTests {
                     biggerNumber
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -69,7 +72,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(count, 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
 
         XCTAssertNoDifference(
@@ -92,7 +96,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, count)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
 
         XCTAssertNoDifference(
@@ -131,7 +136,8 @@ final class AddTests: QuelboTests {
                     otvalFrob()
                 )
                 """,
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
 
         XCTAssertNoDifference(
@@ -160,7 +166,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(try src.get(at: 0), 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 
@@ -186,7 +193,8 @@ final class AddTests: QuelboTests {
             process("<+ P-ACLAUSE 1>"),
             .statement(
                 code: ".add(pAclause, 1)",
-                type: .int
+                type: .int,
+                returnHandling: .implicit
             )
         )
 
@@ -226,7 +234,8 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".add(1, 1)",
-            type: .int
+            type: .int,
+            returnHandling: .implicit
         ))
     }
 

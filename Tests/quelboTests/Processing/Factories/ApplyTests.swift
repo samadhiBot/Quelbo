@@ -41,7 +41,8 @@ final class ApplyTests: QuelboTests {
                     """,
                 type: .int,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

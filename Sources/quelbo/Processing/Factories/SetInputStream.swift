@@ -45,10 +45,10 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.exactly(1)),
                 .haveType(.int)
-            ])
+            )
         }
 
         override func process() throws -> Symbol {

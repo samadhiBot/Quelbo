@@ -13,21 +13,13 @@ final class IsAccessibleTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
+        ZmemqTests().setUp()
+
         process("""
             <GLOBAL WINNER 0>
 
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
             <OBJECT LOCAL-GLOBALS (IN GLOBAL-OBJECTS)>
             <OBJECT ROOMS (IN TO ROOMS)>
-
-            <ROUTINE ZMEMQB (ITM TBL SIZE "AUX" (CNT 0))
-                <REPEAT ()
-                    <COND (<EQUAL? .ITM <GETB .TBL .CNT>>
-                           <RTRUE>)
-                          (<IGRTR? CNT .SIZE>
-                           <RFALSE>)>>>
 
             <ROUTINE GLOBAL-IN? (OBJ1 OBJ2 "AUX" TX)
                  <COND (<SET TX <GETPT .OBJ2 ,P?GLOBAL>>
@@ -72,36 +64,6 @@ final class IsAccessibleTests: QuelboTests {
         """)
     }
 
-    func testZmemqb() throws {
-        XCTAssertNoDifference(
-            Game.routines.find("zmemqb"),
-            Statement(
-                id: "zmemqb",
-                code: """
-                    @discardableResult
-                    /// The `zmemqb` (ZMEMQB) routine.
-                    func zmemqb(
-                        itm: TableElement,
-                        tbl: Table,
-                        size: Int
-                    ) -> Bool {
-                        var cnt: Int = 0
-                        while true {
-                            if itm.equals(try tbl.get(at: cnt)) {
-                                return true
-                            } else if cnt.increment().isGreaterThan(size) {
-                                return false
-                            }
-                        }
-                    }
-                    """,
-                type: .booleanTrue,
-                category: .routines,
-                isCommittable: true
-            )
-        )
-    }
-
     func testIsAccessible() throws {
         XCTAssertNoDifference(
             Game.routines.find("isAccessible"),
@@ -112,7 +74,6 @@ final class IsAccessibleTests: QuelboTests {
                     /// The `isAccessible` (ACCESSIBLE?) routine.
                     func isAccessible(obj: Object) -> Bool {
                         var l: Object? = obj.parent
-                        var obj: Object = obj
                         // "can player TOUCH object?"
                         // "revised 5/2/84 by SEM and SWG"
                         if obj.hasFlag(isInvisible) {
@@ -144,9 +105,10 @@ final class IsAccessibleTests: QuelboTests {
                         }
                     }
                     """,
-                type: .booleanTrue,
+                type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

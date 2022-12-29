@@ -19,14 +19,11 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert([
+            try symbols.assert(
                 .haveCount(.exactly(1)),
-                .haveType(.oneOf([
-                    .int,
-                    .string,
-                    .tableElement,
-                ]))
-            ])
+                .haveType(.oneOf([.int, .string, .tableElement]))
+            )
+
             try? symbols.assert(
                 .haveType(.string)
             )

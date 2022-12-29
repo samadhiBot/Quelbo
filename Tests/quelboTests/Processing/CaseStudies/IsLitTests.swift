@@ -12,6 +12,7 @@ import XCTest
 final class IsLitTests: QuelboTests {
     override func setUp() {
         super.setUp()
+
         DoSlTests().setUp()
 
         process("""
@@ -20,10 +21,6 @@ final class IsLitTests: QuelboTests {
             <GLOBAL P-MERGE <ITABLE NONE 50>>
             <GLOBAL PLAYER <>>
             <GLOBAL WINNER 0>
-
-            <OBJECT GLOBAL-OBJECTS
-                (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT OPENBIT SEARCHBIT
-                 TRANSBIT ONBIT RLANDBIT FIGHTBIT STAGGERED WEARBIT)>
 
             <ROUTINE LIT? (RM "OPTIONAL" (RMBIT T) "AUX" OHERE (LIT <>))
                 <COND (<AND ,ALWAYS-LIT <EQUAL? ,WINNER ,PLAYER>>
@@ -110,13 +107,14 @@ final class IsLitTests: QuelboTests {
                             }
                         }
                         here.set(to: ohere)
-                        pGwimBit.set(to: 0)
+                        pGwimBit.set(to: false)
                         return lit
                     }
                     """,
                 type: .booleanTrue,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

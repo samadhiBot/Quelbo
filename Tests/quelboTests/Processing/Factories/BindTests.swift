@@ -69,7 +69,8 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
     func testBindRoutine1Evaluation() {
@@ -138,7 +139,8 @@ final class BindTests: QuelboTests {
                 """,
             type: .void,
             category: .routines,
-            isCommittable: true
+            isCommittable: true,
+            returnHandling: .passthrough
         ))
     }
 
