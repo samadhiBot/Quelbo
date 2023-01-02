@@ -32,7 +32,7 @@ extension Factories {
                 )
             }
 
-            let synonyms = symbols.map(\.code)
+            let synonyms = symbols.nonCommentSymbols.map(\.code)
 
             return .statement(
                 id: "synonyms",

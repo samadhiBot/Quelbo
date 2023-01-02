@@ -27,7 +27,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let buzzwords = symbols.map(\.code)
+            let buzzwords = symbols.nonCommentSymbols.map(\.code)
 
             return .statement(
                 code: { _ in

@@ -12,13 +12,13 @@ import XCTest
 final class DoSlTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
-        SearchListTests().setUp()
+    func sharedSetup() {
+        SearchListTests().sharedSetup()
 
         process("""
-            <CONSTANT P-SRCALL 1>
-            <CONSTANT P-SRCBOT 2>
-            <CONSTANT P-SRCTOP 0>
             <GLOBAL P-SLOCBITS 0>
             <GLOBAL P-TABLE 0>
 

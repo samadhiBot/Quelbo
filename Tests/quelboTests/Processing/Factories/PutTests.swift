@@ -72,16 +72,6 @@ final class PutTests: QuelboTests {
         ))
     }
 
-    func testNonTableThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .string("TROLL"),
-                .decimal(1),
-                .decimal(123)
-            ], with: &localVariables).process()
-        )
-    }
-
     func testNonIndexThrows() throws {
         XCTAssertThrowsError(
             try factory.init([

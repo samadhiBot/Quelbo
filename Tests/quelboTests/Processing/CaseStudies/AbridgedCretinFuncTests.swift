@@ -44,7 +44,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                         if isVerb(.examine) {
                             if here.equals(
                                 mirror1.parent,
-                                mirror2.parent,
+                                mirror2.parent
                             ) {
                                 output("Your image in the mirror looks tired.")
                             } else {

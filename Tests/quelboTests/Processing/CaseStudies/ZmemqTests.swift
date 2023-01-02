@@ -12,8 +12,11 @@ import XCTest
 final class ZmemqTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
-        GlobalObjectsTests().setUp()
+    func sharedSetup() {
+        GlobalObjectsTests().sharedSetup()
 
         process("""
             <ROUTINE ZMEMQ (ITM TBL "OPTIONAL" (SIZE -1) "AUX" (CNT 1))
@@ -59,7 +62,7 @@ final class ZmemqTests: QuelboTests {
                         }
                         while true {
                             if itm.equals(try tbl.get(at: cnt)) {
-                                return tbl.rest(.multiply(cnt, 2))
+                                return tbl.rest(bytes: .multiply(cnt, 2))
                             } else if cnt.increment().isGreaterThan(size) {
                                 return nil
                             }

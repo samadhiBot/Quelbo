@@ -12,7 +12,10 @@ import XCTest
 final class GlobalObjectsTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
+    func sharedSetup() {
         process("""
             <OBJECT GLOBAL-OBJECTS
                 (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT

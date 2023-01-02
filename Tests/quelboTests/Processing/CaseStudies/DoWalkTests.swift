@@ -38,7 +38,7 @@ final class DoWalkTests: QuelboTests {
                     /// The `doWalk` (DO-WALK) routine.
                     func doWalk(dir: Object) -> Int? {
                         pWalkDir.set(to: dir)
-                        return perform(a: .walk, o: dir)
+                        return perform(a: Verb.walk, o: dir)
                     }
                     """,
                 type: .int.optional,

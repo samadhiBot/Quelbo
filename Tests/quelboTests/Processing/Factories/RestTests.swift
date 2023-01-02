@@ -22,7 +22,7 @@ final class RestTests: QuelboTests {
         let symbol = process("<REST STRUCT1>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "struct1.rest()",
+            code: "struct1.rest(bytes: 1)",
             type: .int.array
         ))
     }
@@ -35,7 +35,7 @@ final class RestTests: QuelboTests {
         let symbol = process("<REST SOME-TABLE>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "someTable.rest()",
+            code: "someTable.rest(bytes: 1)",
             type: .table
         ))
     }
@@ -59,7 +59,7 @@ final class RestTests: QuelboTests {
         XCTAssertNoDifference(
             process("<REST STRUCT2>"),
             .statement(
-                code: "struct2.rest()",
+                code: "struct2.rest(bytes: 1)",
                 type: .someTableElement.array
             )
         )
@@ -78,7 +78,7 @@ final class RestTests: QuelboTests {
         XCTAssertNoDifference(
             symbol,
             .statement(
-                code: "struct3.rest(2)",
+                code: "struct3.rest(bytes: 2)",
                 type: .someTableElement.array
             )
         )

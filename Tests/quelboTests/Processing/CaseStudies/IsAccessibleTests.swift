@@ -12,8 +12,11 @@ import XCTest
 final class IsAccessibleTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
-        ZmemqTests().setUp()
+    func sharedSetup() {
+        ZmemqTests().sharedSetup()
 
         process("""
             <GLOBAL WINNER 0>
@@ -92,7 +95,7 @@ final class IsAccessibleTests: QuelboTests {
                         } else if l.equals(
                             winner,
                             here,
-                            winner.parent,
+                            winner.parent
                         ) {
                             return true
                         } else if .and(

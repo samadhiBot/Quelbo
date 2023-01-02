@@ -41,7 +41,8 @@ final class Literal: SymbolType {
         case ("0", .int), ("0", .int32), ("0", .int16), ("0", .int8): return "0"
         case ("0", _): return "nil"
 
-        case (_, .word), (_, .verb): return ".\(_code)"
+        case (_, .verb): return "Verb.\(_code)"
+        case (_, .word): return "Word.\(_code)"
 
         default: return _code
         }
@@ -185,6 +186,13 @@ extension Symbol {
         .literal(Literal(
             code: string.quoted,
             type: .string
+        ))
+    }
+
+    static func partsOfSpeech(_ partsOfSpeech: String) -> Symbol {
+        .literal(Literal(
+            code: "PartsOfSpeech.\(partsOfSpeech)",
+            type: .partsOfSpeech
         ))
     }
 

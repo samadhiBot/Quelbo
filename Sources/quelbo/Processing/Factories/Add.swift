@@ -28,7 +28,7 @@ extension Factories {
         }
 
         override func evaluate() throws -> Symbol {
-            var elements = try symbols.map {
+            var elements = try symbols.nonCommentSymbols.map {
                 guard
                     let code = $0.evaluation?.code,
                     let integer = Int(code)

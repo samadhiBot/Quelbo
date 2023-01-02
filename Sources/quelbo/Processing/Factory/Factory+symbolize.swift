@@ -68,6 +68,10 @@ extension Factory {
                 symbols.append(
                     try symbolizeLocal(string)
                 )
+            case .partsOfSpeech(let rawPartsOfSpeech):
+                symbols.append(
+                    .partsOfSpeech(rawPartsOfSpeech.lowerCamelCase)
+                )
             case .property(let string):
                 symbols.append(
                     try symbolizeProperty(string, siblings: &tokens)
@@ -269,7 +273,7 @@ extension Factory {
             return .instance(global)
         }
 
-        throw GameError.globalNotFound(id)
+        throw GameError.globalNotFound(zil)
     }
 
     /// Translates a Zil

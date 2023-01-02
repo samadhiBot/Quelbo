@@ -564,8 +564,8 @@ final class RoutineTests: QuelboTests {
                     var e: Table? = e
                     var c: Table? = c
                     var int: Table? = int
-                    e.set(to: cTable.rest(cTablelen))
-                    c.set(to: cTable.rest(cInts))
+                    e.set(to: cTable.rest(bytes: cTablelen))
+                    c.set(to: cTable.rest(bytes: cInts))
                     while true {
                         if c.equals(e) {
                             cInts.set(to: .subtract(cInts, cIntlen))
@@ -573,13 +573,13 @@ final class RoutineTests: QuelboTests {
                                 demon,
                                 cDemons.set(to: .subtract(cDemons, cIntlen))
                             )
-                            int.set(to: cTable.rest(cInts))
+                            int.set(to: cTable.rest(bytes: cInts))
                             try int.put(element: rtn, at: cRtn)
                             return int
                         } else if try c.get(at: cRtn).equals(rtn) {
                             return c
                         }
-                        c.set(to: c.rest(cIntlen))
+                        c.set(to: c.rest(bytes: cIntlen))
                     }
                 }
                 """,

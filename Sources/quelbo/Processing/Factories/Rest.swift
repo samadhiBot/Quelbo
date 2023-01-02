@@ -11,40 +11,13 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [REST](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.49gfa85)
     /// function.
-    class Rest: Factory {
+    class Rest: Back {
         override class var zilNames: [String] {
             ["REST"]
         }
 
-        override func processSymbols() throws {
-            try symbols.assert(.haveCount(.between(1...2)))
-
-            if symbols.count == 1 {
-                symbols.append(.statement(
-                    code: { _ in "" },
-                    type: .int
-                ))
-            }
-
-            if symbols[0].type != .table {
-                try symbols[0].assert(.isArray)
-            }
-
-            try symbols[1].assert(
-                .hasType(.int)
-            )
-        }
-
-        override func process() throws -> Symbol {
-            let structure = symbols[0]
-            let count = symbols[1]
-
-            return .statement(
-                code: { _ in
-                    "\(structure.code).rest(\(count.code))"
-                },
-                type: structure.type
-            )
+        override var method: String {
+            "rest"
         }
     }
 }

@@ -97,6 +97,13 @@ extension TypeInfo {
         )
     }
 
+    static var partsOfSpeech: TypeInfo {
+        .init(
+            dataType: .int,
+            confidence: .certain
+        )
+    }
+
     static var routine: TypeInfo {
         .init(
             dataType: .routine,

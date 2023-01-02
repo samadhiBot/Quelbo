@@ -12,13 +12,16 @@ import XCTest
 final class SearchListTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
-        ZmemqTests().setUp()
+    func sharedSetup() {
+        ZmemqTests().sharedSetup()
 
         process("""
-            <CONSTANT P-SRCTOP 0>
             <CONSTANT P-SRCALL 1>
             <CONSTANT P-SRCBOT 2>
+            <CONSTANT P-SRCTOP 0>
 
             <GLOBAL P-ADJ <>>
             <GLOBAL P-GWIMBIT 0>

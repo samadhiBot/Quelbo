@@ -355,7 +355,7 @@ final class SyntaxTests: QuelboTests {
                 code: """
                     /// The `contrivedWalkUpFunc` (CONTRIVED-WALK-UP-FCN) routine.
                     func contrivedWalkUpFunc(wrd: Word) {
-                        if wrd.equals(.u, .up) {
+                        if wrd.equals(Word.u, Word.up) {
                             output("There are no stairs leading up.")
                         }
                     }

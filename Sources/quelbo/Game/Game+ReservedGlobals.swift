@@ -44,6 +44,28 @@ extension Game {
                 category: .routines
             ),
             .statement(
+                id: "partsOfSpeech",
+                code: { _ in
+                    """
+                    enum PartsOfSpeech: Int {
+                        case object = 0
+                        case verb = 1
+                        case adjective = 2
+                        case direction = 3
+                        case buzzWord = 4
+                        case preposition = 8
+                        case direction = 16
+                        case adjective = 32
+                        case verb = 64
+                        case object = 128
+                    }
+                    """
+                },
+                type: .void,
+                category: .globals,
+                isMutable: true
+            ),
+            .statement(
                 id: "preactions",
                 code: { _ in "preactions" },
                 type: .table,

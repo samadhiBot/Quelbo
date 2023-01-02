@@ -22,7 +22,7 @@ extension Factories {
                 .haveCount(.exactly(3))
             )
 
-            try symbols[0].assert(
+            try? symbols[0].assert(
                 .hasType(.table)
             )
 

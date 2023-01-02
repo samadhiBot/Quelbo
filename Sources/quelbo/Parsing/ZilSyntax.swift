@@ -98,6 +98,14 @@ struct ZilSyntax {
             atom
         }
 
+        let partsOfSpeech = Parse {
+            OneOf {
+                ",P1?".utf8
+                ",PS?".utf8
+            }
+            atom
+        }
+
         let property = Parse {
             ",P?".utf8
             atom
@@ -178,12 +186,13 @@ struct ZilSyntax {
                     comment.map(Token.commented)
                     eval.map(Token.eval)
                     form.map(Token.form)
+                    partsOfSpeech.map(Token.partsOfSpeech)
                     property.map(Token.property)
                     verb.map(Token.verb)
                     word.map(Token.word)
-                    global.map(Token.global)
                 }
                 OneOf {
+                    global.map(Token.global)
                     list.map(Token.list)
                     local.map(Token.local)
                     quote.map(Token.quote)

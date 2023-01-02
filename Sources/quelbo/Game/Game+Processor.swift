@@ -132,7 +132,7 @@ extension Game.Processor {
 
         tokens.forEach { token in
             switch token {
-            case .atom, .bool, .character, .decimal, .eval, .global, .list, .local, 
+            case .atom, .bool, .character, .decimal, .eval, .global, .list, .local, .partsOfSpeech,
                  .property, .quote, .segment, .type, .vector, .verb, .word:
                 Logger.process.warning("􀁜 Unexpected: \(token.value, privacy: .public)")
 

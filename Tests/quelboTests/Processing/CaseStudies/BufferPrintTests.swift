@@ -12,16 +12,20 @@ import XCTest
 final class BufferPrintTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetup()
+    }
 
-        IsAccessibleTests().setUp()
+    func sharedSetup() {
+        IsAccessibleTests().sharedSetup()
 
         process("""
             <CONSTANT P-WORDLEN 4> ;"Offset to parts of speech byte"
+
+            <GLOBAL P-INBUF <ITABLE 120 (BYTE LENGTH) 0> ;<ITABLE BYTE 60>>
+            <GLOBAL P-IT-OBJECT <>>
+            <GLOBAL P-MERGED <>>
             <GLOBAL P-NUMBER 0>
             <GLOBAL P-OFLAG <>>
-            <GLOBAL P-MERGED <>>
-            <GLOBAL P-IT-OBJECT <>>
-            <GLOBAL P-INBUF <ITABLE 120 (BYTE LENGTH) 0> ;<ITABLE BYTE 60>>
 
             <OBJECT ME
                 (IN GLOBAL-OBJECTS)
@@ -122,19 +126,22 @@ final class BufferPrintTests: QuelboTests {
                                 break
                             } else {
                                 wrd.set(to: try beg.get(at: 0))
-                                if wrd.equals(.comma) {
+                                if wrd.equals(Word.comma) {
                                     output(", ")
                                 } else if nosp {
                                     nosp.set(to: false)
                                 } else {
                                     output(" ")
                                 }
-                                if wrd.equals(.period, .comma) {
+                                if wrd.equals(
+                                    Word.period,
+                                    Word.comma
+                                ) {
                                     nosp.set(to: true)
-                                } else if wrd.equals(.me) {
+                                } else if wrd.equals(Word.me) {
                                     output(me.description)
                                     pn.set(to: true)
-                                } else if wrd.equals(.intnum) {
+                                } else if wrd.equals(Word.intnum) {
                                     output(pNumber)
                                     pn.set(to: true)
                                 } else {
@@ -148,7 +155,7 @@ final class BufferPrintTests: QuelboTests {
                                     if .or(pOflag, pMerged) {
                                         output(wrd)
                                     } else if .and(
-                                        wrd.equals(.it),
+                                        wrd.equals(Word.it),
                                         isAccessible(obj: pItObject)
                                     ) {
                                         output(pItObject.description)
@@ -161,7 +168,7 @@ final class BufferPrintTests: QuelboTests {
                                     isFirst.set(to: false)
                                 }
                             }
-                            beg.set(to: beg.rest(pWordlen))
+                            beg.set(to: beg.rest(bytes: pWordlen))
                         }
                     }
                     """,

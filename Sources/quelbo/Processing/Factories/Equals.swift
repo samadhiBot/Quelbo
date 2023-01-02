@@ -31,7 +31,7 @@ extension Factories {
             guard let firstElement = symbols.first?.evaluation else {
                 return .false
             }
-            for element in symbols.map(\.evaluation) {
+            for element in symbols.nonCommentSymbols.map(\.evaluation) {
                 guard element == firstElement else { return .false }
             }
             return .true
@@ -44,7 +44,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(first.handle).\(function)(\(rest.handles(.commaSeparated)))"
+                    "\(first.handle).\(function)(\(rest.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .bool
             )

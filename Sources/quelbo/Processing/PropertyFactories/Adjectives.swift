@@ -32,7 +32,7 @@ extension Factories {
                 )
             }
 
-            let adjectives = symbols.map(\.code)
+            let adjectives = symbols.nonCommentSymbols.map(\.code)
 
             return .statement(
                 id: "adjectives",

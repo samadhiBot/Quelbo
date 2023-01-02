@@ -247,7 +247,7 @@ final class PerformTests: QuelboTests {
                             output(actions.nthElement(.add(.multiply(a, 2), 1)))
                             if .and(
                                 o,
-                                .isNot(a.equals(.walk))
+                                .isNot(a.equals(Verb.walk))
                             ) {
                                 output("""
 
@@ -326,7 +326,7 @@ final class PerformTests: QuelboTests {
                                 return v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(.walk)),
+                                .isNot(a.equals(Verb.walk)),
                                 o.parent,
                                 o.parent.containerFunction,
                                 v.set(to: ddApply(
@@ -338,7 +338,7 @@ final class PerformTests: QuelboTests {
                                 return v
                             } else if _ = .and(
                                 o,
-                                .isNot(a.equals(.walk)),
+                                .isNot(a.equals(Verb.walk)),
                                 v.set(to: dApply(
                                     str: "PRSO",
                                     fcn: o.action

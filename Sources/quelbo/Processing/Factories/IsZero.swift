@@ -23,7 +23,7 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.exactly(1)),
-                .haveType(.oneOf([.bool, .int]))
+                .haveType(.oneOf([.bool, .int, .word]))
             )
         }
 
