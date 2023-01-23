@@ -35,20 +35,26 @@ final class Definition: SymbolType, Identifiable {
         if let evaluatedCode { return evaluatedCode }
 
         do {
-            let routineCall = try Factories.RoutineCall(
-                tokens,
-                with: &localVariables,
-                mode: .process
-            ).processOrEvaluate()
-            try routineCall.payload?.symbols.assert(
+            let processed = try {
+                if let factorySymbol = try factoryCall() {
+                    return factorySymbol
+                }
+                return try Factories.RoutineCall(
+                    tokens,
+                    with: &localVariables,
+                    mode: .process
+                ).processOrEvaluate()
+            }()
+
+            try processed.payload?.symbols.assert(
                 .haveReturnHandling(returnHandling)
             )
 
-            let code = routineCall.code
+            let code = processed.code
 
             self.evaluatedCode = code
             self.evaluationError = nil
-            self.type = try type.reconcile(id, with: routineCall.type)
+            self.type = try type.reconcile(id, with: processed.type)
 
             return code
 
@@ -59,6 +65,20 @@ final class Definition: SymbolType, Identifiable {
     }
 
     var isMutable: Bool? { false }
+
+    func factoryCall() throws -> Symbol? {
+        guard
+            case .form(var formTokens) = tokens.first,
+            case .atom(let zil) = formTokens.shift(),
+            let factory = Game.findFactory(zil)
+        else { return nil }
+
+        return try? factory.init(
+            formTokens,
+            with: &localVariables,
+            mode: .process
+        ).processOrEvaluate()
+    }
 }
 
 // MARK: - Symbol Definition initializer

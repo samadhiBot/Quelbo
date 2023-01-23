@@ -60,7 +60,7 @@ final class ConditionTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("COND"))
+        AssertSameFactory(factory, Game.findFactory("COND", type: .zCode))
     }
 
     func testSingleIfCondition() throws {
@@ -69,6 +69,7 @@ final class ConditionTests: QuelboTests {
                 <COND (<EQUAL? .RARG ,M-ENTER>
                     <TELL "You are in a dark and damp cellar.">)>
             """,
+            type: .zCode,
             with: [Statement(id: "rarg", type: .int)]
         )
 
@@ -97,6 +98,7 @@ final class ConditionTests: QuelboTests {
                         <TELL "Statement SWITCH not in (1 2 3)" CR>)
                 >
             """,
+            type: .zCode,
             with: [Statement(id: "switch", type: .int)]
         )
 
@@ -122,6 +124,7 @@ final class ConditionTests: QuelboTests {
             """
                 <COND (<EQUAL? .RARG ,M-ENTER> <SET RARG .OTHER>)>
             """,
+            type: .zCode,
             with: [
                 Statement(id: "rarg", type: .int),
                 Statement(id: "other", type: .int)
@@ -164,11 +167,14 @@ final class ConditionTests: QuelboTests {
 
     func testTruePredicate()
     throws {
-        let symbol = process("""
-            <COND
-                (<EQUAL? ,HERE ,CLEARING> "The grating opens.")
-                (T "The grating opens to reveal trees above you.")>
-        """)
+        let symbol = process(
+            """
+                <COND
+                    (<EQUAL? ,HERE ,CLEARING> "The grating opens.")
+                    (T "The grating opens to reveal trees above you.")>
+            """,
+            type: .zCode
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -253,14 +259,17 @@ final class ConditionTests: QuelboTests {
     }
 
     func testOrNothingElse() throws {
-        let symbol = process("""
-             <COND (<OR <FSET? ,PRSI ,OPENBIT>
-                    <OPENABLE? ,PRSI>
-                    <FSET? ,PRSI ,VEHBIT>>)
-                   (T
-                <TELL "You can't do that." CR>
-                <RTRUE>)>
-        """)
+        let symbol = process(
+            """
+                 <COND (<OR <FSET? ,PRSI ,OPENBIT>
+                        <OPENABLE? ,PRSI>
+                        <FSET? ,PRSI ,VEHBIT>>)
+                       (T
+                    <TELL "You can't do that." CR>
+                    <RTRUE>)>
+            """,
+            type: .zCode
+        )
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -304,5 +313,4 @@ final class ConditionTests: QuelboTests {
             returnHandling: .passthrough
         ))
     }
-
 }

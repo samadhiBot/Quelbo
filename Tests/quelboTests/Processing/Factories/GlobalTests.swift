@@ -43,7 +43,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testBoolFalse() throws {
@@ -58,7 +58,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testCommentedThrows() throws {
@@ -82,7 +82,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormTable() throws {
@@ -103,7 +103,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormPureLTable() throws {
@@ -130,7 +130,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormNestedLTables() throws {
@@ -175,7 +175,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(villains))
-        XCTAssertNoDifference(Game.findGlobal("villains"), Instance(villains))
+        XCTAssertNoDifference(Game.findInstance("villains"), Instance(villains))
     }
 
     func testFormNestedTableWithComments() throws {
@@ -203,7 +203,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(def1Res))
-        XCTAssertNoDifference(Game.findGlobal("def1Res"), Instance(def1Res))
+        XCTAssertNoDifference(Game.findInstance("def1Res"), Instance(def1Res))
     }
 
     func testList() throws {
@@ -222,7 +222,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testString() throws {
@@ -241,7 +241,7 @@ final class GlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testWhenBooleanFalseSignifiesObjectPlaceholder() throws {
@@ -250,7 +250,7 @@ final class GlobalTests: QuelboTests {
         // `foo` is recorded as a boolean, but it's understood that `<>` might have been a
         // placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(
-            Game.findGlobal("foo"),
+            Game.findInstance("foo"),
             Instance(Statement(
                 id: "foo",
                 code: "var foo: Bool = false",
@@ -274,7 +274,7 @@ final class GlobalTests: QuelboTests {
 
         // Inspecting the `foo` game symbol confirms that the type update took place.
         XCTAssertNoDifference(
-            Game.findGlobal("foo"),
+            Game.findInstance("foo"),
             Instance(Statement(
                 id: "foo",
                 code: "var foo: Object?",
@@ -291,7 +291,7 @@ final class GlobalTests: QuelboTests {
         // `kitchenWindowFlag` is recorded as a boolean, but it's understood that `<>` might have
         // been a placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(
-            Game.findGlobal("kitchenWindowFlag"),
+            Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
                 code: "var kitchenWindowFlag: Bool = false",
@@ -328,7 +328,7 @@ final class GlobalTests: QuelboTests {
 
         // Inspecting the `kitchenWindowFlag` game symbol confirms that the type remains boolean.
         XCTAssertNoDifference(
-            Game.findGlobal("kitchenWindowFlag"),
+            Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
                 code: "var kitchenWindowFlag: Bool = false",
@@ -339,4 +339,87 @@ final class GlobalTests: QuelboTests {
             ))
         )
     }
+}
+
+// MARK: - Reserved globals
+
+extension GlobalTests {
+    func testActions() throws {
+        let symbol = process(
+            "<GET ,ACTIONS .A>",
+            type: .zCode,
+            with: [
+                Statement(id: "a", type: .int)
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "try actions.get(at: a)",
+            type: .someTableElement
+        ))
+    }
+
+    func testIsActFind() throws {
+        let symbol = process(
+            "<EQUAL? .VERB ,ACT?FIND>",
+            type: .zCode,
+            with: [
+                Statement(id: "verb", type: .verb)
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "verb.equals(Verb.find.action)",
+            type: .bool
+        ))
+    }
+
+    func testLowDirection() throws {
+        let symbol = process(
+            "<L? .P ,LOW-DIRECTION>",
+            type: .zCode,
+            with: [
+                Statement(id: "p", type: .int)
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "p.isLessThan(lowDirection)",
+            type: .bool
+        ))
+    }
+
+    func testNullFunc() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("nullFunc"),
+            Statement(
+                id: "nullFunc",
+                code: """
+                    @discardableResult
+                    /// The `nullFunc` (NULL-F) routine.
+                    func nullFunc(a1: Any? = nil, a2: Any? = nil) -> Bool {
+                        return false
+                    }
+                    """,
+                type: .bool,
+                category: .routines
+            )
+        )
+    }
+
+    func testPartsOfSpeech() throws {
+        let symbol = process(
+            "<L? .P ,LOW-DIRECTION>",
+            type: .zCode,
+            with: [
+                Statement(id: "p", type: .int)
+            ]
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "p.isLessThan(lowDirection)",
+            type: .bool
+        ))
+    }
+
 }

@@ -12,12 +12,12 @@ import XCTest
 final class ZmemqTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        GlobalObjectsTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <ROUTINE ZMEMQ (ITM TBL "OPTIONAL" (SIZE -1) "AUX" (CNT 1))
                 <COND (<NOT .TBL> <RFALSE>)>

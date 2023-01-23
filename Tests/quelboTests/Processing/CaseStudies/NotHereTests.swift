@@ -13,8 +13,14 @@ final class NotHereTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        BufferPrintTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process(#"""
             <CONSTANT P-NC1 6>
             <CONSTANT P-NC1L 7>
@@ -83,6 +89,44 @@ final class NotHereTests: QuelboTests {
                 type: .object,
                 category: .objects,
                 isCommittable: true
+            )
+        )
+    }
+
+    func testNotHerePrint() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("notHerePrint"),
+            Statement(
+                id: "notHerePrint",
+                code: """
+                    /// The `notHerePrint` (NOT-HERE-PRINT) routine.
+                    func notHerePrint(isPrso: Bool) {
+                        if pOflag {
+                            if pXadj {
+                                output(pXadjn)
+                            }
+                            if _ = pXnam {
+                                output(pXnam)
+                            }
+                        } else if isPrso {
+                            bufferPrint(
+                                beg: try pItbl.get(at: pNc1),
+                                end: try pItbl.get(at: pNc1L),
+                                cp: false
+                            )
+                        } else {
+                            bufferPrint(
+                                beg: try pItbl.get(at: pNc2),
+                                end: try pItbl.get(at: pNc2L),
+                                cp: false
+                            )
+                        }
+                    }
+                    """,
+                type: .void,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
             )
         )
     }

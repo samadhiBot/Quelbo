@@ -42,7 +42,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testBoolFalse() throws {
@@ -57,7 +57,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testCommentedThrows() throws {
@@ -81,7 +81,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormTable() throws {
@@ -102,7 +102,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormPureLTable() throws {
@@ -129,7 +129,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testFormNestedLTables() throws {
@@ -174,7 +174,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(villains))
-        XCTAssertNoDifference(Game.findGlobal("villains"), Instance(villains))
+        XCTAssertNoDifference(Game.findInstance("villains"), Instance(villains))
     }
 
     func testFormNestedTableWithComments() throws {
@@ -202,7 +202,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(def1Res))
-        XCTAssertNoDifference(Game.findGlobal("def1Res"), Instance(def1Res))
+        XCTAssertNoDifference(Game.findInstance("def1Res"), Instance(def1Res))
     }
 
     func testList() throws {
@@ -221,7 +221,7 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
     func testString() throws {
@@ -240,6 +240,6 @@ final class ConstantTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
-        XCTAssertNoDifference(Game.findGlobal("foo"), Instance(foo))
+        XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 }

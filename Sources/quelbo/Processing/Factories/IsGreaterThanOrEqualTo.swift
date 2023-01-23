@@ -11,7 +11,7 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [G=?](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2bxgwvm)
     /// function.
-    class IsGreaterThanOrEqualTo: Equals {
+    class IsGreaterThanOrEqualTo: IsGreaterThan {
         override class var zilNames: [String] {
             ["G=?"]
         }
@@ -20,11 +20,8 @@ extension Factories {
             "isGreaterThanOrEqualTo"
         }
 
-        override func processSymbols() throws {
-            try symbols.assert(
-                .haveCount(.atLeast(2)),
-                .haveType(.int)
-            )
+        override func comparisonEval(_ first: Int, _ second: Int) -> Bool {
+            first >= second
         }
     }
 }

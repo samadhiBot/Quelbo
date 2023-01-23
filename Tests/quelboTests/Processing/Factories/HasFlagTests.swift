@@ -16,8 +16,16 @@ final class HasFlagTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            .variable(id: "kitchenWindow", type: .object),
-            .variable(id: "openBit", type: .bool.property),
+            .variable(
+                id: "kitchenWindow",
+                type: .object,
+                category: .objects
+            ),
+            .variable(
+                id: "openBit",
+                type: .bool.property,
+                category: .flags
+            ),
         ])
     }
 

@@ -1,15 +1,15 @@
-////
-////  IsVerbZilfTests.swift
-////  Quelbo
-////
-////  Created by Chris Sessions on 10/5/22.
-////
 //
-//import CustomDump
-//import XCTest
-//@testable import quelbo
+//  IsVerbZilfTests.swift
+//  Quelbo
 //
-//final class IsVerbZilfTests: QuelboTests {
+//  Created by Chris Sessions on 10/5/22.
+//
+
+import CustomDump
+import XCTest
+@testable import quelbo
+
+final class IsVerbZilfTests: QuelboTests {
 //    override func setUp() {
 //        super.setUp()
 //
@@ -38,9 +38,9 @@
 //                code: """
 //                    @discardableResult
 //                    /// The `isVerb` (VERB?) macro.
-//                    func isVerb(a: <Unknown>) -> Bool {
+//                    func isVerb(a: ⛔️) -> Bool {
 //                        var o: Verb? = nil
-//                        o.set(to: <Mapf result>)
+//                        o.set(to: /* _evaluationError_ %mapf-05F90BA8-0A99-4E17-8A3A-4F4CC8112958: unknownRoutine("MAPF", global(.atom(LIST)), .form(.atom(FUNCTION) .list(.atom(I) .form(.atom(FORM) .atom(GVAL) .form(.atom(PARSE) orm(.atom(STRING) .string(V?) .form(.atom(SPNAME) .local(I), .local(A)]) */)
 //                        return prsa.equals(o)
 //                    }
 //                    """,
@@ -52,28 +52,24 @@
 //    }
 //
 //    func testMethodThatCallsIsVerb() {
-//        let treasureInside = process("""
-//            <ROUTINE TREASURE-INSIDE ()
-//                     <COND (<VERB? OPEN>
-//                        <TELL "You've found an emerald!" CR>
-//                        <RFALSE>)>>
-//        """)
-//
-//        XCTAssertNoDifference(treasureInside, .statement(
-//            id: "treasureInside",
-//            code: """
-//                @discardableResult
-//                /// The `treasureInside` (TREASURE-INSIDE) routine.
-//                func treasureInside() -> Bool {
-//                    if isVerb(atms: open) {
-//                        output("You've found an emerald!")
-//                        return false
+//        XCTAssertNoDifference(
+//            Game.routines.find("treasureInside"),
+//            Statement(
+//                id: "treasureInside",
+//                code: """
+//                    @discardableResult
+//                    /// The `treasureInside` (TREASURE-INSIDE) routine.
+//                    func treasureInside() -> Bool {
+//                        if isVerb(atms: open) {
+//                            output("You've found an emerald!")
+//                            return false
+//                        }
 //                    }
-//                }
-//                """,
-//            type: .booleanFalse,
-//            category: .routines,
-//            isCommittable: true
-//        ))
+//                    """,
+//                type: .booleanFalse,
+//                category: .routines,
+//                isCommittable: true
+//            )
+//        )
 //    }
-//}
+}

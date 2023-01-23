@@ -82,14 +82,57 @@ extension Game {
                 break
 
             case .statement(let statement):
-                if statement.isCommittable, let id = statement.id {
-                    guard shared.symbols.find(id) == nil else {
-                        continue
+                if statement.isCommittable,
+                   let id = statement.id,
+                   let category = statement.category
+                {
+                    if let existing = try? find(id, in: [category]) {
+                        try existing.assertHasType(statement.type)
+                    } else {
+                        shared.symbols.append(symbol)
                     }
-                    shared.symbols.append(symbol)
                 }
                 try commit(statement.payload.symbols)
             }
+        }
+    }
+
+    static func find(
+        _ id: String,
+        in categories: [Category] = []
+    ) throws -> Statement? {
+        let symbols = shared.symbols.filter { $0.id == id }
+        switch symbols.count {
+        case 0:
+            return nil
+        case 1:
+            guard case .statement(let statement) = symbols[0] else {
+                throw GameError.statementNotFound(id)
+            }
+            if categories.isEmpty { return statement }
+            guard
+                let category = statement.category,
+                categories.contains(category)
+            else {
+                throw GameError.statementNotFound(id, in: categories)
+            }
+            return statement
+        default:
+            guard !categories.isEmpty else {
+                throw GameError.multipleStatementsFound(id)
+            }
+            for category in categories {
+                for symbol in symbols {
+                    guard
+                        case .statement(let statement) = symbol,
+                        category == statement.category
+                    else {
+                        continue
+                    }
+                    return statement
+                }
+            }
+            throw GameError.statementNotFound(id, in: categories)
         }
     }
 
@@ -119,13 +162,24 @@ extension Game {
         default: return found.first { type == $0.factoryType }
         }
     }
-
-    /// <#Description#>
-    /// - Parameter id: <#id description#>
-    /// - Returns: <#description#>
-    static func findGlobal(_ id: String) -> Instance? {
-        guard let global = shared.symbols.find(id) else { return nil }
+    
+    static func findInstance(_ id: String) -> Instance? {
+        guard let global = try? find(id) else { return nil }
         return Instance(global)
+    }
+
+    static func findRoutine(_ id: String) -> Statement? {
+        if let routine = Game.routines.find(id) {
+            return routine
+        }
+        guard
+            let syntax = Game.syntax.find(id),
+            let actionID = syntax.payload.symbols.last?.id,
+            let actionRoutine = Game.routines.find(actionID)
+        else {
+            return nil
+        }
+        return actionRoutine
     }
 
     /// <#Description#>
@@ -187,6 +241,9 @@ enum GameError: Swift.Error {
     case globalNotFound(String)
     case invalidCommitType(Symbol)
     case invalidZMachineVersion([Token])
+    case multipleStatementsFound(String)
+    case statementNotFound(String)
+    case statementNotFound(String, in: [Category])
     case unexpectedAtRootLevel(Token)
     case unknownDirective([Token])
     case unknownOperation(String)

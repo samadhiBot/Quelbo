@@ -12,12 +12,14 @@ import XCTest
 final class SwordTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        IntTests().setUp()
+        IntTests().sharedSetUp()
 
         process("""
             <CONSTANT CEXIT 4>
             <CONSTANT DEXIT 5>
             <CONSTANT UEXIT 1>
+
+            <GLOBAL HERE 0>
 
             <SETG C-ENABLED? 0>
 
@@ -129,15 +131,15 @@ final class SwordTests: QuelboTests {
                         var g: Int = sword.takeValue
                         var ng: Int = 0
                         var p: Int = 0
-                        var t: Int = 0
+                        var t: Table? = nil
                         var l: Int = 0
                         if sword.isIn(adventurer) {
                             if isInfested(r: here) {
                                 ng.set(to: 2)
-                            } else if _ = t {
+                            } else {
                                 p.set(to: 0)
                                 while true {
-                                    if p.set(to: here.property(after: .p)).isZero {
+                                    if p.set(to: here.property(after: p)).isZero {
                                         break
                                     } else if .isNot(p.isLessThan(lowDirection)) {
                                         t.set(to: here.property(p))
@@ -162,7 +164,7 @@ final class SwordTests: QuelboTests {
                             }
                             sword.takeValue = ng
                             return true
-                        } else if _ = t {
+                        } else {
                             try dem.put(element: 0, at: isCEnabled)
                             return false
                         }

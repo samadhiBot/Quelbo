@@ -63,6 +63,19 @@ final class Literal: SymbolType {
         default: return code
         }
     }
+
+    var id: String {
+        _code
+    }
+
+    var intValue: Int? {
+        switch type.dataType! {
+        case .int, .int16, .int32, .int8:
+            return Int(_code)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - Literal true/false initializers
@@ -100,6 +113,13 @@ extension Symbol {
 // MARK: - Symbol Literal initializers
 
 extension Symbol {
+    static func action(_ action: String) -> Symbol {
+        .literal(Literal(
+            code: "\(action).action",
+            type: .verb
+        ))
+    }
+
     static func literal(_ bool: Bool) -> Symbol {
         .literal(Literal(
             code: bool.description,

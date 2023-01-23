@@ -26,15 +26,34 @@ final class IsLessThanTests: QuelboTests {
     }
 
     func testLessThan() throws {
-        let symbol = try factory.init([
-            .decimal(2),
-            .decimal(3),
-        ], with: &localVariables).process()
+        let symbol = process("<LESS? 2 3>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isLessThan(3)",
             type: .bool
         ))
+    }
+
+    func testEvaluation() throws {
+        XCTAssertNoDifference(
+            process("<L=? 1 2>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<L=? 1 2 3>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<LESS? 1 1>", mode: .evaluate),
+            .false
+        )
+
+        XCTAssertNoDifference(
+            process("<L=? 2 3 1>", mode: .evaluate),
+            .false
+        )
     }
 
     func testLessThanGlobal() throws {

@@ -6,6 +6,7 @@
 //
 
 import CustomDump
+import Fizmo
 import Foundation
 
 extension Statement {
@@ -14,6 +15,7 @@ extension Statement {
         let activation: String?
         let auxiliaries: [Instance]
         let evaluation: Literal?
+        let flags: [Fizmo.Table.Flag]
         let parameters: [Instance]
         let predicate: Symbol?
         let repeating: Bool
@@ -24,6 +26,7 @@ extension Statement {
             activation: String? = nil,
             auxiliaries: [Instance] = [],
             evaluation: Literal? = nil,
+            flags: [Fizmo.Table.Flag] = [],
             parameters: [Instance] = [],
             predicate: Symbol? = nil,
             repeating: Bool = false,
@@ -33,6 +36,7 @@ extension Statement {
             self.activation = activation
             self.auxiliaries = auxiliaries
             self.evaluation = evaluation
+            self.flags = flags
             self.parameters = parameters
             self.predicate = predicate
             self.repeating = repeating

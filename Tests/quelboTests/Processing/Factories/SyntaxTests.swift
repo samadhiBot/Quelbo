@@ -20,7 +20,7 @@ final class SyntaxTests: QuelboTests {
         let symbol = process("<SYNTAX QUIT = V-QUIT>")
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:quit",
+            id: "quit",
             code: """
                 Syntax(
                     verb: "quit",
@@ -37,7 +37,7 @@ final class SyntaxTests: QuelboTests {
         let symbol = process("<SYNTAX CONTEMPLATE OBJECT = V-THINK-ABOUT>")
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:contemplate-object",
+            id: "contemplateObject",
             code: """
                 Syntax(
                     verb: "contemplate",
@@ -46,6 +46,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vThinkAbout")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
@@ -57,7 +60,7 @@ final class SyntaxTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:take-object",
+            id: "takeObject",
             code: """
                 Syntax(
                     verb: "take",
@@ -69,6 +72,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vTake")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
@@ -80,7 +86,7 @@ final class SyntaxTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:take-off-object",
+            id: "takeOffObject",
             code: """
                 Syntax(
                     verb: "take",
@@ -93,27 +99,21 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vUnwear")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
     }
 
     func testWaterSyntax() throws {
-        let symbol = try factory.init([
-            .atom("WATER"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("SPONGEBIT")
-            ]),
-            .atom("="),
-            .atom("V-POUR-LIQUID"),
-            .atom("PRE-WATER"),
-            .atom("WATER")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX WATER OBJECT (FIND SPONGEBIT) = V-POUR-LIQUID PRE-WATER WATER>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:water-object",
+            id: "waterObject",
             code: """
                 Syntax(
                     verb: "water",
@@ -125,34 +125,25 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [
+                    .verb("preWater"),
+                    .verb("vPourLiquid"),
+                ]
+            ),
             category: .syntax,
             isCommittable: true
         ))
     }
 
     func testPutSyntax() throws {
-        let symbol = try factory.init([
-            .atom("PUT"),
-            .atom("OBJECT"),
-            .list([
-                .atom("MANY"),
-                .atom("TAKE"),
-                .atom("HELD"),
-                .atom("CARRIED")
-            ]),
-            .atom("IN"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("CONTBIT")
-            ]),
-            .atom("="),
-            .atom("V-PUT-IN"),
-            .atom("PRE-PUT-IN")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX PUT OBJECT (MANY TAKE HELD CARRIED) IN OBJECT (FIND CONTBIT) =
+                V-PUT-IN PRE-PUT-IN>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:put-object-in-object",
+            id: "putObjectInObject",
             code: """
                 Syntax(
                     verb: "put",
@@ -168,25 +159,24 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [
+                    .verb("prePutIn"),
+                    .verb("vPutIn"),
+                ]
+            ),
             category: .syntax,
             isCommittable: true
         ))
     }
 
     func testWakeSyntax() throws {
-        let symbol = try factory.init([
-            .atom("WAKE"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("PERSONBIT")
-            ]),
-            .atom("="),
-            .atom("V-WAKE")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX WAKE OBJECT (FIND PERSONBIT) = V-WAKE>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:wake-object",
+            id: "wakeObject",
             code: """
                 Syntax(
                     verb: "wake",
@@ -197,6 +187,9 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vWake")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
@@ -208,7 +201,7 @@ final class SyntaxTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:wake-up-object",
+            id: "wakeUpObject",
             code: """
                 Syntax(
                     verb: "wake",
@@ -221,31 +214,22 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vAlarm")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
     }
 
     func testWakeKludgeSyntax() throws {
-        let symbol = try factory.init([
-            .atom("WAKE"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("PERSONBIT")
-            ]),
-            .atom("UP"),
-            .atom("OBJECT"),
-            .list([
-                .atom("FIND"),
-                .atom("KLUDGEBIT")
-            ]),
-            .atom("="),
-            .atom("V-WAKE")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <SYNTAX WAKE OBJECT (FIND PERSONBIT) UP OBJECT
+                (FIND KLUDGEBIT) = V-WAKE>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "syntax:wake-object-up-object",
+            id: "wakeObjectUpObject",
             code: """
                 Syntax(
                     verb: "wake",
@@ -260,13 +244,22 @@ final class SyntaxTests: QuelboTests {
                 )
                 """,
             type: .void,
+            payload: .init(
+                symbols: [.verb("vWake")]
+            ),
             category: .syntax,
             isCommittable: true
         ))
     }
 
     func testCompetingUps() throws {
-        DoWalkTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        NotHereTests().sharedSetUp()
+        PerformTests().sharedSetUp()
+        DoWalkTests().sharedSetUp()
 
         process("""
             <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT LAND>
@@ -296,9 +289,9 @@ final class SyntaxTests: QuelboTests {
         )
 
         XCTAssertNoDifference(
-            Game.syntax.find("syntax:wake-up-object"),
+            Game.syntax.find("wakeUpObject"),
             Statement(
-                id: "syntax:wake-up-object",
+                id: "wakeUpObject",
                 code: """
                     Syntax(
                         verb: "wake",
@@ -311,6 +304,9 @@ final class SyntaxTests: QuelboTests {
                     )
                     """,
                 type: .void,
+                payload: .init(
+                    symbols: [.verb("vAlarm")]
+                ),
                 category: .syntax,
                 isCommittable: true
             )

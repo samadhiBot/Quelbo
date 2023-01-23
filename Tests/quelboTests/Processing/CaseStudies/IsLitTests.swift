@@ -13,8 +13,14 @@ final class IsLitTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        DoSlTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
             <GLOBAL ALWAYS-LIT <>>
             <GLOBAL P-MATCHLEN 0>

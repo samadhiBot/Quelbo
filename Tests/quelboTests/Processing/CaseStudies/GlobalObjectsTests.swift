@@ -12,11 +12,15 @@ import XCTest
 final class GlobalObjectsTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
+    func sharedSetUp() {
         process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT>
+
+            <GLOBAL HERE 0>
+
             <OBJECT GLOBAL-OBJECTS
                 (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT
                        OPENBIT SEARCHBIT TRANSBIT ONBIT RLANDBIT FIGHTBIT
@@ -24,9 +28,9 @@ final class GlobalObjectsTests: QuelboTests {
 
             ;"Objects below are intended to provide definitions for other tests."
 
-            <OBJECT WEIRDO (FLAGS ACTORBIT)>
-
+            <OBJECT BAZOOKA (FLAGS WEAPONBIT)>
             <OBJECT INFLATED-BOAT (FLAGS TAKEBIT BURNBIT VEHBIT)>
+            <OBJECT WEIRDO (FLAGS ACTORBIT)>
 
             <ROOM MAZE-1 (FLAGS RLANDBIT MAZEBIT)>
         """)

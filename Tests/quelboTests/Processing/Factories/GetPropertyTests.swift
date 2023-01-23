@@ -12,15 +12,6 @@ import XCTest
 final class GetPropertyTests: QuelboTests {
     let factory = Factories.GetProperty.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-            .variable(id: "count", type: .int),
-            .variable(id: "troll", type: .object, category: .objects),
-        ])
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("GETP"))
         AssertSameFactory(factory, Game.findFactory("GETPT"))
@@ -28,8 +19,10 @@ final class GetPropertyTests: QuelboTests {
 
     func testGetProperty() throws {
         let symbol = process("""
-            <GETP TROLL ,P?STRENGTH>
-        """)
+             <OBJECT TROLL>
+
+             <GETP TROLL ,P?STRENGTH>
+         """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength",
@@ -37,10 +30,12 @@ final class GetPropertyTests: QuelboTests {
         ))
     }
 
-    func testGetPropertyAddress() throws {
+    func testGetPropertyReference() throws {
         let symbol = process("""
-            <GETPT TROLL ,P?STRENGTH>
-        """)
+             <OBJECT TROLL>
+
+             <GETPT ,TROLL ,P?STRENGTH>
+         """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "troll.strength",
@@ -48,26 +43,18 @@ final class GetPropertyTests: QuelboTests {
         ))
     }
 
-    func testPropertyAddressOfObjectInLocal() throws {
-        let symbol = process(
-            """
-                <GETPT ,HERE .DIR>
-            """,
+    func testPropertyReferenceOfObjectInLocal() throws {
+        let symbol = process("""
+             <GLOBAL HERE 0>
+
+             <GETPT ,HERE .DIR>
+             """,
             with: [Statement(id: "dir", type: .object)]
         )
 
         XCTAssertNoDifference(symbol, .statement(
             code: "here.property(dir)",
-            type: .object.property
+            type: .unknown.property
         ))
-    }
-
-    func testNonObjectThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .atom("COUNT"),
-                .property("STRENGTH")
-            ], with: &localVariables).process()
-        )
     }
 }

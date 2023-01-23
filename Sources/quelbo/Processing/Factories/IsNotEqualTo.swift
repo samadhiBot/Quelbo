@@ -19,5 +19,15 @@ extension Factories {
         override var function: String {
             "isNotEqualTo"
         }
+
+        override func evaluate() throws -> Symbol {
+            guard let firstElement = symbols.first?.evaluation else {
+                return .false
+            }
+            for element in symbols.nonCommentSymbols[1..<symbols.count].compactMap(\.evaluation) {
+                guard element != firstElement else { return .false }
+            }
+            return .true
+        }
     }
 }

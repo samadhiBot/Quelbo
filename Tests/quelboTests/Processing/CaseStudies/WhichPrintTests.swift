@@ -12,12 +12,12 @@ import XCTest
 final class WhichPrintTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        BufferPrintTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        BufferPrintTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <CONSTANT P-NC1 6>
             <CONSTANT P-NC1L 7>

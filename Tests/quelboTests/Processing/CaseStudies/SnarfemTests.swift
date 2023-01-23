@@ -13,15 +13,32 @@ final class SnarfemTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GetObjectTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        IsLitTests().sharedSetUp()
+        GlobalCheckTests().sharedSetUp()
+        OrphanTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        NotHereTests().sharedSetUp()
+        WhichPrintTests().sharedSetUp()
+        GetObjectTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
             <CONSTANT P-LEXELEN 2>
+            <CONSTANT P-SLOC1 5>
+            <CONSTANT P-SLOC2 6>
             <CONSTANT P-WORDLEN 4> ;"Offset to parts of speech byte"
 
             <GLOBAL P-AND <>>
             <GLOBAL P-BUTS <ITABLE NONE 50>>
             <GLOBAL P-ONEOBJ 0>
+            <GLOBAL P-SYNTAX 0>
 
             <ROUTINE SNARFEM (PTR EPTR TBL "AUX" (BUT <>) LEN WV WRD NW (WAS-ALL <>))
                <SETG P-AND <>>
@@ -76,6 +93,38 @@ final class SnarfemTests: QuelboTests {
                    <COND (<NOT <EQUAL? .PTR .EPTR>>
                       <SET PTR <REST .PTR ,P-WORDLEN>>
                       <SET WRD .NW>)>>>
+
+            <ROUTINE BUT-MERGE (TBL "AUX" LEN BUTLEN (CNT 1) (MATCHES 0) OBJ NTBL)
+                <SET LEN <GET .TBL ,P-MATCHLEN>>
+                <PUT ,P-MERGE ,P-MATCHLEN 0>
+                <REPEAT ()
+                    <COND (<DLESS? LEN 0> <RETURN>)
+                          (<ZMEMQ <SET OBJ <GET .TBL .CNT>> ,P-BUTS>)
+                          (T
+                           <PUT ,P-MERGE <+ .MATCHES 1> .OBJ>
+                           <SET MATCHES <+ .MATCHES 1>>)>
+                    <SET CNT <+ .CNT 1>>>
+                <PUT ,P-MERGE ,P-MATCHLEN .MATCHES>
+                <SET NTBL ,P-MERGE>
+                <SETG P-MERGE .TBL>
+                .NTBL>
+
+            <ROUTINE SNARF-OBJECTS ("AUX" OPTR IPTR L)
+                 <PUT ,P-BUTS ,P-MATCHLEN 0>
+                 <COND (<NOT <EQUAL? <SET IPTR <GET ,P-ITBL ,P-NC2>> 0>>
+                    <SETG P-SLOCBITS <GETB ,P-SYNTAX ,P-SLOC2>>
+                    <OR <SNARFEM .IPTR <GET ,P-ITBL ,P-NC2L> ,P-PRSI> <RFALSE>>)>
+                 <COND (<NOT <EQUAL? <SET OPTR <GET ,P-ITBL ,P-NC1>> 0>>
+                    <SETG P-SLOCBITS <GETB ,P-SYNTAX ,P-SLOC1>>
+                    <OR <SNARFEM .OPTR <GET ,P-ITBL ,P-NC1L> ,P-PRSO> <RFALSE>>)>
+                 <COND (<NOT <ZERO? <GET ,P-BUTS ,P-MATCHLEN>>>
+                    <SET L <GET ,P-PRSO ,P-MATCHLEN>>
+                    <COND (.OPTR <SETG P-PRSO <BUT-MERGE ,P-PRSO>>)>
+                    <COND (<AND .IPTR
+                            <OR <NOT .OPTR>
+                            <EQUAL? .L <GET ,P-PRSO ,P-MATCHLEN>>>>
+                           <SETG P-PRSI <BUT-MERGE ,P-PRSI>>)>)>
+                 <RTRUE>>
         """)
     }
 
@@ -95,8 +144,8 @@ final class SnarfemTests: QuelboTests {
                         var but: Table? = nil
                         // var len: <Unknown>
                         var wv: Bool = false
-                        var wrd: Int = 0
-                        var nw: Word? = nil
+                        var wrd: [Word] = []
+                        var nw: [Word] = []
                         var wasAll: Bool = false
                         var ptr: Table = ptr
                         pAnd.set(to: false)
@@ -145,10 +194,7 @@ final class SnarfemTests: QuelboTests {
                                             getObject(tbl: .or(but, tbl)),
                                             return false
                                         )
-                                        .and(
-                                            nw.isZero,
-                                            return true
-                                        )
+                                        .and(nw.isNil, return true)
                                     }
                                 } else if .and(
                                     wrd.equals(Word.and, Word.comma),
@@ -175,7 +221,7 @@ final class SnarfemTests: QuelboTests {
                                     wv.set(to: isWt(
                                         ptr: wrd,
                                         bit: PartsOfSpeech.adjective,
-                                        b1: PartsOfSpeech.adjective
+                                        b1: PartsOfSpeech.adjectiveFirst
                                     )),
                                     .isNot(pAdj)
                                 ) {
@@ -184,7 +230,7 @@ final class SnarfemTests: QuelboTests {
                                 } else if _ = isWt(
                                     ptr: wrd,
                                     bit: PartsOfSpeech.object,
-                                    b1: PartsOfSpeech.object
+                                    b1: PartsOfSpeech.objectFirst
                                 ) {
                                     pNam.set(to: wrd)
                                     pOneobj.set(to: wrd)
@@ -198,6 +244,114 @@ final class SnarfemTests: QuelboTests {
                     }
                     """,
                 type: .bool,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
+    func testButMerge() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("butMerge"),
+            Statement(
+                id: "butMerge",
+                code: """
+                    @discardableResult
+                    /// The `butMerge` (BUT-MERGE) routine.
+                    func butMerge(tbl: Table) -> Table? {
+                        var len: Int = 0
+                        // var butlen: <Unknown>
+                        var cnt: Int = 1
+                        var matches: Int = 0
+                        var obj: [Object] = []
+                        var ntbl: Table? = nil
+                        len.set(to: try tbl.get(at: pMatchlen))
+                        try pMerge.put(element: 0, at: pMatchlen)
+                        while true {
+                            if len.decrement().isLessThan(0) {
+                                break
+                            } else if _ = zmemq(
+                                itm: obj.set(to: try tbl.get(at: cnt)),
+                                tbl: pButs
+                            ) {
+                                // do nothing
+                            } else {
+                                try pMerge.put(element: obj, at: .add(matches, 1))
+                                matches.set(to: .add(matches, 1))
+                            }
+                            cnt.set(to: .add(cnt, 1))
+                        }
+                        try pMerge.put(element: matches, at: pMatchlen)
+                        ntbl.set(to: pMerge)
+                        pMerge.set(to: tbl)
+                        return ntbl
+                    }
+                    """,
+                type: .table.optional,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
+    }
+
+    func testSnarfObjects() throws {
+        XCTAssertNoDifference(
+            Game.routines.find("snarfObjects"),
+            Statement(
+                id: "snarfObjects",
+                code: """
+                    @discardableResult
+                    /// The `snarfObjects` (SNARF-OBJECTS) routine.
+                    func snarfObjects() -> Bool {
+                        var optr: Table? = nil
+                        var iptr: Table? = nil
+                        var l: TableElement? = nil
+                        try pButs.put(element: 0, at: pMatchlen)
+                        if .isNot(iptr.set(to: try pItbl.get(at: pNc2)).equals(0)) {
+                            pSlocbits.set(to: try pSyntax.get(at: pSloc2))
+                            .or(
+                                snarfem(
+                                    ptr: iptr,
+                                    eptr: try pItbl.get(at: pNc2L),
+                                    tbl: pPrsi
+                                ),
+                                return false
+                            )
+                        }
+                        if .isNot(optr.set(to: try pItbl.get(at: pNc1)).equals(0)) {
+                            pSlocbits.set(to: try pSyntax.get(at: pSloc1))
+                            .or(
+                                snarfem(
+                                    ptr: optr,
+                                    eptr: try pItbl.get(at: pNc1L),
+                                    tbl: pPrso
+                                ),
+                                return false
+                            )
+                        }
+                        if .isNot(try pButs.get(at: pMatchlen).isZero) {
+                            l.set(to: try pPrso.get(at: pMatchlen))
+                            if _ = optr {
+                                pPrso.set(to: butMerge(tbl: pPrso))
+                            }
+                            if _ = .and(
+                                iptr,
+                                .or(
+                                    .isNot(optr),
+                                    l.equals(
+                                        try pPrso.get(at: pMatchlen)
+                                    )
+                                )
+                            ) {
+                                pPrsi.set(to: butMerge(tbl: pPrsi))
+                            }
+                        }
+                        return true
+                    }
+                    """,
+                type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough

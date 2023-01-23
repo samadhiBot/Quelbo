@@ -19,15 +19,29 @@ final class EqualsTests: QuelboTests {
     }
 
     func testEqualTwoDecimals() throws {
-        let symbol = try factory.init([
-            .decimal(2),
-            .decimal(3),
-        ], with: &localVariables).process()
+        let symbol = process("<EQUAL? 2 3>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.equals(3)",
             type: .bool
         ))
+    }
+
+    func testEvaluation() throws {
+        XCTAssertNoDifference(
+            process("<=? 1 1>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<==? 1 2>", mode: .evaluate),
+            .false
+        )
+
+        XCTAssertNoDifference(
+            process("<EQUAL? 2 1>", mode: .evaluate),
+            .false
+        )
     }
 
     func testEqualAtomAndDecimal() throws {

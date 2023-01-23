@@ -42,6 +42,10 @@ final class IsVerbZorkTests: QuelboTests {
 //
 //            <DEFMAC VERB? ("ARGS" ATMS)
 //                <MULTIFROB PRSA .ATMS>>
+//
+//            <ROUTINE BOARD-F ()
+//                 <COND (<VERB? TAKE EXAMINE>
+//                    <TELL "The boards are securely fastened." CR>)>>
 //        """, type: .mdl)
 //    }
 //

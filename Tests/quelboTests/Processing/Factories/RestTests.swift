@@ -46,7 +46,7 @@ final class RestTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(
-            Game.findGlobal("struct2"),
+            Game.findInstance("struct2"),
             Instance(Statement(
                 id: "struct2",
                 code: "var struct2: [TableElement] = []",

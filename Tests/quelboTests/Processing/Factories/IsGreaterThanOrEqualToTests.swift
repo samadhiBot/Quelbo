@@ -25,15 +25,34 @@ final class IsGreaterThanOrEqualToTests: QuelboTests {
     }
 
     func testIsGreaterThanOrEqualTo() throws {
-        let symbol = try factory.init([
-            .decimal(2),
-            .decimal(3),
-        ], with: &localVariables).process()
+        let symbol = process("<G=? 2 3>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isGreaterThanOrEqualTo(3)",
             type: .bool
         ))
+    }
+
+    func testEvaluation() throws {
+        XCTAssertNoDifference(
+            process("<G=? 2 1>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<G=? 3 1 2>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<G=? 2 2 2>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<G=? 1 2>", mode: .evaluate),
+            .false
+        )
     }
 
     func testIsGreaterThanOrEqualToGlobal() throws {

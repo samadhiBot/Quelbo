@@ -85,10 +85,10 @@ final class ParsingTests: QuelboTests {
 
     func testCommentedGlobal() throws {
         let parsed = try Self.zilParser.parse("""
-            ;,ACT?ASK
+            ;,WINNER
         """).first
 
-        XCTAssertNoDifference(parsed, .commented(.global(.atom("ACT?ASK"))))
+        XCTAssertNoDifference(parsed, .commented(.global(.atom("WINNER"))))
     }
 
     func testCommentedList() throws {

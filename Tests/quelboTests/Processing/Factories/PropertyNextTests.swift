@@ -30,8 +30,8 @@ final class PropertyNextTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "troll.property(after: .strength)",
-            type: .unknown
+            code: "troll.property(after: strength)",
+            type: .unknown.property
         ))
     }
 

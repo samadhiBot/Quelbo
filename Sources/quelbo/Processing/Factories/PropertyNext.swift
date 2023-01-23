@@ -36,9 +36,9 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).property(after: .\(property.code))"
+                    "\(object.code).property(after: \(property.code))"
                 },
-                type: .unknown
+                type: .unknown.property
             )
         }
     }

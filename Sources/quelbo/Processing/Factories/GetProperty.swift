@@ -9,8 +9,9 @@ import Foundation
 
 extension Factories {
     /// A symbol factory for the Zil
-    /// [GETP](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1q7ozz1)
-    /// function.
+    /// [GETP](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1q7ozz1) and
+    /// [GETPT](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.4a7cimu)
+    /// functions.
     class GetProperty: Factory {
         override class var zilNames: [String] {
             ["GETP", "GETPT"]
@@ -33,17 +34,26 @@ extension Factories {
         override func process() throws -> Symbol {
             let object = symbols[0]
             let property = symbols[1]
-            let isDirectProperty: Bool = {
-                if case .property = tokens[1] { return true }
-                return false
-            }()
+            let isDirectProperty: Bool
+            let type: TypeInfo
+
+            if case .property = tokens[1] {
+                isDirectProperty = true
+                type = property.type.property
+            } else {
+                isDirectProperty = false
+                type = .unknown.property
+            }
 
             return .statement(
                 code: { _ in
-                    isDirectProperty ? "\(object.code).\(property.code)"
-                                     : "\(object.code).property(\(property.code))"
+                    if isDirectProperty {
+                        return "\(object.code).\(property.code)"
+                    } else {
+                        return "\(object.code).property(\(property.code))"
+                    }
                 },
-                type: property.type,
+                type: type,
                 payload: .init(
                     symbols: symbols
                 )

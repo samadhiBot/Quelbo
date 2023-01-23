@@ -25,7 +25,7 @@ extension Factories {
 
             let zilName = try findName(in: &routineTokens)
 
-            guard let routine = Game.routines.find(zilName.lowerCamelCase) else {
+            guard let routine = Game.findRoutine(zilName.lowerCamelCase) else {
                 throw Error.unknownRoutine(zilName, routineTokens)
             }
             self.routine = routine

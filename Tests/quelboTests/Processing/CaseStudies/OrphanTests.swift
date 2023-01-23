@@ -12,12 +12,16 @@ import XCTest
 final class OrphanTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        GlobalCheckTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        GlobalCheckTests().sharedSetup()
-
+    func sharedSetUp() {
         process(#"""
             <CONSTANT CC-DBPTR 2>
             <CONSTANT CC-DEPTR 3>
@@ -114,7 +118,7 @@ final class OrphanTests: QuelboTests {
                 id: "clauseAdd",
                 code: """
                     /// The `clauseAdd` (CLAUSE-ADD) routine.
-                    func clauseAdd(wrd: Int) {
+                    func clauseAdd(wrd: Bool) {
                         var ptr: Int = 0
                         ptr.set(to: .add(
                             try pOclause.get(at: pMatchlen),
@@ -143,7 +147,7 @@ final class OrphanTests: QuelboTests {
                     func clauseCopy(
                         src: Table,
                         dest: Table,
-                        insrt: Int = 0
+                        insrt: Bool = false
                     ) {
                         var beg: [Table] = []
                         var end: Table? = nil

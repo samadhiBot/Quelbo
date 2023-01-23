@@ -14,6 +14,8 @@ final class AbridgedGroundFuncTests: QuelboTests {
         process("""
             <SETG ZORK-NUMBER 1>
 
+            <GLOBAL HERE 0>
+
             <ROOM SANDY-CAVE>
 
             <ROUTINE ABRIDGED-SAND-FUNCTION ()

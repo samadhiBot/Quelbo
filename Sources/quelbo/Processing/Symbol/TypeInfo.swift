@@ -112,7 +112,11 @@ extension TypeInfo {
     }
 
     static var someTableElement: TypeInfo {
-        .init(isTableElement: true)
+        .init(
+            dataType: .tableElement,
+            confidence: .limited,
+            isTableElement: true
+        )
     }
 
     static var string: TypeInfo {
@@ -136,10 +140,10 @@ extension TypeInfo {
         )
     }
 
-    static var thing: TypeInfo {
+    static var unknown: TypeInfo {
         .init(
-            dataType: .thing,
-            confidence: .certain
+            dataType: nil,
+            confidence: .none
         )
     }
 
@@ -157,20 +161,12 @@ extension TypeInfo {
         )
     }
 
-    static var unknown: TypeInfo {
-        .init(
-            dataType: nil,
-            confidence: .none
-        )
-    }
-
     static var word: TypeInfo {
         .init(
             dataType: .word,
             confidence: .certain
         )
     }
-
 
     static var zilAtom: TypeInfo {
         .init(
@@ -276,7 +272,7 @@ extension TypeInfo {
             return "\(self) = 0"
         case .none:
             return "\(self)"
-        case .object, .routine, .table, .tableElement, .thing, .verb, .word:
+        case .object, .routine, .table, .tableElement, .verb, .word:
             return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
         case .oneOf(let dataTypes):
             let leastSpecific = dataTypes.min(by: { $0.baseConfidence < $1.baseConfidence })
@@ -311,6 +307,11 @@ extension TypeInfo {
         (confidence == .booleanFalse &&
          other.confidence > .booleanFalse &&
          other.confidence != .booleanTrue)
+    }
+
+    /// <#Description#>
+    var isSomeInteger: Bool {
+        [.int, .int8, .int16, .int32].contains(self.dataType)
     }
 
     var objID: String {
@@ -375,7 +376,9 @@ extension TypeInfo {
                 .replacingOccurrences(of: "\n", with: "")
                 .replacingOccurrences(of: "    ", with: " ")
 
-            print("\t􀄢\(identifier): \(initialType)􀚌\(assertedType) 􁉂 \(typeInfo.debugDescription)")
+            print(
+                "\t􀄢\(identifier): \(initialType)􀠊\(assertedType) 􁉂 \(typeInfo.debugDescription)"
+            )
 
             return typeInfo
         }
@@ -449,6 +452,10 @@ extension TypeInfo {
             return logged(asserted.merge(with: self))
         }
 
+        if asserted.isProperty == true && isProperty == true {
+            return logged(asserted.merge(with: self))
+        }
+
         _ = logged(.unknown)
         throw Symbol.AssertionError.hasTypeAssertionFailed(
             for: handle(),
@@ -508,8 +515,7 @@ extension TypeInfo: CustomStringConvertible {
         }
         if isArray == true {
             description = "[\(description)]"
-        }
-        if isOptional == true && dataType != .bool {
+        } else if isOptional == true && dataType != .bool {
             description = "\(description)?"
         }
         return description

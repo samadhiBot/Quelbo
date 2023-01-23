@@ -13,10 +13,10 @@ final class DescribeRoomTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GlobalObjectsTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
     }
 
-    func setUp(for zorkNumber: ZorkNumber) {
+    func sharedSetUp(for zorkNumber: ZorkNumber = .zork1) {
         var versionSpecificDefs: String {
             switch zorkNumber {
             case .zork1: return ""
@@ -37,10 +37,11 @@ final class DescribeRoomTests: QuelboTests {
             <CONSTANT M-FLASH 4>
             <CONSTANT M-LOOK 3>
 
+            <GLOBAL HERE 0>
             <GLOBAL LIT <>>
             <GLOBAL SPRAYED? <>>
-            <GLOBAL VERBOSE <>>
             <GLOBAL SUPER-BRIEF <>>
+            <GLOBAL VERBOSE <>>
             <GLOBAL WINNER 0>
 
             <OBJECT ROOMS (IN TO ROOMS)>
@@ -92,38 +93,11 @@ final class DescribeRoomTests: QuelboTests {
                     <COND (<AND <NOT <EQUAL? ,HERE .AV>> <FSET? .AV ,VEHBIT>>
                            <APPLY <GETP .AV ,P?ACTION> ,M-LOOK>)>)>
                  T>
-
-            <ROUTINE ABRIDGED-V-LOOK ()
-                 <COND (<DESCRIBE-ROOM T>
-                    ;<DESCRIBE-OBJECTS T>)>>
         """)
     }
 
-    func testAbridgedVLook() throws {
-        setUp(for: .zork1)
-
-        XCTAssertNoDifference(
-            Game.routines.find("abridgedVLook"),
-            Statement(
-                id: "abridgedVLook",
-                code: """
-                    /// The `abridgedVLook` (ABRIDGED-V-LOOK) routine.
-                    func abridgedVLook() {
-                        if describeRoom(isLook: true) {
-                            // <DESCRIBE-OBJECTS T>
-                        }
-                    }
-                    """,
-                type: .void,
-                category: .routines,
-                isCommittable: true,
-                returnHandling: .passthrough
-            )
-        )
-    }
-
     func testDescribeRoomZork1() throws {
-        setUp(for: .zork1)
+        sharedSetUp(for: .zork1)
 
         XCTAssertNoDifference(
             Game.routines.find("describeRoom"),
@@ -191,7 +165,7 @@ final class DescribeRoomTests: QuelboTests {
                         return true
                     }
                     """#,
-                type: .bool,
+                type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough
@@ -200,7 +174,7 @@ final class DescribeRoomTests: QuelboTests {
     }
 
     func testDescribeRoomZork2() throws {
-        setUp(for: .zork2)
+        sharedSetUp(for: .zork2)
 
         XCTAssertNoDifference(
             Game.routines.find("describeRoom"),
@@ -267,7 +241,7 @@ final class DescribeRoomTests: QuelboTests {
                         return true
                     }
                     """#,
-                type: .bool,
+                type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough
@@ -276,7 +250,7 @@ final class DescribeRoomTests: QuelboTests {
     }
 
     func testDescribeRoomZork3() throws {
-        setUp(for: .zork3)
+        sharedSetUp(for: .zork3)
 
         XCTAssertNoDifference(
             Game.routines.find("describeRoom"),
@@ -347,7 +321,7 @@ final class DescribeRoomTests: QuelboTests {
                         return true
                     }
                     """#,
-                type: .bool,
+                type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough

@@ -90,7 +90,8 @@ extension Symbol {
     var id: String? {
         switch self {
         case .definition(let definition): return definition.id
-        case .instance, .literal: return nil
+        case .instance(let instance): return instance.id
+        case .literal(let literal): return literal.id
         case .statement(let statement): return statement.id
         }
     }
@@ -101,6 +102,14 @@ extension Symbol {
         case .instance(let instance): return instance.isMutable
         case .literal(let literal): return literal.isMutable
         case .statement(let statement): return statement.isMutable
+        }
+    }
+
+    var isProperty: Bool {
+        switch self {
+        case .definition, .literal: return false
+        case .instance(let instance): return instance.variable.type.isProperty == true
+        case .statement(let statement): return statement.type.isProperty == true
         }
     }
 

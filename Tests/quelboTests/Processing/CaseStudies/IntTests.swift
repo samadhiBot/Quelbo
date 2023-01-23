@@ -12,7 +12,10 @@ import XCTest
 final class IntTests: QuelboTests {
     override func setUp() {
         super.setUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
             <CONSTANT C-INTLEN 6>
             <CONSTANT C-RTN 2>

@@ -19,6 +19,8 @@ extension Factories {
 
         var definition: [String] = []
 
+        var routines: [Symbol] = []
+
         override func processTokens() throws {
             var tokens = tokens
             guard case .atom(let verb) = tokens.shift() else {
@@ -40,11 +42,16 @@ extension Factories {
             guard case .atom(let actionRoutine) = tokens.shift() else {
                 throw Error.missingSyntaxActionRoutine(tokens)
             }
-            definition.append("actionRoutine: \(actionRoutine.lowerCamelCase)")
+            let action = actionRoutine.lowerCamelCase
+            definition.append("actionRoutine: \(action)")
 
             if case .atom(let preActionRoutine) = tokens.shift() {
-                definition.append("preActionRoutine: \(preActionRoutine.lowerCamelCase)")
+                let preAction = preActionRoutine.lowerCamelCase
+                definition.append("preActionRoutine: \(preAction)")
+                routines.append(.verb(preAction))
             }
+
+            routines.append(.verb(action))
         }
 
         override func process() throws -> Symbol {
@@ -56,6 +63,7 @@ extension Factories {
                     "Syntax(\(definition.values(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .void,
+                payload: .init(symbols: routines),
                 category: .syntax,
                 isCommittable: true
             )
@@ -69,9 +77,9 @@ extension Factories.Syntax {
         for token in tokens {
             guard case .atom(let string) = token else { continue }
             if string == "=" { break }
-            elements.append(string.lowerCamelCase)
+            elements.append(string)
         }
-        return "syntax:\(elements.joined(separator: "-"))"
+        return elements.joined(separator: "_").lowerCamelCase
     }
 
     func findObject(in tokens: inout [Token]) throws -> String? {

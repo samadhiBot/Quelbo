@@ -12,12 +12,14 @@ import XCTest
 final class BufferPrintTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        IsAccessibleTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <CONSTANT P-WORDLEN 4> ;"Offset to parts of speech byte"
 
@@ -116,7 +118,7 @@ final class BufferPrintTests: QuelboTests {
                         cp: Bool
                     ) {
                         var nosp: Bool = true
-                        var wrd: Int = 0
+                        var wrd: Word? = nil
                         var isFirst: Bool = true
                         var pn: Bool = false
                         var isQ: Bool = false

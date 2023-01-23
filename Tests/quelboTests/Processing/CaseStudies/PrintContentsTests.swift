@@ -43,7 +43,7 @@ final class PrintContentsTests: QuelboTests {
 
     func testPItObject() {
         XCTAssertNoDifference(
-            Game.findGlobal("pItObject"),
+            Game.findInstance("pItObject"),
             Instance(Statement(
                 id: "pItObject",
                 code: "var pItObject: Object?",

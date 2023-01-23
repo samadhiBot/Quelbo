@@ -16,7 +16,10 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert(
-                .haveCount(.atLeast(1)),
+                .haveCount(.atLeast(1))
+            )
+
+            try? symbols.assert(
                 .haveType(.verb)
             )
         }

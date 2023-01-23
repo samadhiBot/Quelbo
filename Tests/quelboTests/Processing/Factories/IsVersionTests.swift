@@ -17,7 +17,7 @@ final class IsVersionTests: QuelboTests {
 
         try! Game.commit([
             .variable(id: "color", type: .bool, category: .routines),
-            .variable(id: "readbuf", type: .table),
+            .variable(id: "readbuf", type: .table, category: .globals),
             .variable(id: "undo", type: .bool, category: .routines),
             .variable(id: "zipOptions", type: .bool, category: .routines),
         ])

@@ -113,7 +113,7 @@ final class IsNotTests: QuelboTests {
     func testIsNotThing() throws {
         localVariables.append(contentsOf: [
             Statement(id: "prsa", type: .object),
-            Statement(id: "something", type: .thing),
+            Statement(id: "something", type: .object),
         ])
 
         let symbol = try factory.init([

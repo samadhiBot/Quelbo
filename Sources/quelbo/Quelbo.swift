@@ -39,6 +39,8 @@ struct Quelbo: ParsableCommand {
     var target: String?
 
     func run() throws {
+        Game.reset()
+
         let game = Game.shared
 
         try game.parseZilSource(at: path)

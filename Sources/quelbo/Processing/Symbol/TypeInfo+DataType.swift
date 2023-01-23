@@ -13,7 +13,6 @@ extension TypeInfo {
         case atom
         case bool
         case comment
-//        case direction
         case int
         case int16
         case int32
@@ -23,7 +22,6 @@ extension TypeInfo {
         case string
         case table
         case tableElement
-        case thing
         case verb
         case void
         case word
@@ -48,7 +46,7 @@ extension TypeInfo.DataType  {
     /// Whether the symbol with this data type can take a `.someTableElement` value.
     var canBeTableElement: Bool {
         switch self {
-        case .atom, .comment, .routine, .thing, .void:
+        case .atom, .comment, .routine, .void:
             return false
         case .oneOf(let set):
             return set.contains { $0.canBeTableElement }
@@ -97,8 +95,6 @@ extension TypeInfo.DataType: CustomStringConvertible {
             return "Table"
         case .tableElement:
             return "TableElement"
-        case .thing:
-            return "Thing"
         case .verb:
             return "Verb"
         case .void:

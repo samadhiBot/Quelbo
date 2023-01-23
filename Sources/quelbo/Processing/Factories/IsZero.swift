@@ -16,26 +16,53 @@ extension Factories {
             ["0?", "ZERO?"]
         }
 
-        var function: String {
-            "isZero"
-        }
-
         override func processSymbols() throws {
             try symbols.assert(
-                .haveCount(.exactly(1)),
-                .haveType(.oneOf([.bool, .int, .word]))
+                .haveCount(.exactly(1))
             )
+
+            let value = symbols[0]
+
+            if value.type.isSomeInteger && value.type.confidence > .integerZero {
+                try value.assert(
+                    .hasType(.int)
+                )
+            }
+
+
+
+//            if value.type
+
+//            try symbols[0].assert({
+//                if symbols[0].type.confidence == .integerZero {
+//                    return .hasType(.int)
+//                } else if symbols[0].type.dataType == .bool {
+//                    return .hasType(.bool)
+//                } else {
+//                    return .isOptional
+//                }
+//            }())
         }
 
         override func process() throws -> Symbol {
-            let function = function
             let value = symbols[0]
 
             return .statement(
                 code: { _ in
-                    "\(value.code).\(function)"
+                    let function: String = {
+                        if value.type.dataType == .bool {
+                            return "isFalse"
+                        } else if value.type.isOptional == true {
+                            return "isNil"
+                        } else {
+                            return "isZero"
+                        }
+                    }()
+
+                    return "\(value.code).\(function)"
                 },
                 type: .bool
+//                payload: .init(symbols: symbols)
             )
         }
     }

@@ -30,6 +30,29 @@ extension Factories {
             "and"
         }
 
+        override func evaluate() throws -> Symbol {
+            var elements = try symbols.nonCommentSymbols.map {
+                guard
+                    let code = $0.evaluation?.code,
+                    let boolean = Bool(code)
+                else {
+                    throw Error.invalidMathEvaluationArgument($0)
+                }
+                return boolean
+            }
+            guard var result = elements.shift() else {
+                throw Error.expectedAtLeastOneElement
+            }
+            while let element = elements.shift() {
+                switch function {
+                case "and": result = result && element
+                case "or": result = result || element
+                default: throw Error.invalidBooleanEvaluationFunction(function)
+                }
+            }
+            return .literal(result)
+        }
+
         override func process() throws -> Symbol {
             let function = function
             let operands = symbols
@@ -41,5 +64,15 @@ extension Factories {
                 type: operands.map(\.type).max() ?? .bool
             )
         }
+    }
+}
+
+// MARK: - Errors
+
+extension Factories.And {
+    enum Error: Swift.Error {
+        case invalidMathEvaluationArgument(Symbol)
+        case invalidBooleanEvaluationFunction(String)
+        case expectedAtLeastOneElement
     }
 }

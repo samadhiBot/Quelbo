@@ -26,7 +26,7 @@ extension Factories {
             )
 
             try symbols[1].assert(
-                .hasType(.oneOf([.bool, .int]))
+                .hasType(.bool)
             )
         }
 

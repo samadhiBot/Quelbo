@@ -49,7 +49,7 @@ final class ApplyTests: QuelboTests {
 
     func testDispatchTbl() throws {
         XCTAssertNoDifference(
-            Game.findGlobal("dispatchTbl"),
+            Game.findInstance("dispatchTbl"),
             Instance(Statement(
                 id: "dispatchTbl",
                 code: "let dispatchTbl: [Int] = [func1, func2]",

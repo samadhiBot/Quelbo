@@ -27,15 +27,34 @@ final class IsNotEqualToTests: QuelboTests {
     }
 
     func testEqualTwoDecimals() throws {
-        let symbol = try factory.init([
-            .decimal(2),
-            .decimal(3),
-        ], with: &localVariables).process()
+        let symbol = process("<N==? 2 3>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: "2.isNotEqualTo(3)",
             type: .bool
         ))
+    }
+
+    func testEvaluation() throws {
+        XCTAssertNoDifference(
+            process("<N=? 2 1>", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<N=? \"foo\" \"bar\">", mode: .evaluate),
+            .true
+        )
+
+        XCTAssertNoDifference(
+            process("<N=? 2 2 2>", mode: .evaluate),
+            .false
+        )
+
+        XCTAssertNoDifference(
+            process("<N=? \"foo\" \"foo\">", mode: .evaluate),
+            .false
+        )
     }
 
     func testEqualThreeDecimals() throws {

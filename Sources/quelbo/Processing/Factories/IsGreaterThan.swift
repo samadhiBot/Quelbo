@@ -26,5 +26,34 @@ extension Factories {
                 .haveType(.int)
             )
         }
+
+        func comparisonEval(_ first: Int, _ second: Int) -> Bool {
+            first > second
+        }
+
+        override func evaluate() throws -> Symbol {
+            guard let firstElement = symbols.first?.evaluation else {
+                return .false
+            }
+            guard let firstInt = firstElement.intValue else {
+                throw Error.invalidLiteralComparison(firstElement)
+            }
+            for element in symbols.nonCommentSymbols[1..<symbols.count].compactMap(\.evaluation) {
+                guard let elementInt = element.intValue else {
+                    throw Error.invalidLiteralComparison(element)
+                }
+                guard comparisonEval(firstInt, elementInt) else { return .false }
+            }
+            return .true
+        }
+    }
+}
+
+
+// MARK: - Errors
+
+extension Factories.IsGreaterThan {
+    enum Error: Swift.Error {
+        case invalidLiteralComparison(Literal)
     }
 }

@@ -13,8 +13,11 @@ final class ShakeLoopTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GlobalObjectsTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
             <SETG ZORK-NUMBER 1>
 

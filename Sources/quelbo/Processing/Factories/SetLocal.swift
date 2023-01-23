@@ -1,5 +1,5 @@
 //
-//  SetVariable.swift
+//  SetLocal.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 4/4/22.
@@ -11,9 +11,9 @@ extension Factories {
     /// A symbol factory for the Zil
     /// [SET](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.27jua8u)
     /// function.
-    class SetVariable: Factory {
+    class SetLocal: Factory {
         override class var zilNames: [String] {
-            ["SET", "SETG"]
+            ["SET"]
         }
 
         override func processSymbols() throws {
@@ -27,7 +27,6 @@ extension Factories {
             )
 
             try symbols[0].assert(
-                .hasCategory(.globals),
                 .isMutable,
                 .isVariable
             )

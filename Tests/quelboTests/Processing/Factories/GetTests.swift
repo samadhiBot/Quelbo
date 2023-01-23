@@ -50,7 +50,7 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try pItbl.get(at: pVerbn).get(at: 0)",
-            type: .int
+            type: .someTableElement
         ))
     }
 

@@ -12,12 +12,15 @@ import XCTest
 final class GlobalCheckTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        DoSlTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <OBJECT PSEUDO-OBJECT
                 (IN LOCAL-GLOBALS)
@@ -61,6 +64,39 @@ final class GlobalCheckTests: QuelboTests {
         """)
     }
 
+    func testPNam() throws {
+        XCTAssertNoDifference(
+            Game.globals.find("pNam"),
+            Statement(
+                id: "pNam",
+                code: "var pNam: [Object]",
+                type: .object.array.property.optional.tableElement,
+                category: .globals,
+                isCommittable: true
+            )
+        )
+    }
+
+    func testPseudoObject() {
+        XCTAssertNoDifference(
+            Game.objects.find("pseudoObject"),
+            Statement(
+                id: "pseudoObject",
+                code: """
+                 /// The `pseudoObject` (PSEUDO-OBJECT) object.
+                 var pseudoObject = Object(
+                     action: cretinFunc,
+                     description: "pseudo",
+                     location: localGlobals
+                 )
+                 """,
+                type: .object.array.property.tableElement,
+                category: .objects,
+                isCommittable: true
+            )
+        )
+    }
+
     func testGlobalCheck() throws {
         XCTAssertNoDifference(
             Game.routines.find("globalCheck"),
@@ -69,13 +105,13 @@ final class GlobalCheckTests: QuelboTests {
                 code: """
                     /// The `globalCheck` (GLOBAL-CHECK) routine.
                     func globalCheck(tbl: Table) {
-                        var len: TableElement
+                        var len: TableElement? = nil
                         var rmg: [Object] = []
                         var rmgl: Int = 0
                         var cnt: Int = 0
-                        var obj: Object? = nil
+                        var obj: [Object] = []
                         var obits: Int = 0
-                        var foo: [Int] = []
+                        var foo: [Routine] = []
                         len.set(to: try tbl.get(at: pMatchlen))
                         obits.set(to: pSlocbits)
                         if _ = rmg.set(to: here.globals) {

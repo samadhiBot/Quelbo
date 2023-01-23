@@ -28,7 +28,7 @@ final class VersionTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.findGlobal("zMachineVersion"), Instance(expected))
+        XCTAssertNoDifference(Game.findInstance("zMachineVersion"), Instance(expected))
     }
 
     func testZ3WithTime() throws {
@@ -43,7 +43,7 @@ final class VersionTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.findGlobal("zMachineVersion"), Instance(expected))
+        XCTAssertNoDifference(Game.findInstance("zMachineVersion"), Instance(expected))
     }
 
     func testDecimal() throws {
@@ -58,7 +58,7 @@ final class VersionTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
-        XCTAssertNoDifference(Game.findGlobal("zMachineVersion"), Instance(expected))
+        XCTAssertNoDifference(Game.findInstance("zMachineVersion"), Instance(expected))
     }
 
     func testUnknownVersionDecimalThrows() throws {

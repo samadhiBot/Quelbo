@@ -21,6 +21,26 @@ extension Factories {
             ["GLOBAL", "SETG"]
         }
 
+        override func processTokens() throws {
+            var tokens = tokens
+
+            let globalName = try findName(in: &tokens).lowerCamelCase
+
+            let values = try symbolize(tokens)
+            guard values.nonCommentSymbols.count == 1 else {
+                throw Error.expectedSingleValueSymbol(values)
+            }
+
+            symbols.append(.statement(
+                id: globalName,
+                code: { _ in globalName },
+                type: .unknown,
+                isCommittable: true,
+                returnHandling: .forced
+            ))
+            symbols.append(contentsOf: values)
+        }
+
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.exactly(2)),
@@ -73,6 +93,6 @@ extension Factories {
 
 extension Factories.Global {
     enum Error: Swift.Error {
-        case unconsumedGlobalTokens([Token])
+        case expectedSingleValueSymbol([Symbol])
     }
 }

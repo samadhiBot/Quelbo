@@ -140,39 +140,22 @@ extension Factories.BlockProcessor {
             }
 
             guard let nameToken else { continue }
-
-            let nameSymbol = try symbolize(nameToken)
-
-            let nameVariable: Statement = try {
-                switch nameSymbol {
-                case .instance(let instance):
-                    if let found = localVariables.first(where: { $0 == instance.variable }) {
-                        return found
-                    }
-                    localVariables.append(instance.variable)
-                    return instance.variable
-                case .statement(let variable):
-                    if let found = localVariables.first(where: { $0 == variable }) {
-                        return found
-                    }
-                    localVariables.append(variable)
-                    return variable
-                case .true:
-                    if let found = findLocal("t") {
-                        return found
-                    }
-                    let variable = Statement(
-                        id: "t",
-                        code: { _ in "t" },
-                        type: .unknown
-                    )
-                    localVariables.append(variable)
-                    return variable
-                default:
-                    throw Error.unexpectedNameSymbolType(nameSymbol, paramTokens)
+            let name = nameToken.value.lowerCamelCase
+            let nameVariable = {
+                if let found = localVariables.first(where: { $0.id == name }) {
+                    return found
                 }
+                let nameVariable = Statement(
+                    id: name,
+                    code: { _ in name },
+                    type: .unknown,
+                    returnHandling: .forced
+                )
+                localVariables.append(nameVariable)
+                return nameVariable
             }()
-            
+            let nameSymbol: Symbol = .statement(nameVariable)
+
             let valueSymbol: Symbol? = try {
                 guard let valueToken else { return nil }
                 let value = try symbolize(valueToken)

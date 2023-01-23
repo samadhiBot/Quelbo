@@ -10,9 +10,9 @@ import Foundation
 extension TypeInfo {
     enum Confidence: Int {
         case none
+        case limited
         case booleanFalse
         case integerZero
-        case limited
         case assured
         case integerOne
         case booleanTrue

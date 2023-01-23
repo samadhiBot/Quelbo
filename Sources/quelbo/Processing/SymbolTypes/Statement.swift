@@ -147,6 +147,9 @@ extension Statement {
             return
         }
         switch (category, assertionCategory) {
+        case (.constants, .globals):
+            self.category = .globals
+            return
         case (.rooms, .globals):
             return
         default:
@@ -246,6 +249,7 @@ extension Statement: CustomDumpReflectable {
                 "id": self.id as Any,
                 "code": self.code,
                 "type": self.type,
+                // "payload": self.payload,
                 "category": self.category as Any,
                 "activation": self.activation as Any,
                 "isAgainStatement": self.isAgainStatement,
@@ -265,6 +269,7 @@ extension Statement: Equatable {
         lhs.id == rhs.id &&
         lhs.code == rhs.code &&
         lhs.type == rhs.type &&
+        (rhs.payload == .empty ? true : (lhs.payload == rhs.payload)) &&
         lhs.category == rhs.category &&
         lhs.activation == rhs.activation &&
         lhs.isAgainStatement == rhs.isAgainStatement &&

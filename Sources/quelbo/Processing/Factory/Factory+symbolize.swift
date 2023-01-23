@@ -18,13 +18,18 @@ extension Factory {
     /// - Throws: When token translation fails.
     func symbolize(
         _ tokens: [Token],
-        mode factoryMode: FactoryMode? = nil
+        mode factoryMode: FactoryMode? = nil,
+        type factoryType: Factories.FactoryType = .zCode
     ) throws -> [Symbol] {
         var tokens = tokens
         var symbols: [Symbol] = []
 
         while let token = tokens.shift() {
             switch token {
+            case .action(let string):
+                symbols.append(
+                    .action(string.lowerCamelCase)
+                )
             case .atom(let string):
                 symbols.append(
                     try symbolizeAtom(string, mode: factoryMode ?? mode)
@@ -54,7 +59,11 @@ extension Factory {
                 )
             case .form(let tokens):
                 symbols.append(
-                    try symbolizeForm(tokens, mode: factoryMode ?? mode)
+                    try symbolizeForm(
+                        tokens,
+                        mode: factoryMode ?? mode,
+                        type: factoryType
+                    )
                 )
             case .global(let token):
                 symbols.append(
@@ -71,6 +80,10 @@ extension Factory {
             case .partsOfSpeech(let rawPartsOfSpeech):
                 symbols.append(
                     .partsOfSpeech(rawPartsOfSpeech.lowerCamelCase)
+                )
+            case .partsOfSpeechFirst(let rawPartsOfSpeech):
+                symbols.append(
+                    .partsOfSpeech("\(rawPartsOfSpeech.lowerCamelCase)First")
                 )
             case .property(let string):
                 symbols.append(
@@ -143,7 +156,7 @@ extension Factory {
         if let local = findLocal(name) {
             return .instance(local)
         }
-        if let global = Game.findGlobal(name) {
+        if let global = Game.findInstance(name) {
             return .instance(global)
         }
         if ["T", "ELSE"].contains(zil) {
@@ -199,7 +212,8 @@ extension Factory {
     /// - Returns: A ``Symbol`` representation of the Zil form.
     func symbolizeForm(
         _ formTokens: [Token],
-        mode factoryMode: FactoryMode
+        mode factoryMode: FactoryMode,
+        type factoryType: Factories.FactoryType = .zCode
     ) throws -> Symbol {
         var tokens = formTokens
 
@@ -242,7 +256,7 @@ extension Factory {
             zil: zilString,
             tokens: tokens,
             with: &localVariables,
-            type: .zCode,
+            type: factoryType,
             mode: factoryMode
         )
     }
@@ -269,8 +283,11 @@ extension Factory {
         if let flag = Game.flags.find(id) {
             return .statement(flag)
         }
-        if let global = Game.findGlobal(id) {
+        if let global = Game.globals.find(id) {
             return .instance(global)
+        }
+        if let instance = Game.findInstance(id) {
+            return .instance(instance)
         }
 
         throw GameError.globalNotFound(zil)

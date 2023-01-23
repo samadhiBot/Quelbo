@@ -13,7 +13,7 @@ final class MungRoomTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GlobalObjectsTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
     }
 
     func testMungRoomZork1() {

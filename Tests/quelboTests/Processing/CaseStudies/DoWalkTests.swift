@@ -13,10 +13,18 @@ final class DoWalkTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        PerformTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        NotHereTests().sharedSetUp()
+        PerformTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
-            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT>
+            <GLOBAL P-WALK-DIR <>>
 
             <ROUTINE DO-WALK (DIR)
                  <SETG P-WALK-DIR .DIR>

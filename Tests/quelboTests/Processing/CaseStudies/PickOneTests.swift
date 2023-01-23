@@ -13,7 +13,7 @@ final class PickOneTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GlobalObjectsTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
 
         process(#"""
             <GLOBAL HELLOS
@@ -80,11 +80,11 @@ final class PickOneTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `pickOne` (PICK-ONE) routine.
-                    func pickOne(frob: Table) -> TableElement {
+                    func pickOne(frob: Table) -> String {
                         var l: Int = try frob.get(at: 0)
                         var cnt: Int = try frob.get(at: 1)
                         var rnd: Int = 0
-                        var msg: TableElement? = nil
+                        var msg: String = ""
                         var rfrob: Table? = nil
                         var frob: Table = frob
                         l.set(to: .subtract(l, 1))
@@ -102,7 +102,7 @@ final class PickOneTests: QuelboTests {
                         return msg
                     }
                     """,
-                type: .oneOf([.int, .string, .tableElement]).tableElement,
+                type: .string.tableElement,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough

@@ -152,14 +152,13 @@ extension Array where Element == Symbol {
 
     var withMaxConfidence: [Symbol] {
         nonCommentSymbols.reduce(into: []) { results, symbol in
-//            guard ![.comment, .unknown].contains(symbol.type) else {
-//                return
-//            }
             guard let sample = results.first?.type else {
                 results = [symbol]
                 return
             }
-            if symbol.type.confidence > sample.confidence {
+            if symbol.type.confidence < sample.confidence {
+                return
+            } else if symbol.type.confidence > sample.confidence {
                 results = [symbol]
             } else if symbol.type > sample {
                 results.insert(symbol, at: 0)

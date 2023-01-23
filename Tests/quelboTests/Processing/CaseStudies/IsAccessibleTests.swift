@@ -12,12 +12,13 @@ import XCTest
 final class IsAccessibleTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        ZmemqTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <GLOBAL WINNER 0>
 

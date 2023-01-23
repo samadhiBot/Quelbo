@@ -79,7 +79,7 @@ class QuelboTests: XCTestCase {
     /// - Returns: <#description#>
     func process(
         _ zil: String,
-        type FactoryType: Factories.FactoryType? = nil,
+        type factoryType: Factories.FactoryType? = .mdl,
         mode factoryMode: Factory.FactoryMode = .process,
         with injectedLocalVariables: [Statement] = [],
         file: StaticString = #filePath,
@@ -101,7 +101,7 @@ class QuelboTests: XCTestCase {
                             zil: zilString,
                             tokens: tokens,
                             with: &localVariables,
-                            type: .mdl,
+                            type: factoryType,
                             mode: factoryMode
                         )
                         try Game.commit(symbol)

@@ -12,12 +12,13 @@ import XCTest
 final class SearchListTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        ZmemqTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <CONSTANT P-SRCALL 1>
             <CONSTANT P-SRCBOT 2>
@@ -113,7 +114,7 @@ final class SearchListTests: QuelboTests {
                         ) {
                             return false
                         } else if .and(
-                            .isNot(pGwimBit.isZero),
+                            .isNot(pGwimBit.isFalse),
                             .isNot(obj.hasFlag(pGwimBit))
                         ) {
                             return false

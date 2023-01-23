@@ -22,7 +22,7 @@ final class OrTests: QuelboTests {
     }
 
     func testFindFactory() throws {
-        AssertSameFactory(factory, Game.findFactory("OR"))
+        AssertSameFactory(factory, Game.findFactory("OR", type: .zCode))
     }
 
     func testOrOneValue() throws {

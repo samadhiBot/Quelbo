@@ -16,7 +16,7 @@ final class ReturnTests: QuelboTests {
         super.setUp()
 
         try! Game.commit([
-            .variable(id: "foo", type: .int),
+            .variable(id: "foo", type: .int, category: .globals),
             .variable(id: "forest1", type: .object, category: .rooms),
         ])
     }

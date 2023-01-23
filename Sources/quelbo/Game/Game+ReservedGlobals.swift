@@ -18,13 +18,6 @@ extension Game {
                 isMutable: true
             ),
             .statement(
-                id: "here",
-                code: { _ in "here" },
-                type: .object.optional,
-                category: .rooms,
-                isMutable: true
-            ),
-            .statement(
                 id: "lowDirection",
                 code: { _ in "lowDirection" },
                 type: .int
@@ -48,10 +41,10 @@ extension Game {
                 code: { _ in
                     """
                     enum PartsOfSpeech: Int {
-                        case object = 0
-                        case verb = 1
-                        case adjective = 2
-                        case direction = 3
+                        case objectFirst = 0
+                        case verbFirst = 1
+                        case adjectiveFirst = 2
+                        case directionFirst = 3
                         case buzzWord = 4
                         case preposition = 8
                         case direction = 16
@@ -68,6 +61,13 @@ extension Game {
             .statement(
                 id: "preactions",
                 code: { _ in "preactions" },
+                type: .table,
+                category: .globals,
+                isMutable: true
+            ),
+            .statement(
+                id: "prepositions",
+                code: { _ in "prepositions" },
                 type: .table,
                 category: .globals,
                 isMutable: true

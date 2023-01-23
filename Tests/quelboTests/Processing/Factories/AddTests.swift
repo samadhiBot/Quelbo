@@ -111,40 +111,44 @@ final class AddTests: QuelboTests {
     }
 
     func testAddGlobalAndFunctionResult() throws {
-        try! Game.commit([
-            .variable(id: "baseScore", type: .int),
-            .statement(
-                id: "otvalFrob",
-                code: "",
-                type: .int,
-                category: .routines,
-                isCommittable: true
-            ),
-        ])
+        process("""
+            <GLOBAL BASE-SCORE 0>
 
-        let symbol = try factory.init([
-            .global(.atom("BASE-SCORE")),
-            .form([
-                .atom("OTVAL-FROB")
-            ])
-        ], with: &localVariables).process()
+            <OBJECT TROPHY-CASE>
+
+            <ROUTINE OTVAL-FROB ("OPTIONAL" (O ,TROPHY-CASE) "AUX" F (SCORE 0))
+                 <SET F <FIRST? .O>>
+                 <REPEAT ()
+                     <COND (<NOT .F> <RETURN .SCORE>)>
+                     <SET SCORE <+ .SCORE <GETP .F ,P?TVALUE>>>
+                     <COND (<FIRST? .F> <OTVAL-FROB .F>)>
+                     <SET F <NEXT? .F>>>>
+
+        """)
+
+        let symbol = process("<SETG SCORE <+ ,BASE-SCORE <OTVAL-FROB>>>")
 
         XCTAssertNoDifference(symbol, .statement(
+            id: "score",
             code: """
-                .add(
+                var score: Int = .add(
                     baseScore,
                     otvalFrob()
                 )
                 """,
             type: .int,
+            category: .globals,
+            isCommittable: true,
             returnHandling: .implicit
         ))
 
         XCTAssertNoDifference(
-            Game.findGlobal("baseScore"),
+            Game.findInstance("baseScore"),
             Instance(Statement(
                 id: "baseScore",
+                code: "var baseScore: Int = 0",
                 type: .int,
+                category: .globals,
                 isCommittable: true
             ))
         )
@@ -185,7 +189,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(pAclause, .statement(processed))
 
         XCTAssertNoDifference(
-            Game.findGlobal("pAclause"),
+            Game.findInstance("pAclause"),
             Instance(processed)
         )
 
@@ -199,7 +203,7 @@ final class AddTests: QuelboTests {
         )
 
         XCTAssertNoDifference(
-            Game.findGlobal("pAclause"),
+            Game.findInstance("pAclause"),
             Instance(Statement(
                 id: "pAclause",
                 code: "var pAclause: Int?",

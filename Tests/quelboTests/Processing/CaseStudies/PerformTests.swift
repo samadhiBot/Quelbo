@@ -13,8 +13,15 @@ final class PerformTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        NotHereTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        NotHereTests().sharedSetUp()
+        sharedSetUp()
+    }
 
+    func sharedSetUp() {
         process("""
             <CONSTANT M-BEG 1>
 
@@ -128,7 +135,7 @@ final class PerformTests: QuelboTests {
                         ]
                     )
                     """,
-                type: .object.optional.tableElement,
+                type: .object.optional.property.tableElement,
                 category: .objects,
                 isCommittable: true
             )
@@ -145,7 +152,7 @@ final class PerformTests: QuelboTests {
                     /// The `dApply` (D-APPLY) routine.
                     func dApply(
                         str: String,
-                        fcn: Int,
+                        fcn: Routine,
                         foo: Int? = 0
                     ) -> Int? {
                         var res: Int? = 0
@@ -200,7 +207,7 @@ final class PerformTests: QuelboTests {
                     func ddApply(
                         str: String,
                         obj: Object,
-                        fcn: Int,
+                        fcn: Routine,
                         foo: Int = 0
                     ) -> Int? {
                         if debug {

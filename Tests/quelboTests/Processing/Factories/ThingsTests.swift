@@ -48,7 +48,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .thing.array
+            type: .object.array
         ))
     }
 
@@ -73,7 +73,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .thing.array
+            type: .object.array
         ))
     }
 
@@ -101,7 +101,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .thing.array
+            type: .object.array
         ))
     }
 
@@ -123,7 +123,7 @@ final class ThingsTests: QuelboTests {
                     ),
                 ]
                 """#,
-            type: .thing.array
+            type: .object.array
         ))
     }
 
@@ -132,7 +132,7 @@ final class ThingsTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "things",
-            type: .thing.array
+            type: .object.array
         ))
     }
 

@@ -55,6 +55,7 @@ extension Factories {
                 },
                 type: .table,
                 payload: .init(
+                    flags: presetFlags,
                     symbols: symbols
                 ),
                 isMutable: !flags.contains(.pure)

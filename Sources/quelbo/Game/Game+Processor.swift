@@ -108,7 +108,7 @@ extension Game.Processor {
             iteration += 1
 
             Game.Print.heading(
-                "􀣋 Processing tokens: \(remaining) of \(total) remaining (iteration \(iteration))"
+                "􀣋  Processing tokens: \(remaining) of \(total) remaining (iteration \(iteration))"
             )
             progressBar.setValue(initialTokenCount - remaining)
 
@@ -123,7 +123,7 @@ extension Game.Processor {
             print("")
         }
 
-        Game.Print.heading("􀦆 Processing complete!")
+        Game.Print.heading("􀦆  Processing complete!")
     }
 
     private func processZilTokens() throws {
@@ -132,8 +132,9 @@ extension Game.Processor {
 
         tokens.forEach { token in
             switch token {
-            case .atom, .bool, .character, .decimal, .eval, .global, .list, .local, .partsOfSpeech,
-                 .property, .quote, .segment, .type, .vector, .verb, .word:
+            case .action, .atom, .bool, .character, .decimal, .eval, .global, .list, .local,
+                    .partsOfSpeech, .partsOfSpeechFirst, .property, .quote, .segment, .type,
+                    .vector, .verb, .word:
                 Logger.process.warning("􀁜 Unexpected: \(token.value, privacy: .public)")
 
             case .commented, .string:

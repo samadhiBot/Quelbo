@@ -12,13 +12,20 @@ import XCTest
 final class GetObjectTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        sharedSetup()
+
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        GlobalCheckTests().sharedSetUp()
+        OrphanTests().sharedSetUp()
+        IsAccessibleTests().sharedSetUp()
+        BufferPrintTests().sharedSetUp()
+        WhichPrintTests().sharedSetUp()
+        sharedSetUp()
     }
 
-    func sharedSetup() {
-        OrphanTests().sharedSetup()
-        WhichPrintTests().sharedSetup()
-
+    func sharedSetUp() {
         process("""
             <CONSTANT P-ALL 1>
             <CONSTANT P-INHIBIT 4>
@@ -162,6 +169,20 @@ final class GetObjectTests: QuelboTests {
         """)
     }
 
+//    func testPNam() throws {
+//        XCTAssertNoDifference(
+//            Game.globals.find("pNam"),
+//            Statement(
+//                id: "pNam",
+//                code: "var pNam: [Word]",
+//                type: .word.array.property.optional.tableElement,
+//                category: .globals,
+//                isCommittable: true,
+//                isMutable: true
+//            )
+//        )
+//    }
+
     func testGetObject() throws {
         XCTAssertNoDifference(
             Game.routines.find("getObject"),
@@ -193,7 +214,7 @@ final class GetObjectTests: QuelboTests {
                             if isWt(
                                 ptr: pAdjn,
                                 bit: PartsOfSpeech.object,
-                                b1: PartsOfSpeech.object
+                                b1: PartsOfSpeech.objectFirst
                             ) {
                                 pNam.set(to: pAdjn)
                                 pAdj.set(to: nil)
@@ -205,7 +226,7 @@ final class GetObjectTests: QuelboTests {
                             .isNot(pNam),
                             .isNot(pAdj),
                             .isNot(pGetflags.equals(pAll)),
-                            pGwimBit.isZero
+                            pGwimBit.isFalse
                         ) {
                             if vrb {
                                 output("There seems to be a noun missing in that sentence!")
@@ -277,7 +298,7 @@ final class GetObjectTests: QuelboTests {
                                     if .isNot(winner.equals(player)) {
                                         cantOrphan()
                                         return false
-                                    } else if _ = .and(vrb, .table(pNam)) {
+                                    } else if _ = .and(vrb, pNam) {
                                         whichPrint(
                                             tlen: tlen,
                                             len: len,

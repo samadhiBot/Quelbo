@@ -13,10 +13,10 @@ final class DescribeObjectTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        GlobalObjectsTests().setUp()
+        GlobalObjectsTests().sharedSetUp()
     }
 
-    func setUp(for zorkNumber: ZorkNumber) {
+    func sharedSetUp(for zorkNumber: ZorkNumber = .zork1) {
         var versionSpecificDefs: String {
             switch zorkNumber {
             case .zork1: return """
@@ -33,24 +33,6 @@ final class DescribeObjectTests: QuelboTests {
                     <GLOBAL SPELL-USED <>>
                     <GLOBAL SPELL-VICTIM <>>
                     <GLOBAL SPELL? <>>
-
-                    <DEFMAC PROB ('BASE? "OPTIONAL" 'LOSER?)
-                        <COND (<ASSIGNED? LOSER?> <FORM ZPROB .BASE?>)
-                              (ELSE <FORM G? .BASE? '<RANDOM 100>>)>>
-
-                    <ROUTINE PICK-ONE (FROB
-                               "AUX" (L <GET .FROB 0>) (CNT <GET .FROB 1>) RND MSG RFROB)
-                         <SET L <- .L 1>>
-                         <SET FROB <REST .FROB 2>>
-                         <SET RFROB <REST .FROB <* .CNT 2>>>
-                         <SET RND <RANDOM <- .L .CNT>>>
-                         <SET MSG <GET .RFROB .RND>>
-                         <PUT .RFROB .RND <GET .RFROB 1>>
-                         <PUT .RFROB 1 .MSG>
-                         <SET CNT <+ .CNT 1>>
-                         <COND (<==? .CNT .L> <SET CNT 0>)>
-                         <PUT .FROB 0 .CNT>
-                         .MSG>
                 """
             case .zork3: return ""
             }
@@ -77,6 +59,10 @@ final class DescribeObjectTests: QuelboTests {
             <OBJECT ADVENTURER (FLAGS NDESCBIT INVISIBLE SACREDBIT ACTORBIT)>
             <OBJECT ROOMS (IN TO ROOMS)>
 
+            <DEFMAC PROB ('BASE? "OPTIONAL" 'LOSER?)
+                <COND (<ASSIGNED? LOSER?> <FORM ZPROB .BASE?>)
+                      (ELSE <FORM G? .BASE? '<RANDOM 100>>)>>
+
             <ROUTINE FIRSTER (OBJ LEVEL)
                  <COND %<COND (<==? ,ZORK-NUMBER 1>
                            '(<EQUAL? .OBJ ,TROPHY-CASE>
@@ -98,6 +84,20 @@ final class DescribeObjectTests: QuelboTests {
             <ROUTINE SEE-INSIDE? (OBJ)
                  <AND <NOT <FSET? .OBJ ,INVISIBLE>>
                       <OR <FSET? .OBJ ,TRANSBIT> <FSET? .OBJ ,OPENBIT>>>>
+
+            <ROUTINE PICK-ONE (FROB
+                       "AUX" (L <GET .FROB 0>) (CNT <GET .FROB 1>) RND MSG RFROB)
+                 <SET L <- .L 1>>
+                 <SET FROB <REST .FROB 2>>
+                 <SET RFROB <REST .FROB <* .CNT 2>>>
+                 <SET RND <RANDOM <- .L .CNT>>>
+                 <SET MSG <GET .RFROB .RND>>
+                 <PUT .RFROB .RND <GET .RFROB 1>>
+                 <PUT .RFROB 1 .MSG>
+                 <SET CNT <+ .CNT 1>>
+                 <COND (<==? .CNT .L> <SET CNT 0>)>
+                 <PUT .FROB 0 .CNT>
+                 .MSG>
 
             <ROUTINE PRINT-CONT (OBJ "OPTIONAL" (V? <>) (LEVEL 0)
                          "AUX" Y 1ST? SHIT AV STR (PV? <>) (INV? <>))
@@ -207,7 +207,7 @@ final class DescribeObjectTests: QuelboTests {
     }
 
     func testDescribeObjectZork1() throws {
-        setUp(for: .zork1)
+        sharedSetUp(for: .zork1)
 
         XCTAssertNoDifference(
             Game.routines.find("describeObject"),
@@ -293,7 +293,7 @@ final class DescribeObjectTests: QuelboTests {
     }
 
     func testDescribeObjectZork2() throws {
-        setUp(for: .zork2)
+        sharedSetUp(for: .zork2)
 
         XCTAssertNoDifference(
             Game.routines.find("describeObject"),
@@ -384,7 +384,7 @@ final class DescribeObjectTests: QuelboTests {
     }
 
     func testPrintContZork1() throws {
-        setUp(for: .zork1)
+        sharedSetUp(for: .zork1)
 
         XCTAssertNoDifference(
             Game.routines.find("printCont"),
@@ -537,7 +537,7 @@ final class DescribeObjectTests: QuelboTests {
     }
 
     func testPrintContZork2() throws {
-        setUp(for: .zork2)
+        sharedSetUp(for: .zork2)
 
         XCTAssertNoDifference(
             Game.routines.find("printCont"),

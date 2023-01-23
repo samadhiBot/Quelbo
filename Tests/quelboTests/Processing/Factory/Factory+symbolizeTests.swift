@@ -155,6 +155,7 @@ final class FactorySymbolizeTests: QuelboTests {
             .init(
                 id: "fooBar",
                 type: .object,
+                category: .objects,
                 isCommittable: true
             )
         )
@@ -163,7 +164,11 @@ final class FactorySymbolizeTests: QuelboTests {
             .local("FOO-BAR")
         ], with: &localVariables).process()
 
-        XCTAssertNoDifference(symbol, .variable(id: "fooBar", type: .object))
+        XCTAssertNoDifference(symbol, .variable(
+            id: "fooBar",
+            type: .object,
+            category: .objects
+        ))
     }
 
     func testSymbolizeUnknownLocalThrows() throws {

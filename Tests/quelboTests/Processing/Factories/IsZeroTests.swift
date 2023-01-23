@@ -61,12 +61,4 @@ final class IsZeroTests: QuelboTests {
             type: .bool
         ))
     }
-
-    func testThrows() throws {
-        XCTAssertThrowsError(
-            try factory.init([
-                .string("2")
-            ], with: &localVariables).process()
-        )
-    }
 }

@@ -12,6 +12,10 @@ extension Factories {
     /// [COND](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.u8tczi)
     /// function.
     class Condition: Factory {
+        override class var factoryType: Factories.FactoryType {
+            .zCode
+        }
+
         override class var zilNames: [String] {
             ["COND"]
         }
@@ -30,15 +34,24 @@ extension Factories {
                         try symbolizeEval(token)
                     )
                 case .list(let conditionTokens):
-                    let conditional = try processConditional(conditionTokens)
-                    switch mode {
-                    case .evaluate:
-                        if conditional != .false {
+                    do {
+                        let conditional = try processConditional(conditionTokens)
+                        switch mode {
+                        case .evaluate:
+                            if conditional != .false {
+                                symbols.append(conditional)
+                                return
+                            }
+                        case .process:
                             symbols.append(conditional)
-                            return
                         }
-                    case .process:
-                        symbols.append(conditional)
+                    } catch SymbolizationError.unknownLocal(let zil) {
+                        symbols.append(.statement(
+                            code: { _ in
+                                "if false /* Conditional failed to parse: \(zil) */"
+                            },
+                            type: .comment
+                        ))
                     }
                 default:
                     throw Error.unexpectedConditionToken(token)

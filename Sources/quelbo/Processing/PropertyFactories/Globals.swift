@@ -22,7 +22,7 @@ extension Factories {
 
         override func processSymbols() throws {
             try symbols.assert(
-                .haveType(.object)
+                .haveType(.object.property)
             )
         }
 

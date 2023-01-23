@@ -70,11 +70,6 @@ final class DefineMacroTests: QuelboTests {
         )
     }
 
-    /*
-     FIXED: testIsOpenableMacro
-         - [x] Base return handling should be `.implicit` for macros, based on their behavior in Zork.
-         - [x] Payload `code` lastLine return presence and containing `dataType` should align.
-     */
     func testIsOpenableMacro() throws {
         process("<GLOBAL PRSI <>>")
 

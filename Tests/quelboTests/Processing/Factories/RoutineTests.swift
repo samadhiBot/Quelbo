@@ -27,11 +27,11 @@ final class RoutineTests: QuelboTests {
             .variable(id: "axe", type: .object, category: .objects),
             .variable(id: "here", type: .object, category: .rooms),
             .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "mLook", type: .int),
+            .variable(id: "mLook", type: .int, category: .globals),
             .variable(id: "rustyKnife", type: .object, category: .objects),
             .variable(id: "stiletto", type: .object, category: .objects),
             .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "wonFlag", type: .bool),
+            .variable(id: "wonFlag", type: .bool, category: .flags),
         ])
     }
 
@@ -117,13 +117,6 @@ final class RoutineTests: QuelboTests {
                 }
                 """#,
             type: .void,
-            payload: .init(
-                parameters: [
-                    Instance(
-                        Statement(id: "rarg", type: .int)
-                    ),
-                ]
-            ),
             category: .routines,
             isCommittable: true,
             returnHandling: .passthrough
@@ -131,6 +124,17 @@ final class RoutineTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(expected))
         XCTAssertNoDifference(Game.routines.find("westHouse"), expected)
+
+        XCTAssertNoDifference(symbol.payload?.parameters, [
+            Instance(
+                Statement(
+                    id: "rarg",
+                    type: .int,
+                    returnHandling: .forced
+                ),
+                isOptional: false
+            ),
+        ])
     }
 
     func testProcessOneUnknownParamUsedInBody() throws {
@@ -154,20 +158,21 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            payload: .init(
-                parameters: [
-                    Instance(
-                        Statement(
-                            id: "message",
-                            type: .string
-                        )
-                    )
-                ]
-            ),
             category: .routines,
             isCommittable: true,
             returnHandling: .passthrough
         ))
+
+        XCTAssertNoDifference(symbol.payload?.parameters, [
+            Instance(
+                Statement(
+                    id: "message",
+                    type: .string,
+                    returnHandling: .forced
+                ),
+                isOptional: false
+            ),
+        ])
     }
 
     func testProcessWithAuxiliaryParams() throws {
@@ -265,21 +270,22 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            payload: .init(
-                parameters: [
-                    Instance(
-                        Statement(
-                            id: "foo",
-                            type: .string
-                        ),
-                        isOptional: true
-                    ),
-                ]
-            ),
             category: .routines,
             isCommittable: true,
             returnHandling: .passthrough
         ))
+
+        XCTAssertNoDifference(symbol.payload?.parameters, [
+            Instance(
+                Statement(
+                    id: "foo",
+                    type: .string,
+                    returnHandling: .forced
+                ),
+                context: .optional,
+                isOptional: true
+            ),
+        ])
     }
 
     func testProcessWithMultipleOptionalParam() throws {
@@ -313,28 +319,31 @@ final class RoutineTests: QuelboTests {
                     }
                     """,
             type: .int,
-            payload: .init(
-                parameters: [
-                    Instance(
-                        Statement(
-                            id: "foo",
-                            type: .int
-                        ),
-                        isOptional: true
-                    ),
-                    Instance(
-                        Statement(
-                            id: "bar",
-                            type: .int
-                        ),
-                        isOptional: true
-                    )
-                ]
-            ),
             category: .routines,
             isCommittable: true,
             returnHandling: .passthrough
         ))
+
+        XCTAssertNoDifference(symbol.payload?.parameters, [
+            Instance(
+                Statement(
+                    id: "foo",
+                    type: .int,
+                    returnHandling: .forced
+                ),
+                context: .optional,
+                isOptional: true
+            ),
+            try Instance(
+                Statement(
+                    id: "bar",
+                    type: .int,
+                    returnHandling: .forced
+                ),
+                context: .optional,
+                defaultValue: .literal(42)
+            ),
+        ])
     }
 
     func testProcessWithOneDefaultValueParam() throws {
@@ -363,20 +372,23 @@ final class RoutineTests: QuelboTests {
                 }
                 """,
             type: .void,
-            payload: .init(
-                parameters: [
-                    Instance(
-                        Statement(
-                            id: "foo",
-                            type: .string
-                        )
-                    )
-                ]
-            ),
             category: .routines,
             isCommittable: true,
             returnHandling: .passthrough
         ))
+
+        XCTAssertNoDifference(symbol.payload?.parameters, [
+            try Instance(
+                Statement(
+                    id: "foo",
+                    type: .string,
+                    returnHandling: .forced
+                ),
+                context: .normal,
+                defaultValue: .literal("****  You have died  ****")
+            ),
+        ])
+
     }
 
     func testProcessWithMultipleDefaultValueParam() throws {
@@ -441,8 +453,28 @@ final class RoutineTests: QuelboTests {
                 <RTRUE>>
         """#)
 
-        XCTAssertNoDifference(symbol, .statement(bottlesRoutine))
-        XCTAssertNoDifference(Game.routines.find("bottles"), bottlesRoutine)
+        let expected = Statement(
+            id: "bottles",
+            code: #"""
+                @discardableResult
+                /// The `bottles` (BOTTLES) routine.
+                func bottles(n: Int) -> Bool {
+                    output(n)
+                    output(" bottle")
+                    if n.isNotEqualTo(1) {
+                        output("s")
+                    }
+                    return true
+                }
+                """#,
+            type: .booleanTrue,
+            category: .routines,
+            isCommittable: true,
+            returnHandling: .passthrough
+        )
+
+        XCTAssertNoDifference(symbol, .statement(expected))
+        XCTAssertNoDifference(Game.routines.find("bottles"), expected)
     }
 
     func testFindWeapon() throws {
@@ -458,8 +490,37 @@ final class RoutineTests: QuelboTests {
                            (<NOT <SET W <NEXT? .W>>> <RFALSE>)>>>
         """)
 
-        XCTAssertNoDifference(symbol, .statement(findWeaponRoutine))
-        XCTAssertNoDifference(Game.routines.find("findWeapon"), findWeaponRoutine)
+        let expected = Statement(
+            id: "findWeapon",
+            code: #"""
+                @discardableResult
+                /// The `findWeapon` (FIND-WEAPON) routine.
+                func findWeapon(o: Object) -> Object? {
+                    var w: Object? = nil
+                    w.set(to: o.firstChild)
+                    if .isNot(w) {
+                        return nil
+                    }
+                    while true {
+                        if .or(
+                            w.equals(stiletto, axe, sword),
+                            w.equals(knife, rustyKnife)
+                        ) {
+                            return w
+                        } else if .isNot(w.set(to: w.nextSibling)) {
+                            return nil
+                        }
+                    }
+                }
+                """#,
+            type: .object.optional,
+            category: .routines,
+            isCommittable: true,
+            returnHandling: .passthrough
+        )
+
+        XCTAssertNoDifference(symbol, .statement(expected))
+        XCTAssertNoDifference(Game.routines.find("findWeapon"), expected)
     }
 
     func testDweaponMini() throws {
@@ -522,7 +583,47 @@ final class RoutineTests: QuelboTests {
                         (ELSE <BOTTLES .N> <PRINTI " of beer on the wall!||">)>>>
         """)
 
-        XCTAssertNoDifference(symbol, .statement(singSymbol))
+        let expected = Statement(
+            id: "sing",
+            code: #"""
+                @discardableResult
+                /// The `sing` (SING) routine.
+                func sing(n: Int) -> Bool {
+                    var n: Int = n
+                    while true {
+                        bottles(n: n)
+                        output("""
+                             of beer on the wall,
+
+                            """)
+                        bottles(n: n)
+                        output("""
+                             of beer,
+                            Take one down, pass it around,
+
+                            """)
+                        if n.decrement().isLessThan(1) {
+                            output("No more bottles of beer on the wall!")
+                            output("\n")
+                            return true
+                        } else {
+                            bottles(n: n)
+                            output("""
+                                 of beer on the wall!
+
+
+                                """)
+                        }
+                    }
+                }
+                """#,
+            type: .booleanTrue,
+            category: .routines,
+            isCommittable: true,
+            returnHandling: .passthrough
+        )
+
+        XCTAssertNoDifference(symbol, .statement(expected))
     }
 
     func testIntRoutine() throws {

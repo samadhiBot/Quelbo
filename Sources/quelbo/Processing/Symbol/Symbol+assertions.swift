@@ -212,13 +212,12 @@ extension Array where Element == Symbol {
         guard count > 1 else { return }
 
         let alphas = withMaxConfidence
-        let uniqueTypes = alphas.compactMap(\.type.dataType).unique
+        let uniqueTypes = alphas
+            .filter { $0.type != .void }
+            .compactMap(\.type.dataType)
+            .unique
 
         switch uniqueTypes.count {
-        /*
-         FIXED: testBufferPrint
-            - `EQUAL?` elements share the same type instance, even when all symbol types are unknown when processed
-         */
         case 0, 1:
             try assert(
                 .haveSameType(as: alphas[0])
@@ -273,7 +272,7 @@ extension Array where Element == Symbol {
              "\nreturningSymbols:\n\(returningSymbols.handles(.singleLineBreak).indented)",
              "\nexplicitlyReturning:\n\(explicitlyReturning.handles(.singleLineBreak).indented)",
              "\nnonReturning:\n\(nonReturning.handles(.singleLineBreak).indented)",
-             "\nalphas:\n\(alphas.handles(.singleLineBreak).indented)",
+             "\nalphas:\n\(alphas.map { "\($0.handle) [\($0.type.debugDescription)]" }.values(.singleLineBreak).indented)",
              "\nuniqueTypes:", uniqueTypes
          )
          */

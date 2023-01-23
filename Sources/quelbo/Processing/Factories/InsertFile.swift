@@ -9,7 +9,7 @@ import Foundation
 
 extension Factories {
     /// A symbol factory for the Zil
-    /// [GLOBAL](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2szc72q)
+    /// [INSERT-FILE](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.2szc72q)
     /// function.
     ///
     /// Returns an empty statement, since Quelbo ignores `INSERT-FILE` directives, and instead

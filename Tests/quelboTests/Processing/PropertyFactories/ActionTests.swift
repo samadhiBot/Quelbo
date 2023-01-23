@@ -33,7 +33,7 @@ final class ActionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "action",
-            type: .int
+            type: .routine
         ))
     }
 

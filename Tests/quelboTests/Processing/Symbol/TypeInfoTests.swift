@@ -53,8 +53,8 @@ final class TypeInfoTests: QuelboTests {
         XCTAssertNoDifference(
             TypeInfo.someTableElement,
             TypeInfo(
-                dataType: nil,
-                confidence: .none,
+                dataType: .tableElement,
+                confidence: .limited,
                 isArray: nil,
                 isOptional: nil,
                 isProperty: nil,
@@ -65,8 +65,8 @@ final class TypeInfoTests: QuelboTests {
         XCTAssertNoDifference(
             TypeInfo.someTableElement.array,
             TypeInfo(
-                dataType: nil,
-                confidence: .none,
+                dataType: .tableElement,
+                confidence: .limited,
                 isArray: true,
                 isOptional: nil,
                 isProperty: nil,

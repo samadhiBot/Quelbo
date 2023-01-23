@@ -12,8 +12,16 @@ import XCTest
 final class RemoveCarefullyTests: QuelboTests {
     override func setUp() {
         super.setUp()
-        IsLitTests().setUp()
 
+        GlobalObjectsTests().sharedSetUp()
+        ZmemqTests().sharedSetUp()
+        SearchListTests().sharedSetUp()
+        DoSlTests().sharedSetUp()
+        IsLitTests().sharedSetUp()
+        sharedSetUp()
+    }
+
+    func sharedSetUp() {
         process("""
             <GLOBAL HERE 0>
             <GLOBAL LIT <>>
@@ -34,7 +42,7 @@ final class RemoveCarefullyTests: QuelboTests {
 
     func testGlobals() throws {
         XCTAssertNoDifference(
-            Game.findGlobal("pItObject"),
+            Game.findInstance("pItObject"),
             Instance(Statement(
                 id: "pItObject",
                 code: "var pItObject: Object?",
@@ -72,16 +80,6 @@ final class RemoveCarefullyTests: QuelboTests {
                     }
                     """,
                 type: .booleanTrue,
-                payload: .init(
-                    parameters: [
-                        Instance(
-                            Statement(
-                                id: "obj",
-                                type: .object
-                            )
-                        ),
-                    ]
-                ),
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough

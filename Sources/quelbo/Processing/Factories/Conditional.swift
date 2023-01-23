@@ -21,7 +21,12 @@ extension Factories {
                 throw Error.missingConditionPredicate
             }
 
-            self.predicate = try symbolize(predicateToken, mode: mode)
+            self.predicate = try {
+                if predicateToken == .atom("T") {
+                    return .true
+                }
+                return try symbolize(predicateToken, mode: mode)
+            }()
 
             switch mode {
             case .evaluate:

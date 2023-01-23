@@ -123,6 +123,8 @@ extension String {
             string.append("ROUTINE")
         } else if string.hasSuffix("?") {
             string = "IS-\(string.replacingOccurrences(of: "?", with: ""))"
+        } else if string.contains("?") {
+            string = "IS-\(string.replacingOccurrences(of: "?", with: "-"))"
         } else if string.hasSuffix("!") {
             // See `ZilSyntaxTests.testSegmentFormWithClosingBang`
             string.removeLast()

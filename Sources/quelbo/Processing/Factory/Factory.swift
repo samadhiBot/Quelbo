@@ -17,9 +17,6 @@ class Factory {
     /// Specifies what type of command the factory translates.
     class var factoryType: Factories.FactoryType { .zCode }
 
-//    /// <#Description#>
-//    private(set) var evalError: Swift.Error?
-
     /// An array of the local variables at play within a factory.
     var localVariables: [Statement]
 
@@ -123,7 +120,8 @@ class Factory {
 extension Factory {
     /// <#Description#>
     enum FactoryMode: Equatable {
-        case evaluate, process
+        case evaluate
+        case process
     }
 }
 

@@ -41,6 +41,11 @@ struct ZilSyntax {
             }.map { String(Substring($0)) }
         }
 
+        let action = Parse {
+            ",ACT?".utf8
+            atom
+        }
+
         let atomOddities = OneOf {
             "0?".utf8.map { "0?" }
             "1?".utf8.map { "1?" }
@@ -99,10 +104,12 @@ struct ZilSyntax {
         }
 
         let partsOfSpeech = Parse {
-            OneOf {
-                ",P1?".utf8
-                ",PS?".utf8
-            }
+            ",PS?".utf8
+            atom
+        }
+
+        let partsOfSpeechFirst = Parse {
+            ",P1?".utf8
             atom
         }
 
@@ -187,14 +194,18 @@ struct ZilSyntax {
                     eval.map(Token.eval)
                     form.map(Token.form)
                     partsOfSpeech.map(Token.partsOfSpeech)
+                    partsOfSpeechFirst.map(Token.partsOfSpeechFirst)
+                }
+                OneOf {
                     property.map(Token.property)
                     verb.map(Token.verb)
                     word.map(Token.word)
-                }
-                OneOf {
+                    action.map(Token.action)
                     global.map(Token.global)
                     list.map(Token.list)
                     local.map(Token.local)
+                }
+                OneOf {
                     quote.map(Token.quote)
                     segment.map(Token.segment)
                     vector.map(Token.vector)

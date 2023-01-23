@@ -14,6 +14,8 @@ final class AbridgedCretinFuncTests: QuelboTests {
         process("""
             <SETG ZORK-NUMBER 1>
 
+            <GLOBAL HERE 0>
+
             <OBJECT MIRROR-1>
             <OBJECT MIRROR-2>
 
