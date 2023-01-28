@@ -87,7 +87,7 @@ final class SearchListTests: QuelboTests {
                         tbl: Table
                     ) -> Bool {
                         var syns: [String] = []
-                        if obj.hasFlag(isInvisible) {
+                        if obj.hasFlag(.isInvisible) {
                             return false
                         } else if .and(
                             pNam,
@@ -115,7 +115,7 @@ final class SearchListTests: QuelboTests {
                             return false
                         } else if .and(
                             .isNot(pGwimBit.isFalse),
-                            .isNot(obj.hasFlag(pGwimBit))
+                            .isNot(obj.hasFlag(.pGwimBit))
                         ) {
                             return false
                         }
@@ -182,22 +182,22 @@ final class SearchListTests: QuelboTests {
                                 if .and(
                                     .or(
                                         .isNot(lvl.equals(pSrctop)),
-                                        obj.hasFlag(isSearchable),
-                                        obj.hasFlag(isSurface)
+                                        obj.hasFlag(.isSearchable),
+                                        obj.hasFlag(.isSurface)
                                     ),
                                     nobj.set(to: obj.firstChild),
                                     .or(
-                                        obj.hasFlag(isOpen),
-                                        obj.hasFlag(isTransparent)
+                                        obj.hasFlag(.isOpen),
+                                        obj.hasFlag(.isTransparent)
                                     )
                                 ) {
                                     fls.set(to: searchList(
                                         obj: obj,
                                         tbl: tbl,
                                         lvl: {
-                                            if obj.hasFlag(isSurface) {
+                                            if obj.hasFlag(.isSurface) {
                                                 return pSrcall
-                                            } else if obj.hasFlag(isSearchable) {
+                                            } else if obj.hasFlag(.isSearchable) {
                                                 return pSrcall
                                             } else {
                                                 return pSrctop

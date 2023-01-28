@@ -233,7 +233,7 @@ final class DescribeObjectTests: QuelboTests {
                             level.isZero,
                             .or(
                                 .and(
-                                    .isNot(obj.hasFlag(hasBeenTouched)),
+                                    .isNot(obj.hasFlag(.hasBeenTouched)),
                                     str.set(to: obj.firstDescription)
                                 ),
                                 str.set(to: obj.longDescription)
@@ -244,7 +244,7 @@ final class DescribeObjectTests: QuelboTests {
                             output("There is a ")
                             output(obj.description)
                             output(" here")
-                            if obj.hasFlag(isOn) {
+                            if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             }
                             output(".")
@@ -252,10 +252,10 @@ final class DescribeObjectTests: QuelboTests {
                             output(try indents.get(at: level))
                             output("A ")
                             output(obj.description)
-                            if obj.hasFlag(isOn) {
+                            if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
-                                obj.hasFlag(isWearable),
+                                obj.hasFlag(.isWearable),
                                 obj.isIn(winner)
                             ) {
                                 output(" (being worn)")
@@ -265,7 +265,7 @@ final class DescribeObjectTests: QuelboTests {
                         if .and(
                             level.isZero,
                             av.set(to: winner.parent),
-                            av.hasFlag(isVehicle)
+                            av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
                             output(av.description)
@@ -319,7 +319,7 @@ final class DescribeObjectTests: QuelboTests {
                             level.isZero,
                             .or(
                                 .and(
-                                    .isNot(obj.hasFlag(hasBeenTouched)),
+                                    .isNot(obj.hasFlag(.hasBeenTouched)),
                                     str.set(to: obj.firstDescription)
                                 ),
                                 str.set(to: obj.longDescription)
@@ -330,7 +330,7 @@ final class DescribeObjectTests: QuelboTests {
                             output("There is a ")
                             output(obj.description)
                             output(" here")
-                            if obj.hasFlag(isOn) {
+                            if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             }
                             output(".")
@@ -338,10 +338,10 @@ final class DescribeObjectTests: QuelboTests {
                             output(try indents.get(at: level))
                             output("A ")
                             output(obj.description)
-                            if obj.hasFlag(isOn) {
+                            if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
-                                obj.hasFlag(isWearable),
+                                obj.hasFlag(.isWearable),
                                 obj.isIn(winner)
                             ) {
                                 output(" (being worn)")
@@ -356,7 +356,7 @@ final class DescribeObjectTests: QuelboTests {
                         if .and(
                             level.isZero,
                             av.set(to: winner.parent),
-                            av.hasFlag(isVehicle)
+                            av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
                             output(av.description)
@@ -411,7 +411,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if _ = .and(
                             av.set(to: winner.parent),
-                            av.hasFlag(isVehicle)
+                            av.hasFlag(.isVehicle)
                         ) {
                             return true
                         } else {
@@ -430,11 +430,11 @@ final class DescribeObjectTests: QuelboTests {
                                 } else if y.equals(winner) {
                                     // do nothing
                                 } else if _ = .and(
-                                    .isNot(y.hasFlag(isInvisible)),
-                                    .isNot(y.hasFlag(hasBeenTouched)),
+                                    .isNot(y.hasFlag(.isInvisible)),
+                                    .isNot(y.hasFlag(.hasBeenTouched)),
                                     str.set(to: y.firstDescription)
                                 ) {
-                                    if .isNot(y.hasFlag(omitDescription)) {
+                                    if .isNot(y.hasFlag(.omitDescription)) {
                                         output(str)
                                         shit.set(to: false)
                                         // <SET 1ST? false>
@@ -476,14 +476,14 @@ final class DescribeObjectTests: QuelboTests {
                             } else if y.equals(av, adventurer) {
                                 // do nothing
                             } else if .and(
-                                .isNot(y.hasFlag(isInvisible)),
+                                .isNot(y.hasFlag(.isInvisible)),
                                 .or(
                                     isInv,
-                                    y.hasFlag(hasBeenTouched),
+                                    y.hasFlag(.hasBeenTouched),
                                     .isNot(y.firstDescription)
                                 )
                             ) {
-                                if .isNot(y.hasFlag(omitDescription)) {
+                                if .isNot(y.hasFlag(.omitDescription)) {
                                     if is1St {
                                         if firster(
                                             obj: obj,
@@ -564,7 +564,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if _ = .and(
                             av.set(to: winner.parent),
-                            av.hasFlag(isVehicle)
+                            av.hasFlag(.isVehicle)
                         ) {
                             return true
                         } else {
@@ -593,11 +593,11 @@ final class DescribeObjectTests: QuelboTests {
                                 } else if y.equals(winner) {
                                     // do nothing
                                 } else if _ = .and(
-                                    .isNot(y.hasFlag(isInvisible)),
-                                    .isNot(y.hasFlag(hasBeenTouched)),
+                                    .isNot(y.hasFlag(.isInvisible)),
+                                    .isNot(y.hasFlag(.hasBeenTouched)),
                                     str.set(to: y.firstDescription)
                                 ) {
-                                    if .isNot(y.hasFlag(omitDescription)) {
+                                    if .isNot(y.hasFlag(.omitDescription)) {
                                         output(str)
                                         shit.set(to: false)
                                         // <SET 1ST? false>
@@ -639,14 +639,14 @@ final class DescribeObjectTests: QuelboTests {
                             } else if y.equals(av, adventurer) {
                                 // do nothing
                             } else if .and(
-                                .isNot(y.hasFlag(isInvisible)),
+                                .isNot(y.hasFlag(.isInvisible)),
                                 .or(
                                     isInv,
-                                    y.hasFlag(hasBeenTouched),
+                                    y.hasFlag(.hasBeenTouched),
                                     .isNot(y.firstDescription)
                                 )
                             ) {
-                                if .isNot(y.hasFlag(omitDescription)) {
+                                if .isNot(y.hasFlag(.omitDescription)) {
                                     if is1St {
                                         if firster(
                                             obj: obj,

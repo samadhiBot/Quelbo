@@ -2,7 +2,7 @@
 //  IsVerbTests.swift
 //  Quelbo
 //
-//  Created by Chris Sessions on 10/2/22.
+//  Created by Chris Sessions on 1/23/23.
 //
 
 import CustomDump
@@ -10,7 +10,7 @@ import XCTest
 @testable import quelbo
 
 final class IsVerbTests: QuelboTests {
-    let factory = Factories.IsVerb.self
+    let factory = Factories.IsParsedVerb.self
 
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("VERB?"))
@@ -20,7 +20,7 @@ final class IsVerbTests: QuelboTests {
         let symbol = process("<VERB? EXAMINE>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isVerb(.examine)",
+            code: "isParsedVerb(.examine)",
             type: .bool
         ))
     }
@@ -29,7 +29,7 @@ final class IsVerbTests: QuelboTests {
         let symbol = process("<VERB? PUT PUT-ON>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isVerb(.put, .putOn)",
+            code: "isParsedVerb(.put, .putOn)",
             type: .bool
         ))
     }
@@ -39,7 +39,7 @@ final class IsVerbTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                isVerb(
+                isParsedVerb(
                     .climbUp,
                     .climbDown,
                     .climbFoo

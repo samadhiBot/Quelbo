@@ -14,6 +14,11 @@ extension Logger {
         category: "headings"
     )
 
+    static let package = Logger(
+        subsystem: "com.samadhiBot.Quelbo",
+        category: "packager"
+    )
+
     static let parse = Logger(
         subsystem: "com.samadhiBot.Quelbo",
         category: "parser"

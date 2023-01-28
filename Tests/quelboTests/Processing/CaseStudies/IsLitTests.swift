@@ -79,7 +79,7 @@ final class IsLitTests: QuelboTests {
                         here.set(to: rm)
                         if .and(
                             rmBit,
-                            rm.hasFlag(isOn)
+                            rm.hasFlag(.isOn)
                         ) {
                             lit.set(to: true)
                         } else {

@@ -80,7 +80,7 @@ final class IsAccessibleTests: QuelboTests {
                         var l: Object? = obj.parent
                         // "can player TOUCH object?"
                         // "revised 5/2/84 by SEM and SWG"
-                        if obj.hasFlag(isInvisible) {
+                        if obj.hasFlag(.isInvisible) {
                             return false
                         } else if .isNot(l) {
                             return false
@@ -100,7 +100,7 @@ final class IsAccessibleTests: QuelboTests {
                         ) {
                             return true
                         } else if .and(
-                            l.hasFlag(isOpen),
+                            l.hasFlag(.isOpen),
                             isAccessible(obj: l)
                         ) {
                             return true

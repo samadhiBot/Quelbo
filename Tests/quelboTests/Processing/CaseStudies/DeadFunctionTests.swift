@@ -113,14 +113,14 @@ final class DeadFunctionTests: QuelboTests {
                     /// The `deadFunc` (DEAD-FUNCTION) routine.
                     func deadFunc(foo: Bool = false) -> Bool {
                         // var m: <Unknown>
-                        if isVerb(.walk) {
+                        if isParsedVerb(.walk) {
                             if .and(
                                 here.equals(timberRoom),
-                                prso.equals(west)
+                                parsedDirectObject.equals(west)
                             ) {
                                 output("You cannot enter in your condition.")
                             }
-                        } else if isVerb(
+                        } else if isParsedVerb(
                             .brief,
                             .verbose,
                             .superBrief,
@@ -131,14 +131,14 @@ final class DeadFunctionTests: QuelboTests {
                             .restart
                         ) {
                             return false
-                        } else if isVerb(
+                        } else if isParsedVerb(
                             .attack,
                             .mung,
                             .alarm,
                             .swing
                         ) {
                             output("All such attacks are vain in your condition.")
-                        } else if isVerb(
+                        } else if isParsedVerb(
                             .open,
                             .close,
                             .eat,
@@ -152,23 +152,23 @@ final class DeadFunctionTests: QuelboTests {
                             .rub
                         ) {
                             output("Even such an action is beyond your capabilities.")
-                        } else if isVerb(.wait) {
+                        } else if isParsedVerb(.wait) {
                             output("Might as well. You've got an eternity.")
-                        } else if isVerb(.lampOn) {
+                        } else if isParsedVerb(.lampOn) {
                             output("You need no light to guide you.")
-                        } else if isVerb(.score) {
+                        } else if isParsedVerb(.score) {
                             output("You're dead! How can you think of your score?")
-                        } else if isVerb(.take, .rub) {
+                        } else if isParsedVerb(.take, .rub) {
                             output("Your hand passes through its object.")
-                        } else if isVerb(
+                        } else if isParsedVerb(
                             .drop,
                             .throw,
                             .inventory
                         ) {
                             output("You have no possessions.")
-                        } else if isVerb(.diagnose) {
+                        } else if isParsedVerb(.diagnose) {
                             output("You are dead.")
-                        } else if isVerb(.look) {
+                        } else if isParsedVerb(.look) {
                             output("The room looks strange and unearthly")
                             if .isNot(here.firstChild) {
                                 output(".")
@@ -176,7 +176,7 @@ final class DeadFunctionTests: QuelboTests {
                                 output(" and objects appear indistinct.")
                             }
                             output("\n")
-                            if .isNot(here.hasFlag(isOn)) {
+                            if .isNot(here.hasFlag(.isOn)) {
                                 output("""
                                     Although there is no light, the room seems dimly \
                                     illuminated.
@@ -184,7 +184,7 @@ final class DeadFunctionTests: QuelboTests {
                             }
                             output("\n")
                             return false
-                        } else if isVerb(.pray) {
+                        } else if isParsedVerb(.pray) {
                             if here.equals(southTemple) {
                                 lamp.isInvisible.set(false)
                                 winner.action = 0

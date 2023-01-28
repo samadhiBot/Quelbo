@@ -1,15 +1,15 @@
+////
+////  MultifrobTests.swift
+////  Quelbo
+////
+////  Created by Chris Sessions on 10/2/22.
+////
 //
-//  IsVerbZorkTests.swift
-//  Quelbo
+//import CustomDump
+//import XCTest
+//@testable import quelbo
 //
-//  Created by Chris Sessions on 10/2/22.
-//
-
-import CustomDump
-import XCTest
-@testable import quelbo
-
-final class IsVerbZorkTests: QuelboTests {
+//final class MultifrobTests: QuelboTests {
 //    override func setUp() {
 //        super.setUp()
 //
@@ -43,6 +43,15 @@ final class IsVerbZorkTests: QuelboTests {
 //            <DEFMAC VERB? ("ARGS" ATMS)
 //                <MULTIFROB PRSA .ATMS>>
 //
+//            <DEFMAC PRSO? ("ARGS" ATMS)
+//                <MULTIFROB PRSO .ATMS>>
+//
+//            <DEFMAC PRSI? ("ARGS" ATMS)
+//                <MULTIFROB PRSI .ATMS>>
+//
+//            <DEFMAC ROOM? ("ARGS" ATMS)
+//                <MULTIFROB HERE .ATMS>>
+//
 //            <ROUTINE BOARD-F ()
 //                 <COND (<VERB? TAKE EXAMINE>
 //                    <TELL "The boards are securely fastened." CR>)>>
@@ -55,59 +64,12 @@ final class IsVerbZorkTests: QuelboTests {
 //            Statement(
 //                id: "multifrob",
 //                code: """
-//                    /// The `multifrob` (MULTIFROB) routine.
-//                    func multifrob(
-//                        prsa: Int,
-//                        atms: Table
-//                    ) {
-//                        var oo: [<Unknown>] = [or]
-//                        var o: [<Unknown>] = oo
-//                        var l: [<Unknown>] = []
-//                        var atm: <Unknown> = <Unknown>
-//                        var prsa: Int = prsa
-//                        var atms: Table = atms
-//                        while true {
-//                            if atms.isEmpty {
-//                                if oo.count == 1 {
-//                                    throw FizmoError.mdlError(prsa)
-//                                } else if oo.count == 2 {
-//                                    return oo.nthElement(2)
-//                                } else {
-//                                    oo.changeType(.form)
-//                                }
-//                            }
-//                            while true {
-//                                if atms.isEmpty {
-//                                    break
-//                                }
-//                                atm.set(to: atms.nthElement(1))
-//                                l.set(to: [
-//                                    if atm.isType(atom) {
-//                                        if prsa.equals(prsa) {
-//                                            [
-//                                                ["V?", atm.id].joined(),
-//                                            ].parse()
-//                                        } else {
-//                                            return atm
-//                                        }
-//                                    } else {
-//                                        return atm
-//                                    },
-//                                    l,
-//                                ])
-//                                atms.set(to: atms.rest())
-//                                if l.count.equals(3) {
-//                                    break
-//                                }
-//                            }
-//                            o.set(to: o.putRest([prsa.equals(l)]).rest())
-//                            l.set(to: [])
-//                        }
-//                    }
+//
 //                    """,
 //                type: .void,
 //                category: .routines,
-//                isCommittable: true
+//                isCommittable: true,
+//                returnHandling: .passthrough
 //            )
 //        )
 //    }
@@ -119,17 +81,18 @@ final class IsVerbZorkTests: QuelboTests {
 //                id: "isVerb",
 //                code: """
 //                    /// The `isVerb` (VERB?) macro.
-//                    func isVerb(atms: Table) {
-//                        var atms: Table = atms
+//                    func isParsedVerb(atms: [⛔️]) {
+//                        var atms: [⛔️] = atms
 //                        multifrob(
-//                            prsa: prsa,
+//                            parserAction: parserAction,
 //                            atms: atms
 //                        )
 //                    }
 //                    """,
-//                type: .void,
+//                type: .bool,
 //                category: .routines,
-//                isCommittable: true
+//                isCommittable: true,
+//                returnHandling: .passthrough
 //            )
 //        )
 //    }
@@ -148,7 +111,7 @@ final class IsVerbZorkTests: QuelboTests {
 //                @discardableResult
 //                /// The `treasureInside` (TREASURE-INSIDE) routine.
 //                func treasureInside() -> Bool {
-//                    if isVerb(.open) {
+//                    if isParsedVerb(atms: open) {
 //                        output("You've found an emerald!")
 //                        return false
 //                    }
@@ -156,7 +119,8 @@ final class IsVerbZorkTests: QuelboTests {
 //                """,
 //            type: .booleanFalse,
 //            category: .routines,
-//            isCommittable: true
+//            isCommittable: true,
+//            returnHandling: .passthrough
 //        ))
 //    }
-}
+//}

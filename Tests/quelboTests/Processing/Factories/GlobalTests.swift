@@ -192,9 +192,7 @@ final class GlobalTests: QuelboTests {
                 var def1Res: Table = Table(
                     .table(def1),
                     .int(0),
-                    // <REST ,DEF1 2>,
-                    .int(0),
-                    // <REST ,DEF1 4>
+                    .int(0)
                 )
                 """,
             type: .table,

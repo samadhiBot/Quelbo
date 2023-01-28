@@ -90,12 +90,12 @@ final class ShakeLoopTests: QuelboTests {
                     func shakeLoop() {
                         var x: Object? = nil
                         while true {
-                            if _ = x.set(to: prso.firstChild) {
+                            if _ = x.set(to: parsedDirectObject.firstChild) {
                                 x.hasBeenTouched.set(true)
                                 x.move(to: {
                                     if here.equals(upATree) {
                                         return path
-                                    } else if .isNot(here.hasFlag(isDryLand)) {
+                                    } else if .isNot(here.hasFlag(.isDryLand)) {
                                         return pseudoObject
                                     } else {
                                         return here

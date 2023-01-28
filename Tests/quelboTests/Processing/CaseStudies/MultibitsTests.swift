@@ -1,15 +1,15 @@
+////
+////  MultibitsTests.swift
+////  Quelbo
+////
+////  Created by Chris Sessions on 10/5/22.
+////
 //
-//  MultibitsTests.swift
-//  Quelbo
+//import CustomDump
+//import XCTest
+//@testable import quelbo
 //
-//  Created by Chris Sessions on 10/5/22.
-//
-
-import CustomDump
-import XCTest
-@testable import quelbo
-
-final class MultibitsTests: QuelboTests {
+//final class MultibitsTests: QuelboTests {
 //    override func setUp() {
 //        super.setUp()
 //
@@ -122,4 +122,4 @@ final class MultibitsTests: QuelboTests {
 //            )
 //        )
 //    }
-}
+//}

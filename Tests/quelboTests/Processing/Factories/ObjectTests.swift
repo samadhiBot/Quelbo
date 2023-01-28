@@ -34,6 +34,7 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `whiteHouse` (WHITE-HOUSE) object.
                 var whiteHouse = Object(
+                    id: "whiteHouse",
                     action: whiteHouseFunc,
                     adjectives: [
                         "white",
@@ -41,7 +42,7 @@ final class ObjectTests: QuelboTests {
                         "coloni",
                     ],
                     description: "white house",
-                    flags: [omitDescription],
+                    flags: [.omitDescription],
                     location: localGlobals,
                     synonyms: ["house"]
                 )
@@ -72,6 +73,7 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `brokenEgg` (BROKEN-EGG) object.
                 var brokenEgg = Object(
+                    id: "brokenEgg",
                     adjectives: [
                         "broken",
                         "birds",
@@ -81,9 +83,9 @@ final class ObjectTests: QuelboTests {
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
                     flags: [
-                        isContainer,
-                        isOpen,
-                        isTakable,
+                        .isContainer,
+                        .isOpen,
+                        .isTakable,
                     ],
                     longDescription: "There is a somewhat ruined egg here.",
                     synonyms: ["egg", "treasure"],
@@ -116,13 +118,14 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `bat` (BAT) object.
                 var bat = Object(
+                    id: "bat",
                     action: batFunc,
                     adjectives: ["vampire", "deranged"],
                     description: "bat",
                     descriptionFunction: batD,
                     flags: [
-                        isActor,
-                        noImplicitTake,
+                        .isActor,
+                        .noImplicitTake,
                     ],
                     location: batRoom,
                     synonyms: ["bat", "vampire"]
@@ -157,6 +160,7 @@ final class ObjectTests: QuelboTests {
             code: #"""
                 /// The `skull` (SKULL) object.
                 var skull = Object(
+                    id: "skull",
                     adjectives: ["crystal"],
                     description: "crystal skull",
                     firstDescription: """
@@ -164,7 +168,7 @@ final class ObjectTests: QuelboTests {
                         crystal skull. It appears to be grinning at you rather \
                         nastily.
                         """,
-                    flags: [isTakable],
+                    flags: [.isTakable],
                     location: landOfLivingDead,
                     synonyms: [
                         "skull",
@@ -200,12 +204,13 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `water` (WATER) object.
                 var water = Object(
+                    id: "water",
                     action: waterFunc,
                     description: "quantity of water",
                     flags: [
-                        isDrinkable,
-                        isTakable,
-                        noImplicitTake,
+                        .isDrinkable,
+                        .isTakable,
+                        .noImplicitTake,
                     ],
                     location: bottle,
                     size: 4,
@@ -246,13 +251,14 @@ final class ObjectTests: QuelboTests {
             code: #"""
                 /// The `troll` (TROLL) object.
                 var troll = Object(
+                    id: "troll",
                     action: trollFunc,
                     adjectives: ["nasty"],
                     description: "troll",
                     flags: [
-                        isActor,
-                        isOpen,
-                        noImplicitTake,
+                        .isActor,
+                        .isOpen,
+                        .noImplicitTake,
                     ],
                     location: trollRoom,
                     longDescription: """
@@ -295,12 +301,13 @@ final class ObjectTests: QuelboTests {
             code: #"""
                 /// The `advertisement` (ADVERTISEMENT) object.
                 var advertisement = Object(
+                    id: "advertisement",
                     adjectives: ["small"],
                     description: "leaflet",
                     flags: [
-                        isBurnable,
-                        isReadable,
-                        isTakable,
+                        .isBurnable,
+                        .isReadable,
+                        .isTakable,
                     ],
                     location: mailbox,
                     longDescription: "A small leaflet is on the ground.",
@@ -343,16 +350,17 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `trophyCase` (TROPHY-CASE) object.
                 var trophyCase = Object(
+                    id: "trophyCase",
                     action: trophyCaseFunc,
                     adjectives: ["trophy"],
                     capacity: 10000,
                     description: "trophy case",
                     flags: [
-                        isContainer,
-                        isSearchable,
-                        isTransparent,
-                        noImplicitTake,
-                        omitDescription,
+                        .isContainer,
+                        .isSearchable,
+                        .isTransparent,
+                        .noImplicitTake,
+                        .omitDescription,
                     ],
                     location: livingRoom,
                     synonyms: ["case"]
@@ -376,20 +384,21 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `globalObjects` (GLOBAL-OBJECTS) object.
                 var globalObjects = Object(
+                    id: "globalObjects",
                     flags: [
-                        hasBeenTouched,
-                        isDestroyed,
-                        isDryLand,
-                        isFightable,
-                        isInvisible,
-                        isOn,
-                        isOpen,
-                        isSearchable,
-                        isStaggered,
-                        isSurface,
-                        isTransparent,
-                        isWearable,
-                        noImplicitTake,
+                        .hasBeenTouched,
+                        .isDestroyed,
+                        .isDryLand,
+                        .isFightable,
+                        .isInvisible,
+                        .isOn,
+                        .isOpen,
+                        .isSearchable,
+                        .isStaggered,
+                        .isSurface,
+                        .isTransparent,
+                        .isWearable,
+                        .noImplicitTake,
                     ]
                 )
                 """,
@@ -424,6 +433,7 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `localGlobals` (LOCAL-GLOBALS) object.
                 var localGlobals = Object(
+                    id: "localGlobals",
                     advfcn: 0,
                     capacity: 0,
                     containerFunction: nil,
@@ -468,13 +478,14 @@ final class ObjectTests: QuelboTests {
             code: """
                 /// The `adventurer` (ADVENTURER) object.
                 var adventurer = Object(
+                    id: "adventurer",
                     action: nil,
                     description: "cretin",
                     flags: [
-                        isActor,
-                        isInvisible,
-                        isSacred,
-                        omitDescription,
+                        .isActor,
+                        .isInvisible,
+                        .isSacred,
+                        .omitDescription,
                     ],
                     strength: 0,
                     synonyms: ["adventurer"]

@@ -29,12 +29,13 @@ final class FlagsTests: QuelboTests {
             code: """
                 /// The `brokenEgg` (BROKEN-EGG) object.
                 var brokenEgg = Object(
+                    id: "brokenEgg",
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
                     flags: [
-                        isContainer,
-                        isOpen,
-                        isTakable,
+                        .isContainer,
+                        .isOpen,
+                        .isTakable,
                     ]
                 )
                 """,
@@ -46,21 +47,21 @@ final class FlagsTests: QuelboTests {
         let flagGlobals: [Symbol] = [
             .statement(
                 id: "takeBit",
-                code: "isTakable",
+                code: ".isTakable",
                 type: .bool,
                 category: .flags,
                 isCommittable: true
             ),
             .statement(
                 id: "contBit",
-                code: "isContainer",
+                code: ".isContainer",
                 type: .bool,
                 category: .flags,
                 isCommittable: true
             ),
             .statement(
                 id: "openBit",
-                code: "isOpen",
+                code: ".isOpen",
                 type: .bool,
                 category: .flags,
                 isCommittable: true
@@ -96,7 +97,7 @@ final class FlagsTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "x.hasFlag(isTakable)",
+            code: "x.hasFlag(.isTakable)",
             type: .bool
         ))
     }

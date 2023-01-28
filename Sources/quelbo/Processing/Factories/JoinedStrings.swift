@@ -28,7 +28,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "[\(elements.codeValues(.commaSeparated))].joined()"
+                    "[\(elements.handles(.commaSeparated))].joined()"
                 },
                 type: .string
             )

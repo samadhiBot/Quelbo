@@ -43,7 +43,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                 code: """
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
-                        if isVerb(.examine) {
+                        if isParsedVerb(.examine) {
                             if here.equals(
                                 mirror1.parent,
                                 mirror2.parent
@@ -94,7 +94,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     @discardableResult
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() -> Bool {
-                        if isVerb(.examine) {
+                        if isParsedVerb(.examine) {
                             if nullFunc() {
                                 return true
                             } else {
@@ -140,7 +140,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                 code: """
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
-                        if isVerb(.examine) {
+                        if isParsedVerb(.examine) {
                             if invis {
                                 output("A good trick, as you are currently invisible.")
                             } else {

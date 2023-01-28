@@ -38,10 +38,10 @@ final class IsVerbZilfTests: QuelboTests {
 //                code: """
 //                    @discardableResult
 //                    /// The `isVerb` (VERB?) macro.
-//                    func isVerb(a: ⛔️) -> Bool {
+//                    func isParsedVerb(a: ⛔️) -> Bool {
 //                        var o: Verb? = nil
 //                        o.set(to: /* _evaluationError_ %mapf-05F90BA8-0A99-4E17-8A3A-4F4CC8112958: unknownRoutine("MAPF", global(.atom(LIST)), .form(.atom(FUNCTION) .list(.atom(I) .form(.atom(FORM) .atom(GVAL) .form(.atom(PARSE) orm(.atom(STRING) .string(V?) .form(.atom(SPNAME) .local(I), .local(A)]) */)
-//                        return prsa.equals(o)
+//                        return parsedVerb.equals(o)
 //                    }
 //                    """,
 //                type: .bool,
@@ -60,7 +60,7 @@ final class IsVerbZilfTests: QuelboTests {
 //                    @discardableResult
 //                    /// The `treasureInside` (TREASURE-INSIDE) routine.
 //                    func treasureInside() -> Bool {
-//                        if isVerb(atms: open) {
+//                        if isParsedVerb(atms: open) {
 //                            output("You've found an emerald!")
 //                            return false
 //                        }

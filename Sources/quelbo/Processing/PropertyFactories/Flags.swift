@@ -40,7 +40,7 @@ extension Factories {
                     let flagSymbol: Symbol = .statement(
                         id: fizmoFlag.zil,
                         code: { _ in
-                            fizmoFlag.id.description
+                            ".\(fizmoFlag.id.description)"
                         },
                         type: .bool,
                         category: .flags,

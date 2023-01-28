@@ -12,14 +12,14 @@ extension Game {
         [
             .statement(
                 id: "actions",
-                code: { _ in "actions" },
+                code: { _ in "var actions: Table = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "lowDirection",
-                code: { _ in "lowDirection" },
+                code: { _ in "let lowDirection: Int = 0" },
                 type: .int
             ),
             .statement(
@@ -35,6 +35,27 @@ extension Game {
                 },
                 type: .bool,
                 category: .routines
+            ),
+            .statement(
+                id: "parsedVerb",
+                code: { _ in "var parsedVerb: Verb?" },
+                type: .verb.optional,
+                category: .globals,
+                isMutable: true
+            ),
+            .statement(
+                id: "parsedIndirectObject",
+                code: { _ in "var parsedIndirectObject: Object?" },
+                type: .object.optional,
+                category: .globals,
+                isMutable: true
+            ),
+            .statement(
+                id: "parsedDirectObject",
+                code: { _ in "var parsedDirectObject: Object?" },
+                type: .object.optional,
+                category: .globals,
+                isMutable: true
             ),
             .statement(
                 id: "partsOfSpeech",
@@ -60,42 +81,21 @@ extension Game {
             ),
             .statement(
                 id: "preactions",
-                code: { _ in "preactions" },
+                code: { _ in "var preactions: Table = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "prepositions",
-                code: { _ in "prepositions" },
+                code: { _ in "var prepositions: Table = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
-                id: "prsa",
-                code: { _ in "prsa" },
-                type: .verb,
-                category: .globals,
-                isMutable: true
-            ),
-            .statement(
-                id: "prsi",
-                code: { _ in "prsi" },
-                type: .object,
-                category: .globals,
-                isMutable: true
-            ),
-            .statement(
-                id: "prso",
-                code: { _ in "prso" },
-                type: .object,
-                category: .globals,
-                isMutable: true
-            ),
-            .statement(
                 id: "verbs",
-                code: { _ in "verbs" },
+                code: { _ in "var verbs: Table = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true

@@ -51,7 +51,7 @@ final class RoutineTests: QuelboTests {
             code: """
                 /// The `bagOfCoinsFunc` (BAG-OF-COINS-F) routine.
                 func bagOfCoinsFunc() {
-                    // "<STUPID-CONTAINER ,BAG-OF-COINS 'coins'>"
+
                 }
                 """,
             type: .void,

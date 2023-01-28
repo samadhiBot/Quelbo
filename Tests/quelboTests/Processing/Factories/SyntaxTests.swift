@@ -332,6 +332,7 @@ final class SyntaxTests: QuelboTests {
                 code: """
                     /// The `forest` (FOREST) room.
                     var forest = Room(
+                        id: "forest",
                         description: "Forest",
                         directions: [
                             .up: .blocked("There is no tree here suitable for climbing."),

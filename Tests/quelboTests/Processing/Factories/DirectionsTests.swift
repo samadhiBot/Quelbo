@@ -79,7 +79,7 @@ final class DirectionsTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "prso.equals(land, east, west)",
+            code: "parsedDirectObject.equals(land, east, west)",
             type: .bool
         ))
     }

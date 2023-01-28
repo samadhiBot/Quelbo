@@ -20,6 +20,9 @@ final class GlobalObjectsTests: QuelboTests {
             <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT>
 
             <GLOBAL HERE 0>
+            <GLOBAL PRSA <>>
+            <GLOBAL PRSI <>>
+            <GLOBAL PRSO <>>
 
             <OBJECT GLOBAL-OBJECTS
                 (FLAGS RMUNGBIT INVISIBLE TOUCHBIT SURFACEBIT TRYTAKEBIT
@@ -44,20 +47,21 @@ final class GlobalObjectsTests: QuelboTests {
                 code: """
                     /// The `globalObjects` (GLOBAL-OBJECTS) object.
                     var globalObjects = Object(
+                        id: "globalObjects",
                         flags: [
-                            hasBeenTouched,
-                            isDestroyed,
-                            isDryLand,
-                            isFightable,
-                            isInvisible,
-                            isOn,
-                            isOpen,
-                            isSearchable,
-                            isStaggered,
-                            isSurface,
-                            isTransparent,
-                            isWearable,
-                            noImplicitTake,
+                            .hasBeenTouched,
+                            .isDestroyed,
+                            .isDryLand,
+                            .isFightable,
+                            .isInvisible,
+                            .isOn,
+                            .isOpen,
+                            .isSearchable,
+                            .isStaggered,
+                            .isSurface,
+                            .isTransparent,
+                            .isWearable,
+                            .noImplicitTake,
                         ]
                     )
                     """,

@@ -80,15 +80,15 @@ extension Factories {
                 if let condition {
                     if let message {
                         return """
-                            .\(name): .conditionalElse(\(destination),
+                            .\(name): .conditionalElse(\(destination.quoted),
                                 if: \(condition),
                                 else: \(message)
                             )
                             """
                     }
-                    return ".\(name): .conditional(\(destination), if: \(condition))"
+                    return ".\(name): .conditional(\(destination.quoted), if: \(condition))"
                 }
-                return ".\(name): .to(\(destination))"
+                return ".\(name): .to(\(destination.quoted))"
             }
             if let message {
                 return ".\(name): .blocked(\(message))"

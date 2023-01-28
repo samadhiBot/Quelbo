@@ -327,7 +327,10 @@ final class GetObjectTests: QuelboTests {
                                 if vrb {
                                     // "next added 1/2/85 by JW"
                                     pSlocbits.set(to: xbits)
-                                    if .or(lit, isVerb(.tell)) {
+                                    if .or(
+                                        lit,
+                                        isParsedVerb(.tell)
+                                    ) {
                                         // "Changed 6/10/83 - MARC"
                                         objFound(
                                             obj: notHereObject,

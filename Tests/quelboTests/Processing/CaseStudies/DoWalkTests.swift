@@ -65,7 +65,7 @@ final class DoWalkTests: QuelboTests {
                 code: """
                     /// The `barrowFunc` (BARROW-FCN) routine.
                     func barrowFunc() {
-                        if isVerb(.through) {
+                        if isParsedVerb(.through) {
                             doWalk(dir: west)
                         }
                     }

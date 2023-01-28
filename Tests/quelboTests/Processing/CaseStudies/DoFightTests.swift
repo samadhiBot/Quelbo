@@ -93,7 +93,7 @@ final class DoFightTests: QuelboTests {
                                 }
                                 oo.set(to: try villains.get(at: cnt))
                                 o.set(to: try oo.get(at: vVillain))
-                                if .isNot(o.hasFlag(isFightable)) {
+                                if .isNot(o.hasFlag(.isFightable)) {
                                     // do nothing
                                 } else if _ = o.action(isFBusy) {
                                     // do nothing

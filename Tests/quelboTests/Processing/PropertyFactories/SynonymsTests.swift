@@ -31,6 +31,21 @@ final class SynonymsTests: QuelboTests {
         ))
     }
 
+    func testSynonymsWithBackslash() throws {
+        let symbol = try factory.init([
+            .atom("GATES"),
+            .atom(##"FCD\#3"##),
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "synonyms",
+            code: """
+                synonyms: ["gates", "fcd#3"]
+                """,
+            type: .string.array
+        ))
+    }
+
     func testEmptyReturnsPropertyName() throws {
         let symbol = try factory.init([], with: &localVariables).process()
 

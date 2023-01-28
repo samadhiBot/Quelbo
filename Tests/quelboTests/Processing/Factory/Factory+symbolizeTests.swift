@@ -17,10 +17,11 @@ final class FactorySymbolizeTests: QuelboTests {
         code: """
             /// The `boardedWindow` (BOARDED-WINDOW) object.
             var boardedWindow = Object(
+                id: "boardedWindow",
                 action: boardedWindowFunc,
                 adjectives: ["boarded"],
                 description: "boarded window",
-                flags: [omitDescription],
+                flags: [.omitDescription],
                 location: localGlobals,
                 synonyms: ["window"]
             )
@@ -255,6 +256,14 @@ final class FactorySymbolizeTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .literal("Plants can talk"))
+    }
+
+    func testSymbolizeStringWithBackslash() throws {
+        let symbol = try TestFactory([
+            .string(##"FCD\#3"##)
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .literal("FCD#3"))
     }
 
     func testSymbolizeTypeByte() throws {

@@ -330,8 +330,8 @@ final class JigsUpTests: QuelboTests {
                                         r.set(to: rooms.firstChild)
                                     }
                                     if .and(
-                                        r.hasFlag(isDryLand),
-                                        .isNot(r.hasFlag(isOn)),
+                                        r.hasFlag(.isDryLand),
+                                        .isNot(r.hasFlag(.isOn)),
                                         prob(isBase: 50)
                                     ) {
                                         f.move(to: r)
@@ -498,14 +498,14 @@ final class JigsUpTests: QuelboTests {
                         rm: Object,
                         isV: Bool = true
                     ) -> Bool {
-                        var lb: Bool = rm.hasFlag(isDryLand)
+                        var lb: Bool = rm.hasFlag(.isDryLand)
                         var wloc: Object = winner.parent
                         var av: Bool = false
                         var olit: Bool = false
                         var ohere: Object? = nil
                         olit.set(to: lit)
                         ohere.set(to: here)
-                        if wloc.hasFlag(isVehicle) {
+                        if wloc.hasFlag(.isVehicle) {
                             av.set(to: wloc.vehicleType)
                         }
                         if .and(
@@ -516,28 +516,28 @@ final class JigsUpTests: QuelboTests {
                             return false
                         } else if .and(
                             .isNot(lb),
-                            .isNot(rm.hasFlag(av))
+                            .isNot(rm.hasFlag(.av))
                         ) {
                             noGoTell(av: av, wloc: wloc)
                             return false
                         } else if .and(
-                            here.hasFlag(isDryLand),
+                            here.hasFlag(.isDryLand),
                             lb,
                             av,
                             .isNot(av.equals(rlandBit)),
-                            .isNot(rm.hasFlag(av))
+                            .isNot(rm.hasFlag(.av))
                         ) {
                             noGoTell(av: av, wloc: wloc)
                             return false
-                        } else if rm.hasFlag(isDestroyed) {
+                        } else if rm.hasFlag(.isDestroyed) {
                             output(rm.longDescription)
                             return false
                         } else {
                             if .and(
                                 lb,
-                                .isNot(here.hasFlag(isDryLand)),
+                                .isNot(here.hasFlag(.isDryLand)),
                                 .isNot(dead),
-                                wloc.hasFlag(isVehicle)
+                                wloc.hasFlag(.isVehicle)
                             ) {
                                 output("The ")
                                 output(wloc.description)
@@ -564,7 +564,7 @@ final class JigsUpTests: QuelboTests {
                                     return false
                                 } else {
                                     output("Oh, no! A lurking grue slithered into the ")
-                                    if winner.parent.hasFlag(isVehicle) {
+                                    if winner.parent.hasFlag(.isVehicle) {
                                         output(winner.parent.description)
                                     } else {
                                         output("room")
@@ -595,7 +595,6 @@ final class JigsUpTests: QuelboTests {
                                 output(" leaves the room.")
                             } else if .and(
                                 here.equals(ohere),
-                                // "no double description",
                                 here.equals(entranceToHades)
                             ) {
                                 return true
@@ -650,7 +649,7 @@ final class JigsUpTests: QuelboTests {
 
 
                                 """)
-                            if winner.parent.hasFlag(isVehicle) {
+                            if winner.parent.hasFlag(.isVehicle) {
                                 winner.move(to: here)
                             }
                             if .isNot(deaths.isLessThan(2)) {
@@ -664,7 +663,7 @@ final class JigsUpTests: QuelboTests {
                             } else {
                                 deaths.set(to: .add(deaths, 1))
                                 winner.move(to: here)
-                                if southTemple.hasFlag(hasBeenTouched) {
+                                if southTemple.hasFlag(.hasBeenTouched) {
                                     output("""
                                         As you take your last breath, you feel relieved of your \
                                         burdens. The feeling passes as you find yourself before the \

@@ -52,7 +52,6 @@ final class ConditionTests: QuelboTests {
             .variable(id: "isFunnyReturn", type: .bool, category: .globals),
             .variable(id: "mEnter", type: .int, category: .globals),
             .variable(id: "openBit", type: .bool, category: .flags),
-            .variable(id: "prsi", type: .object, category: .globals),
             .variable(id: "troll", type: .object, category: .objects),
             .variable(id: "vehBit", type: .bool, category: .flags),
             .variable(id: "wonFlag", type: .bool, category: .globals),
@@ -274,9 +273,9 @@ final class ConditionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 if .or(
-                    prsi.hasFlag(openBit),
+                    parsedIndirectObject.hasFlag(.openBit),
                     isOpenable(),
-                    prsi.hasFlag(vehBit)
+                    parsedIndirectObject.hasFlag(.vehBit)
                 ) {
                     // do nothing
                 } else {

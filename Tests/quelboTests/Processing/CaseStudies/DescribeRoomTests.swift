@@ -120,17 +120,17 @@ final class DescribeRoomTests: QuelboTests {
                             nullFunc()
                             return false
                         }
-                        if .isNot(here.hasFlag(hasBeenTouched)) {
+                        if .isNot(here.hasFlag(.hasBeenTouched)) {
                             here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
-                        if here.hasFlag(isMaze) {
+                        if here.hasFlag(.isMaze) {
                             here.hasBeenTouched.set(false)
                         }
                         if here.isIn(rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(here.description)
-                            if av.set(to: winner.parent).hasFlag(isVehicle) {
+                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
@@ -157,7 +157,7 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             if .and(
                                 .isNot(here.equals(av)),
-                                av.hasFlag(isVehicle)
+                                av.hasFlag(.isVehicle)
                             ) {
                                 av.action(mLook)
                             }
@@ -197,7 +197,7 @@ final class DescribeRoomTests: QuelboTests {
                             nullFunc()
                             return false
                         }
-                        if .isNot(here.hasFlag(hasBeenTouched)) {
+                        if .isNot(here.hasFlag(.hasBeenTouched)) {
                             here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
@@ -205,7 +205,7 @@ final class DescribeRoomTests: QuelboTests {
                         if here.isIn(rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(here.description)
-                            if av.set(to: winner.parent).hasFlag(isVehicle) {
+                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
@@ -233,7 +233,7 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             if .and(
                                 .isNot(here.equals(av)),
-                                av.hasFlag(isVehicle)
+                                av.hasFlag(.isVehicle)
                             ) {
                                 av.action(mLook)
                             }
@@ -278,7 +278,7 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             return false
                         }
-                        if .isNot(here.hasFlag(hasBeenTouched)) {
+                        if .isNot(here.hasFlag(.hasBeenTouched)) {
                             here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
@@ -286,7 +286,7 @@ final class DescribeRoomTests: QuelboTests {
                         if here.isIn(rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(here.description)
-                            if av.set(to: winner.parent).hasFlag(isVehicle) {
+                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
@@ -313,7 +313,7 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             if .and(
                                 .isNot(here.equals(av)),
-                                av.hasFlag(isVehicle)
+                                av.hasFlag(.isVehicle)
                             ) {
                                 av.action(mLook)
                             }

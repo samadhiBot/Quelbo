@@ -84,6 +84,7 @@ final class SwordTests: QuelboTests {
                 code: #"""
                     /// The `sword` (SWORD) object.
                     var sword = Object(
+                        id: "sword",
                         action: swordFunc,
                         adjectives: [
                             "elvish",
@@ -96,9 +97,9 @@ final class SwordTests: QuelboTests {
                             antiquity.
                             """,
                         flags: [
-                            isTakable,
-                            isWeapon,
-                            noImplicitTake,
+                            .isTakable,
+                            .isWeapon,
+                            .noImplicitTake,
                         ],
                         location: livingRoom,
                         size: 30,

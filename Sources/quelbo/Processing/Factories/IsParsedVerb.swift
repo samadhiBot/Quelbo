@@ -1,15 +1,15 @@
 //
-//  IsVerb.swift
+//  IsParsedVerb.swift
 //  Quelbo
 //
-//  Created by Chris Sessions on 10/2/22.
+//  Created by Chris Sessions on 1/23/23.
 //
 
 import Foundation
 
 extension Factories {
-    /// A symbol factory for the Fizmo `isVerb` function.
-    class IsVerb: Factory {
+    /// A symbol factory for the Fizmo `isParsedVerb` function.
+    class IsParsedVerb: Factory {
         override class var zilNames: [String] {
             ["VERB?"]
         }
@@ -29,7 +29,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "isVerb(\(values.values(.commaSeparatedNoTrailingComma)))"
+                    "isParsedVerb(\(values.values(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .bool
             )

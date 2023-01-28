@@ -73,6 +73,7 @@ final class SynonymTestsTests: QuelboTests {
             code: """
                     /// The `graniteWall` (GRANITE-WALL) object.
                     var graniteWall = Object(
+                        id: "graniteWall",
                         action: graniteWallFunc,
                         adjectives: ["granite"],
                         description: "granite wall",

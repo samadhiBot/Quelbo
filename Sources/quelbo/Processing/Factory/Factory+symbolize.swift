@@ -99,7 +99,7 @@ extension Factory {
                 )
             case .string(let string):
                 symbols.append(
-                    .literal(string)
+                    .literal(string.sanitized)
                 )
             case .type(let token):
                 symbols.append(
@@ -186,7 +186,7 @@ extension Factory {
 
         while !tokens.isEmpty, let name = try? findName(in: &tokens) {
             symbols.append(
-                .literal(name.lowercased())
+                .literal(name.lowercased().sanitized)
             )
         }
         return symbols
@@ -290,7 +290,7 @@ extension Factory {
             return .instance(instance)
         }
 
-        throw GameError.globalNotFound(zil)
+        throw GameError.globalNotFound(id: id, zil: zil)
     }
 
     /// Translates a Zil

@@ -47,22 +47,23 @@ final class RoomTests: QuelboTests {
             code: """
                 /// The `westOfHouse` (WEST-OF-HOUSE) room.
                 var westOfHouse = Room(
+                    id: "westOfHouse",
                     action: westHouse,
                     description: "West of House",
                     directions: [
-                        .north: .to(northOfHouse),
-                        .south: .to(southOfHouse),
-                        .northEast: .to(northOfHouse),
-                        .southEast: .to(southOfHouse),
-                        .west: .to(forest1),
+                        .north: .to("northOfHouse"),
+                        .south: .to("southOfHouse"),
+                        .northEast: .to("northOfHouse"),
+                        .southEast: .to("southOfHouse"),
+                        .west: .to("forest1"),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
-                        .southWest: .conditional(stoneBarrow, if: wonFlag),
-                        .in: .conditional(stoneBarrow, if: wonFlag),
+                        .southWest: .conditional("stoneBarrow", if: wonFlag),
+                        .in: .conditional("stoneBarrow", if: wonFlag),
                     ],
                     flags: [
-                        isDryLand,
-                        isOn,
-                        isSacred,
+                        .isDryLand,
+                        .isOn,
+                        .isSacred,
                     ],
                     globals: [
                         whiteHouse,
@@ -144,19 +145,20 @@ final class RoomTests: QuelboTests {
             code: """
             /// The `reservoirSouth` (RESERVOIR-SOUTH) room.
             var reservoirSouth = Room(
+                id: "reservoirSouth",
                 action: reservoirSouthFunc,
                 description: "Reservoir South",
                 directions: [
-                    .southEast: .to(deepCanyon),
-                    .southWest: .to(chasmRoom),
-                    .east: .to(damRoom),
-                    .west: .to(streamView),
-                    .north: .conditionalElse(reservoir,
+                    .southEast: .to("deepCanyon"),
+                    .southWest: .to("chasmRoom"),
+                    .east: .to("damRoom"),
+                    .west: .to("streamView"),
+                    .north: .conditionalElse("reservoir",
                         if: lowTide,
                         else: "You would drown."
                     ),
                 ],
-                flags: [isDryLand],
+                flags: [.isDryLand],
                 globals: [globalWater],
                 location: rooms,
                 things: [
@@ -256,21 +258,22 @@ final class RoomTests: QuelboTests {
             code: """
             /// The `eastOfHouse` (EAST-OF-HOUSE) room.
             var eastOfHouse = Room(
+                id: "eastOfHouse",
                 action: eastHouse,
                 description: "Behind House",
                 directions: [
-                    .north: .to(northOfHouse),
-                    .south: .to(southOfHouse),
-                    .southWest: .to(southOfHouse),
-                    .northWest: .to(northOfHouse),
-                    .east: .to(clearing),
-                    .west: .conditional(kitchen, if: kitchenWindow.isOpen),
-                    .in: .conditional(kitchen, if: kitchenWindow.isOpen),
+                    .north: .to("northOfHouse"),
+                    .south: .to("southOfHouse"),
+                    .southWest: .to("southOfHouse"),
+                    .northWest: .to("northOfHouse"),
+                    .east: .to("clearing"),
+                    .west: .conditional("kitchen", if: kitchenWindow.isOpen),
+                    .in: .conditional("kitchen", if: kitchenWindow.isOpen),
                 ],
                 flags: [
-                    isDryLand,
-                    isOn,
-                    isSacred,
+                    .isDryLand,
+                    .isOn,
+                    .isSacred,
                 ],
                 globals: [
                     whiteHouse,
@@ -340,12 +343,13 @@ final class RoomTests: QuelboTests {
             code: #"""
             /// The `studio` (STUDIO) room.
             var studio = Room(
+                id: "studio",
                 description: "Studio",
                 directions: [
-                    .south: .to(gallery),
+                    .south: .to("gallery"),
                     .up: .per(upChimneyFunc),
                 ],
-                flags: [isDryLand],
+                flags: [.isDryLand],
                 globals: [chimney],
                 location: rooms,
                 longDescription: """
@@ -418,16 +422,17 @@ final class RoomTests: QuelboTests {
             code: #"""
             /// The `foyer` (FOYER) room.
             var foyer = Room(
+                id: "foyer",
                 description: "Foyer of the Opera House",
                 directions: [
-                    .south: .to(bar),
-                    .west: .to(cloakroom),
+                    .south: .to("bar"),
+                    .west: .to("cloakroom"),
                     .north: .blocked("""
                         You've only just arrived, and besides, the weather outside \
                         seems to be getting worse.
                         """),
                 ],
-                flags: [isLight],
+                flags: [.isLight],
                 location: rooms,
                 longDescription: """
                     You are standing in a spacious hall, splendidly decorated in \
@@ -469,15 +474,16 @@ final class RoomTests: QuelboTests {
             code: #"""
             /// The `inStream` (IN-STREAM) room.
             var inStream = Room(
+                id: "inStream",
                 description: "Stream",
                 directions: [
                     .up: .blocked("The channel is too narrow."),
                     .west: .blocked("The channel is too narrow."),
-                    .land: .to(streamView),
-                    .down: .to(reservoir),
-                    .east: .to(reservoir),
+                    .land: .to("streamView"),
+                    .down: .to("reservoir"),
+                    .east: .to("reservoir"),
                 ],
-                flags: [isNotLand],
+                flags: [.isNotLand],
                 globals: [globalWater],
                 location: rooms,
                 longDescription: """

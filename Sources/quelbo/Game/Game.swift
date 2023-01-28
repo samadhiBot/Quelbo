@@ -238,7 +238,7 @@ enum GameError: Swift.Error {
     case commitStatementConflict(String)
     case factoryNotFound(String)
     case failedToProcessTokens([String])
-    case globalNotFound(String)
+    case globalNotFound(id: String, zil: String)
     case invalidCommitType(Symbol)
     case invalidZMachineVersion([Token])
     case multipleStatementsFound(String)

@@ -171,7 +171,7 @@ final class ClauseTests: QuelboTests {
                     /// The `cantUse` (CANT-USE) routine.
                     func cantUse(ptr: Int) -> Bool {
                         var buf: Int = 0
-                        if isVerb(.say) {
+                        if isParsedVerb(.say) {
                             output("Nothing happens.")
                             return false
                         }
@@ -270,7 +270,7 @@ final class ClauseTests: QuelboTests {
                     func unknownWord(ptr: Int) -> Bool {
                         var buf: Int = 0
                         try oopsTable.put(element: ptr, at: oPtr)
-                        if isVerb(.say) {
+                        if isParsedVerb(.say) {
                             output("Nothing happens.")
                             return false
                         }
@@ -349,11 +349,7 @@ final class ClauseTests: QuelboTests {
                                 }
                                 if wrd.equals(Word.and, Word.comma) {
                                     andflg.set(to: true)
-                                } else if wrd.equals(
-                                    Word.all,
-                                    Word.one,
-                                    // ,W?BOTH
-                                ) {
+                                } else if wrd.equals(Word.all, Word.one) {
                                     if nw.equals(Word.of) {
                                         pLen.set(to: .subtract(pLen, 1))
                                         ptr.set(to: .add(ptr, pLexelen))
@@ -369,7 +365,6 @@ final class ClauseTests: QuelboTests {
                                             bit: PartsOfSpeech.preposition
                                         ),
                                         try pItbl.get(at: pVerb),
-                                        // "ADDED 4/27 FOR TURTLE,UP",
                                         .isNot(isFirst)
                                     )
                                 ) {

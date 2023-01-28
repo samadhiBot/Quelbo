@@ -86,8 +86,8 @@ final class DefineMacroTests: QuelboTests {
                 /// The `isOpenable` (OPENABLE?) macro.
                 func isOpenable(obj: Object) -> Bool {
                     return .or(
-                        obj.hasFlag(doorBit),
-                        obj.hasFlag(contBit)
+                        obj.hasFlag(.doorBit),
+                        obj.hasFlag(.contBit)
                     )
                 }
                 """,
@@ -101,7 +101,11 @@ final class DefineMacroTests: QuelboTests {
             process("<OPENABLE? ,PRSI>"),
             .statement(
                 id: "isOpenable",
-                code: "isOpenable(obj: prsi)",
+                code: """
+                    isOpenable(
+                        obj: parsedIndirectObject
+                    )
+                    """,
                 type: .bool,
                 returnHandling: .implicit
             )

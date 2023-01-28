@@ -118,17 +118,17 @@ final class PickOneTests: QuelboTests {
                 code: #"""
                     /// The `vHello` (V-HELLO) routine.
                     func vHello() {
-                        if _ = prso {
-                            if prso.hasFlag(isActor) {
+                        if _ = parsedDirectObject {
+                            if parsedDirectObject.hasFlag(.isActor) {
                                 output("The ")
-                                output(prso.description)
+                                output(parsedDirectObject.description)
                                 output(" bows his head to you in greeting.")
                             } else {
                                 output("""
                                     It's a well known fact that only schizophrenics say "Hello" \
                                     to a
                                     """)
-                                output(prso.description)
+                                output(parsedDirectObject.description)
                                 output(".")
                             }
                         } else {

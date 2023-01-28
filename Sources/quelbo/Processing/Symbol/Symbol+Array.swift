@@ -19,12 +19,21 @@ extension Array where Element == Symbol {
     ///
     /// - Returns: A formatted string containing the code values contained in the symbol array.
     func codeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        allValuesHaveSameType ? map(\.code).values(displayOptions)
-                              : map(\.codeMultiType).values(displayOptions)
+        if allValuesHaveSameType {
+            return nonCommentSymbols
+                .map(\.code.withEvaluationErrorsCommented)
+                .values(displayOptions)
+        } else {
+            return nonCommentSymbols
+                .map(\.codeMultiType.withEvaluationErrorsCommented)
+                .values(displayOptions)
+        }
     }
 
     func codeMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        map(\.codeMultiType).values(displayOptions)
+        nonCommentSymbols
+            .map(\.codeMultiType.withEvaluationErrorsCommented)
+            .values(displayOptions)
     }
 
     var evaluationErrors: [Swift.Error] {
@@ -51,8 +60,15 @@ extension Array where Element == Symbol {
     }
 
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        allValuesHaveSameType ? map(\.handle).values(displayOptions)
-                              : map(\.handleMultiType).values(displayOptions)
+        if allValuesHaveSameType {
+            return nonCommentSymbols
+                .map(\.handle)
+                .values(displayOptions)
+        } else {
+            return nonCommentSymbols
+                .map(\.handleMultiType)
+                .values(displayOptions)
+        }
     }
 
     var nonCommentSymbols: [Symbol] {

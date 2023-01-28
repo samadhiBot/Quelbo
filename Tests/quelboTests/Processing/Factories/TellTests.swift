@@ -85,7 +85,7 @@ final class TellTests: QuelboTests {
                     It's a well known fact that only schizophrenics say "Hello" \
                     to a
                     """)
-                output(prso.description)
+                output(parsedDirectObject.description)
                 output(".")
                 """#,
             type: .void

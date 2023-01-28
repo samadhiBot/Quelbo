@@ -34,7 +34,11 @@ struct Quelbo: ParsableCommand {
 
     @Option(
         name: .shortAndLong,
-        help: "A target directory path to write results. If unspecified, Quelbo prints results."
+        help: """
+            A target package to output results. When specified, and parsing and processing are \
+            successful, Quelbo creates a package in `./Output/{target}`. Otherwise, Quelbo prints \
+            the results to the console.
+            """
     )
     var target: String?
 

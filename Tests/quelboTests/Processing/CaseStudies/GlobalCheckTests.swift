@@ -85,6 +85,7 @@ final class GlobalCheckTests: QuelboTests {
                 code: """
                  /// The `pseudoObject` (PSEUDO-OBJECT) object.
                  var pseudoObject = Object(
+                     id: "pseudoObject",
                      action: cretinFunc,
                      description: "pseudo",
                      location: localGlobals
@@ -163,7 +164,7 @@ final class GlobalCheckTests: QuelboTests {
                             pSlocbits.set(to: obits)
                             if .and(
                                 try tbl.get(at: pMatchlen).isZero,
-                                prsa.equals(
+                                parsedVerb.equals(
                                     Verb.lookInside,
                                     Verb.search,
                                     Verb.examine

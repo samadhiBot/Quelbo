@@ -149,7 +149,7 @@ final class ItakeTests: QuelboTests {
                                 output("Your hand passes through its object.")
                             }
                             return false
-                        } else if .isNot(prso.hasFlag(isTakable)) {
+                        } else if .isNot(parsedDirectObject.hasFlag(.isTakable)) {
                             if vb {
                                 output(pickOne(frob: yuks))
                             }
@@ -157,15 +157,17 @@ final class ItakeTests: QuelboTests {
                         } else if nullFunc() {
                             return false
                         } else if .and(
-                            prso.parent.hasFlag(isContainer),
-                            .isNot(prso.parent.hasFlag(isOpen))
+                            parsedDirectObject.parent.hasFlag(.isContainer),
+                            .isNot(parsedDirectObject.parent.hasFlag(.isOpen))
                         ) {
                             // "Kludge for parser calling itake"
                             return false
                         } else if .and(
-                            .isNot(prso.parent.isIn(winner)),
+                            .isNot(parsedDirectObject.parent.isIn(winner)),
                             .add(
-                                weight(obj: prso),
+                                weight(
+                                    obj: parsedDirectObject
+                                ),
                                 weight(obj: winner)
                             ).isGreaterThan(loadAllowed)
                         ) {
@@ -180,7 +182,7 @@ final class ItakeTests: QuelboTests {
                             }
                             returnFatal()
                         } else if .and(
-                            isVerb(.take),
+                            isParsedVerb(.take),
                             cnt.set(to: ccount(obj: winner)).isGreaterThan(fumbleNumber),
                             prob(
                                 isBase: .multiply(cnt, fumbleProb)
@@ -189,11 +191,13 @@ final class ItakeTests: QuelboTests {
                             output("You're holding too many things already!")
                             return false
                         } else {
-                            prso.move(to: winner)
-                            prso.omitDescription.set(false)
-                            prso.hasBeenTouched.set(true)
+                            parsedDirectObject.move(to: winner)
+                            parsedDirectObject.omitDescription.set(false)
+                            parsedDirectObject.hasBeenTouched.set(true)
                             nullFunc()
-                            scoreObj(obj: prso)
+                            scoreObj(
+                                obj: parsedDirectObject
+                            )
                             return true
                         }
                     }

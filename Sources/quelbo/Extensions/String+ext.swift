@@ -98,6 +98,11 @@ extension String {
             .joined(separator: "\n")
     }
 
+    /// <#Description#>
+    var sanitized: String {
+        replacingOccurrences(of: "\\", with: "")
+    }
+
     /// Removes and/or replaces common ZIL prefixes and suffixes that are either unneeded or illegal
     /// in Swift type and instance names.
     var scrubbed: String {
@@ -108,8 +113,7 @@ extension String {
             string.removeFirst(2)
         } else if string.hasPrefix(",") || string.hasPrefix(".") || string.hasPrefix("'") {
             string.removeFirst()
-        }
-        if string.hasSuffix("-F") {
+        } else if string.hasSuffix("-F") {
             string.removeLast()
             string.append("FUNC")
         } else if string.hasSuffix("-FCN") {
@@ -132,6 +136,15 @@ extension String {
             string.removeLast(3)
             string.append("-BIT")
         }
+
+        if string == "PRSA" {
+            string = "PARSED-VERB"
+        } else if string == "PRSI" {
+            string = "PARSED-INDIRECT-OBJECT"
+        } else if string == "PRSO" {
+            string = "PARSED-DIRECT-OBJECT"
+        }
+
         return string.replacingOccurrences(of: "-", with: "_")
     }
 
@@ -150,5 +163,22 @@ extension String {
         scrubbed.split(separator: "_")
             .map { $0.capitalized }
             .joined()
+    }
+
+    /// <#Description#>
+    var withDotPrefix: String {
+        guard hasPrefix(".") else { return ".\(self)" }
+        return self
+    }
+
+    /// <#Description#>
+    var withEvaluationErrorsCommented: String {
+        guard contains("_evaluationError_") else { return self }
+
+        return """
+            /*
+             /(self)
+             */
+            """
     }
 }

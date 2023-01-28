@@ -7,6 +7,7 @@
 
 import Files
 import Foundation
+import os.log
 
 extension Game {
     struct Package {
@@ -20,7 +21,7 @@ extension Game {
             }
             self.project = "\(name)"
 
-            self.folder = try folder(path: target)
+            self.folder = try folder(path: "Output/\(target)")
             try createPackage(named: project, in: folder)
 
             self.sourcesFolder = try folder.subfolder(at: "Sources/\(name)")
@@ -41,7 +42,7 @@ extension Game {
                     named: "Constants.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.constants.codeValues(.commaSeparated)
+                    with: Game.constants.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -50,7 +51,7 @@ extension Game {
                     named: "Globals.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.globals.codeValues(.commaSeparated)
+                    with: Game.globals.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -123,7 +124,7 @@ private extension Game.Package {
         let package = try folder.createFile(named: "Package.swift")
         try package.write(
             """
-            // swift-tools-version: 5.6
+            // swift-tools-version: 5.7
 
             import PackageDescription
 
@@ -168,6 +169,10 @@ private extension Game.Package {
                     }
                 }
                 """
+        )
+
+        Logger.package.info(
+            "\t􀁢 Created package \(name, privacy: .public) in \(folder, privacy: .public)"
         )
     }
 

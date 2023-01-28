@@ -19,8 +19,13 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert(.haveCount(.exactly(2)))
 
-            try symbols[0].assert(.hasType(.object))
-            try symbols[1].assert(.hasType(.bool))
+            try symbols[0].assert(
+                .hasType(.object)
+            )
+
+            try symbols[1].assert(
+                .hasType(.bool)
+            )
         }
 
         var value: Bool { true }
@@ -32,7 +37,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).\(flag.code).set(\(value))"
+                    "\(object.code)\(flag.code.withDotPrefix).set(\(value))"
                 },
                 type: .bool
             )

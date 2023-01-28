@@ -506,12 +506,12 @@ extension TypeInfo: CustomDumpReflectable {
 extension TypeInfo: CustomStringConvertible {
     var description: String {
         var description = dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "⛔️"
+            isTableElement == true ? "TableElement" : "Unit"
         )
         if case .oneOf(let dataTypes) = dataType {
             description = dataTypes
                 .min(by: { $0.baseConfidence < $1.baseConfidence })?
-                .description ?? "⛔️"
+                .description ?? "Unit"
         }
         if isArray == true {
             description = "[\(description)]"

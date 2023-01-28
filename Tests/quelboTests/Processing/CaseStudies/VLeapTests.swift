@@ -94,11 +94,11 @@ final class VLeapTests: QuelboTests {
                     func vLeap() -> Bool {
                         var tx: Object? = nil
                         var s: Int = 0
-                        if _ = prso {
-                            if prso.isIn(here) {
-                                if prso.hasFlag(isActor) {
+                        if _ = parsedDirectObject {
+                            if parsedDirectObject.isIn(here) {
+                                if parsedDirectObject.hasFlag(.isActor) {
                                     output("The ")
-                                    output(prso.description)
+                                    output(parsedDirectObject.description)
                                     output(" is too big to jump over.")
                                 } else {
                                     vSkip()
@@ -110,10 +110,8 @@ final class VLeapTests: QuelboTests {
                             s.set(to: tx.propertySize)
                             if .or(
                                 s.equals(2),
-                                // NEXIT,
                                 .and(
                                     s.equals(4),
-                                    // CEXIT,
                                     .isNot(try tx.get(at: 1))
                                 )
                             ) {

@@ -34,6 +34,7 @@ final class AdjectivesTests: QuelboTests {
             code: """
                 /// The `whiteHouse` (WHITE-HOUSE) object.
                 var whiteHouse = Object(
+                    id: "whiteHouse",
                     adjectives: [
                         "white",
                         "beauti",
@@ -59,6 +60,7 @@ final class AdjectivesTests: QuelboTests {
             code: """
                 /// The `woodenDoor` (WOODEN-DOOR) object.
                 var woodenDoor = Object(
+                    id: "woodenDoor",
                     adjectives: [
                         "wooden",
                         "gothic",
@@ -83,6 +85,7 @@ final class AdjectivesTests: QuelboTests {
             code: """
                 /// The `tree` (TREE) object.
                 var tree = Object(
+                    id: "tree",
                     adjectives: ["large", "storm"]
                 )
                 """,

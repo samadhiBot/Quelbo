@@ -170,7 +170,7 @@ final class SnarfemTests: QuelboTests {
                                 } else {
                                     nw.set(to: try ptr.get(at: pLexelen))
                                 }
-                                if wrd.equals(Word.all, // ,W?BOTH) {
+                                if wrd.equals(Word.all) {
                                     pGetflags.set(to: pAll)
                                     if nw.equals(Word.of) {
                                         ptr.set(to: ptr.rest(bytes: pWordlen))

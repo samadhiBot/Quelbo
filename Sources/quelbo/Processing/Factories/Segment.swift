@@ -15,7 +15,7 @@ extension Factories {
         override func processTokens() throws {
             do {
                 try super.processTokens()
-            } catch GameError.globalNotFound(let zil) {
+            } catch GameError.globalNotFound(id: _, zil: let zil) {
                 symbols.append(
                     try Factories.Global(
                         [.atom(zil), .bool(false)],

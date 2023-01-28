@@ -22,7 +22,9 @@ final class MoveDirectionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".north: .to(northOfHouse)",
+            code: """
+                .north: .to("northOfHouse")
+                """,
             type: .object
         ))
     }
@@ -37,7 +39,9 @@ final class MoveDirectionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".land: .to(streamView)",
+            code: """
+                .land: .to("streamView")
+                """,
             type: .object
         ))
     }
@@ -97,7 +101,9 @@ final class MoveDirectionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".southWest: .conditional(stoneBarrow, if: wonFlag)",
+            code: """
+                .southWest: .conditional("stoneBarrow", if: wonFlag)
+                """,
             type: .object
         ))
     }
@@ -115,7 +121,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                .north: .conditionalElse(reservoir,
+                .north: .conditionalElse("reservoir",
                     if: lowTide,
                     else: "You would drown."
                 )
@@ -136,7 +142,9 @@ final class MoveDirectionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".west: .conditional(kitchen, if: kitchenWindow.isOpen)",
+            code: """
+                .west: .conditional("kitchen", if: kitchenWindow.isOpen)
+                """,
             type: .object
         ))
     }

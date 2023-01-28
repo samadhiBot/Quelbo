@@ -61,6 +61,7 @@ extension Game {
                 try process()
 
                 if let target {
+                    Game.Print.heading("􀪏  Writing game translation to \(target)")
                     try Game.Package(path: target).build()
                 } else {
                     Game.Print.symbols()

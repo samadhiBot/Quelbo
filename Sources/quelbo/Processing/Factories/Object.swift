@@ -66,6 +66,7 @@ extension Factories {
                     """
                     /// The `\(name)` (\(zilName)) \(objectType.lowercased()).
                     var \(name) = \(objectType)(
+                        id: "\(name)",
                     \(properties.codeValues(.commaLineBreakSeparated))
                     )
                     """

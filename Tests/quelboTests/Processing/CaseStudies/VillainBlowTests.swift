@@ -239,6 +239,7 @@ final class VillainBlowTests: QuelboTests {
                 code: #"""
                     /// The `thief` (THIEF) object.
                     var thief = Object(
+                        id: "thief",
                         action: robberFunc,
                         adjectives: [
                             "shady",
@@ -247,11 +248,11 @@ final class VillainBlowTests: QuelboTests {
                         ],
                         description: "thief",
                         flags: [
-                            isActor,
-                            isContainer,
-                            isInvisible,
-                            isOpen,
-                            noImplicitTake,
+                            .isActor,
+                            .isContainer,
+                            .isInvisible,
+                            .isOpen,
+                            .noImplicitTake,
                         ],
                         location: roundRoom,
                         longDescription: """
@@ -482,9 +483,9 @@ final class VillainBlowTests: QuelboTests {
                                 thiefEngrossed.set(to: false)
                             }
                             if _ = .and(
-                                .object(prsi),
-                                prsi.hasFlag(isWeapon),
-                                try oo.get(at: vBest).equals(prsi)
+                                .object(parsedIndirectObject),
+                                parsedIndirectObject.hasFlag(.isWeapon),
+                                try oo.get(at: vBest).equals(parsedIndirectObject)
                             ) {
                                 tmp.set(to: .subtract(
                                     od,
@@ -583,7 +584,7 @@ final class VillainBlowTests: QuelboTests {
                         var res: Int? = 0
                         var nweapon: Object? = nil
                         winner.isStaggered.set(false)
-                        if villain.hasFlag(isStaggered) {
+                        if villain.hasFlag(.isStaggered) {
                             output("The ")
                             output(villain.description)
                             output(" slowly regains his feet.")

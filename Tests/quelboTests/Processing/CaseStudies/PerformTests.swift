@@ -121,10 +121,11 @@ final class PerformTests: QuelboTests {
                 code: """
                     /// The `it` (IT) object.
                     var it = Object(
+                        id: "it",
                         description: "random object",
                         flags: [
-                            hasBeenTouched,
-                            omitDescription,
+                            .hasBeenTouched,
+                            .omitDescription,
                         ],
                         location: globalObjects,
                         synonyms: [
@@ -270,9 +271,9 @@ final class PerformTests: QuelboTests {
                                 output(i.description)
                             }
                         }
-                        oa.set(to: prsa)
-                        oo.set(to: prso)
-                        oi.set(to: prsi)
+                        oa.set(to: parsedVerb)
+                        oo.set(to: parsedDirectObject)
+                        oi.set(to: parsedIndirectObject)
                         if .and(
                             it.equals(i, o),
                             .isNot(isAccessible(obj: pItObject))
@@ -286,17 +287,20 @@ final class PerformTests: QuelboTests {
                         if i.equals(it) {
                             i.set(to: pItObject)
                         }
-                        prsa.set(to: a)
-                        prso.set(to: o)
+                        parsedVerb.set(to: a)
+                        parsedDirectObject.set(to: o)
                         if _ = .and(
-                            .object(prso),
-                            .isNot(isVerb(.walk))
+                            .object(parsedDirectObject),
+                            .isNot(isParsedVerb(.walk))
                         ) {
-                            pItObject.set(to: prso)
+                            pItObject.set(to: parsedDirectObject)
                         }
-                        prsi.set(to: i)
+                        parsedIndirectObject.set(to: i)
                         if _ = .and(
-                            notHereObject.equals(prso, prsi),
+                            notHereObject.equals(
+                                parsedDirectObject,
+                                parsedIndirectObject
+                            ),
                             v.set(to: dApply(
                                 str: "Not Here",
                                 fcn: notHereObjectFunc
@@ -304,8 +308,8 @@ final class PerformTests: QuelboTests {
                         ) {
                             return v
                         } else {
-                            o.set(to: prso)
-                            i.set(to: prsi)
+                            o.set(to: parsedDirectObject)
+                            i.set(to: parsedIndirectObject)
                             if _ = v.set(to: ddApply(
                                 str: "Actor",
                                 obj: winner,
@@ -359,9 +363,9 @@ final class PerformTests: QuelboTests {
                                 return v
                             }
                         }
-                        prsa.set(to: oa)
-                        prso.set(to: oo)
-                        prsi.set(to: oi)
+                        parsedVerb.set(to: oa)
+                        parsedDirectObject.set(to: oo)
+                        parsedIndirectObject.set(to: oi)
                         return v
                     }
                     """#,

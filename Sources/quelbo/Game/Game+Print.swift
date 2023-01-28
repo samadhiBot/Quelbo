@@ -87,7 +87,7 @@ extension Game {
             heading(
                 """
 
-                🎟  Zil tokens
+                􀪄  Zil tokens
                 """
             )
             Pretty.prettyPrint(tokens)
