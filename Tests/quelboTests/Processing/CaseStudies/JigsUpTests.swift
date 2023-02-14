@@ -33,6 +33,23 @@ final class JigsUpTests: QuelboTests {
 
             <CONSTANT M-ENTER 2>
 
+            <ROOM CANYON-VIEW>
+            <ROOM CLEARING>
+            <ROOM EAST-OF-HOUSE>
+            <ROOM EGYPT-ROOM>
+            <ROOM ENTRANCE-TO-HADES>
+            <ROOM FOREST-1>
+            <ROOM FOREST-1>
+            <ROOM FOREST-2>
+            <ROOM FOREST-3>
+            <ROOM GRATING-CLEARING>
+            <ROOM LIVING-ROOM>
+            <ROOM NORTH-OF-HOUSE>
+            <ROOM PATH>
+            <ROOM SOUTH-OF-HOUSE>
+            <ROOM SOUTH-TEMPLE>
+            <ROOM WEST-OF-HOUSE>
+
             <GLOBAL ABOVE-GROUND
               <LTABLE (PURE) WEST-OF-HOUSE NORTH-OF-HOUSE EAST-OF-HOUSE SOUTH-OF-HOUSE
                   FOREST-1 FOREST-2 FOREST-3 PATH CLEARING GRATING-CLEARING
@@ -53,13 +70,6 @@ final class JigsUpTests: QuelboTests {
             <OBJECT ROOMS (IN TO ROOMS)>
             <OBJECT SWORD>
             <OBJECT TRAP-DOOR>
-
-            <ROOM EGYPT-ROOM>
-            <ROOM ENTRANCE-TO-HADES>
-            <ROOM FOREST-1>
-            <ROOM LIVING-ROOM>
-            <ROOM SOUTH-TEMPLE>
-            <ROOM WEST-OF-HOUSE>
 
             <DEFMAC DISABLE ('INT) <FORM PUT .INT ,C-ENABLED? 0>>
 
@@ -524,7 +534,7 @@ final class JigsUpTests: QuelboTests {
                             here.hasFlag(.isDryLand),
                             lb,
                             av,
-                            .isNot(av.equals(rlandBit)),
+                            .isNot(av.equals(.isDryLand)),
                             .isNot(rm.hasFlag(.av))
                         ) {
                             noGoTell(av: av, wloc: wloc)

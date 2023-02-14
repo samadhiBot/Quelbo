@@ -194,13 +194,7 @@ final class FactorySymbolizeTests: QuelboTests {
     }
 
     func testSymbolizePropertyDirection() throws {
-        try Game.commit(.statement(
-            id: "north",
-            code: "",
-            type: .object,
-            category: .properties,
-            isCommittable: true
-        ))
+        process("<DIRECTIONS NORTH EAST WEST SOUTH>")
 
         let symbol = try TestFactory([
             .property("NORTH")

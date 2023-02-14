@@ -31,6 +31,9 @@ let package = Package(
             ],
             swiftSettings: [
                 .unsafeFlags(
+                    ["-Xfrontend", "-enable-bare-slash-regex"]
+                ),
+                .unsafeFlags(
                     ["-Xfrontend", "-warn-long-function-bodies=100"],
                     .when(configuration: .debug)
                 ),

@@ -444,6 +444,16 @@ final class RoutineTests: QuelboTests {
         XCTAssertNoDifference(Game.routines.find("remark"), expected)
     }
 
+    func testProcessRoutineOrMacroWithFactoryOverride() throws {
+        let symbol = process("""
+            <DEFMAC VERB? ("ARGS" ATMS)
+                <MULTIFROB PRSA .ATMS>>
+        """)
+
+        XCTAssertNoDifference(symbol, .emptyStatement)
+        XCTAssertNil(Game.routines.find("isVerb"))
+    }
+
     func testBottlesRoutine() throws {
         let symbol = process(#"""
             <ROUTINE BOTTLES (N)

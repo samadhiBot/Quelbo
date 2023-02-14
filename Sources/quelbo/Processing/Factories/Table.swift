@@ -26,36 +26,43 @@ extension Factories {
         override func processTokens() throws {
             var tokens = tokens
 
-            if let flagSymbol = try findFlagSymbol(in: &tokens) {
-                symbols.append(flagSymbol)
-            }
+            self.flags = try findFlags(in: &tokens)
 
             symbols.append(contentsOf: try symbolize(tokens))
         }
 
         override func processSymbols() throws {
             try symbols.assert(
-                .haveCount(.atLeast(2)),
+                .haveCount(.atLeast(1)),
+                .haveKnownType,
                 .areTableElements
             )
         }
 
         override func process() throws -> Symbol {
-            .statement(
+            let flagSymbol = flagSymbol
+
+            return .statement(
                 code: {
-                    let elementValues = $0.payload
-                        .symbols
-                        .codeMultiTypeValues(.commaSeparatedNoTrailingComma)
+                    var elementValues = $0.payload.symbols
+                    let singleType = elementValues.returnTypes.count <= 1
+                    if let flagSymbol {
+                        elementValues.append(flagSymbol)
+                    }
+                    let tableValues = elementValues.codeValues(
+                        .commaSeparatedNoTrailingComma,
+                        forceSingleType: singleType
+                    )
 
                     if $0.type.isTableElement == true {
-                        return ".table(\(elementValues))"
+                        return ".table(\(tableValues))"
                     } else {
-                        return "Table(\(elementValues))"
+                        return "Table(\(tableValues))"
                     }
                 },
                 type: .table,
                 payload: .init(
-                    flags: presetFlags,
+                    flags: flags,
                     symbols: symbols
                 ),
                 isMutable: !flags.contains(.pure)
@@ -65,7 +72,7 @@ extension Factories {
 }
 
 extension Factories.Table {
-    func findFlagSymbol(in tokens: inout [Token]) throws -> Symbol? {
+    func findFlags(in tokens: inout [Token]) throws -> [Fizmo.Table.Flag] {
         var tableFlags = flags + presetFlags
 
         if case .list(let flagTokens) = tokens.first {
@@ -83,18 +90,19 @@ extension Factories.Table {
             }
         }
 
-        self.flags = tableFlags
-            .unique
-            .sorted { $0.rawValue < $1.rawValue }
+        return tableFlags.unique.sorted()
+    }
 
+    var flagSymbol: Symbol? {
         let flagValues = flags
             .map { ".\($0)" }
-            .values(.commaSeparated)
+            .values(.commaSeparatedNoTrailingComma)
+
         guard !flagValues.isEmpty else { return nil }
 
         return .statement(
             code: { _ in
-                "flags: [\(flagValues)]"
+                "flags: \(flagValues)"
             },
             type: .someTableElement
         )

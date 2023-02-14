@@ -16,10 +16,9 @@ Quelbo is part of a longer term experiment to create Swift versions of Zork and 
 
 ## Usage
 
-```bash
-ॐ  swift run quelbo -h
-Building for debugging...
-Build complete! (0.11s)
+```
+ॐ swift run quelbo -h
+
 USAGE: quelbo <path> [-p] [-s] [-u] [--target <target>]
 
 ARGUMENTS:
@@ -29,6 +28,45 @@ OPTIONS:
   -p                      Print the ZIL tokens derived in the parsing phase.
   -s                      Print the processed game tokens when processing fails.
   -u                      Print the unprocessed game tokens when processing fails.
-  -t, --target <target>   A target directory path to write results. If unspecified, Quelbo prints results.
+  -t, --target <target>   A target package to output results. When specified, and parsing and processing
+                          are successful, Quelbo creates a package in `./Output/{target}`. Otherwise,
+                          Quelbo prints the results to the console.
   -h, --help              Show help information.
+  ```
+
+### Sample output
+
+```
+ॐ swift run quelbo /path/to/historicalsource/zork1 -t Zork1
+
+􀉂  Parsing Zil source
+========================================================================
+[-----------------------------------------------------------------] 100%
+
+􀀷  Z-machine version
+========================================================================
+z3
+
+􀥏  Processing Zil Tokens
+========================================================================
+
+􀣋  Processing tokens: 1547 of 1547 remaining (iteration 1)
+========================================================================
+[---------------------------------------------                    ] 69%
+
+􀣋  Processing tokens: 217 of 1547 remaining (iteration 2)
+========================================================================
+[---------------------------------------------------------------- ] 99%
+
+􀣋  Processing tokens: 2 of 1547 remaining (iteration 3)
+========================================================================
+[---------------------------------------------------------------- ] 99%
+
+􀦆  Processing complete!
+========================================================================
+
+􀪏  Writing game translation to ./Output/Zork1
+========================================================================
+
+Done!
 ```

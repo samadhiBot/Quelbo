@@ -27,9 +27,9 @@ final class PseudosTests: QuelboTests {
             code: #"""
                 things: [
                     Thing(
+                        action: chasmPseudo,
                         adjectives: [],
-                        nouns: ["chasm"],
-                        action: chasmPseudo
+                        nouns: ["chasm"]
                     ),
                 ]
                 """#,
@@ -50,14 +50,14 @@ final class PseudosTests: QuelboTests {
             code: """
                 things: [
                     Thing(
+                        action: doorPseudo,
                         adjectives: [],
-                        nouns: ["door"],
-                        action: doorPseudo
+                        nouns: ["door"]
                     ),
                     Thing(
+                        action: paintPseudo,
                         adjectives: [],
-                        nouns: ["paint"],
-                        action: paintPseudo
+                        nouns: ["paint"]
                     ),
                 ]
                 """,

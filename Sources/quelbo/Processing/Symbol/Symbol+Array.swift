@@ -8,31 +8,30 @@
 import Foundation
 
 extension Array where Element == Symbol {
-    var allValuesHaveSameType: Bool {
-        map(\.type.dataType).unique.count <= 1
-    }
-
     /// Returns a formatted string containing the ``Symbol/code`` values for a ``Symbol`` array.
     ///
     /// - Parameter displayOptions: One or more ``Symbol/CodeValuesDisplayOption`` values that
     ///                             specify how to separate and display the code values.
     ///
     /// - Returns: A formatted string containing the code values contained in the symbol array.
-    func codeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        if allValuesHaveSameType {
+    func codeValues(
+        _ displayOptions: CodeValuesDisplayOption...,
+        forceSingleType: Bool = false
+    ) -> String {
+        if returnTypes.count <= 1 || forceSingleType {
             return nonCommentSymbols
-                .map(\.code.withEvaluationErrorsCommented)
+                .map(\.code)
                 .values(displayOptions)
         } else {
             return nonCommentSymbols
-                .map(\.codeMultiType.withEvaluationErrorsCommented)
+                .map(\.codeMultiType)
                 .values(displayOptions)
         }
     }
 
     func codeMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
         nonCommentSymbols
-            .map(\.codeMultiType.withEvaluationErrorsCommented)
+            .map(\.codeMultiType)
             .values(displayOptions)
     }
 
@@ -60,7 +59,7 @@ extension Array where Element == Symbol {
     }
 
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        if allValuesHaveSameType {
+        if returnTypes.count <= 1 {
             return nonCommentSymbols
                 .map(\.handle)
                 .values(displayOptions)
@@ -117,7 +116,7 @@ extension Array where Element == Symbol {
 
     var returnType: TypeInfo? {
         let alphas = withMaxConfidence
-        let uniqueTypes = alphas.map(\.type.dataType).unique
+        let uniqueTypes = alphas.returnTypes
         switch uniqueTypes.count {
         case 1:
             return alphas[0].type
@@ -129,6 +128,10 @@ extension Array where Element == Symbol {
         default:
             return nil
         }
+    }
+
+    var returnTypes: [TypeInfo.DataType] {
+        compactMap(\.type.dataType).unique
     }
 
     var sharedOptionalType: TypeInfo? {
@@ -148,10 +151,9 @@ extension Array where Element == Symbol {
         return nil
     }
 
-    /// Returns the ``Symbol`` array sorted by element ``Symbol/code`` for flag symbols, and by
-    /// ``Symbol/description`` for all other symbols.
+    /// Returns the ``Symbol`` array sorted by element ``Symbol/handle``.
     var sorted: [Symbol] {
-        sorted { $0.code < $1.code }
+        sorted { $0.handle < $1.handle }
     }
 
     var splitByReturnHandling: ([Symbol], [Symbol]) {

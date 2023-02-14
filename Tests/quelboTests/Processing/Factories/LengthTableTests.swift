@@ -1,5 +1,5 @@
 //
-//  LengthTableTests.swift
+//  TableTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 6/3/22.
@@ -17,39 +17,37 @@ final class LengthTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "forest1", type: .object, category: .rooms),
-            .variable(id: "forest2", type: .object, category: .rooms),
-            .variable(id: "forest3", type: .object, category: .rooms),
-            .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "path", type: .object, category: .rooms),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "thief", type: .object, category: .objects),
-            .variable(id: "thiefMelee", type: .bool, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines)
-        ])
+        process("""
+            <OBJECT KNIFE>
+            <OBJECT SWORD>
+            <OBJECT THIEF>
+            <OBJECT TROLL>
+            <ROOM CLEARING>
+            <ROOM FOREST1>
+            <ROOM FOREST2>
+            <ROOM FOREST3>
+            <ROOM PATH>
+            <ROUTINE THIEF-MELEE () T>
+            <ROUTINE TROLL-MELEE () T>
+        """)
     }
 
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("LTABLE"))
     }
 
-    func testLengthTableOfRooms() throws {
-        let symbol = try factory.init([
-            .atom("FOREST-1"),
-            .atom("FOREST-2"),
-            .atom("FOREST-3"),
-        ], with: &localVariables).process()
+    func testTableOfRooms() throws {
+        let symbol = process("""
+            <LTABLE FOREST-1 FOREST-2 FOREST-3>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3,
+                    flags: .length
                 )
                 """,
             type: .table,
@@ -58,24 +56,20 @@ final class LengthTableTests: QuelboTests {
         ))
     }
 
-    func testLengthTableOfDifferentTypes() throws {
-        let symbol = try factory.init([
-            .atom("TROLL"),
-            .atom("SWORD"),
-            .decimal(1),
-            .decimal(0),
-            .atom("TROLL-MELEE")
-        ], with: &localVariables).process()
+    func testTableOfDifferentTypes() throws {
+        let symbol = process("""
+            <LTABLE TROLL SWORD 1 0 TROLL-MELEE>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length],
                     .object(troll),
                     .object(sword),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee)
+                    .bool(trollMelee),
+                    flags: .length
                 )
                 """,
             type: .table,
@@ -84,29 +78,46 @@ final class LengthTableTests: QuelboTests {
         ))
     }
 
+    func testLengthTableWithLeadingZero() throws {
+        let symbol = process("""
+            <GLOBAL JUMPLOSS
+                <LTABLE 0
+                       "You should have looked before you leaped."
+                       "In the movies, your life would be passing before your eyes."
+                       "Geronimo...">>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "jumploss",
+            code: """
+                var jumploss: Table = Table(
+                    "You should have looked before you leaped.",
+                    "In the movies, your life would be passing before your eyes.",
+                    "Geronimo...",
+                    flags: .length
+                )
+                """,
+            type: .table,
+            category: .globals,
+            isCommittable: true
+        ))
+    }
+
     func testFormPureTable() throws {
-        let symbol = try factory.init([
-            .list([
-                .atom("PURE")
-            ]),
-            .atom("FOREST-1"),
-            .atom("FOREST-2"),
-            .atom("FOREST-3"),
-            .atom("PATH"),
-            .atom("CLEARING"),
-            .atom("FOREST-1"),
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <LTABLE (PURE) FOREST-1 FOREST-2 FOREST-3 PATH CLEARING FOREST-1>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length, .pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
@@ -115,37 +126,23 @@ final class LengthTableTests: QuelboTests {
         ))
     }
 
-    func testNestedLengthTables() throws {
-        let symbol = try factory.init([
-            .form([
-                .atom("LTABLE"),
-                .atom("TROLL"),
-                .atom("SWORD"),
-                .decimal(1),
-                .decimal(0),
-                .atom("TROLL-MELEE")
-            ]),
-            .form([
-                .atom("TABLE"),
-                .atom("THIEF"),
-                .atom("KNIFE"),
-                .decimal(1),
-                .decimal(0),
-                .atom("THIEF-MELEE")
-            ]),
-        ], with: &localVariables).process()
+    func testNestedTables() throws {
+        let symbol = process("""
+            <LTABLE
+              <LTABLE TROLL SWORD 1 0 TROLL-MELEE>
+              <TABLE THIEF KNIFE 1 0 THIEF-MELEE>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length],
                     .table(
-                        flags: [.length],
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee)
+                        .bool(trollMelee),
+                        flags: .length
                     ),
                     .table(
                         .object(thief),
@@ -153,7 +150,8 @@ final class LengthTableTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(thiefMelee)
-                    )
+                    ),
+                    flags: .length
                 )
                 """,
             type: .table,
@@ -162,7 +160,7 @@ final class LengthTableTests: QuelboTests {
         ))
     }
 
-    func testGlobalLengthTable() throws {
+    func testGlobalTable() throws {
         process("""
             <GLOBAL HELLOS
                 <LTABLE 0 "Hello."
@@ -177,12 +175,11 @@ final class LengthTableTests: QuelboTests {
                 id: "hellos",
                 code: """
                     var hellos: Table = Table(
-                        flags: [.length],
-                        .int(0),
-                        .string("Hello."),
-                        .string("Good day."),
-                        .string("Nice weather we've been having lately."),
-                        .string("Goodbye.")
+                        "Hello.",
+                        "Good day.",
+                        "Nice weather we've been having lately.",
+                        "Goodbye.",
+                        flags: .length
                     )
                     """,
                 type: .table,

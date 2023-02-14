@@ -94,7 +94,7 @@ final class VLeapTests: QuelboTests {
                     func vLeap() -> Bool {
                         var tx: Object? = nil
                         var s: Int = 0
-                        if _ = parsedDirectObject {
+                        if let parsedDirectObject {
                             if parsedDirectObject.isIn(here) {
                                 if parsedDirectObject.hasFlag(.isActor) {
                                     output("The ")

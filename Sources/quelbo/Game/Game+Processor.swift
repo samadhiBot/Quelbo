@@ -61,8 +61,9 @@ extension Game {
                 try process()
 
                 if let target {
-                    Game.Print.heading("􀪏  Writing game translation to \(target)")
+                    Game.Print.heading("􀪏  Writing game translation to ./Output/\(target)")
                     try Game.Package(path: target).build()
+                    print("Done!\n")
                 } else {
                     Game.Print.symbols()
                 }
@@ -133,13 +134,56 @@ extension Game.Processor {
 
         tokens.forEach { token in
             switch token {
-            case .action, .atom, .bool, .character, .decimal, .eval, .global, .list, .local,
+            case .action, .atom, .bool, .character, .decimal, .global, .list, .local,
                     .partsOfSpeech, .partsOfSpeechFirst, .property, .quote, .segment, .type,
                     .vector, .verb, .word:
-                Logger.process.warning("􀁜 Unexpected: \(token.value, privacy: .public)")
+                Logger.process.warning("􀁜 Unexpected: \(token, privacy: .public)")
 
             case .commented, .string:
                 Logger.process.info("􀌤 Comment: \(token.value, privacy: .public)")
+
+            case .eval(let evalToken):
+                do {
+                    var localVariables: [Statement] = []
+
+                    guard
+                        case .form(let evalFormTokens) = evalToken,
+                        case .atom(let zilString) = evalFormTokens.first
+                    else {
+                        throw GameError.unknownRootEvaluation(token)
+                    }
+
+                    Logger.process.info(
+                        """
+                        􁇥 \(zilString, privacy: .public) \
+                        \(evalFormTokens.first?.value ?? "", privacy: .public)
+                        """
+                    )
+
+                    let symbol = try Game.Element(
+                        zil: zilString,
+                        tokens: evalFormTokens,
+                        with: &localVariables,
+                        type: .mdl,
+                        mode: .evaluate
+                    ).process()
+
+                    Logger.process.info(
+                        "\t􀋃 Processed: \(symbol.debugDescription, privacy: .public)"
+                    )
+
+                    progressBar.next()
+
+                } catch {
+                    var description = ""
+                    customDump(error, to: &description)
+
+                    Logger.process.warning("\t􀇿 \(description, privacy: .public)")
+
+                    errors.append("\(description)")
+
+                    unprocessedTokens.append(token)
+                }
 
             case .form(let formTokens):
                 do {
@@ -151,16 +195,18 @@ extension Game.Processor {
                     }
 
                     Logger.process.info(
-                        "􀊫 \(zilString, privacy: .public) \(tokens.first?.value ?? "", privacy: .public)"
+                        """
+                        􀊫 \(zilString, privacy: .public) \
+                        \(tokens.first?.value ?? "", privacy: .public)
+                        """
                     )
 
-                    let symbol = try Game.process(
+                    let symbol = try Game.Element(
                         zil: zilString,
                         tokens: tokens,
                         with: &localVariables,
                         type: .mdl
-                    )
-                    try Game.commit(symbol)
+                    ).process()
 
                     Logger.process.info(
                         "\t􀋃 Processed: \(symbol.debugDescription, privacy: .public)"
@@ -182,63 +228,5 @@ extension Game.Processor {
         }
         self.errors = errors
         self.tokens = unprocessedTokens
-    }
-}
-
-// MARK: - Game.process
-
-extension Game {
-    static func process(
-        zil: String,
-        tokens: [Token],
-        with localVariables: inout [Statement],
-        type factoryType: Factories.FactoryType? = nil,
-        mode factoryMode: Factory.FactoryMode = .process
-    ) throws -> Symbol {
-        if let factory = Game.findFactory(zil, type: factoryType) {
-            let factoryTokens: [Token] = {
-                switch tokens.first {
-                case .atom(zil): return tokens.droppingFirst
-                case .decimal: return tokens.droppingFirst
-                case .global(.atom(zil)): return tokens.droppingFirst
-                default: return tokens
-                }
-            }()
-            return try factory.init(
-                factoryTokens,
-                with: &localVariables,
-                mode: factoryMode
-            ).processOrEvaluate()
-        }
-
-        if Game.routines.find(zil.lowerCamelCase) != nil {
-            return try Factories.RoutineCall(
-                tokens,
-                with: &localVariables,
-                mode: factoryMode
-            ).processOrEvaluate()
-        }
-
-        if Game.findDefinition(zil.lowerCamelCase) != nil {
-            let routine = try Factories.DefinitionEvaluate(
-                tokens,
-                with: &localVariables,
-                mode: factoryMode
-            ).processOrEvaluate()
-
-            try Game.commit(routine)
-
-            return try Factories.RoutineCall(
-                tokens,
-                with: &localVariables,
-                mode: factoryMode
-            ).processOrEvaluate()
-        }
-
-        return .definition(
-            id: "%\(zil.lowerCamelCase)-\(UUID().uuidString)",
-            tokens: tokens,
-            localVariables: localVariables
-        )
     }
 }

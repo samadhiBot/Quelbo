@@ -52,6 +52,10 @@ extension Factories {
             let typeName = isMacro ? "macro" : "routine"
             let zilName = zilName!
 
+            guard Game.findFactory(zilName) == nil else {
+                return .emptyStatement
+            }
+
             return .statement(
                 id: name,
                 code: {

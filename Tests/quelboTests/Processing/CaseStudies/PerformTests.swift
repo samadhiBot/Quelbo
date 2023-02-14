@@ -25,13 +25,66 @@ final class PerformTests: QuelboTests {
         process("""
             <CONSTANT M-BEG 1>
 
-            <SETG DEBUG <>>
-
             <OBJECT IT
                 (IN GLOBAL-OBJECTS)
                 (SYNONYM IT THEM HER HIM)
                 (DESC "random object")
                 (FLAGS NDESCBIT TOUCHBIT)>
+
+            %<COND (<GASSIGNED? PREDGEN>
+
+            '<ROUTINE PERFORM (A "OPTIONAL" (O <>) (I <>) "AUX" V OA OO OI)
+                ;<COND (,DEBUG
+                       <TELL "[Perform: ">
+                       %<COND (<GASSIGNED? PREDGEN> '<TELL N .A>)
+                          (T '<PRINC <NTH ,ACTIONS <+ <* .A 2> 1>>>)>
+                       <COND (<AND .O <NOT <==? .A ,V?WALK>>>
+                          <TELL "/" D .O>)>
+                       <COND (.I <TELL "/" D .I>)>
+                       <TELL "]" CR>)>
+                <SET OA ,PRSA>
+                <SET OO ,PRSO>
+                <SET OI ,PRSI>
+                <COND (<AND <EQUAL? ,IT .I .O>
+                        <NOT <ACCESSIBLE? ,P-IT-OBJECT>>>
+                       <TELL "I don't see what you are referring to." CR>
+                       <RFATAL>)>
+                <COND (<==? .O ,IT> <SET O ,P-IT-OBJECT>)>
+                <COND (<==? .I ,IT> <SET I ,P-IT-OBJECT>)>
+                <SETG PRSA .A>
+                <SETG PRSO .O>
+                <COND (<AND ,PRSO <NOT <EQUAL? ,PRSI ,IT>> <NOT <VERB? WALK>>>
+                       <SETG P-IT-OBJECT ,PRSO>)>
+                <SETG PRSI .I>
+                <COND (<AND <EQUAL? ,NOT-HERE-OBJECT ,PRSO ,PRSI>
+                        <SET V <NOT-HERE-OBJECT-F>>> .V)
+                      (T
+                       <SET O ,PRSO>
+                       <SET I ,PRSI>
+                       <COND
+                    (<SET V <APPLY <GETP ,WINNER ,P?ACTION>>> .V)
+                    (<SET V <APPLY <GETP <LOC ,WINNER> ,P?ACTION> ,M-BEG>> .V)
+                    (<SET V <APPLY <GET ,PREACTIONS .A>>> .V)
+                    (<AND .I <SET V <APPLY <GETP .I ,P?ACTION>>>> .V)
+                    (<AND .O
+                          <NOT <==? .A ,V?WALK>>
+                          <LOC .O>
+                          <SET V <APPLY <GETP <LOC .O> ,P?CONTFCN>>>>
+                     .V)
+                    (<AND .O
+                          <NOT <==? .A ,V?WALK>>
+                          <SET V <APPLY <GETP .O ,P?ACTION>>>>
+                     .V)
+                    (<SET V <APPLY <GET ,ACTIONS .A>>> .V)>)>
+                <SETG PRSA .OA>
+                <SETG PRSO .OO>
+                <SETG PRSI .OI>
+                .V>)
+                   (T
+
+            '<PROG ()
+
+            <SETG DEBUG <>>
 
             <DEFINE D-APPLY (STR FCN "OPTIONAL" FOO "AUX" RES)
                 <COND (<NOT .FCN> <>)
@@ -110,6 +163,7 @@ final class PerformTests: QuelboTests {
                 <SETG PRSO .OO>
                 <SETG PRSI .OI>
                 .V>
+            >)>
         """)
     }
 
@@ -144,6 +198,8 @@ final class PerformTests: QuelboTests {
     }
 
     func testDApply() throws {
+        XCTAssertNotNil(Game.routines.find("ddApply")?.code)
+
         XCTAssertNoDifference(
             Game.routines.find("dApply"),
             Statement(
@@ -263,7 +319,7 @@ final class PerformTests: QuelboTests {
                                     """)
                                 output(o.description)
                             }
-                            if _ = i {
+                            if let i {
                                 output("""
 
                                      PRSI =

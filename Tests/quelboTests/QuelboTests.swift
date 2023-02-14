@@ -93,18 +93,32 @@ class QuelboTests: XCTestCase {
                 self.localVariables = injectedLocalVariables
                 do {
                     switch token {
+                    case .eval(let evalToken):
+                        guard
+                            case .form(let evalFormTokens) = evalToken,
+                            case .atom(let zilString) = evalFormTokens.first
+                        else {
+                            throw GameError.unknownRootEvaluation(token)
+                        }
+                        let symbol = try Game.Element(
+                            zil: zilString,
+                            tokens: evalFormTokens,
+                            with: &localVariables,
+                            type: .mdl,
+                            mode: .evaluate
+                        ).process()
+
                     case .form(let tokens):
                         guard case .atom(let zilString) = tokens.first else {
                             throw GameError.unknownDirective(tokens)
                         }
-                        let symbol = try Game.process(
+                        let symbol = try Game.Element(
                             zil: zilString,
                             tokens: tokens,
                             with: &localVariables,
                             type: factoryType,
                             mode: factoryMode
-                        )
-                        try Game.commit(symbol)
+                        ).process()
 
                         symbols.append(symbol)
 

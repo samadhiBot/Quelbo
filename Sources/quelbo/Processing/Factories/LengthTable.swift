@@ -20,5 +20,13 @@ extension Factories {
         override var presetFlags: [Fizmo.Table.Flag] {
             [.length]
         }
+
+        override func processSymbols() throws {
+            if flags == presetFlags, case .decimal(0) = tokens.first {
+                symbols.removeFirst()
+            }
+
+            try super.processSymbols()
+        }
     }
 }

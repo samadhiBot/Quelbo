@@ -61,39 +61,44 @@ extension Game {
     /// <#Description#>
     /// - Parameter symbol: <#symbol description#>
     static func commit(_ symbol: Symbol) throws {
-        try commit([symbol])
+        switch symbol {
+        case .definition(let definition):
+            if let found = findDefinition(definition.id) {
+                guard definition == found else {
+                    throw GameError.commitDefinitionConflict(definition.id)
+                }
+                return
+            }
+            if definition.isCommittable {
+                // print("▶️ Committing definition:", definition.id, "\n", definition.tokens.first)
+                shared.definitions.append(definition)
+            }
+
+        case .instance, .literal:
+            break
+
+        case .statement(let statement):
+            if statement.isCommittable,
+               let id = statement.id,
+               let category = statement.category
+            {
+                if let existing = try? find(id, in: [category]) {
+                    try existing.assertHasType(statement.type)
+                } else {
+                    // print("▶️ Committing statement:", statement.id, statement.code)
+                    shared.symbols.append(symbol)
+                }
+            }
+
+            try commit(statement.payload.symbols)
+        }
     }
 
     /// <#Description#>
     /// - Parameter symbols: <#symbols description#>
     static func commit(_ symbols: [Symbol]) throws {
         for symbol in symbols {
-            switch symbol {
-            case .definition(let definition):
-                if let found = findDefinition(definition.id) {
-                    guard definition == found else {
-                        throw GameError.commitDefinitionConflict(definition.id)
-                    }
-                    continue
-                }
-                shared.definitions.append(definition)
-
-            case .instance, .literal:
-                break
-
-            case .statement(let statement):
-                if statement.isCommittable,
-                   let id = statement.id,
-                   let category = statement.category
-                {
-                    if let existing = try? find(id, in: [category]) {
-                        try existing.assertHasType(statement.type)
-                    } else {
-                        shared.symbols.append(symbol)
-                    }
-                }
-                try commit(statement.payload.symbols)
-            }
+            try commit(symbol)
         }
     }
 
@@ -245,6 +250,7 @@ enum GameError: Swift.Error {
     case statementNotFound(String)
     case statementNotFound(String, in: [Category])
     case unexpectedAtRootLevel(Token)
+    case unknownRootEvaluation(Token)
     case unknownDirective([Token])
     case unknownOperation(String)
     case variableUpsertConflict(old: Statement, new: Statement)

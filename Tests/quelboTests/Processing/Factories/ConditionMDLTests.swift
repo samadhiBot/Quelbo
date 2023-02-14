@@ -31,9 +31,8 @@ final class ConditionMDLTests: QuelboTests {
                 id: "swimyuks",
                 code: """
                 var swimyuks: Table = Table(
-                    flags: [.length],
-                    .int(0),
-                    .string("You can't swim in the dungeon.")
+                    "You can't swim in the dungeon.",
+                    flags: .length
                 )
                 """,
                 type: .table,

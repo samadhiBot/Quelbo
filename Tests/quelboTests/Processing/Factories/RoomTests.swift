@@ -163,14 +163,14 @@ final class RoomTests: QuelboTests {
                 location: rooms,
                 things: [
                     Thing(
+                        action: lakePseudo,
                         adjectives: [],
-                        nouns: ["lake"],
-                        action: lakePseudo
+                        nouns: ["lake"]
                     ),
                     Thing(
+                        action: chasmPseudo,
                         adjectives: [],
-                        nouns: ["chasm"],
-                        action: chasmPseudo
+                        nouns: ["chasm"]
                     ),
                 ]
             )
@@ -363,14 +363,14 @@ final class RoomTests: QuelboTests {
                     """,
                 things: [
                     Thing(
+                        action: doorPseudo,
                         adjectives: [],
-                        nouns: ["door"],
-                        action: doorPseudo
+                        nouns: ["door"]
                     ),
                     Thing(
+                        action: paintPseudo,
                         adjectives: [],
-                        nouns: ["paint"],
-                        action: paintPseudo
+                        nouns: ["paint"]
                     ),
                 ]
             )
@@ -494,9 +494,9 @@ final class RoomTests: QuelboTests {
                     """,
                 things: [
                     Thing(
+                        action: streamPseudo,
                         adjectives: [],
-                        nouns: ["stream"],
-                        action: streamPseudo
+                        nouns: ["stream"]
                     ),
                 ]
             )

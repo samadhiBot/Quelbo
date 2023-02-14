@@ -129,14 +129,16 @@ extension TypeInfo {
     static var table: TypeInfo {
         .init(
             dataType: .table,
-            confidence: .certain
+            confidence: .certain,
+            isArray: false
         )
     }
 
     static var tableElement: TypeInfo {
         .init(
             dataType: .tableElement,
-            confidence: .certain
+            confidence: .certain,
+            isArray: false
         )
     }
 
@@ -181,6 +183,7 @@ extension TypeInfo {
 
 extension TypeInfo {
     func assertIsArray() throws {
+        if dataType == .table { return }
         guard isArray != false else {
             throw Symbol.AssertionError.isArrayAssertionFailed
         }
@@ -257,6 +260,25 @@ extension TypeInfo {
             isProperty: newIsProperty ?? isProperty,
             isTableElement: newIsTableElement ?? isTableElement
         )
+    }
+
+    func codeMultiType(
+        code: String,
+        category: Category?
+    ) -> String {
+        guard isTableElement == true else { return code }
+
+        switch dataType {
+        case .bool: return ".bool(\(code))"
+        case .int16: return ".int16(\(code))"
+        case .int32: return ".int32(\(code))"
+        case .int8: return ".int8(\(code))"
+        case .int: return ".int(\(code))"
+        case .object: return category == .rooms ? ".room(\(code))" : ".object(\(code))"
+        case .string: return ".string(\(code))"
+        case .table: return ".table(\(code))"
+        default: return code
+        }
     }
 
     /// An empty placeholder value for the data type.
@@ -366,11 +388,13 @@ extension TypeInfo {
         _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
+        let logValuesToConsole = false
+
         let initialType = dataType?.description ?? "nil"
         let assertedType = asserted.dataType?.description ?? "nil"
 
         func logged(_ typeInfo: TypeInfo) -> TypeInfo {
-            guard NSClassFromString("XCTest") != nil else { return typeInfo }
+            guard logValuesToConsole && NSClassFromString("XCTest") != nil else { return typeInfo }
 
             let identifier = handle()
                 .replacingOccurrences(of: "\n", with: "")

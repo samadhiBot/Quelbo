@@ -58,13 +58,13 @@ extension Factories {
             guard let predicate else { return "" }
 
             let predicateCode = {
-                guard
-                    predicate.type.dataType == .bool &&
-                    predicate.type.isTableElement != true
-                else {
-                    return "_ = \(predicate.code)"
+                if predicate.type.dataType == .bool && predicate.type.isTableElement != true {
+                    return predicate.code
                 }
-                return predicate.code
+                if !predicate.code.contains(/\W/) {
+                    return "let \(predicate.code)"
+                }
+                return "_ = \(predicate.code)"
             }()
 
             switch predicateCode {

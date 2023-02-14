@@ -36,10 +36,13 @@ extension Symbol {
 
     var codeMultiType: String {
         switch self {
-        case .definition(let definition): return definition.code
-        case .instance(let instance): return instance.codeMultiType
-        case .literal(let literal): return literal.codeMultiType
-        case .statement(let statement): return statement.code
+        case .definition, .statement:
+            return code
+        case .instance, .literal:
+            return type.codeMultiType(
+                code: code,
+                category: category
+            )
         }
     }
 
@@ -68,22 +71,22 @@ extension Symbol {
         case .literal(let literal):
             return literal.code
         case .statement(let statement):
-            if statement.isFunctionCall { return statement.code}
+            if statement.isFunctionCall || statement.category == .flags {
+                return statement.code
+            }
             return statement.id ?? statement.code
         }
     }
 
     var handleMultiType: String {
         switch self {
-        case .definition(let definition):
-            return definition.id
-        case .instance(let instance):
-            return instance.variable.id ?? instance.variable.code
-        case .literal(let literal):
-            return literal.codeMultiType
-        case .statement(let statement):
-            if statement.isFunctionCall { return statement.code}
-            return statement.id ?? statement.code
+        case .definition, .statement:
+            return handle
+        case .instance, .literal:
+            return type.codeMultiType(
+                code: handle,
+                category: category
+            )
         }
     }
 

@@ -48,22 +48,6 @@ final class Literal: SymbolType {
         }
     }
 
-    var codeMultiType: String {
-        guard type.isTableElement == true else { return code }
-
-        switch type.dataType {
-        case .bool: return ".bool(\(_code))"
-        case .int16: return ".int16(\(_code))"
-        case .int32: return ".int32(\(_code))"
-        case .int8: return ".int8(\(_code))"
-        case .int: return ".int(\(_code))"
-        case .object: return ".object(\(_code))"
-        case .string: return ".string(\(_code))"
-        case .table: return ".table(\(_code))"
-        default: return code
-        }
-    }
-
     var id: String {
         _code
     }
@@ -245,7 +229,7 @@ extension Literal {
         switch (assertedHandling, returnHandling) {
         case (.forced, .suppressed), (.suppressed, .forced):
             throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-                for: code,
+                for: "Literal: \(code)",
                 asserted: assertedHandling,
                 actual: returnHandling
             )

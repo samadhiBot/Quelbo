@@ -20,12 +20,14 @@ extension Factories {
         /// The function or routine parameters.
         var params: [Symbol] = []
 
+        var zilName: String = ""
+
         override func processTokens() throws {
             var routineTokens = tokens
 
-            let zilName = try findName(in: &routineTokens)
+            self.zilName = try findName(in: &routineTokens)
 
-            guard let routine = Game.findRoutine(zilName.lowerCamelCase) else {
+            guard let routine = try findRoutine(zilName.lowerCamelCase) else {
                 throw Error.unknownRoutine(zilName, routineTokens)
             }
             self.routine = routine
@@ -88,6 +90,28 @@ extension Factories {
                 isFunctionCall: true
             )
         }
+    }
+}
+
+extension Factories.RoutineCall {
+    func findRoutine(_ id: String) throws -> Statement? {
+        if let routine = Game.findRoutine(id) {
+            return routine
+        }
+
+        if Game.findDefinition(id) != nil {
+            let routine = try Game.Element(
+                zil: zilName,
+                tokens: tokens,
+                with: &localVariables
+            ).processDefinition()
+
+            if case .statement(let routineStatement) = routine {
+                return routineStatement
+            }
+        }
+
+        return nil
     }
 }
 

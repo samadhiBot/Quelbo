@@ -333,7 +333,7 @@ final class SnarfemTests: QuelboTests {
                         }
                         if .isNot(try pButs.get(at: pMatchlen).isZero) {
                             l.set(to: try pPrso.get(at: pMatchlen))
-                            if _ = optr {
+                            if let optr {
                                 pPrso.set(to: butMerge(tbl: pPrso))
                             }
                             if _ = .and(

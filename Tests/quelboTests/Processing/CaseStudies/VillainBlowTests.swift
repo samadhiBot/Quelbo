@@ -51,6 +51,43 @@ final class VillainBlowTests: QuelboTests {
             <CONSTANT V-MSGS 4>        ;"messages for that villain"
             <CONSTANT V-VILLAIN 0>     ;"villain"
 
+            <GLOBAL DEF1
+                <TABLE (PURE)
+                 MISSED MISSED MISSED MISSED
+                 STAGGER STAGGER
+                 UNCONSCIOUS UNCONSCIOUS
+                 KILLED KILLED KILLED KILLED KILLED>>
+            <GLOBAL DEF2A
+                <TABLE (PURE)
+                 MISSED MISSED MISSED MISSED MISSED
+                 STAGGER STAGGER
+                 LIGHT-WOUND LIGHT-WOUND
+                 UNCONSCIOUS>>
+            <GLOBAL DEF2B
+                <TABLE (PURE)
+                 MISSED MISSED MISSED
+                 STAGGER STAGGER
+                 LIGHT-WOUND LIGHT-WOUND LIGHT-WOUND
+                 UNCONSCIOUS
+                 KILLED KILLED KILLED>>
+            <GLOBAL DEF3A
+                <TABLE (PURE)
+                 MISSED MISSED MISSED MISSED MISSED
+                 STAGGER STAGGER
+                 LIGHT-WOUND LIGHT-WOUND
+                 SERIOUS-WOUND SERIOUS-WOUND>>
+            <GLOBAL DEF3B
+                <TABLE (PURE)
+                 MISSED MISSED MISSED
+                 STAGGER STAGGER
+                 LIGHT-WOUND LIGHT-WOUND LIGHT-WOUND
+                 SERIOUS-WOUND SERIOUS-WOUND SERIOUS-WOUND>>
+            <GLOBAL DEF3C
+                <TABLE (PURE)
+                 MISSED
+                 STAGGER STAGGER
+                 LIGHT-WOUND LIGHT-WOUND LIGHT-WOUND LIGHT-WOUND
+                 SERIOUS-WOUND SERIOUS-WOUND SERIOUS-WOUND>>
             <GLOBAL DEF1-RES
                 <TABLE DEF1
                        0 ;<REST ,DEF1 2>

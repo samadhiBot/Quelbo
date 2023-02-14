@@ -63,9 +63,9 @@ extension Factories {
                 switch actionToken {
                     case .atom(let actionRoutine):
                         code = """
+                            action: \(actionRoutine.lowerCamelCase),
                             adjectives: \(adjectives),
-                            nouns: \(nouns),
-                            action: \(actionRoutine.lowerCamelCase)
+                            nouns: \(nouns)
                             """
                     case .string(let text):
                         code = """
@@ -98,7 +98,7 @@ extension Factories {
                 )
             }
 
-            let pseudos = symbols
+            let pseudos = symbols.sorted
 
             return .statement(
                 id: "things",

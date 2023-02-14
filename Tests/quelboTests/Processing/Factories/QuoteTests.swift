@@ -44,19 +44,33 @@ final class QuoteTests: QuelboTests {
     }
 
     func testQuoteGlobal() throws {
-        let flameBit = Statement(
-            id: "flameBit",
-            type: .bool,
-            category: .globals,
-            isCommittable: true
+        process("""
+            <OBJECT TORCH (FLAGS FLAMEBIT ONBIT)>
+
+            <DEFMAC FLAMING? ('OBJ)
+                <FORM AND <FORM FSET? .OBJ ',FLAMEBIT>
+                          <FORM FSET? .OBJ ',ONBIT>>>
+        """)
+
+        XCTAssertNoDifference(
+            Game.findRoutine("isFlaming"),
+            Statement(
+                id: "isFlaming",
+                code: """
+                    @discardableResult
+                    /// The `isFlaming` (FLAMING?) macro.
+                    func isFlaming(obj: Object) -> Bool {
+                        return .and(
+                            obj.hasFlag(.isFlammable),
+                            obj.hasFlag(.isOn)
+                        )
+                    }
+                    """,
+                type: .bool,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
         )
-
-        try Game.commit(.statement(flameBit))
-
-        let symbol = try factory.init([
-            .global(.atom("FLAMEBIT"))
-        ], with: &localVariables).process()
-
-        XCTAssertNoDifference(symbol, .instance(flameBit))
     }
 }

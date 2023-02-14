@@ -47,7 +47,7 @@ final class DefineTests: QuelboTests {
                     func makeReadbuf() -> Table {
                         return Table(
                             count: readbufSize,
-                            flags: [.byte, .none]
+                            flags: .byte, .none
                         )
                     }
                     """,

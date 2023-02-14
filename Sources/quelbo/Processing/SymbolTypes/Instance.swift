@@ -77,22 +77,6 @@ final class Instance: SymbolType {
         id
     }
 
-    var codeMultiType: String {
-        guard isTableElement == true else { return id }
-
-        switch variable.type.dataType {
-        case .bool: return ".bool(\(id))"
-        case .int16: return ".int16(\(id))"
-        case .int32: return ".int32(\(id))"
-        case .int8: return ".int8(\(id))"
-        case .int: return ".int(\(id))"
-        case .object: return variable.category == .rooms ? ".room(\(id))" : ".object(\(id))"
-        case .string: return ".string(\(id))"
-        case .table: return ".table(\(id))"
-        default: return id
-        }
-    }
-
     var id: String {
         guard let id = variable.id else { return "<missing id>" }
         return id
@@ -124,7 +108,7 @@ final class Instance: SymbolType {
 
     var typeDescription: String {
         var description = type.dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "⛔️"
+            isTableElement == true ? "TableElement" : "Any"
         )
         if isArray == true {
             description = "[\(description)]"
@@ -244,7 +228,7 @@ extension Instance {
         switch (assertedHandling, returnHandling) {
         case (.forced, .suppressed), (.suppressed, .forced):
             throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-                for: id,
+                for: "Instance: \(id)",
                 asserted: assertedHandling,
                 actual: returnHandling
             )

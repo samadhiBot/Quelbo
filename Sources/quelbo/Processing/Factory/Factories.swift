@@ -13,7 +13,10 @@ enum Factories {}
 // MARK: - Factory.FactoryType
 
 extension Factories {
-    /// The set of command types that factories can translate.
+    /// Represents the different factory types.
+    ///
+    /// Used for disambiguation in cases when a ZIL statement behaves differently depending on the
+    /// context, and therefore might have multiple factories in Quelbo.
     enum FactoryType {
         /// Translates an MDL built-in or ZIL library command used outside routine definitions.
         case mdl

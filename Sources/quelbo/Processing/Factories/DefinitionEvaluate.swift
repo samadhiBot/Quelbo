@@ -45,16 +45,11 @@ extension Factories {
             }
             definitionTokens.insert(.atom(zilName), at: 0)
 
-            let routine = try Factories.Routine(
-                definitionTokens,
+            try Game.Element(
+                zil: zilName,
+                tokens: definitionTokens,
                 with: &localVariables
-            )
-            routine.blockProcessor.assert(
-                returnHandling: .implicit
-            )
-            try Game.commit(
-                try routine.process()
-            )
+            ).processRoutine()
 
             let evaluated = try Factories.RoutineCall(
                 [.atom(zilName)] + callerParams,

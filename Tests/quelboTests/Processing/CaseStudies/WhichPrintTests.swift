@@ -119,7 +119,7 @@ final class WhichPrintTests: QuelboTests {
                         output("Which ")
                         if .or(pOflag, pMerged, pAnd) {
                             output({
-                                if _ = pNam {
+                                if let pNam {
                                     return pNam
                                 } else if pAdj {
                                     return pAdjn

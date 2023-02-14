@@ -31,9 +31,9 @@ extension Factories {
                 }
 
                 let code = """
+                    action: \(action.lowerCamelCase),
                     adjectives: [],
-                    nouns: [\(noun.lowerCamelCase.quoted)],
-                    action: \(action.lowerCamelCase)
+                    nouns: [\(noun.lowerCamelCase.quoted)]
                     """
 
                 symbols.append(.statement(

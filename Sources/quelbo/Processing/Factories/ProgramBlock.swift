@@ -12,6 +12,10 @@ extension Factories {
     /// [PROG](https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b)
     /// function.
     class ProgramBlock: Factory {
+        override class var factoryType: Factories.FactoryType {
+            .zCode
+        }
+
         override class var zilNames: [String] {
             ["PROG"]
         }
@@ -29,7 +33,8 @@ extension Factories {
         override func processTokens() throws {
             self.blockProcessor = try BlockProcessor(
                 tokens,
-                with: &localVariables
+                with: &localVariables,
+                context: Self.factoryType
             )
             
             blockProcessor.assert(

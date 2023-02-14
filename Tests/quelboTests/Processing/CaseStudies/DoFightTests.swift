@@ -34,6 +34,12 @@ final class DoFightTests: QuelboTests {
             <CONSTANT V-VILLAIN 0>    ;"villain"
             <CONSTANT F-BUSY? 1>      ;"busy recovering weapon?"
 
+            <OBJECT CYCLOPS>
+            <OBJECT TROLL>
+
+            <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
+            <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
+            <GLOBAL TROLL-MELEE <TABLE (PURE) "Troll melee message">>
             <GLOBAL VILLAINS
                 <LTABLE <TABLE TROLL SWORD 1 0 TROLL-MELEE>
                     <TABLE THIEF KNIFE 1 0 THIEF-MELEE>
@@ -67,6 +73,44 @@ final class DoFightTests: QuelboTests {
                             <COND (<0? .OUT> <RETURN>)>)>)
                         (T <RETURN>)>>>
         """)
+    }
+
+    func testVillainsTable() throws {
+        XCTAssertNoDifference(
+            Game.globals.find("villains"),
+            Statement(
+                id: "villains",
+                code: """
+                    var villains: Table = Table(
+                        .table(
+                            .object(troll),
+                            .object(sword),
+                            .int(1),
+                            .int(0),
+                            .table(trollMelee)
+                        ),
+                        .table(
+                            .object(thief),
+                            .object(knife),
+                            .int(1),
+                            .int(0),
+                            .table(thiefMelee)
+                        ),
+                        .table(
+                            .object(cyclops),
+                            .bool(false),
+                            .int(0),
+                            .int(0),
+                            .table(cyclopsMelee)
+                        ),
+                        flags: .length
+                    )
+                    """,
+                type: .table,
+                category: .globals,
+                isCommittable: true
+            )
+        )
     }
 
     func testDoFight() throws {
@@ -104,7 +148,7 @@ final class DoFightTests: QuelboTests {
                                     out.set(to: .add(1, .random(3)))
                                 }
                             }
-                            if _ = res {
+                            if let res {
                                 if .isNot(out) {
                                     break
                                 } else {

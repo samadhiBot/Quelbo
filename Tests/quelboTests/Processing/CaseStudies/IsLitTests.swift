@@ -74,7 +74,7 @@ final class IsLitTests: QuelboTests {
                         ) {
                             return true
                         }
-                        pGwimBit.set(to: onBit)
+                        pGwimBit.set(to: .isOn)
                         ohere.set(to: here)
                         here.set(to: rm)
                         if .and(

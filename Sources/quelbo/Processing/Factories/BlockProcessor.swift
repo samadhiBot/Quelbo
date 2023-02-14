@@ -43,7 +43,7 @@ extension Factories {
                 tokens.removeFirst()
             }
 
-            symbols = try symbolize(tokens)
+            symbols = try symbolize(tokens, type: context)
         }
 
         override func processSymbols() throws {

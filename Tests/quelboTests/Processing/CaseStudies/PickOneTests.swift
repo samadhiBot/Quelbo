@@ -57,12 +57,11 @@ final class PickOneTests: QuelboTests {
                 id: "hellos",
                 code: """
                     var hellos: Table = Table(
-                        flags: [.length],
-                        .int(0),
-                        .string("Hello."),
-                        .string("Good day."),
-                        .string("Nice weather we've been having lately."),
-                        .string("Goodbye.")
+                        "Hello.",
+                        "Good day.",
+                        "Nice weather we've been having lately.",
+                        "Goodbye.",
+                        flags: .length
                     )
                     """,
                 type: .table,
@@ -118,7 +117,7 @@ final class PickOneTests: QuelboTests {
                 code: #"""
                     /// The `vHello` (V-HELLO) routine.
                     func vHello() {
-                        if _ = parsedDirectObject {
+                        if let parsedDirectObject {
                             if parsedDirectObject.hasFlag(.isActor) {
                                 output("The ")
                                 output(parsedDirectObject.description)

@@ -1,5 +1,5 @@
 //
-//  PureLengthTableTests.swift
+//  PureTableTests.swift
 //  Quelbo
 //
 //  Created by Chris Sessions on 6/3/22.
@@ -17,26 +17,26 @@ final class PureLengthTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "forest1", type: .object, category: .rooms),
-            .variable(id: "forest2", type: .object, category: .rooms),
-            .variable(id: "forest3", type: .object, category: .rooms),
-            .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "path", type: .object, category: .rooms),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "thief", type: .object, category: .objects),
-            .variable(id: "thiefMelee", type: .bool, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines)
-        ])
+        process("""
+            <OBJECT KNIFE>
+            <OBJECT SWORD>
+            <OBJECT THIEF>
+            <OBJECT TROLL>
+            <ROOM CLEARING>
+            <ROOM FOREST1>
+            <ROOM FOREST2>
+            <ROOM FOREST3>
+            <ROOM PATH>
+            <ROUTINE THIEF-MELEE () T>
+            <ROUTINE TROLL-MELEE () T>
+        """)
     }
 
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("PLTABLE"))
     }
 
-    func testPureLengthTableOfRooms() throws {
+    func testPureTableOfRooms() throws {
         let symbol = try factory.init([
             .atom("FOREST-1"),
             .atom("FOREST-2"),
@@ -46,10 +46,10 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length, .pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3,
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
@@ -58,7 +58,7 @@ final class PureLengthTableTests: QuelboTests {
         ))
     }
 
-    func testPureLengthTableOfDifferentTypes() throws {
+    func testPureTableOfDifferentTypes() throws {
         let symbol = try factory.init([
             .atom("TROLL"),
             .atom("SWORD"),
@@ -70,17 +70,42 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length, .pure],
                     .object(troll),
                     .object(sword),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee)
+                    .bool(trollMelee),
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
             isMutable: false,
             returnHandling: .implicit
+        ))
+    }
+
+    func testPureLengthTableWithLeadingZero() throws {
+        let symbol = process("""
+            <GLOBAL JUMPLOSS
+                <PLTABLE 0
+                       "You should have looked before you leaped."
+                       "In the movies, your life would be passing before your eyes."
+                       "Geronimo...">>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "jumploss",
+            code: """
+                let jumploss: Table = Table(
+                    "You should have looked before you leaped.",
+                    "In the movies, your life would be passing before your eyes.",
+                    "Geronimo...",
+                    flags: .length, .pure
+                )
+                """,
+            type: .table,
+            category: .constants,
+            isCommittable: true
         ))
     }
 
@@ -100,13 +125,13 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length, .pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
@@ -115,7 +140,7 @@ final class PureLengthTableTests: QuelboTests {
         ))
     }
 
-    func testNestedPureLengthTables() throws {
+    func testNestedPureTables() throws {
         let symbol = try factory.init([
             .form([
                 .atom("PLTABLE"),
@@ -138,14 +163,13 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.length, .pure],
                     .table(
-                        flags: [.length, .pure],
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee)
+                        .bool(trollMelee),
+                        flags: .length, .pure
                     ),
                     .table(
                         .object(thief),
@@ -153,7 +177,8 @@ final class PureLengthTableTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(thiefMelee)
-                    )
+                    ),
+                    flags: .length, .pure
                 )
                 """,
             type: .table,

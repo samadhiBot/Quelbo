@@ -227,7 +227,11 @@ extension Factory {
             tokens.append(.decimal(nth))
 
         case .form:
-            var nested = try symbolize(formTokens)
+            var nested = try symbolize(
+                formTokens,
+                mode: factoryMode,
+                type: factoryType
+            )
             guard let closure = nested.shift() else {
                 throw SymbolizationError.invalidZilForm(formTokens)
             }
@@ -239,7 +243,8 @@ extension Factory {
                         return "\(closure.code)(\(nested.codeValues(.commaSeparated)))"
                     }
                 },
-                type: closure.type
+                type: closure.type,
+                payload: closure.payload
             )
 
         case .global(.atom(let name)):
@@ -252,13 +257,13 @@ extension Factory {
             throw SymbolizationError.invalidZilForm(formTokens)
         }
 
-        return try Game.process(
+        return try Game.Element(
             zil: zilString,
             tokens: tokens,
             with: &localVariables,
             type: factoryType,
             mode: factoryMode
-        )
+        ).process()
     }
 
     /// Translates a Zil

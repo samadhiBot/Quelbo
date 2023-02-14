@@ -18,6 +18,8 @@ final class TableTests: QuelboTests {
         super.setUp()
 
         process("""
+            <CONSTANT MISSED 1>        ;"attacker misses"
+
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
             <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
@@ -37,9 +39,9 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3
                 )
                 """,
             type: .table,
@@ -67,7 +69,7 @@ final class TableTests: QuelboTests {
         ))
     }
 
-    func testByteLengthTable() throws {
+    func testByteTable() throws {
         let symbol = try factory.init([
             .list([
                 .atom("BYTE"),
@@ -82,11 +84,11 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.byte, .length],
-                    .int(1),
-                    .int(2),
-                    .int(3),
-                    .int(4)
+                    1,
+                    2,
+                    3,
+                    4,
+                    flags: .byte, .length
                 )
                 """,
             type: .table,
@@ -134,13 +136,13 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .pure
                 )
                 """,
             type: .table,
@@ -168,16 +170,16 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
-                    .string("up to your ankles."),
-                    .string("up to your shin."),
-                    .string("up to your knees."),
-                    .string("up to your hips."),
-                    .string("up to your waist."),
-                    .string("up to your chest."),
-                    .string("up to your neck."),
-                    .string("over your head."),
-                    .string("high in your lungs.")
+                    "up to your ankles.",
+                    "up to your shin.",
+                    "up to your knees.",
+                    "up to your hips.",
+                    "up to your waist.",
+                    "up to your chest.",
+                    "up to your neck.",
+                    "over your head.",
+                    "high in your lungs.",
+                    flags: .pure
                 )
                 """,
             type: .table,

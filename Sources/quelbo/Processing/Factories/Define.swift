@@ -20,10 +20,10 @@ extension Factories {
         var definition: [Token] = []
 
         override func processTokens() throws {
-            var tokens = tokens
+            var definitionTokens = tokens
 
-            self.zilName = try findName(in: &tokens)
-            self.definition = tokens
+            self.zilName = try findName(in: &definitionTokens)
+            self.definition = definitionTokens
         }
 
         override func process() throws -> Symbol {
@@ -31,7 +31,8 @@ extension Factories {
 
             return .definition(
                 id: definitionName,
-                tokens: definition
+                tokens: definition,
+                isCommittable: true
             )
         }
     }

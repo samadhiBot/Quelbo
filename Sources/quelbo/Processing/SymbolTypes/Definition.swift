@@ -13,6 +13,7 @@ final class Definition: SymbolType, Identifiable {
     let tokens: [Token]
     private(set) var evaluatedCode: String?
     private(set) var evaluationError: Swift.Error?
+    private(set) var isCommittable: Bool
     private(set) var localVariables: [Statement]
     private(set) var returnHandling: Symbol.ReturnHandling
     private(set) var type: TypeInfo
@@ -20,9 +21,11 @@ final class Definition: SymbolType, Identifiable {
     init(
         id: String,
         tokens: [Token],
-        localVariables: [Statement] = []
+        localVariables: [Statement] = [],
+        isCommittable: Bool = false
     ) {
         self.id = id
+        self.isCommittable = isCommittable
         self.localVariables = localVariables
         self.returnHandling = .implicit
         self.tokens = tokens
@@ -87,12 +90,14 @@ extension Symbol {
     static func definition(
         id: String,
         tokens: [Token],
-        localVariables: [Statement] = []
+        localVariables: [Statement] = [],
+        isCommittable: Bool = false
     ) -> Symbol {
         .definition(Definition(
             id: id,
             tokens: tokens,
-            localVariables: localVariables
+            localVariables: localVariables,
+            isCommittable: isCommittable
         ))
     }
 }
@@ -108,7 +113,7 @@ extension Definition {
         switch (assertedHandling, returnHandling) {
         case (.forced, .suppressed), (.suppressed, .forced):
             throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-                for: id,
+                for: "Definition: \(id)",
                 asserted: assertedHandling,
                 actual: returnHandling
             )
@@ -146,6 +151,6 @@ extension Definition: Equatable {
 
 extension Definition {
     enum Error: Swift.Error {
-        case useFactoriesDefinitionEval(Definition)
+        case failedToFindNameToken([Token])
     }
 }

@@ -12,27 +12,12 @@ import XCTest
 final class IsNotTests: QuelboTests {
     let factory = Factories.IsNot.self
 
-    override func setUp() {
-        super.setUp()
-
-        try! Game.commit([
-            .variable(id: "readbuf", type: .table, category: .globals),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "theVoid", type: .void, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines),
-            .variable(id: "zilly", type: .someTableElement, category: .globals),
-        ])
-    }
-
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("NOT"))
     }
 
     func testIsNotBool() throws {
-        let symbol = try factory.init([
-            .bool(true)
-        ], with: &localVariables).process()
+        let symbol = process("<NOT T>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(true)",
@@ -41,13 +26,11 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotDirection() throws {
-        localVariables.append(
-            Statement(id: "north", type: .object, category: .directions)
-        )
+        let symbol = process("""
+            <DIRECTIONS NORTH EAST WEST SOUTH NE NW SE SW UP DOWN IN OUT>
 
-        let symbol = try factory.init([
-            .local("NORTH")
-        ], with: &localVariables).process()
+            <NOT NORTH>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(north)",
@@ -56,9 +39,7 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotInt() throws {
-        let symbol = try factory.init([
-            .decimal(42)
-        ], with: &localVariables).process()
+        let symbol = process("<NOT 42>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(42)",
@@ -67,9 +48,7 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotObject() throws {
-        let symbol = try factory.init([
-            .global(.atom("SWORD"))
-        ], with: &localVariables).process()
+        let symbol = process("<NOT SWORD>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(sword)",
@@ -78,9 +57,7 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotRoutine() throws {
-        let symbol = try factory.init([
-            .atom("TROLL-MELEE")
-        ], with: &localVariables).process()
+        let symbol = process("<NOT TROLL-MELEE>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(trollMelee)",
@@ -89,9 +66,9 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotString() throws {
-        let symbol = try factory.init([
-            .string("Forty-two")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <NOT "Forty-two">
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: #".isNot("Forty-two")"#,
@@ -100,9 +77,11 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotTable() throws {
-        let symbol = try factory.init([
-            .global(.atom("READBUF"))
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <GLOBAL READBUF <TABLE 0 1 2>>
+
+            <NOT ,READBUF>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(readbuf)",
@@ -111,13 +90,11 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotThing() throws {
-        localVariables.append(
-            Statement(id: "something", type: .object)
-        )
+        let symbol = process("""
+            <THING SOMETHING>
 
-        let symbol = try factory.init([
-            .local("SOMETHING")
-        ], with: &localVariables).process()
+            <NOT SOMETHING>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(something)",
@@ -126,9 +103,7 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotUnknown() throws {
-        let symbol = try factory.init([
-            .atom("WHAT-AM-I")
-        ], with: &localVariables).process()
+        let symbol = process("<NOT WHAT-AM-I>")
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(whatAmI)",
@@ -137,9 +112,11 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotVoid() throws {
-        let symbol = try factory.init([
-            .global(.atom("THE-VOID"))
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROUTINE THE-VOID>
+
+            <NOT THE-VOID>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: ".isNot(theVoid)",
@@ -148,12 +125,14 @@ final class IsNotTests: QuelboTests {
     }
 
     func testIsNotTableElement() throws {
-        let symbol = try factory.init([
-            .global(.atom("ZILLY"))
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <GLOBAL SILLY <TABLE "Zilly">>
+
+            <NOT <GET ,SILLY 0>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".isNot(zilly)",
+            code: ".isNot(try silly.get(at: 0))",
             type: .bool
         ))
     }

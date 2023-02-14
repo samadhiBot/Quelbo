@@ -236,7 +236,7 @@ final class ClauseTests: QuelboTests {
                         try pLexv.put(element: Word.intnum, at: ptr)
                         if sum.isGreaterThan(1000) {
                             return nil
-                        } else if _ = tim {
+                        } else if let tim {
                             if tim.isLessThan(8) {
                                 tim.set(to: .add(tim, 12))
                             } else if tim.isGreaterThan(23) {

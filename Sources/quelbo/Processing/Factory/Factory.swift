@@ -17,6 +17,9 @@ class Factory {
     /// Specifies what type of command the factory translates.
     class var factoryType: Factories.FactoryType { .zCode }
 
+    /// <#Description#>
+    var context: Factories.FactoryType
+
     /// An array of the local variables at play within a factory.
     var localVariables: [Statement]
 
@@ -32,14 +35,16 @@ class Factory {
     required init(
         _ tokens: [Token],
         with variables: inout [Statement],
-        mode factoryMode: FactoryMode = .process
+        mode factoryMode: FactoryMode = .process,
+        context: Factories.FactoryType? = nil
     ) throws {
+        self.context = context ?? Self.factoryType
         self.localVariables = variables
         self.mode = factoryMode
         self.tokens = tokens
 
         if NSClassFromString("XCTest") == nil {
-            Logger.process.debug("   􀎕 Factory: \(String(describing: self), privacy: .public)")
+            Logger.process.debug("   􀎕 \(String(describing: self), privacy: .public)")
         }
 
         try processTokens()
@@ -118,9 +123,12 @@ class Factory {
 }
 
 extension Factory {
-    /// <#Description#>
+    /// The set of modes that factories can use during processing.
     enum FactoryMode: Equatable {
+        /// Evaluate the ZIL code immediately and return a ``Literal`` value.
         case evaluate
+
+        /// Process the ZIL code and return a ``Symbol`` containing Swift code.
         case process
     }
 }

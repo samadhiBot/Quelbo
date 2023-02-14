@@ -185,21 +185,27 @@ extension Statement {
             try payload.assertHasReturnHandling(.forced, from: returnHandling)
         case (.forced, .suppressedPassthrough):
             try payload.assertHasReturnHandling(.forced, from: returnHandling)
-        case (.suppressed, .forced):
-            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-                for: id ?? code,
-                asserted: assertedHandling,
-                actual: returnHandling
-            )
+//        case (.suppressed, .forced):
+//            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+//                for: id ?? code,
+//                asserted: assertedHandling,
+//                actual: returnHandling
+//            )
         case (.forced, .forced),
              (.forced, .suppressed),
              (.implicit, .implicit),
              (.suppressed, .suppressedPassthrough):
             break
         default:
-            assertionFailure(
-                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
+            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+                for: "Statement: \(id ?? code)",
+                asserted: assertedHandling,
+                actual: returnHandling
             )
+
+//            assertionFailure(
+//                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
+//            )
         }
     }
 

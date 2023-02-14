@@ -22,7 +22,7 @@ final class ProgramBlockTests: QuelboTests {
     }
 
     func testFindFactory() {
-        AssertSameFactory(factory, Game.findFactory("PROG"))
+        AssertSameFactory(factory, Game.findFactory("PROG", type: .zCode))
     }
 
     // https://docs.google.com/document/d/11Kz3tknK05hb0Cw41HmaHHkgR9eh0qNLAbE9TzZe--c/edit#heading=h.1bkyn9b

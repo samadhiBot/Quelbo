@@ -9,6 +9,7 @@ import Foundation
 
 enum SymbolElementAssertion {
     case hasCategory(Category)
+    case hasKnownType
     case hasMutability(Bool)
     case hasReturnValue
     case hasSameCategory(as: Symbol)
@@ -28,6 +29,7 @@ enum SymbolCollectionAssertion {
     case areVariables
     case haveCommonType
     case haveCount(SymbolCollectionCount)
+    case haveKnownType
     case haveReturnHandling(Symbol.ReturnHandling)
     case haveReturnValues
     case haveSameType(as: Symbol)
@@ -46,6 +48,8 @@ extension Symbol {
         switch assertion {
         case .hasCategory(let category):
             try assertHasCategory(category)
+        case .hasKnownType:
+            try assertHasKnownType()
         case .hasMutability(let mutability):
             try assertHasMutability(mutability)
         case .hasReturnValue:
@@ -91,6 +95,8 @@ extension Array where Element == Symbol {
             try nonCommentSymbols.assertHaveCommonType()
         case .haveCount(let comparator):
             try nonCommentSymbols.assertHaveCount(comparator)
+        case .haveKnownType:
+            try nonCommentSymbols.forEach { try $0.assertHasKnownType() }
         case .haveReturnHandling(let handling):
             try nonCommentSymbols.forEach { try $0.assertHasReturnHandling(handling) }
         case .haveReturnValues:
@@ -124,6 +130,12 @@ extension Symbol {
             try statement.assertHasCategory(assertionCategory)
         case .instance(let instance):
             try instance.variable.assertHasCategory(assertionCategory)
+        }
+    }
+
+    func assertHasKnownType() throws {
+        guard type.confidence > .none else {
+            throw AssertionError.hasKnownTypeAssertionFailed(for: handle)
         }
     }
 
@@ -263,7 +275,7 @@ extension Array where Element == Symbol {
             return ([], [])
         }()
         let alphas = explicitlyReturning.withMaxConfidence
-        let uniqueTypes = alphas.compactMap(\.type.dataType).unique
+        let uniqueTypes = alphas.returnTypes
 
         /*
          Swift.print(
@@ -310,6 +322,7 @@ extension Array where Element == Symbol {
 extension Symbol {
     enum AssertionError: Swift.Error {
         case hasCategoryAssertionFailed(for: String, asserted: Category, actual: Category)
+        case hasKnownTypeAssertionFailed(for: String)
         case hasMutabilityAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case hasReturnHandlingAssertionFailed(
             for: String,

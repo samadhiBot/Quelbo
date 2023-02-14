@@ -33,7 +33,7 @@ extension Game {
                     named: "Directions.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.directions.codeValues()
+                    with: Game.directions.sorted.codeValues()
                 )
             }
 
@@ -42,7 +42,7 @@ extension Game {
                     named: "Constants.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.constants.codeValues(.doubleLineBreak)
+                    with: Game.constants.sorted.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -51,7 +51,7 @@ extension Game {
                     named: "Globals.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.globals.codeValues(.doubleLineBreak)
+                    with: Game.globals.sorted.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -60,7 +60,7 @@ extension Game {
                     named: "Objects.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.objects.codeValues(.doubleLineBreak)
+                    with: Game.objects.sorted.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -69,7 +69,7 @@ extension Game {
                     named: "Rooms.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.rooms.codeValues(.doubleLineBreak)
+                    with: Game.rooms.sorted.codeValues(.doubleLineBreak)
                 )
             }
 
@@ -78,7 +78,16 @@ extension Game {
                     named: "Routines.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.routines.codeValues(.doubleLineBreak)
+                    with: Game.routines.sorted.codeValues(.doubleLineBreak)
+                )
+            }
+
+            if !Game.syntax.isEmpty {
+                try createFile(
+                    named: "Syntax.swift",
+                    project: project,
+                    in: sourcesFolder,
+                    with: Game.syntax.sorted.codeValues(.doubleLineBreak)
                 )
             }
         }
@@ -131,7 +140,8 @@ private extension Game.Package {
             let package = Package(
                 name: "\(name)",
                 dependencies: [
-                    .package(url: "https://github.com/samadhiBot/Fizmo", branch: "main")
+                    // .package(url: "https://github.com/samadhiBot/Fizmo", branch: "main")
+                    .package(path: "/Users/sessions/Zork/Fizmo")
                 ],
                 targets: [
                     .executableTarget(

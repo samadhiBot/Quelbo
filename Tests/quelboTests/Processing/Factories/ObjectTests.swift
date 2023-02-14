@@ -434,7 +434,7 @@ final class ObjectTests: QuelboTests {
                 /// The `localGlobals` (LOCAL-GLOBALS) object.
                 var localGlobals = Object(
                     id: "localGlobals",
-                    advfcn: 0,
+                    adventurerFunction: nil,
                     capacity: 0,
                     containerFunction: nil,
                     descriptionFunction: pathObject,
@@ -446,9 +446,9 @@ final class ObjectTests: QuelboTests {
                     synonyms: ["zzmgck"],
                     things: [
                         Thing(
+                            action: vWalk,
                             adjectives: [],
-                            nouns: ["foobar"],
-                            action: vWalk
+                            nouns: ["foobar"]
                         ),
                     ],
                     vehicleType: true

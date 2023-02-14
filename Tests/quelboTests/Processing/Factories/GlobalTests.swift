@@ -17,6 +17,8 @@ final class GlobalTests: QuelboTests {
         super.setUp()
 
         process("""
+            <CONSTANT MISSED 1>        ;"attacker misses"
+
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
             <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
@@ -92,9 +94,9 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 var foo: Table = Table(
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3
                 )
                 """,
             type: .table,
@@ -115,13 +117,13 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 let foo: Table = Table(
-                    flags: [.length, .pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
@@ -145,7 +147,6 @@ final class GlobalTests: QuelboTests {
             id: "villains",
             code: """
                 var villains: Table = Table(
-                    flags: [.length],
                     .table(
                         .object(troll),
                         .object(sword),
@@ -166,7 +167,8 @@ final class GlobalTests: QuelboTests {
                         .int(0),
                         .int(0),
                         .table(cyclopsMelee)
-                    )
+                    ),
+                    flags: .length
                 )
                 """,
             type: .table,
@@ -243,42 +245,36 @@ final class GlobalTests: QuelboTests {
     }
 
     func testWhenBooleanFalseSignifiesObjectPlaceholder() throws {
-        process("<GLOBAL FOO <>>")
+        process("""
+            <GLOBAL AGAIN-DIR <>>
+        """)
 
-        // `foo` is recorded as a boolean, but it's understood that `<>` might have been a
-        // placeholder for another type (as noted in the meta property).
         XCTAssertNoDifference(
-            Game.findInstance("foo"),
+            Game.findInstance("againDir"),
             Instance(Statement(
-                id: "foo",
-                code: "var foo: Bool = false",
+                id: "againDir",
+                code: "var againDir: Bool = false",
                 type: .booleanFalse,
                 category: .globals,
                 isCommittable: true
             ))
         )
 
-        // Move expects `foo` to be an object, not a boolean. This triggers an update of the
-        // `foo` game symbol's type from boolean to object.
-        let move = try Factories.Move([
-            .global(.atom("FOO")),
-            .global(.atom("CLEARING"))
-        ], with: &localVariables).process()
+        process("""
+            <ROUTINE PARSER ("AUX" (DIR <>))
+                <SETG PRSO .DIR>
+                <SETG AGAIN-DIR .DIR>>
+        """)
 
-        XCTAssertNoDifference(move, .statement(
-            code: "foo.move(to: clearing)",
-            type: .void
-        ))
-
-        // Inspecting the `foo` game symbol confirms that the type update took place.
         XCTAssertNoDifference(
-            Game.findInstance("foo"),
+            Game.findInstance("againDir"),
             Instance(Statement(
-                id: "foo",
-                code: "var foo: Object?",
+                id: "againDir",
+                code: "var againDir: Object?",
                 type: .object.optional,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             ))
         )
     }

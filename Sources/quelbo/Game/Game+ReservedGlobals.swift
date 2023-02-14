@@ -18,6 +18,13 @@ extension Game {
                 isMutable: true
             ),
             .statement(
+                id: "debug",
+                code: { _ in "var debug: Bool = false" },
+                type: .bool,
+                category: .globals,
+                isMutable: true
+            ),
+            .statement(
                 id: "lowDirection",
                 code: { _ in "let lowDirection: Int = 0" },
                 type: .int

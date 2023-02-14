@@ -17,6 +17,8 @@ final class ConstantTests: QuelboTests {
         super.setUp()
 
         process("""
+            <CONSTANT MISSED 1>        ;"attacker misses"
+
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
             <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
@@ -91,9 +93,9 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo: Table = Table(
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3
                 )
                 """,
             type: .table,
@@ -114,13 +116,13 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo: Table = Table(
-                    flags: [.length, .pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
@@ -144,7 +146,6 @@ final class ConstantTests: QuelboTests {
             id: "villains",
             code: """
                 let villains: Table = Table(
-                    flags: [.length],
                     .table(
                         .object(troll),
                         .object(sword),
@@ -165,7 +166,8 @@ final class ConstantTests: QuelboTests {
                         .int(0),
                         .int(0),
                         .table(cyclopsMelee)
-                    )
+                    ),
+                    flags: .length
                 )
                 """,
             type: .table,

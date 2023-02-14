@@ -149,7 +149,7 @@ final class OrphanTests: QuelboTests {
                         dest: Table,
                         insrt: Bool = false
                     ) {
-                        var beg: [Table] = []
+                        var beg: Table? = nil
                         var end: Table? = nil
                         beg.set(to: try src.get(at: try pCctbl.get(at: ccSbptr)))
                         end.set(to: try src.get(at: try pCctbl.get(at: ccSeptr)))
@@ -256,10 +256,10 @@ final class OrphanTests: QuelboTests {
                                 dest: pOtbl
                             )
                         }
-                        if _ = d1 {
+                        if let d1 {
                             try pOtbl.put(element: try d1.get(at: pSprep1), at: pPrep1)
                             try pOtbl.put(element: 1, at: pNc1)
-                        } else if _ = d2 {
+                        } else if let d2 {
                             try pOtbl.put(element: try d2.get(at: pSprep2), at: pPrep2)
                             try pOtbl.put(element: 1, at: pNc2)
                         }

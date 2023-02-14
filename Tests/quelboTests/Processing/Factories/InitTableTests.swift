@@ -38,12 +38,7 @@ final class InitTableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                Table(
-                    count: 4,
-                    defaults: [.int(0)]
-                )
-                """,
+            code: "Table(count: 4, defaults: 0)",
             type: .table,
             isMutable: true,
             returnHandling: .implicit
@@ -64,8 +59,8 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 4,
-                    defaults: [.int(0)],
-                    flags: [.byte, .length]
+                    defaults: 0,
+                    flags: .byte, .length
                 )
                 """,
             type: .table,
@@ -85,8 +80,8 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 4,
-                    defaults: [.int(0)],
-                    flags: [.byte, .length]
+                    defaults: 0,
+                    flags: .byte, .length
                 )
                 """,
             type: .table,
@@ -105,7 +100,7 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 100,
-                    flags: [.none]
+                    flags: .none
                 )
                 """,
             type: .table,
@@ -127,7 +122,7 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: readbufSize,
-                    flags: [.byte, .none]
+                    flags: .byte, .none
                 )
                 """,
             type: .table,
@@ -153,12 +148,12 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 59,
-                    defaults: [
+                    defaults:
                         .int(0),
                         .int8(0),
-                        .int8(0),
-                    ],
-                    flags: [.lexv]
+                        .int8(0)
+                    ,
+                    flags: .lexv
                 )
                 """,
             type: .table,

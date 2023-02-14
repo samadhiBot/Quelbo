@@ -170,15 +170,4 @@ extension String {
         guard hasPrefix(".") else { return ".\(self)" }
         return self
     }
-
-    /// <#Description#>
-    var withEvaluationErrorsCommented: String {
-        guard contains("_evaluationError_") else { return self }
-
-        return """
-            /*
-             /(self)
-             */
-            """
-    }
 }

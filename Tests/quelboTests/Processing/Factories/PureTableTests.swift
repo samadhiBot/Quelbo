@@ -17,19 +17,19 @@ final class PureTableTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "forest1", type: .object, category: .rooms),
-            .variable(id: "forest2", type: .object, category: .rooms),
-            .variable(id: "forest3", type: .object, category: .rooms),
-            .variable(id: "knife", type: .object, category: .objects),
-            .variable(id: "path", type: .object, category: .rooms),
-            .variable(id: "sword", type: .object, category: .objects),
-            .variable(id: "thief", type: .object, category: .objects),
-            .variable(id: "thiefMelee", type: .bool, category: .routines),
-            .variable(id: "troll", type: .object, category: .objects),
-            .variable(id: "trollMelee", type: .bool, category: .routines)
-        ])
+        process("""
+            <OBJECT KNIFE>
+            <OBJECT SWORD>
+            <OBJECT THIEF>
+            <OBJECT TROLL>
+            <ROOM CLEARING>
+            <ROOM FOREST1>
+            <ROOM FOREST2>
+            <ROOM FOREST3>
+            <ROOM PATH>
+            <ROUTINE THIEF-MELEE () T>
+            <ROUTINE TROLL-MELEE () T>
+        """)
     }
 
     func testFindFactory() throws {
@@ -46,10 +46,10 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3)
+                    forest1,
+                    forest2,
+                    forest3,
+                    flags: .pure
                 )
                 """,
             type: .table,
@@ -70,12 +70,12 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
                     .object(troll),
                     .object(sword),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee)
+                    .bool(trollMelee),
+                    flags: .pure
                 )
                 """,
             type: .table,
@@ -100,13 +100,13 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
-                    .room(forest1),
-                    .room(forest2),
-                    .room(forest3),
-                    .room(path),
-                    .room(clearing),
-                    .room(forest1)
+                    forest1,
+                    forest2,
+                    forest3,
+                    path,
+                    clearing,
+                    forest1,
+                    flags: .pure
                 )
                 """,
             type: .table,
@@ -138,14 +138,13 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    flags: [.pure],
                     .table(
-                        flags: [.length, .pure],
                         .object(troll),
                         .object(sword),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee)
+                        .bool(trollMelee),
+                        flags: .length, .pure
                     ),
                     .table(
                         .object(thief),
@@ -153,7 +152,8 @@ final class PureTableTests: QuelboTests {
                         .int(1),
                         .int(0),
                         .bool(thiefMelee)
-                    )
+                    ),
+                    flags: .pure
                 )
                 """,
             type: .table,

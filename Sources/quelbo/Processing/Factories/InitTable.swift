@@ -28,8 +28,7 @@ extension Factories {
                 throw Error.missingCount
             }
 
-            let flagSymbol = try findFlagSymbol(in: &tokens)
-
+            self.flags = try findFlags(in: &tokens)
             self.defaults = try symbolize(tokens)
 
             symbols.append(.statement(
@@ -43,11 +42,9 @@ extension Factories {
                 self.symbols.append(
                     .statement(
                         code: { statement in
-                            let defaultValues = statement
-                                .payload
-                                .symbols
-                                .codeMultiTypeValues(.commaSeparated)
-                            return "defaults: [\(defaultValues)]"
+                            let defaultValues = statement.payload.symbols
+                                .codeValues(.commaSeparatedNoTrailingComma)
+                            return "defaults: \(defaultValues)"
                         },
                         type: .someTableElement,
                         payload: .init(
@@ -55,10 +52,6 @@ extension Factories {
                         )
                     )
                 )
-            }
-
-            if let flagSymbol {
-                symbols.append(flagSymbol)
             }
         }
 

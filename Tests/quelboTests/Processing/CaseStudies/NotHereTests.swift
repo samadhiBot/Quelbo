@@ -106,7 +106,7 @@ final class NotHereTests: QuelboTests {
                             if pXadj {
                                 output(pXadjn)
                             }
-                            if _ = pXnam {
+                            if let pXnam {
                                 output(pXnam)
                             }
                         } else if isPrso {

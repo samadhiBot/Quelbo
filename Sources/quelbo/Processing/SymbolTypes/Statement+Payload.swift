@@ -209,16 +209,22 @@ extension Statement.Payload {
                     .haveSingleReturnType
                 )
             }
-        case (.suppressed, .forced):
+//        case (.suppressed, .forced):
+//            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
+//                for: "Payload",
+//                asserted: assertedHandling,
+//                actual: returnHandling
+//            )
+        default:
             throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
                 for: "Payload",
                 asserted: assertedHandling,
                 actual: returnHandling
             )
-        default:
-            assertionFailure(
-                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
-            )
+
+//            assertionFailure(
+//                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
+//            )
         }
     }
 }
