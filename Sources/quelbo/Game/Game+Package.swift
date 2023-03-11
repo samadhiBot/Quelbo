@@ -33,7 +33,13 @@ extension Game {
                     named: "Directions.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.directions.sorted.codeValues()
+                    with: Game.directions.sorted.codeValues(),
+                    wrapper: """
+                        /// Custom directions defined in \(project).
+                        extension Direction {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
@@ -42,7 +48,13 @@ extension Game {
                     named: "Constants.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.constants.sorted.codeValues(.doubleLineBreak)
+                    with: Game.constants.sorted.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// Immutable constants defined in \(project).
+                        struct Constants {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
@@ -51,7 +63,13 @@ extension Game {
                     named: "Globals.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.globals.sorted.codeValues(.doubleLineBreak)
+                    with: Game.globals.sorted.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// Mutable global values defined in \(project).
+                        class Globals: Codable {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
@@ -60,7 +78,13 @@ extension Game {
                     named: "Objects.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.objects.sorted.codeValues(.doubleLineBreak)
+                    with: Game.objects.sorted.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// Mutable objects defined in \(project).
+                        class Objects: Codable {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
@@ -69,16 +93,47 @@ extension Game {
                     named: "Rooms.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.rooms.sorted.codeValues(.doubleLineBreak)
+                    with: Game.rooms.sorted.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// Mutable rooms defined in \(project).
+                        class Rooms: Codable {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
             if !Game.routines.isEmpty {
+                let routines = Game.routines.sorted
+                let mappings = routines.compactMap { routine in
+                    guard let id = routine.id else { return nil }
+                    return """
+                        "\(id)": .voidVoid(\(id)),
+                        """
+                }.joined(separator: "\n            ")
+
                 try createFile(
-                    named: "Routines.swift",
+                    named: "Actions.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.routines.sorted.codeValues(.doubleLineBreak)
+                    with: routines.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// \(project) action mappings.
+                        extension \(project) {
+                            var actions: [Routine.ID: Routine.Function] {
+                                [
+                                    \(mappings)
+                                ]
+                            }
+                        }
+
+                        // MARK: - Action definitions
+
+                        /// \(project) action definitions.
+                        extension \(project) {
+                            {{code}}
+                        }
+                        """
                 )
             }
 
@@ -87,7 +142,15 @@ extension Game {
                     named: "Syntax.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.syntax.sorted.codeValues(.doubleLineBreak)
+                    with: Game.syntax.sorted.codeValues(.doubleLineBreak),
+                    wrapper: """
+                        /// Syntax rules defined in \(project).
+                        extension Syntax {
+                            static private(set) var rules: [Syntax] = [
+                                {{code}}
+                            ]
+                        }
+                        """
                 )
             }
         }
@@ -99,20 +162,28 @@ private extension Game.Package {
         named fileName: String,
         project: String,
         in folder: Folder,
-        with code: String
+        with code: String,
+        wrapper: String? = nil
     ) throws {
         let file = try folder.createFile(named: fileName)
+        var wrappedCode: String {
+            guard let wrapper else { return code }
+            return wrapper
+                .replacingOccurrences(of: "        {{code}}", with: code.indented.indented)
+                .replacingOccurrences(of: "    {{code}}", with: code.indented)
+        }
         try file.write(
             """
             //
             //  \(fileName)
             //  \(project)
             //
+            //  Translated from ZIL to Swift by Quelbo on \(today).
+            //
 
-            import Foundation
             import Fizmo
 
-            \(code)
+            \(wrappedCode)
             """
         )
     }
@@ -199,5 +270,12 @@ private extension Game.Package {
         let backupFolder = try Folder.current.createSubfolder(at: "\(target)-\(timestamp)")
         try existing.files.move(to: backupFolder)
         return existing
+    }
+
+    private var today: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        return dateFormatter.string(from: Date())
     }
 }
