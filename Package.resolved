@@ -37,6 +37,15 @@
       }
     },
     {
+      "identity" : "identity",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JohnSundell/Identity",
+      "state" : {
+        "revision" : "c3c9102e8d5c2cfcc44a8c7c4bbb7cf3f7c12be9",
+        "version" : "0.3.0"
+      }
+    },
+    {
       "identity" : "progress.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jkandzi/Progress.swift",

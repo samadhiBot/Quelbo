@@ -35,7 +35,7 @@ extension Factories {
                         continue
                     }
 
-                    let fizmoFlag = Flag.find(zil.lowerCamelCase)
+                    let fizmoFlag = Flag.findOrCreate(zil.lowerCamelCase)
 
                     let flagSymbol: Symbol = .statement(
                         id: fizmoFlag.zil,

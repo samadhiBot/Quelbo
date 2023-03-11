@@ -14,7 +14,7 @@ let package = Package(
         .package(url: "https://github.com/jkandzi/Progress.swift", from: "0.4.0"),
         .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.4.0"),
         .package(url: "https://github.com/pointfreeco/swift-parsing", from: "0.10.0"),
-//        .package(url: "https://github.com/samadhiBot/Fizmo", branch: "table"),
+//        .package(url: "https://github.com/samadhiBot/Fizmo", from: "0.1.0"),
         .package(path: "/Users/sessions/Zork/Fizmo")
     ],
     targets: [
