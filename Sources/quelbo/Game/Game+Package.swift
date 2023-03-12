@@ -142,12 +142,12 @@ extension Game {
                     named: "Syntax.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.syntax.sorted.codeValues(.doubleLineBreak),
+                    with: Game.syntax.sorted.codeValues(.commaLineBreakSeparated),
                     wrapper: """
                         /// Syntax rules defined in \(project).
                         extension Syntax {
                             static private(set) var rules: [Syntax] = [
-                                {{code}}
+                            {{code}}
                             ]
                         }
                         """

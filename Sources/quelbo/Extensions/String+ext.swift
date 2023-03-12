@@ -113,6 +113,8 @@ extension String {
             string.removeFirst(2)
         } else if string.hasPrefix(",") || string.hasPrefix(".") || string.hasPrefix("'") {
             string.removeFirst()
+        } else if string.hasPrefix("\\#") {
+            string.removeFirst(1)
         } else if string.hasSuffix("-F") {
             string.removeLast()
             string.append("FUNC")

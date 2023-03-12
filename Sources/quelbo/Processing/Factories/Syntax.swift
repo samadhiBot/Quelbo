@@ -112,7 +112,7 @@ extension Factories.Syntax {
                     throw Error.missingSyntaxAtomAfterFind(listTokens)
                 }
                 let flag = Flag.findOrCreate(zil.lowerCamelCase)
-                definition.append("where: \(flag.id)")
+                definition.append("where: \(flag.id.rawValue.quoted)")
                 guard listTokens.isEmpty else {
                     throw Error.unconsumedSyntaxTokensAfterFind(listTokens)
                 }

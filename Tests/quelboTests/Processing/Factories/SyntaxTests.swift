@@ -65,7 +65,7 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "take",
                     directObject: Syntax.Object(
-                        where: isTakable,
+                        where: "isTakable",
                         search: [.inRoom, .many, .onGround]
                     ),
                     action: "vTake"
@@ -92,7 +92,7 @@ final class SyntaxTests: QuelboTests {
                     verb: "take",
                     directObject: Syntax.Object(
                         preposition: "off",
-                        where: isBeingWorn,
+                        where: "isBeingWorn",
                         search: [.carried, .have, .held]
                     ),
                     action: "vUnwear"
@@ -118,7 +118,7 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "water",
                     directObject: Syntax.Object(
-                        where: spongeBit
+                        where: "spongeBit"
                     ),
                     action: "vPourLiquid",
                     preAction: "preWater"
@@ -152,7 +152,7 @@ final class SyntaxTests: QuelboTests {
                     ),
                     indirectObject: Syntax.Object(
                         preposition: "in",
-                        where: isContainer
+                        where: "isContainer"
                     ),
                     action: "vPutIn",
                     preAction: "prePutIn"
@@ -181,7 +181,7 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
-                        where: isPerson
+                        where: "isPerson"
                     ),
                     action: "vWake"
                 )
@@ -207,7 +207,7 @@ final class SyntaxTests: QuelboTests {
                     verb: "wake",
                     directObject: Syntax.Object(
                         preposition: "up",
-                        where: isActor,
+                        where: "isActor",
                         search: [.inRoom, .onGround]
                     ),
                     action: "vAlarm"
@@ -234,11 +234,11 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "wake",
                     directObject: Syntax.Object(
-                        where: isPerson
+                        where: "isPerson"
                     ),
                     indirectObject: Syntax.Object(
                         preposition: "up",
-                        where: shouldKludge
+                        where: "shouldKludge"
                     ),
                     action: "vWake"
                 )
@@ -297,7 +297,7 @@ final class SyntaxTests: QuelboTests {
                         verb: "wake",
                         directObject: Syntax.Object(
                             preposition: "up",
-                            where: isActor,
+                            where: "isActor",
                             search: [.inRoom, .onGround]
                         ),
                         action: "vAlarm"

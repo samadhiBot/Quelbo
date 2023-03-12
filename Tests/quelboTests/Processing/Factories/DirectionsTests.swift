@@ -26,13 +26,8 @@ final class DirectionsTests: QuelboTests {
             Statement(
                 id: "_customDirections_",
                 code: """
-                    extension Direction {
-                        /// Represents an exit toward land.
-                        public static let land = Direction(
-                            id: "land",
-                            synonyms: ["LAND"]
-                        )
-                    }
+                    /// Represents an exit toward land.
+                    public static let land = Direction(id: "land")
                     """,
                 type: .void,
                 category: .directions,
@@ -185,10 +180,7 @@ extension DirectionsTests {
             id: "land",
             code: """
                 /// Represents an exit toward land.
-                public static let land = Direction(
-                    id: "land",
-                    synonyms: ["LAND"]
-                )
+                public static let land = Direction(id: "land")
                 """,
             type: .object,
             category: .properties,

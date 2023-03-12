@@ -37,10 +37,7 @@ extension Factories {
                 } else {
                     code = """
                         /// Represents an exit toward \(name).
-                        public static let \(name) = Direction(
-                            id: "\(name)",
-                            synonyms: ["\(zilName)"]
-                        )
+                        public static let \(name) = Direction(id: "\(name)")
                         """
                 }
 
@@ -72,11 +69,7 @@ extension Factories {
                 code: { _ in
                     guard !customDirections.isEmpty else { return "" }
 
-                    return """
-                        extension Direction {
-                        \(customDirections.codeValues(.singleLineBreak, .indented))
-                        }
-                        """
+                    return customDirections.codeValues(.singleLineBreak)
                 },
                 type: .void,
                 payload: .init(
