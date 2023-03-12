@@ -43,11 +43,11 @@ extension Factories {
                 throw Error.missingSyntaxActionRoutine(tokens)
             }
             let action = actionRoutine.lowerCamelCase
-            definition.append("actionRoutine: \(action.quoted)")
+            definition.append("action: \(action.quoted)")
 
             if case .atom(let preActionRoutine) = tokens.shift() {
                 let preAction = preActionRoutine.lowerCamelCase
-                definition.append("preActionRoutine: \(preAction.quoted)")
+                definition.append("preAction: \(preAction.quoted)")
                 routines.append(.verb(preAction))
             }
 
