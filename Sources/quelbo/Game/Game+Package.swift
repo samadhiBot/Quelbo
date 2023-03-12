@@ -233,7 +233,26 @@ private extension Game.Package {
             project: name,
             in: sources,
             with: """
-                go()
+                /// Represents the \(project) game.
+                final class \(project) {
+                    let constants: Constants
+                    let directions: [Direction]
+                    let globals: Globals
+                    let objects: Objects
+                    let rooms: Rooms
+
+                    private init() {
+                        constants = Constants()
+                        directions = Directions.combined
+                        globals = Globals()
+                        objects = Objects()
+                        rooms = Rooms()
+                    }
+
+                    private(set) static var shared = \(project)()
+                }
+
+                \(project).shared.go()
                 """
         )
 

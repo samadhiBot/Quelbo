@@ -135,7 +135,7 @@ final class FinishTests: QuelboTests {
                 code: """
                     Syntax(
                         verb: "quit",
-                        actionRoutine: vQuit
+                        actionRoutine: "vQuit"
                     )
                     """,
                 type: .void,
@@ -179,7 +179,7 @@ final class FinishTests: QuelboTests {
                 code: """
                     Syntax(
                         verb: "restart",
-                        actionRoutine: vRestart
+                        actionRoutine: "vRestart"
                     )
                     """,
                 type: .void,
@@ -222,7 +222,7 @@ final class FinishTests: QuelboTests {
                 code: """
                     Syntax(
                         verb: "restore",
-                        actionRoutine: vRestore
+                        actionRoutine: "vRestore"
                     )
                     """,
                 type: .void,

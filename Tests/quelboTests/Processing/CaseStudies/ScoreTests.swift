@@ -38,7 +38,7 @@ final class ScoreTests: QuelboTests {
                 code: """
                     Syntax(
                         verb: "score",
-                        actionRoutine: vScore
+                        actionRoutine: "vScore"
                     )
                     """,
                 type: .void,
@@ -76,7 +76,7 @@ final class ScoreTests: QuelboTests {
                 code: """
                     Syntax(
                         verb: "score",
-                        actionRoutine: vScore
+                        actionRoutine: "vScore"
                     )
                     """,
                 type: .void,

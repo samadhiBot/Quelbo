@@ -24,7 +24,7 @@ final class SyntaxTests: QuelboTests {
             code: """
                 Syntax(
                     verb: "quit",
-                    actionRoutine: vQuit
+                    actionRoutine: "vQuit"
                 )
                 """,
             type: .void,
@@ -42,7 +42,7 @@ final class SyntaxTests: QuelboTests {
                 Syntax(
                     verb: "contemplate",
                     directObject: Syntax.Object(),
-                    actionRoutine: vThinkAbout
+                    actionRoutine: "vThinkAbout"
                 )
                 """,
             type: .void,
@@ -68,7 +68,7 @@ final class SyntaxTests: QuelboTests {
                         where: isTakable,
                         search: [.inRoom, .many, .onGround]
                     ),
-                    actionRoutine: vTake
+                    actionRoutine: "vTake"
                 )
                 """,
             type: .void,
@@ -95,7 +95,7 @@ final class SyntaxTests: QuelboTests {
                         where: isBeingWorn,
                         search: [.carried, .have, .held]
                     ),
-                    actionRoutine: vUnwear
+                    actionRoutine: "vUnwear"
                 )
                 """,
             type: .void,
@@ -120,8 +120,8 @@ final class SyntaxTests: QuelboTests {
                     directObject: Syntax.Object(
                         where: spongeBit
                     ),
-                    actionRoutine: vPourLiquid,
-                    preActionRoutine: preWater
+                    actionRoutine: "vPourLiquid",
+                    preActionRoutine: "preWater"
                 )
                 """,
             type: .void,
@@ -154,8 +154,8 @@ final class SyntaxTests: QuelboTests {
                         preposition: "in",
                         where: isContainer
                     ),
-                    actionRoutine: vPutIn,
-                    preActionRoutine: prePutIn
+                    actionRoutine: "vPutIn",
+                    preActionRoutine: "prePutIn"
                 )
                 """,
             type: .void,
@@ -183,7 +183,7 @@ final class SyntaxTests: QuelboTests {
                     directObject: Syntax.Object(
                         where: isPerson
                     ),
-                    actionRoutine: vWake
+                    actionRoutine: "vWake"
                 )
                 """,
             type: .void,
@@ -210,7 +210,7 @@ final class SyntaxTests: QuelboTests {
                         where: isActor,
                         search: [.inRoom, .onGround]
                     ),
-                    actionRoutine: vAlarm
+                    actionRoutine: "vAlarm"
                 )
                 """,
             type: .void,
@@ -240,7 +240,7 @@ final class SyntaxTests: QuelboTests {
                         preposition: "up",
                         where: shouldKludge
                     ),
-                    actionRoutine: vWake
+                    actionRoutine: "vWake"
                 )
                 """,
             type: .void,
@@ -300,7 +300,7 @@ final class SyntaxTests: QuelboTests {
                             where: isActor,
                             search: [.inRoom, .onGround]
                         ),
-                        actionRoutine: vAlarm
+                        actionRoutine: "vAlarm"
                     )
                     """,
                 type: .void,
