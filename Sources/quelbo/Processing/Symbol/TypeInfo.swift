@@ -289,13 +289,15 @@ extension TypeInfo {
         case .atom, .comment, .void:
             return " = \(self)"
         case .bool:
-            return "Bool = false"
-        case .int, .int8, .int16, .int32:
-            return "\(self) = 0"
+            return " = false"
+        case .int:
+            return " = 0"
+        case .int8, .int16, .int32:
+            return ": \(self) = 0"
         case .none:
-            return "\(self)"
+            return ": \(self)"
         case .object, .routine, .table, .tableElement, .verb, .word:
-            return isOptional == true ? "\(self) = nil" : "\(self)? = nil"
+            return isOptional == true ? ": \(self)" : ": \(self)?"
         case .oneOf(let dataTypes):
             let leastSpecific = dataTypes.min(by: { $0.baseConfidence < $1.baseConfidence })
             return TypeInfo(
@@ -303,7 +305,7 @@ extension TypeInfo {
                 confidence: leastSpecific?.baseConfidence ?? .none
             ).emptyValueAssignment
         case .string:
-            return "String = \"\""
+            return " = \"\""
         }
     }
 

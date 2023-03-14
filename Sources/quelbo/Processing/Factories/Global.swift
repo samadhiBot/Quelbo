@@ -68,14 +68,19 @@ extension Factories {
                 id: variable.code,
                 code: { statement in
                     let type = statement.type
-                    let assignment = {
-                        if type.isOptional == true { return statement.typeDescription }
-                        if type.confidence < .assured { return statement.type.emptyValueAssignment }
-                        return "\(statement.typeDescription) = \(value.code)"
-                    }()
+                    print("▶️", type, value)
+                    var assignment: String {
+                        if type.isOptional == true, variable.isMutable == true {
+                            return ": \(statement.typeDescription)"
+                        }
+                        if type.confidence < .assured {
+                            return statement.type.emptyValueAssignment
+                        }
+                        return " = \(value.code)"
+                    }
                     let declare = variable.isMutable != false ? "var" : "let"
 
-                    return "\(declare) \(variable.handle): \(assignment)"
+                    return "\(declare) \(variable.handle)\(assignment)"
                 },
                 type: value.type,
                 payload: .init(

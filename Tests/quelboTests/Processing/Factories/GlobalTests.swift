@@ -17,7 +17,7 @@ final class GlobalTests: QuelboTests {
         super.setUp()
 
         process("""
-            <CONSTANT MISSED 1>        ;"attacker misses"
+            <CONSTANT MISSED 1> ;"attacker misses"
 
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
@@ -38,7 +38,7 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo: Bool = true",
+            code: "var foo = true",
             type: .booleanTrue,
             category: .globals,
             isCommittable: true
@@ -53,7 +53,7 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo: Bool = false",
+            code: "var foo = false",
             type: .booleanFalse,
             category: .globals,
             isCommittable: true
@@ -77,7 +77,7 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo: Int = 42",
+            code: "var foo = 42",
             type: .int,
             category: .globals,
             isCommittable: true
@@ -93,10 +93,10 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                var foo: Table = Table(
-                    forest1,
-                    forest2,
-                    forest3
+                var foo = Table(
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3")
                 )
                 """,
             type: .table,
@@ -116,13 +116,13 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo: Table = Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
+                let foo = Table(
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .length, .pure
                 )
                 """,
@@ -146,23 +146,23 @@ final class GlobalTests: QuelboTests {
         let villains = Statement(
             id: "villains",
             code: """
-                var villains: Table = Table(
+                var villains = Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("troll"),
+                        .object("sword"),
                         .int(1),
                         .int(0),
                         .table(trollMelee)
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("thief"),
+                        .object("knife"),
                         .int(1),
                         .int(0),
                         .table(thiefMelee)
                     ),
                     .table(
-                        .object(cyclops),
+                        .object("cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
@@ -190,13 +190,7 @@ final class GlobalTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: """
-                var def1Res: Table = Table(
-                    .table(def1),
-                    .int(0),
-                    .int(0)
-                )
-                """,
+            code: "var def1Res = Table(.table(def1), .int(0), .int(0))",
             type: .table,
             category: .globals,
             isCommittable: true
@@ -214,7 +208,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                var foo: [String] = ["BAR", "BAT"]
+                var foo = ["BAR", "BAT"]
                 """,
             type: .string.array,
             category: .globals,
@@ -233,7 +227,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                var foo: String = "Forty Two!"
+                var foo = "Forty Two!"
                 """,
             type: .string,
             category: .globals,
@@ -253,7 +247,7 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("againDir"),
             Instance(Statement(
                 id: "againDir",
-                code: "var againDir: Bool = false",
+                code: "var againDir = false",
                 type: .booleanFalse,
                 category: .globals,
                 isCommittable: true
@@ -288,7 +282,7 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
-                code: "var kitchenWindowFlag: Bool = false",
+                code: "var kitchenWindowFlag = false",
                 type: .booleanFalse,
                 category: .globals,
                 isCommittable: true
@@ -310,7 +304,7 @@ final class GlobalTests: QuelboTests {
                     @discardableResult
                     /// The `kitchenWindowFunc` (KITCHEN-WINDOW-F) routine.
                     func kitchenWindowFunc() -> Bool {
-                        return kitchenWindowFlag.set(to: true)
+                        return Global.kitchenWindowFlag.set(to: true)
                     }
                     """,
                 type: .booleanTrue,
@@ -325,7 +319,7 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
-                code: "var kitchenWindowFlag: Bool = false",
+                code: "var kitchenWindowFlag = false",
                 type: .booleanTrue,
                 category: .globals,
                 isCommittable: true,
@@ -348,7 +342,7 @@ extension GlobalTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try actions.get(at: a)",
+            code: "try Global.actions.get(at: a)",
             type: .someTableElement
         ))
     }

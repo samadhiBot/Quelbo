@@ -17,7 +17,7 @@ final class ConstantTests: QuelboTests {
         super.setUp()
 
         process("""
-            <CONSTANT MISSED 1>        ;"attacker misses"
+            <CONSTANT MISSED 1> ;"attacker misses"
 
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
@@ -37,7 +37,7 @@ final class ConstantTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "let foo: Bool = true",
+            code: "let foo = true",
             type: .booleanTrue,
             category: .constants,
             isCommittable: true
@@ -52,7 +52,7 @@ final class ConstantTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "let foo: Bool = false",
+            code: "let foo = false",
             type: .booleanFalse,
             category: .constants,
             isCommittable: true
@@ -76,7 +76,7 @@ final class ConstantTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "let foo: Int = 42",
+            code: "let foo = 42",
             type: .int,
             category: .constants,
             isCommittable: true
@@ -92,7 +92,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo: Table = Table(
+                let foo = Table(
                     .room("forest1"),
                     .room("forest2"),
                     .room("forest3")
@@ -115,7 +115,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo: Table = Table(
+                let foo = Table(
                     .room("forest1"),
                     .room("forest2"),
                     .room("forest3"),
@@ -145,7 +145,7 @@ final class ConstantTests: QuelboTests {
         let villains = Statement(
             id: "villains",
             code: """
-                let villains: Table = Table(
+                let villains = Table(
                     .table(
                         .object("troll"),
                         .object("sword"),
@@ -189,13 +189,7 @@ final class ConstantTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: """
-                let def1Res: Table = Table(
-                    .table(def1),
-                    .int(0),
-                    .int(0)
-                )
-                """,
+            code: "let def1Res = Table(.table(def1), .int(0), .int(0))",
             type: .table,
             category: .constants,
             isCommittable: true
@@ -213,7 +207,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo: [String] = ["BAR", "BAT"]
+                let foo = ["BAR", "BAT"]
                 """,
             type: .string.array,
             category: .constants,
@@ -232,7 +226,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo: String = "Forty Two!"
+                let foo = "Forty Two!"
                 """,
             type: .string,
             category: .constants,
