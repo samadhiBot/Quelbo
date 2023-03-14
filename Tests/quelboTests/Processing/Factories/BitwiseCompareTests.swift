@@ -33,7 +33,7 @@ final class BitwiseCompareTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".bitwiseCompare(1, 0, 2, someInt)",
+            code: ".bitwiseCompare(1, 0, 2, Global.someInt)",
             type: .int
         ))
     }

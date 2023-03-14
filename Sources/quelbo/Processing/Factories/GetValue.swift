@@ -27,7 +27,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    variable.code
+                    variable.handle
                 },
                 type: variable.type
             )

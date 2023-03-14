@@ -28,9 +28,11 @@ extension Array where Element == String {
 
     func values(_ displayOptions: [CodeValuesDisplayOption]) -> String {
         var addBlock = false
+        var dotPrefixed = false
         var indented = false
         var lineBreaks = 0
         var noTrailingComma = false
+        var quoted = false
         var separator = ""
 
         displayOptions.forEach { option in
@@ -44,10 +46,16 @@ extension Array where Element == String {
             case .commaSeparatedNoTrailingComma:
                 noTrailingComma = true
                 separator = ","
+            case .dotPrefixed:
+                dotPrefixed = true
             case .doubleLineBreak:
                 lineBreaks = 2
+            case .forceSingleType:
+                break
             case .indented:
                 indented = true
+            case .quoted:
+                quoted = true
             case .separator(let string):
                 separator = string.rightTrimmed
             case .singleLineBreak:
@@ -56,7 +64,7 @@ extension Array where Element == String {
         }
         if lineBreaks == 0 && separator == "," {
             let code = joined(separator: separator)
-            if code.count > 20 || code.contains("\n") {
+            if code.count > 40 || code.contains("\n") {
                 addBlock = true
                 lineBreaks = 1
                 indented = true
@@ -68,7 +76,20 @@ extension Array where Element == String {
         for _ in 0..<lineBreaks {
             separator.append("\n")
         }
-        var values = joined(separator: separator)
+
+        var valueArray: [String] {
+            switch (dotPrefixed, quoted) {
+            case (false, false):
+                return self
+            case (false, true):
+                return map(\.quoted)
+            case (true, false):
+                return map(\.withDotPrefix)
+            case (true, true):
+                return [#"#error("Values cannot be dot-prefixed and quoted.")"#] + self
+            }
+        }
+        var values = valueArray.joined(separator: separator)
         if indented {
             values = values.indented.rightTrimmed
         }

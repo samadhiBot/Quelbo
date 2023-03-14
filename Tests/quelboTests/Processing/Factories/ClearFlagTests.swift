@@ -32,7 +32,7 @@ final class ClearFlagTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "trapDoor.openBit.set(false)",
+            code: "Object.trapDoor.openBit.set(false)",
             type: .bool
         ))
     }

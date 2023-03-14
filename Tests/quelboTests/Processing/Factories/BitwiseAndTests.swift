@@ -28,7 +28,7 @@ final class BitwiseAndTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".bitwiseAnd(1, 0, 2, someInt)",
+            code: ".bitwiseAnd(1, 0, 2, Global.someInt)",
             type: .int
         ))
     }

@@ -39,7 +39,7 @@ extension Factories {
             return .statement(
                 id: "descriptionFunction",
                 code: { _ in
-                    "descriptionFunction: \(function.code)"
+                    "descriptionFunction: \(function.handle.quoted)"
                 },
                 type: .routine
             )

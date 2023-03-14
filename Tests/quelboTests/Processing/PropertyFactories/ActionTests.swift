@@ -23,7 +23,9 @@ final class ActionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "action",
-            code: "action: whiteHouseFunc",
+            code: """
+                action: "whiteHouseFunc"
+                """,
             type: .routine
         ))
     }

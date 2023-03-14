@@ -44,16 +44,26 @@ extension Factories {
 
             return .statement(
                 code: {
-                    var elementValues = $0.payload.symbols
-                    let singleType = elementValues.returnTypes.count <= 1
+                    var elements = $0.payload.symbols
+                    let types = elements.returnTypes
                     if let flagSymbol {
-                        elementValues.append(flagSymbol)
+                        elements.append(flagSymbol)
                     }
-                    let tableValues = elementValues.codeValues(
-                        .commaSeparatedNoTrailingComma,
-                        forceSingleType: singleType
-                    )
-
+                    var tableValues: String {
+                        switch types.first {
+                        case .object, .routine:
+                            return elements.codeMultiTypeValues(.commaSeparatedNoTrailingComma)
+                        default:
+                            if types.count > 1 {
+                                return elements.codeMultiTypeValues(.commaSeparatedNoTrailingComma)
+                            } else {
+                                return elements.codeValues(
+                                    .commaSeparatedNoTrailingComma,
+                                    .forceSingleType
+                                )
+                            }
+                        }
+                    }
                     if $0.type.isTableElement == true {
                         return ".table(\(tableValues))"
                     } else {

@@ -57,8 +57,8 @@ final class RoomTests: QuelboTests {
                         .southEast: .to("southOfHouse"),
                         .west: .to("forest1"),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
-                        .southWest: .conditional("stoneBarrow", if: wonFlag),
-                        .in: .conditional("stoneBarrow", if: wonFlag),
+                        .southWest: .conditional("stoneBarrow", if: Global.wonFlag),
+                        .in: .conditional("stoneBarrow", if: Global.wonFlag),
                     ],
                     flags: [
                         .isDryLand,
@@ -154,7 +154,7 @@ final class RoomTests: QuelboTests {
                     .east: .to("damRoom"),
                     .west: .to("streamView"),
                     .north: .conditionalElse("reservoir",
-                        if: lowTide,
+                        if: Global.lowTide,
                         else: "You would drown."
                     ),
                 ],
@@ -267,8 +267,8 @@ final class RoomTests: QuelboTests {
                     .southWest: .to("southOfHouse"),
                     .northWest: .to("northOfHouse"),
                     .east: .to("clearing"),
-                    .west: .conditional("kitchen", if: kitchenWindow.isOpen),
-                    .in: .conditional("kitchen", if: kitchenWindow.isOpen),
+                    .west: .conditional("kitchen", if: Object.kitchenWindow.isOpen),
+                    .in: .conditional("kitchen", if: Object.kitchenWindow.isOpen),
                 ],
                 flags: [
                     .isDryLand,
@@ -276,9 +276,9 @@ final class RoomTests: QuelboTests {
                     .isSacred,
                 ],
                 globals: [
-                    whiteHouse,
-                    kitchenWindow,
-                    forest,
+                    Object.whiteHouse,
+                    Object.kitchenWindow,
+                    Object.forest,
                 ],
                 location: rooms
             )
@@ -347,7 +347,7 @@ final class RoomTests: QuelboTests {
                 description: "Studio",
                 directions: [
                     .south: .to("gallery"),
-                    .up: .per(upChimneyFunc),
+                    .up: .per("upChimneyFunc"),
                 ],
                 flags: [.isDryLand],
                 globals: [chimney],

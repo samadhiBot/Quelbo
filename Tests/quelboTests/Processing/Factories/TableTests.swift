@@ -39,9 +39,9 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3")
                 )
                 """,
             type: .table,
@@ -56,8 +56,8 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object(troll),
-                    .object(sword),
+                    .object("troll"),
+                    .object("sword"),
                     .int(1),
                     .int(0),
                     .table(trollMelee)
@@ -82,15 +82,7 @@ final class TableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                Table(
-                    1,
-                    2,
-                    3,
-                    4,
-                    flags: .byte, .length
-                )
-                """,
+            code: "Table(1, 2, 3, 4, flags: .byte, .length)",
             type: .table,
             isMutable: true,
             returnHandling: .implicit
@@ -107,13 +99,7 @@ final class TableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-            Table(
-                .int(0),
-                .int8(0),
-                .int8(0)
-            )
-            """,
+            code: "Table(.int(0), .int8(0), .int8(0))",
             type: .table,
             isMutable: true,
             returnHandling: .implicit
@@ -136,12 +122,12 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .pure
                 )
                 """,
@@ -212,15 +198,15 @@ final class TableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("troll"),
+                        .object("sword"),
                         .int(1),
                         .int(0),
                         .table(trollMelee)
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("thief"),
+                        .object("knife"),
                         .int(1),
                         .int(0),
                         .table(thiefMelee)

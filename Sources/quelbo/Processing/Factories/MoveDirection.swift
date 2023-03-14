@@ -14,6 +14,7 @@ extension Factories {
     /// type.
     class MoveDirection: Factory {
         var condition: String?
+        var conditionSuffix: String?
         var destination: String?
         var message: String?
         var name: String = ""
@@ -56,7 +57,7 @@ extension Factories {
                     guard case .atom(let cond) = tokens.shift() else {
                         throw Error.invalidIsDirectionParameter(token)
                     }
-                    self.condition?.append(".is\(cond.upperCamelCase)")
+                    self.conditionSuffix = "is\(cond.upperCamelCase)"
                 case .atom("ELSE"):
                     guard case .string(let elseMessage) = tokens.shift() else {
                         throw Error.invalidElseDirectionParameter(token)
@@ -78,15 +79,21 @@ extension Factories {
         func code() throws -> String {
             if let destination {
                 if let condition {
+                    var conditionCode: String {
+                        if let conditionSuffix {
+                            return "\(condition).\(conditionSuffix)"
+                        }
+                        return condition
+                    }
                     if let message {
                         return """
                             .\(name): .conditionalElse(\(destination.quoted),
-                                if: \(condition),
+                                if: \(conditionCode.quoted),
                                 else: \(message)
                             )
                             """
                     }
-                    return ".\(name): .conditional(\(destination.quoted), if: \(condition))"
+                    return ".\(name): .conditional(\(destination.quoted), if: \(conditionCode.quoted))"
                 }
                 return ".\(name): .to(\(destination.quoted))"
             }
@@ -94,7 +101,7 @@ extension Factories {
                 return ".\(name): .blocked(\(message))"
             }
             if let perFunction {
-                return ".\(name): .per(\(perFunction))"
+                return ".\(name): .per(\(perFunction.quoted))"
             }
             throw Error.invalidDirectionParameters(tokens)
         }

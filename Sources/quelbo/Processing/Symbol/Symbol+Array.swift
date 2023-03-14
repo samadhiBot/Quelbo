@@ -14,22 +14,20 @@ extension Array where Element == Symbol {
     ///                             specify how to separate and display the code values.
     ///
     /// - Returns: A formatted string containing the code values contained in the symbol array.
-    func codeValues(
-        _ displayOptions: CodeValuesDisplayOption...,
-        forceSingleType: Bool = false
-    ) -> String {
-        if returnTypes.count <= 1 || forceSingleType {
-            return nonCommentSymbols
-                .map(\.code)
-                .values(displayOptions)
-        } else {
-            return nonCommentSymbols
-                .map(\.codeMultiType)
-                .values(displayOptions)
+    func codeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
+        if returnTypes.count > 1, !displayOptions.contains(.forceSingleType) {
+            return codeMultiTypeValues(displayOptions)
         }
+        return nonCommentSymbols
+            .map(\.code)
+            .values(displayOptions)
     }
 
     func codeMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
+        codeMultiTypeValues(displayOptions)
+    }
+
+    func codeMultiTypeValues(_ displayOptions: [CodeValuesDisplayOption]) -> String {
         nonCommentSymbols
             .map(\.codeMultiType)
             .values(displayOptions)
@@ -59,15 +57,14 @@ extension Array where Element == Symbol {
     }
 
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        if returnTypes.count <= 1 {
-            return nonCommentSymbols
-                .map(\.handle)
-                .values(displayOptions)
-        } else {
+        if returnTypes.count > 1, !displayOptions.contains(.forceSingleType) {
             return nonCommentSymbols
                 .map(\.handleMultiType)
                 .values(displayOptions)
         }
+        return nonCommentSymbols
+            .map(\.handle)
+            .values(displayOptions)
     }
 
     var nonCommentSymbols: [Symbol] {
@@ -204,7 +201,7 @@ extension Array where Element == Symbol {
 // MARK: - Array where Element == Symbol
 
 /// Display options for use with the `codeValues` method.
-enum CodeValuesDisplayOption {
+enum CodeValuesDisplayOption: Equatable {
     /// Values to be comma-separated with a line break after each value.
     case commaLineBreakSeparated
 
@@ -214,11 +211,20 @@ enum CodeValuesDisplayOption {
     /// Values to be comma-separated.
     case commaSeparatedNoTrailingComma
 
+    /// Values to be individually prefixed with a dot.
+    case dotPrefixed
+
     /// Values to be comma-separated with a double line break after each value.
     case doubleLineBreak
 
+    /// Values to be treated as having a single type.
+    case forceSingleType
+
     /// The set of values to be indented.
     case indented
+
+    /// Values to be individually quoted.
+    case quoted
 
     /// Values to be separated by the specified string.
     case separator(String)

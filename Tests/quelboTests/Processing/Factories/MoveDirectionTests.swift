@@ -54,7 +54,7 @@ final class MoveDirectionTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".up: .per(upChimneyFunc)",
+            code: #".up: .per("upChimneyFunc")"#,
             type: .object
         ))
     }
@@ -102,7 +102,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                .southWest: .conditional("stoneBarrow", if: wonFlag)
+                .southWest: .conditional("stoneBarrow", if: Global.wonFlag)
                 """,
             type: .object
         ))
@@ -122,7 +122,7 @@ final class MoveDirectionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 .north: .conditionalElse("reservoir",
-                    if: lowTide,
+                    if: Global.lowTide,
                     else: "You would drown."
                 )
                 """,
@@ -143,7 +143,31 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                .west: .conditional("kitchen", if: kitchenWindow.isOpen)
+                .west: .conditional("kitchen", if: Object.kitchenWindow.isOpen)
+                """,
+            type: .object
+        ))
+    }
+
+    func testMoveDirectionConditionalIsElse() throws {
+        let symbol = try factory.init([
+            .atom("WEST"),
+            .atom("TO"),
+            .atom("KITCHEN"),
+            .atom("IF"),
+            .atom("KITCHEN-WINDOW"),
+            .atom("IS"),
+            .atom("OPEN"),
+            .atom("ELSE"),
+            .string("The kitchen window is closed.")
+        ], with: &localVariables).process()
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: """
+                .west: .conditionalElse("kitchen",
+                    if: Object.kitchenWindow.isOpen,
+                    else: "The kitchen window is closed."
+                )
                 """,
             type: .object
         ))

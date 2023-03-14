@@ -51,12 +51,7 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .add(
-                    bigNumber,
-                    biggerNumber
-                )
-                """,
+            code: ".add(bigNumber, biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -131,10 +126,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "score",
             code: """
-                var score: Int = .add(
-                    baseScore,
-                    otvalFrob()
-                )
+                var score: Int = .add(Global.baseScore, otvalFrob())
                 """,
             type: .int,
             category: .globals,
@@ -169,7 +161,7 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".add(try src.get(at: 0), 1)",
+            code: ".add(try Global.src.get(at: 0), 1)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -196,7 +188,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(
             process("<+ P-ACLAUSE 1>"),
             .statement(
-                code: ".add(pAclause, 1)",
+                code: ".add(Global.pAclause, 1)",
                 type: .int,
                 returnHandling: .implicit
             )

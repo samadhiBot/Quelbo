@@ -39,7 +39,7 @@ extension Factories {
             return .statement(
                 id: "globals",
                 code: { _ in
-                    "globals: [\(globals.codeValues(.commaSeparated))]"
+                    "globals: [\(globals.codeValues(.commaSeparated, .quoted))]"
                 },
                 type: .object.array
             )

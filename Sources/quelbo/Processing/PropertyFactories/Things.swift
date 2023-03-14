@@ -59,11 +59,11 @@ extension Factories {
                         throw Error.invalidThingNoun(nounToken)
                 }
 
-                var code: String
+                let code: String
                 switch actionToken {
                     case .atom(let actionRoutine):
                         code = """
-                            action: \(actionRoutine.lowerCamelCase),
+                            action: \(actionRoutine.lowerCamelCase.quoted),
                             adjectives: \(adjectives),
                             nouns: \(nouns)
                             """

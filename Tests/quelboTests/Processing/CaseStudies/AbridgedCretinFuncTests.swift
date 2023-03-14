@@ -44,10 +44,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
                         if isParsedVerb(.examine) {
-                            if here.equals(
-                                mirror1.parent,
-                                mirror2.parent
-                            ) {
+                            if Global.here.equals(mirror1.parent, mirror2.parent) {
                                 output("Your image in the mirror looks tired.")
                             } else {
                                 output("That's difficult unless your eyes are prehensile.")

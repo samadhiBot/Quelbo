@@ -93,11 +93,17 @@ extension Game {
                     named: "Rooms.swift",
                     project: project,
                     in: sourcesFolder,
-                    with: Game.rooms.sorted.codeValues(.doubleLineBreak),
-                    wrapper: """
+                    with: """
                         /// Mutable rooms defined in \(project).
                         class Rooms: Codable {
-                            {{code}}
+                        \(Game.rooms.sorted.codeValues(.doubleLineBreak).indented)
+                        }
+
+                        // MARK: - Shortcuts
+
+                        extension Rooms {
+                            static var Global: Globals { \(project).shared.globals }
+                            static var Object: Objects { \(project).shared.objects }
                         }
                         """
                 )
@@ -228,6 +234,12 @@ private extension Game.Package {
             """
         )
 
+        var plusCustomDirections: String {
+            let directions = Game.directions
+            guard !directions.isEmpty else { return "" }
+            return "+ [\(directions.sorted.handles(.dotPrefixed))]"
+        }
+
         try createFile(
             named: "main.swift",
             project: name,
@@ -243,7 +255,7 @@ private extension Game.Package {
 
                     private init() {
                         constants = Constants()
-                        directions = Directions.combined
+                        directions = Direction.defaults\(plusCustomDirections)
                         globals = Globals()
                         objects = Objects()
                         rooms = Rooms()

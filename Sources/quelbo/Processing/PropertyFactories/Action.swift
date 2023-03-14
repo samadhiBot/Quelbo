@@ -40,7 +40,7 @@ extension Factories {
             return .statement(
                 id: "action",
                 code: { _ in
-                    "action: \(action.code)"
+                    "action: \(action.handle.quoted)"
                 },
                 type: .routine
             )

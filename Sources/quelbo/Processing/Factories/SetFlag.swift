@@ -37,7 +37,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code)\(flag.code.withDotPrefix).set(\(value))"
+                    "\(object.handle)\(flag.code.withDotPrefix).set(\(value))"
                 },
                 type: .bool
             )

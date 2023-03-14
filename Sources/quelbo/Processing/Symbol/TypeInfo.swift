@@ -274,7 +274,7 @@ extension TypeInfo {
         case .int32: return ".int32(\(code))"
         case .int8: return ".int8(\(code))"
         case .int: return ".int(\(code))"
-        case .object: return category == .rooms ? ".room(\(code))" : ".object(\(code))"
+        case .object: return category == .rooms ? ".room(\"\(code)\")" : ".object(\"\(code)\")"
         case .string: return ".string(\(code))"
         case .table: return ".table(\(code))"
         default: return code

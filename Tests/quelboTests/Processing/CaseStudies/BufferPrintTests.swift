@@ -91,7 +91,7 @@ final class BufferPrintTests: QuelboTests {
                             if cnt.decrement().isLessThan(0) {
                                 break
                             } else {
-                                output(try pInbuf.get(at: buf))
+                                output(try Global.pInbuf.get(at: buf))
                                 buf.set(to: .add(buf, 1))
                             }
                         }
@@ -112,11 +112,7 @@ final class BufferPrintTests: QuelboTests {
                 id: "bufferPrint",
                 code: """
                     /// The `bufferPrint` (BUFFER-PRINT) routine.
-                    func bufferPrint(
-                        beg: Table,
-                        end: Table,
-                        cp: Bool
-                    ) {
+                    func bufferPrint(beg: Table, end: Table, cp: Bool) {
                         var nosp: Bool = true
                         var wrd: Word? = nil
                         var isFirst: Bool = true
@@ -135,10 +131,7 @@ final class BufferPrintTests: QuelboTests {
                                 } else {
                                     output(" ")
                                 }
-                                if wrd.equals(
-                                    Word.period,
-                                    Word.comma
-                                ) {
+                                if wrd.equals(Word.period, Word.comma) {
                                     nosp.set(to: true)
                                 } else if wrd.equals(Word.me) {
                                     output(me.description)
@@ -147,18 +140,14 @@ final class BufferPrintTests: QuelboTests {
                                     output(pNumber)
                                     pn.set(to: true)
                                 } else {
-                                    if .and(
-                                        isFirst,
-                                        .isNot(pn),
-                                        cp
-                                    ) {
+                                    if .and(isFirst, .isNot(pn), cp) {
                                         output("the ")
                                     }
-                                    if .or(pOflag, pMerged) {
+                                    if .or(Global.pOflag, Global.pMerged) {
                                         output(wrd)
                                     } else if .and(
                                         wrd.equals(Word.it),
-                                        isAccessible(obj: pItObject)
+                                        isAccessible(obj: Global.pItObject)
                                     ) {
                                         output(pItObject.description)
                                     } else {
@@ -170,7 +159,7 @@ final class BufferPrintTests: QuelboTests {
                                     isFirst.set(to: false)
                                 }
                             }
-                            beg.set(to: beg.rest(bytes: pWordlen))
+                            beg.set(to: beg.rest(bytes: Constant.pWordlen))
                         }
                     }
                     """,

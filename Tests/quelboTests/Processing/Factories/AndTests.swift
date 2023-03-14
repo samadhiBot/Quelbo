@@ -81,7 +81,7 @@ final class AndTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
             .and(
-                rarg.equals(mEnter),
+                rarg.equals(Global.mEnter),
                 .isNot(foundTreasureChest)
             )
             """,

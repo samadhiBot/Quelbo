@@ -36,7 +36,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).hasFlag(\(flag.code.withDotPrefix))"
+                    "\(object.handle).hasFlag(\(flag.code.withDotPrefix))"
                 },
                 type: .bool
             )

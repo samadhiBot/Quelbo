@@ -55,7 +55,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    ".\(function)(\(arguments.codeValues(.commaSeparatedNoTrailingComma)))"
+                    ".\(function)(\(arguments.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .int
             )

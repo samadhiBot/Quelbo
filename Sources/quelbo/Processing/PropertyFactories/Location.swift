@@ -39,7 +39,7 @@ extension Factories {
             return .statement(
                 id: "location",
                 code: { _ in
-                    "location: \(room.code)"
+                    "location: \(room.handle.quoted)"
                 },
                 type: .object,
                 category: .rooms

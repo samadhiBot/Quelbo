@@ -42,7 +42,12 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "try \(table.code).put(element: \(value.code), at: \(offset.code))"
+                    """
+                    \(table.handle).put(
+                        element: \(value.handle),
+                        at: \(offset.code)
+                    )
+                    """
                 },
                 type: value.type,
                 returnHandling: .suppressed

@@ -59,7 +59,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    ".\(function)(\(operands.codeValues(.commaSeparatedNoTrailingComma)))"
+                    ".\(function)(\(operands.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: operands.map(\.type).max() ?? .bool
             )

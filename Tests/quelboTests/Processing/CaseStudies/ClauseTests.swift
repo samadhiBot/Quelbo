@@ -177,12 +177,12 @@ final class ClauseTests: QuelboTests {
                         }
                         output("You used the word \"")
                         wordPrint(
-                            cnt: try pLexv.rest(bytes: buf.set(to: .multiply(ptr, 2))).get(at: 2),
-                            buf: try pLexv.rest(bytes: buf).get(at: 3)
+                            cnt: try Global.pLexv.rest(bytes: buf.set(to: .multiply(ptr, 2))).get(at: 2),
+                            buf: try Global.pLexv.rest(bytes: buf).get(at: 3)
                         )
                         output("\" in a way that I don't understand.")
                         quoteFlag.set(to: false)
-                        pOflag.set(to: false)
+                        Global.pOflag.set(to: false)
                     }
                     """#,
                 type: .booleanFalse,
@@ -207,33 +207,30 @@ final class ClauseTests: QuelboTests {
                         var chr: Int = 0
                         var sum: Int? = 0
                         var tim: Int? = 0
-                        cnt.set(to: try pLexv.rest(bytes: .multiply(ptr, 2)).get(at: 2))
-                        bptr.set(to: try pLexv.rest(bytes: .multiply(ptr, 2)).get(at: 3))
+                        cnt.set(to: try Global.pLexv.rest(bytes: .multiply(ptr, 2)).get(at: 2))
+                        bptr.set(to: try Global.pLexv.rest(bytes: .multiply(ptr, 2)).get(at: 3))
                         while true {
                             if cnt.set(to: .subtract(cnt, 1)).isLessThan(0) {
                                 break
                             } else {
-                                chr.set(to: try pInbuf.get(at: bptr))
+                                chr.set(to: try Global.pInbuf.get(at: bptr))
                                 if chr.equals(58) {
                                     tim.set(to: sum)
                                     sum.set(to: 0)
                                 } else if sum.isGreaterThan(10000) {
                                     return nil
-                                } else if .and(
-                                    chr.isLessThan(58),
-                                    chr.isGreaterThan(47)
-                                ) {
-                                    sum.set(to: .add(
-                                        .multiply(sum, 10),
-                                        .subtract(chr, 48)
-                                    ))
+                                } else if .and(chr.isLessThan(58), chr.isGreaterThan(47)) {
+                                    sum.set(to: .add(.multiply(sum, 10), .subtract(chr, 48)))
                                 } else {
                                     return nil
                                 }
                                 bptr.set(to: .add(bptr, 1))
                             }
                         }
-                        try pLexv.put(element: Word.intnum, at: ptr)
+                        Global.pLexv.put(
+                            element: Word.intnum,
+                            at: ptr
+                        )
                         if sum.isGreaterThan(1000) {
                             return nil
                         } else if let tim {
@@ -242,12 +239,9 @@ final class ClauseTests: QuelboTests {
                             } else if tim.isGreaterThan(23) {
                                 return nil
                             }
-                            sum.set(to: .add(
-                                sum,
-                                .multiply(tim, 60)
-                            ))
+                            sum.set(to: .add(sum, .multiply(tim, 60)))
                         }
-                        pNumber.set(to: sum)
+                        Global.pNumber.set(to: sum)
                         return Word.intnum
                     }
                     """,
@@ -269,19 +263,22 @@ final class ClauseTests: QuelboTests {
                     /// The `unknownWord` (UNKNOWN-WORD) routine.
                     func unknownWord(ptr: Int) -> Bool {
                         var buf: Int = 0
-                        try oopsTable.put(element: ptr, at: oPtr)
+                        Global.oopsTable.put(
+                            element: ptr,
+                            at: oPtr
+                        )
                         if isParsedVerb(.say) {
                             output("Nothing happens.")
                             return false
                         }
                         output("I don't know the word \"")
                         wordPrint(
-                            cnt: try pLexv.rest(bytes: buf.set(to: .multiply(ptr, 2))).get(at: 2),
-                            buf: try pLexv.rest(bytes: buf).get(at: 3)
+                            cnt: try Global.pLexv.rest(bytes: buf.set(to: .multiply(ptr, 2))).get(at: 2),
+                            buf: try Global.pLexv.rest(bytes: buf).get(at: 3)
                         )
                         output("\".")
                         quoteFlag.set(to: false)
-                        pOflag.set(to: false)
+                        Global.pOflag.set(to: false)
                     }
                     """#,
                 type: .booleanFalse,
@@ -300,11 +297,7 @@ final class ClauseTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `clause` (CLAUSE) routine.
-                    func clause(
-                        ptr: Int,
-                        val: Int,
-                        wrd: Word
-                    ) -> Int? {
+                    func clause(ptr: Int, val: Int, wrd: Word) -> Int? {
                         var off: Int = 0
                         var num: Int = 0
                         var andflg: Bool = false
@@ -313,70 +306,75 @@ final class ClauseTests: QuelboTests {
                         var lw: Word? = nil
                         var ptr: Int = ptr
                         var wrd: Word = wrd
-                        off.set(to: .multiply(.subtract(pNcn, 1), 2))
+                        off.set(to: .multiply(.subtract(Global.pNcn, 1), 2))
                         if .isNot(val.equals(0)) {
-                            try pItbl.put(element: val, at: num.set(to: .add(pPrep1, off)))
-                            try pItbl.put(element: wrd, at: .add(num, 1))
-                            ptr.set(to: .add(ptr, pLexelen))
+                            Global.pItbl.put(
+                                element: val,
+                                at: num.set(to: .add(Constant.pPrep1, off))
+                            )
+                            Global.pItbl.put(
+                                element: wrd,
+                                at: .add(num, 1)
+                            )
+                            ptr.set(to: .add(ptr, Constant.pLexelen))
                         } else {
-                            pLen.set(to: .add(pLen, 1))
+                            Global.pLen.set(to: .add(Global.pLen, 1))
                         }
                         if pLen.isZero {
-                            pNcn.set(to: .subtract(pNcn, 1))
+                            Global.pNcn.set(to: .subtract(Global.pNcn, 1))
                             return -1
                         }
-                        try pItbl.put(element: pLexv.rest(bytes: .multiply(ptr, 2)), at: num.set(to: .add(pNc1, off)))
-                        if try pLexv.get(at: ptr).equals(
-                            Word.the,
-                            Word.a,
-                            Word.an
-                        ) {
-                            try pItbl.put(element: try pItbl.get(at: num).rest(bytes: 4), at: num)
+                        Global.pItbl.put(
+                            element: Global.pLexv.rest(bytes: .multiply(ptr, 2)),
+                            at: num.set(to: .add(Constant.pNc1, off))
+                        )
+                        if try Global.pLexv.get(at: ptr).equals(Word.the, Word.a, Word.an) {
+                            Global.pItbl.put(
+                                element: try Global.pItbl.get(at: num).rest(bytes: 4),
+                                at: num
+                            )
                         }
                         while true {
-                            if pLen.set(to: .subtract(pLen, 1)).isLessThan(0) {
-                                try pItbl.put(element: pLexv.rest(bytes: .multiply(ptr, 2)), at: .add(num, 1))
+                            if Global.pLen.set(to: .subtract(Global.pLen, 1)).isLessThan(0) {
+                                Global.pItbl.put(
+                                    element: Global.pLexv.rest(bytes: .multiply(ptr, 2)),
+                                    at: .add(num, 1)
+                                )
                                 return -1
                             }
                             if _ = .or(
-                                wrd.set(to: try pLexv.get(at: ptr)),
+                                wrd.set(to: try Global.pLexv.get(at: ptr)),
                                 wrd.set(to: isNumber(ptr: ptr))
                             ) {
                                 if pLen.isZero {
                                     nw.set(to: nil)
                                 } else {
-                                    nw.set(to: try pLexv.get(at: .add(ptr, pLexelen)))
+                                    nw.set(to: try Global.pLexv.get(at: .add(ptr, Constant.pLexelen)))
                                 }
                                 if wrd.equals(Word.and, Word.comma) {
                                     andflg.set(to: true)
                                 } else if wrd.equals(Word.all, Word.one) {
                                     if nw.equals(Word.of) {
-                                        pLen.set(to: .subtract(pLen, 1))
-                                        ptr.set(to: .add(ptr, pLexelen))
+                                        Global.pLen.set(to: .subtract(Global.pLen, 1))
+                                        ptr.set(to: .add(ptr, Constant.pLexelen))
                                     }
                                 } else if .or(
-                                    wrd.equals(
-                                        Word.then,
-                                        Word.period
-                                    ),
+                                    wrd.equals(Word.then, Word.period),
                                     .and(
-                                        isWt(
-                                            ptr: wrd,
-                                            bit: PartsOfSpeech.preposition
-                                        ),
-                                        try pItbl.get(at: pVerb),
+                                        isWt(ptr: wrd, bit: PartsOfSpeech.preposition),
+                                        try Global.pItbl.get(at: pVerb),
                                         .isNot(isFirst)
                                     )
                                 ) {
-                                    pLen.set(to: .add(pLen, 1))
-                                    try pItbl.put(element: pLexv.rest(bytes: .multiply(ptr, 2)), at: .add(num, 1))
-                                    return .subtract(ptr, pLexelen)
-                                } else if isWt(
-                                    ptr: wrd,
-                                    bit: PartsOfSpeech.object
-                                ) {
+                                    Global.pLen.set(to: .add(Global.pLen, 1))
+                                    Global.pItbl.put(
+                                        element: Global.pLexv.rest(bytes: .multiply(ptr, 2)),
+                                        at: .add(num, 1)
+                                    )
+                                    return .subtract(ptr, Constant.pLexelen)
+                                } else if isWt(ptr: wrd, bit: PartsOfSpeech.object) {
                                     if .and(
-                                        pLen.isGreaterThan(0),
+                                        Global.pLen.isGreaterThan(0),
                                         nw.equals(Word.of),
                                         .isNot(wrd.equals(Word.all, Word.one))
                                     ) {
@@ -388,10 +386,7 @@ final class ClauseTests: QuelboTests {
                                             b1: PartsOfSpeech.adjectiveFirst
                                         ),
                                         .isNot(nw.equals(nil)),
-                                        isWt(
-                                            ptr: nw,
-                                            bit: PartsOfSpeech.object
-                                        )
+                                        isWt(ptr: nw, bit: PartsOfSpeech.object)
                                     ) {
                                         // do nothing
                                     } else if .and(
@@ -399,49 +394,40 @@ final class ClauseTests: QuelboTests {
                                         .isNot(nw.equals(Word.but, Word.except)),
                                         .isNot(nw.equals(Word.and, Word.comma))
                                     ) {
-                                        try pItbl.put(element: pLexv.rest(bytes: .multiply(.add(ptr, 2), 2)), at: .add(num, 1))
+                                        Global.pItbl.put(
+                                            element: Global.pLexv.rest(bytes: .multiply(.add(ptr, 2), 2)),
+                                            at: .add(num, 1)
+                                        )
                                         return ptr
                                     } else {
                                         andflg.set(to: false)
                                     }
                                 } else if .and(
                                     .or(
-                                        pMerged,
-                                        pOflag,
-                                        .isNot(try pItbl.get(at: pVerb).equals(0))
+                                        Global.pMerged,
+                                        Global.pOflag,
+                                        .isNot(try Global.pItbl.get(at: pVerb).equals(0))
                                     ),
                                     .or(
-                                        isWt(
-                                            ptr: wrd,
-                                            bit: PartsOfSpeech.adjective
-                                        ),
-                                        isWt(
-                                            ptr: wrd,
-                                            bit: PartsOfSpeech.buzzWord
-                                        )
+                                        isWt(ptr: wrd, bit: PartsOfSpeech.adjective),
+                                        isWt(ptr: wrd, bit: PartsOfSpeech.buzzWord)
                                     )
                                 ) {
                                     // do nothing
                                 } else if .and(
                                     andflg,
                                     .or(
-                                        isWt(
-                                            ptr: wrd,
-                                            bit: PartsOfSpeech.direction
-                                        ),
-                                        isWt(
-                                            ptr: wrd,
-                                            bit: PartsOfSpeech.verb
-                                        )
+                                        isWt(ptr: wrd, bit: PartsOfSpeech.direction),
+                                        isWt(ptr: wrd, bit: PartsOfSpeech.verb)
                                     )
                                 ) {
                                     ptr.set(to: .subtract(ptr, 4))
-                                    try pLexv.put(element: Word.then, at: .add(ptr, 2))
-                                    pLen.set(to: .add(pLen, 2))
-                                } else if isWt(
-                                    ptr: wrd,
-                                    bit: PartsOfSpeech.preposition
-                                ) {
+                                    Global.pLexv.put(
+                                        element: Word.then,
+                                        at: .add(ptr, 2)
+                                    )
+                                    Global.pLen.set(to: .add(Global.pLen, 2))
+                                } else if isWt(ptr: wrd, bit: PartsOfSpeech.preposition) {
                                     return 1
                                 } else {
                                     cantUse(ptr: ptr)
@@ -453,7 +439,7 @@ final class ClauseTests: QuelboTests {
                             }
                             lw.set(to: wrd)
                             isFirst.set(to: false)
-                            ptr.set(to: .add(ptr, pLexelen))
+                            ptr.set(to: .add(ptr, Constant.pLexelen))
                         }
                     }
                     """,

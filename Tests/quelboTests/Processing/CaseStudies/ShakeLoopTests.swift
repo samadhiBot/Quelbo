@@ -90,7 +90,7 @@ final class ShakeLoopTests: QuelboTests {
                     func shakeLoop() {
                         var x: Object? = nil
                         while true {
-                            if _ = x.set(to: parsedDirectObject.firstChild) {
+                            if _ = x.set(to: Global.parsedDirectObject.firstChild) {
                                 x.hasBeenTouched.set(true)
                                 x.move(to: {
                                     if here.equals(upATree) {

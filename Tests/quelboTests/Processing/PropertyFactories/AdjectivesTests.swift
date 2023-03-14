@@ -35,11 +35,7 @@ final class AdjectivesTests: QuelboTests {
                 /// The `whiteHouse` (WHITE-HOUSE) object.
                 var whiteHouse = Object(
                     id: "whiteHouse",
-                    adjectives: [
-                        "white",
-                        "beauti",
-                        "coloni",
-                    ]
+                    adjectives: ["white", "beauti", "coloni"]
                 )
                 """,
             type: .object,
@@ -61,12 +57,7 @@ final class AdjectivesTests: QuelboTests {
                 /// The `woodenDoor` (WOODEN-DOOR) object.
                 var woodenDoor = Object(
                     id: "woodenDoor",
-                    adjectives: [
-                        "wooden",
-                        "gothic",
-                        "strange",
-                        "west",
-                    ]
+                    adjectives: ["wooden", "gothic", "strange", "west"]
                 )
                 """,
             type: .object,

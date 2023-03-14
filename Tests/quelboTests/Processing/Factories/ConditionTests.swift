@@ -74,7 +74,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if rarg.equals(mEnter) {
+                if rarg.equals(Global.mEnter) {
                     output("You are in a dark and damp cellar.")
                 }
                 """,
@@ -132,7 +132,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if rarg.equals(mEnter) {
+                if rarg.equals(Global.mEnter) {
                     rarg.set(to: other)
                 }
                 """,
@@ -177,7 +177,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if here.equals(clearing) {
+                if Room.here.equals(Room.clearing) {
                     return "The grating opens."
                 } else {
                     return "The grating opens to reveal trees above you."
@@ -273,9 +273,9 @@ final class ConditionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 if .or(
-                    parsedIndirectObject.hasFlag(.openBit),
+                    Global.parsedIndirectObject.hasFlag(.openBit),
                     isOpenable(),
-                    parsedIndirectObject.hasFlag(.vehBit)
+                    Global.parsedIndirectObject.hasFlag(.vehBit)
                 ) {
                     // do nothing
                 } else {

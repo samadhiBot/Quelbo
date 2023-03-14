@@ -18,19 +18,27 @@ enum Symbol: SymbolType {
 extension Symbol {
     var category: Category? {
         switch self {
-        case .definition(let definition): return definition.category
-        case .literal(let literal): return literal.category
-        case .statement(let statement): return statement.category
-        case .instance(let instance): return instance.category
+        case .definition(let definition):
+            return definition.category
+        case .literal(let literal):
+            return literal.category
+        case .statement(let statement):
+            return statement.category
+        case .instance(let instance):
+            return instance.category
         }
     }
 
     var code: String {
         switch self {
-        case .definition(let definition): return definition.code
-        case .instance(let instance): return instance.code
-        case .literal(let literal): return literal.code
-        case .statement(let statement): return statement.code
+        case .definition(let definition):
+            return definition.code
+        case .instance(let instance):
+            return instance.code
+        case .literal(let literal):
+            return literal.code
+        case .statement(let statement):
+            return statement.code
         }
     }
 
@@ -55,10 +63,14 @@ extension Symbol {
 
     var evaluation: Literal? {
         switch self {
-        case .definition: return nil
-        case .literal(let literal): return literal
-        case .statement(let statement): return statement.payload.evaluation
-        case .instance(let instance): return instance.variable.payload.evaluation
+        case .definition:
+            return nil
+        case .literal(let literal):
+            return literal
+        case .statement(let statement):
+            return statement.payload.evaluation
+        case .instance(let instance):
+            return instance.variable.payload.evaluation
         }
     }
 
@@ -67,7 +79,21 @@ extension Symbol {
         case .definition(let definition):
             return definition.code
         case .instance(let instance):
-            return instance.variable.id ?? instance.variable.code
+            let id = instance.variable.id ?? instance.variable.code
+            switch instance.category {
+            case .constants:
+                return "Constant.\(id)"
+            case .definitions, .directions, .flags, .none, .properties, .syntax:
+                return id
+            case .globals:
+                return "Global.\(id)"
+            case .objects:
+                return "Object.\(id)"
+            case .rooms:
+                return "Room.\(id)"
+            case .routines:
+                return id.quoted
+            }
         case .literal(let literal):
             return literal.code
         case .statement(let statement):
@@ -92,27 +118,38 @@ extension Symbol {
 
     var id: String? {
         switch self {
-        case .definition(let definition): return definition.id
-        case .instance(let instance): return instance.id
-        case .literal(let literal): return literal.id
-        case .statement(let statement): return statement.id
+        case .definition(let definition):
+            return definition.id
+        case .instance(let instance):
+            return instance.id
+        case .literal(let literal):
+            return literal.id
+        case .statement(let statement):
+            return statement.id
         }
     }
 
     var isMutable: Bool? {
         switch self {
-        case .definition(let definition): return definition.isMutable
-        case .instance(let instance): return instance.isMutable
-        case .literal(let literal): return literal.isMutable
-        case .statement(let statement): return statement.isMutable
+        case .definition(let definition):
+            return definition.isMutable
+        case .instance(let instance):
+            return instance.isMutable
+        case .literal(let literal):
+            return literal.isMutable
+        case .statement(let statement):
+            return statement.isMutable
         }
     }
 
     var isProperty: Bool {
         switch self {
-        case .definition, .literal: return false
-        case .instance(let instance): return instance.variable.type.isProperty == true
-        case .statement(let statement): return statement.type.isProperty == true
+        case .definition, .literal:
+            return false
+        case .instance(let instance):
+            return instance.variable.type.isProperty == true
+        case .statement(let statement):
+            return statement.type.isProperty == true
         }
     }
 
@@ -126,10 +163,14 @@ extension Symbol {
     var objID: String {
         let objID = {
             switch self {
-            case .definition(let definition): return ObjectIdentifier(definition)
-            case .instance(let instance): return ObjectIdentifier(instance)
-            case .literal(let literal): return ObjectIdentifier(literal)
-            case .statement(let statement): return ObjectIdentifier(statement)
+            case .definition(let definition):
+                return ObjectIdentifier(definition)
+            case .instance(let instance):
+                return ObjectIdentifier(instance)
+            case .literal(let literal):
+                return ObjectIdentifier(literal)
+            case .statement(let statement):
+                return ObjectIdentifier(statement)
             }
         }()
         return String("\(objID)".dropLast().suffix(4))
@@ -157,10 +198,14 @@ extension Symbol {
 
     var type: TypeInfo {
         switch self {
-        case .definition(let definition): return definition.type
-        case .instance(let instance): return instance.type
-        case .literal(let literal): return literal.type
-        case .statement(let statement): return statement.type
+        case .definition(let definition):
+            return definition.type
+        case .instance(let instance):
+            return instance.type
+        case .literal(let literal):
+            return literal.type
+        case .statement(let statement):
+            return statement.type
         }
     }
 }

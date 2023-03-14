@@ -93,9 +93,9 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo: Table = Table(
-                    forest1,
-                    forest2,
-                    forest3
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3")
                 )
                 """,
             type: .table,
@@ -116,12 +116,12 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo: Table = Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .length, .pure
                 )
                 """,
@@ -147,21 +147,21 @@ final class ConstantTests: QuelboTests {
             code: """
                 let villains: Table = Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("troll"),
+                        .object("sword"),
                         .int(1),
                         .int(0),
                         .table(trollMelee)
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("thief"),
+                        .object("knife"),
                         .int(1),
                         .int(0),
                         .table(thiefMelee)
                     ),
                     .table(
-                        .object(cyclops),
+                        .object("cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),

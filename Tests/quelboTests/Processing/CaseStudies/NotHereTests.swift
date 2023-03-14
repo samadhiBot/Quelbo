@@ -146,12 +146,12 @@ final class NotHereTests: QuelboTests {
                         // var obj: <Unknown>
                         // "This COND is game independent (except the TELL)"
                         if .and(
-                            parsedDirectObject.equals(notHereObject),
-                            parsedIndirectObject.equals(notHereObject)
+                            Global.parsedDirectObject.equals(notHereObject),
+                            Global.parsedIndirectObject.equals(notHereObject)
                         ) {
                             output("Those things aren't here!")
                             return true
-                        } else if parsedDirectObject.equals(notHereObject) {
+                        } else if Global.parsedDirectObject.equals(notHereObject) {
                             tbl.set(to: pPrso)
                         } else {
                             tbl.set(to: pPrsi)

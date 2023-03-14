@@ -34,12 +34,7 @@ final class GlobalsTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "globals",
             code: """
-                globals: [
-                    wellHouse,
-                    stream,
-                    road,
-                    forest,
-                ]
+                globals: ["wellHouse", "stream", "road", "forest"]
                 """,
             type: .object.array
         ))

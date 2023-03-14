@@ -68,11 +68,11 @@ final class PuttyTests: QuelboTests {
                         if .or(
                             .and(
                                 isParsedVerb(.oil),
-                                parsedIndirectObject.equals(putty)
+                                Global.parsedIndirectObject.equals(putty)
                             ),
                             .and(
                                 isParsedVerb(.put),
-                                parsedDirectObject.equals(putty)
+                                Global.parsedDirectObject.equals(putty)
                             )
                         ) {
                             output("The all-purpose gunk isn't a lubricant.")

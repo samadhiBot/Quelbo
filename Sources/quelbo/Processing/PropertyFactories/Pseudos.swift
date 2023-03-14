@@ -31,7 +31,7 @@ extension Factories {
                 }
 
                 let code = """
-                    action: \(action.lowerCamelCase),
+                    action: \(action.lowerCamelCase.quoted),
                     adjectives: [],
                     nouns: [\(noun.lowerCamelCase.quoted)]
                     """
