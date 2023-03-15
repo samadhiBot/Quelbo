@@ -98,7 +98,7 @@ final class ConstantTests: QuelboTests {
                     .room("forest3")
                 )
                 """,
-            type: .table,
+            type: .table.nonTableElement,
             category: .constants,
             isCommittable: true
         )
@@ -125,7 +125,7 @@ final class ConstantTests: QuelboTests {
                     flags: .length, .pure
                 )
                 """,
-            type: .table,
+            type: .table.nonTableElement,
             category: .constants,
             isCommittable: true
         )

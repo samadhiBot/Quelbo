@@ -170,7 +170,7 @@ final class ClauseTests: QuelboTests {
                     @discardableResult
                     /// The `cantUse` (CANT-USE) routine.
                     func cantUse(ptr: Int) -> Bool {
-                        var buf: Int = 0
+                        var buf = 0
                         if isParsedVerb(.say) {
                             output("Nothing happens.")
                             return false
@@ -202,9 +202,9 @@ final class ClauseTests: QuelboTests {
                     @discardableResult
                     /// The `isNumber` (NUMBER?) routine.
                     func isNumber(ptr: Int) -> Word? {
-                        var cnt: Int = 0
-                        var bptr: Int = 0
-                        var chr: Int = 0
+                        var cnt = 0
+                        var bptr = 0
+                        var chr = 0
                         var sum: Int? = 0
                         var tim: Int? = 0
                         cnt.set(to: try Global.pLexv.rest(bytes: .multiply(ptr, 2)).get(at: 2))
@@ -262,7 +262,7 @@ final class ClauseTests: QuelboTests {
                     @discardableResult
                     /// The `unknownWord` (UNKNOWN-WORD) routine.
                     func unknownWord(ptr: Int) -> Bool {
-                        var buf: Int = 0
+                        var buf = 0
                         Global.oopsTable.put(
                             element: ptr,
                             at: oPtr
@@ -298,14 +298,14 @@ final class ClauseTests: QuelboTests {
                     @discardableResult
                     /// The `clause` (CLAUSE) routine.
                     func clause(ptr: Int, val: Int, wrd: Word) -> Int? {
-                        var off: Int = 0
-                        var num: Int = 0
-                        var andflg: Bool = false
-                        var isFirst: Bool = true
-                        var nw: Word? = nil
-                        var lw: Word? = nil
-                        var ptr: Int = ptr
-                        var wrd: Word = wrd
+                        var off = 0
+                        var num = 0
+                        var andflg = false
+                        var isFirst = true
+                        var nw: Word?
+                        var lw: Word?
+                        var ptr = ptr
+                        var wrd = wrd
                         off.set(to: .multiply(.subtract(Global.pNcn, 1), 2))
                         if .isNot(val.equals(0)) {
                             Global.pItbl.put(

@@ -51,11 +51,11 @@ final class BindTests: QuelboTests {
             code: """
                 /// The `testBind1` (TEST-BIND-1) routine.
                 func testBind1() {
-                    var x: Int = 0
+                    var x = 0
                     output("START ")
                     x.set(to: 1)
                     do {
-                        var x: Int = x
+                        var x = x
                         x.set(to: 2)
                         output(x)
                         output(" ")
@@ -118,7 +118,7 @@ final class BindTests: QuelboTests {
             code: """
                 /// The `testBind2` (TEST-BIND-2) routine.
                 func testBind2() {
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         output("START ")
                         do {

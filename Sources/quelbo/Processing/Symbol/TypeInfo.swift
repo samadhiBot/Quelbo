@@ -204,11 +204,14 @@ extension TypeInfo {
         self.isProperty = true
     }
 
-    func assertIsTableElement() throws {
-        guard isTableElement != false && dataType?.canBeTableElement != false else {
+    func assertIsTableElement(_ value: Bool = true) throws {
+        guard dataType?.canBeTableElement != false else {
             throw Symbol.AssertionError.isTableElementAssertionFailed
         }
-        self.isTableElement = true
+        if value == true, self.isTableElement == false {
+            return
+        }
+        self.isTableElement = value
     }
 }
 
@@ -224,12 +227,16 @@ extension TypeInfo {
         return clone(isArray: false)
     }
 
-    var optional: TypeInfo {
-        clone(isOptional: true)
-    }
-
     var nonOptional: TypeInfo {
         clone(isOptional: false)
+    }
+
+    var nonTableElement: TypeInfo {
+        clone(isTableElement: false)
+    }
+
+    var optional: TypeInfo {
+        clone(isOptional: true)
     }
 
     var property: TypeInfo {
@@ -283,7 +290,7 @@ extension TypeInfo {
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
-        if isArray == true { return "\(self) = []" }
+        if isArray == true { return " = [\(self)]()" }
 
         switch dataType {
         case .atom, .comment, .void:

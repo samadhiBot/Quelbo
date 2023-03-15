@@ -30,12 +30,12 @@ final class ConditionMDLTests: QuelboTests {
             Statement(
                 id: "swimyuks",
                 code: """
-                var swimyuks: Table = Table(
+                var swimyuks = Table(
                     "You can't swim in the dungeon.",
                     flags: .length
                 )
                 """,
-                type: .table,
+                type: .table.nonTableElement,
                 category: .globals,
                 isCommittable: true
             )

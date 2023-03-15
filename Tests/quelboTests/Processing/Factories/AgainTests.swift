@@ -43,7 +43,7 @@ final class AgainTests: QuelboTests {
             code: """
                 /// The `testAgain1` (TEST-AGAIN-1) routine.
                 func testAgain1() {
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         x.set(to: .add(x, 1))
                         output(x)
@@ -100,7 +100,7 @@ final class AgainTests: QuelboTests {
             code: """
                 /// The `testAgain2` (TEST-AGAIN-2) routine.
                 func testAgain2() {
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         x.set(to: .add(x, 1))
                         output(x)
@@ -162,7 +162,7 @@ final class AgainTests: QuelboTests {
             code: """
                 /// The `testAgain3` (TEST-AGAIN-3) routine.
                 func testAgain3() {
-                    var x: Int = 0
+                    var x = 0
                     act1: while true {
                         x.set(to: .add(x, 1))
                         output(x)
@@ -220,7 +220,7 @@ final class AgainTests: QuelboTests {
             code: """
                 /// The `testAgain4` (TEST-AGAIN-4) routine.
                 func testAgain4() {
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         // "PROG generates default activation"
                         x.set(to: .add(x, 1))

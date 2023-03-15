@@ -125,9 +125,7 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "score",
-            code: """
-                var score: Int = .add(Global.baseScore, otvalFrob())
-                """,
+            code: "var score = .add(Global.baseScore, otvalFrob())",
             type: .int,
             category: .globals,
             isCommittable: true,
@@ -138,7 +136,7 @@ final class AddTests: QuelboTests {
             Game.findInstance("baseScore"),
             Instance(Statement(
                 id: "baseScore",
-                code: "var baseScore: Int = 0",
+                code: "var baseScore = 0",
                 type: .int,
                 category: .globals,
                 isCommittable: true
@@ -172,7 +170,7 @@ final class AddTests: QuelboTests {
 
         let processed = Statement(
             id: "pAclause",
-            code: "var pAclause: Bool = false",
+            code: "var pAclause = false",
             type: .booleanFalse,
             category: .globals,
             isCommittable: true

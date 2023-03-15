@@ -145,22 +145,33 @@ extension Instance {
 
     var emptyValueAssignment: String {
         if let defaultValue {
-            return "var \(id): \(variable.type) = \(defaultValue.handle)"
+            let typeDetails = isOptional == true ? typeDescription : ""
+            return "var \(id)\(typeDetails) = \(defaultValue.handle)"
         }
         if type.dataType == nil && isTableElement != true || type.dataType == .void {
             return "// var \(id): <Unknown>"
         }
-        return "var \(id): \(type.emptyValueAssignment)"
+        return "var \(id)\(type.emptyValueAssignment)"
     }
 
     var initialization: String {
         if let defaultValue {
-            return "var \(id): \(defaultValue.type) = \(defaultValue.handle)"
+            let typeInfo = defaultValue.type.description
+            switch (typeInfo.hasSuffix("?"), defaultValue.handle) {
+            case (true, "nil"):
+                return "var \(id): \(typeInfo)"
+            case (true, _):
+                return "var \(id): \(typeInfo) = \(defaultValue.handle)"
+            case (false, _):
+                return "var \(id) = \(defaultValue.handle)"
+            }
         }
         switch context {
         case .auxiliary:
             return emptyValueAssignment
-        case .normal, .optional:
+        case .normal:
+            return "var \(id) = \(code)"
+        case .optional:
             return "var \(id): \(typeDescription) = \(code)"
         }
     }

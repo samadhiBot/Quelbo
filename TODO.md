@@ -2,8 +2,9 @@
 
 - Variable definitions should use type inference
   - e.g. `var beachDig: Int = -1` -> `var beachDig = -1`
-  - Fix tables declaration
-    - e.g. `let def1: Table = .table(...)` -> `let def1 = Table(...)`
+
+- Fix tables declaration
+  - e.g. `let def1: Table = .table(...)` -> `let def1 = Table(...)`
 
 - Constants should ignore optionality and always declare a value
 

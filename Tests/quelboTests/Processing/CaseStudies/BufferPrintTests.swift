@@ -85,8 +85,8 @@ final class BufferPrintTests: QuelboTests {
                 code: """
                     /// The `wordPrint` (WORD-PRINT) routine.
                     func wordPrint(cnt: Int, buf: Int) {
-                        var cnt: Int = cnt
-                        var buf: Int = buf
+                        var cnt = cnt
+                        var buf = buf
                         while true {
                             if cnt.decrement().isLessThan(0) {
                                 break
@@ -113,12 +113,12 @@ final class BufferPrintTests: QuelboTests {
                 code: """
                     /// The `bufferPrint` (BUFFER-PRINT) routine.
                     func bufferPrint(beg: Table, end: Table, cp: Bool) {
-                        var nosp: Bool = true
-                        var wrd: Word? = nil
-                        var isFirst: Bool = true
-                        var pn: Bool = false
-                        var isQ: Bool = false
-                        var beg: Table = beg
+                        var nosp = true
+                        var wrd: Word?
+                        var isFirst = true
+                        var pn = false
+                        var isQ = false
+                        var beg = beg
                         while true {
                             if beg.equals(end) {
                                 break

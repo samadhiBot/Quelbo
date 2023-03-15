@@ -51,11 +51,11 @@ extension Factories {
                 .hasReturnValue
             )
 
-            let mutable = symbols[1].isMutable != false
+            let isMutable = symbols[1].isMutable != false
             try symbols[0].assert(
-                .hasCategory(mutable ? .globals : .constants),
-                .isVariable,
-                mutable ? .isMutable : .isImmutable
+                .hasCategory(isMutable ? .globals : .constants),
+                isMutable ? .isMutable : .isImmutable,
+                .isVariable
             )
         }
 
@@ -68,7 +68,6 @@ extension Factories {
                 id: variable.code,
                 code: { statement in
                     let type = statement.type
-                    print("▶️", type, value)
                     var assignment: String {
                         if type.isOptional == true, variable.isMutable == true {
                             return ": \(statement.typeDescription)"

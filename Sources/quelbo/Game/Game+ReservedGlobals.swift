@@ -12,21 +12,21 @@ extension Game {
         [
             .statement(
                 id: "actions",
-                code: { _ in "var actions: Table = Table()" },
+                code: { _ in "var actions = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "debug",
-                code: { _ in "var debug: Bool = false" },
+                code: { _ in "var debug = false" },
                 type: .bool,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "lowDirection",
-                code: { _ in "let lowDirection: Int = 0" },
+                code: { _ in "let lowDirection = 0" },
                 type: .int
             ),
             .statement(
@@ -36,7 +36,7 @@ extension Game {
                     @discardableResult
                     /// The `nullFunc` (NULL-F) routine.
                     func nullFunc(a1: Any? = nil, a2: Any? = nil) -> Bool {
-                        return false
+                        false
                     }
                     """
                 },
@@ -88,21 +88,21 @@ extension Game {
             ),
             .statement(
                 id: "preactions",
-                code: { _ in "var preactions: Table = Table()" },
+                code: { _ in "var preactions = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "prepositions",
-                code: { _ in "var prepositions: Table = Table()" },
+                code: { _ in "var prepositions = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
             .statement(
                 id: "verbs",
-                code: { _ in "var verbs: Table = Table()" },
+                code: { _ in "var verbs = Table()" },
                 type: .table,
                 category: .globals,
                 isMutable: true

@@ -210,7 +210,12 @@ extension Symbol {
     func assertIsVariable() throws {
         switch self {
         case .definition, .literal: break
-        case .statement: if id != nil { return }
+        case .statement(let statement):
+            guard statement.id != nil else { break }
+            if statement.type.dataType == .table {
+                try type.assertIsTableElement(false)
+            }
+            return
         case .instance: return
         }
         throw AssertionError.isVariableAssertionFailed(for: "\(self)")
