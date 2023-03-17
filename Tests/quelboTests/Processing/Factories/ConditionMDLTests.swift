@@ -35,7 +35,7 @@ final class ConditionMDLTests: QuelboTests {
                     flags: .length
                 )
                 """,
-                type: .table.nonTableElement,
+                type: .table.root,
                 category: .globals,
                 isCommittable: true
             )

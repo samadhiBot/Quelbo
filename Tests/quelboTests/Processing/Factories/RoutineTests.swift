@@ -265,7 +265,7 @@ final class RoutineTests: QuelboTests {
             id: "batD",
             code: """
                 /// The `batD` (BAT-D) routine.
-                func batD(foo: String = "") {
+                func batD(foo: String? = nil) {
                     output(foo)
                 }
                 """,

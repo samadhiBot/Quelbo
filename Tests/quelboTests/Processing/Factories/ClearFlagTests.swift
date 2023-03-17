@@ -15,10 +15,7 @@ final class ClearFlagTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "openBit", type: .bool, category: .globals),
-            .variable(id: "trapDoor", type: .object, category: .objects),
-        ])
+        process("<OBJECT TRAP-DOOR (FLAGS OPENBIT)>")
     }
 
     func testFindFactory() throws {
@@ -32,7 +29,7 @@ final class ClearFlagTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Object.trapDoor.openBit.set(false)",
+            code: "Object.trapDoor.isOpen.set(false)",
             type: .bool
         ))
     }

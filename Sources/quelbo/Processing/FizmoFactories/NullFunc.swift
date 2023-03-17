@@ -24,7 +24,8 @@ extension Factories {
                 code: { _ in "nullFunc()" },
                 type: .bool,
                 category: .routines,
-                isCommittable: true
+                isCommittable: true,
+                isFunctionCall: true
             )
         }
     }

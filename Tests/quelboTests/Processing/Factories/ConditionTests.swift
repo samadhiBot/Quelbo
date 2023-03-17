@@ -155,7 +155,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if wonFlag {
+                if Global.wonFlag {
                     output(" A secret path leads southwest into the forest.")
                 }
                 """,
@@ -248,7 +248,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"""
-                if isFunnyReturn {
+                if Global.isFunnyReturn {
                     output("RETURN EXIT ROUTINE")
                 }
                 """#,

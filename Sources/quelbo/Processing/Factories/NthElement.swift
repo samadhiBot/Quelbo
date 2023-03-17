@@ -32,7 +32,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(values.code).nthElement(\(index.code))"
+                    "\(values.handle).nthElement(\(index.code))"
                 },
                 type: values.type.element,
                 returnHandling: .forced

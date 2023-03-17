@@ -45,7 +45,7 @@ extension Factories {
                     """
                     \(table.handle).put(
                         element: \(value.handle),
-                        at: \(offset.code)
+                        at: \(offset.handle)
                     )
                     """
                 },

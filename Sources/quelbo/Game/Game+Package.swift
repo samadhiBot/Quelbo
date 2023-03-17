@@ -28,139 +28,170 @@ extension Game {
         }
 
         func build() throws {
-            if !Game.directions.isEmpty {
-                try createFile(
-                    named: "Directions.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: Game.directions.sorted.codeValues(),
-                    wrapper: """
-                        /// Custom directions defined in \(project).
-                        extension Direction {
-                            {{code}}
-                        }
-                        """
-                )
-            }
-
-            if !Game.constants.isEmpty {
-                try createFile(
-                    named: "Constants.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: Game.constants.sorted.codeValues(.doubleLineBreak),
-                    wrapper: """
-                        /// Immutable constants defined in \(project).
-                        struct Constants {
-                            {{code}}
-                        }
-                        """
-                )
-            }
-
-            if !Game.globals.isEmpty {
-                try createFile(
-                    named: "Globals.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: Game.globals.sorted.codeValues(.doubleLineBreak),
-                    wrapper: """
-                        /// Mutable global values defined in \(project).
-                        class Globals: Codable {
-                            {{code}}
-                        }
-                        """
-                )
-            }
-
-            if !Game.objects.isEmpty {
-                try createFile(
-                    named: "Objects.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: Game.objects.sorted.codeValues(.doubleLineBreak),
-                    wrapper: """
-                        /// Mutable objects defined in \(project).
-                        class Objects: Codable {
-                            {{code}}
-                        }
-                        """
-                )
-            }
-
-            if !Game.rooms.isEmpty {
-                try createFile(
-                    named: "Rooms.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: """
-                        /// Mutable rooms defined in \(project).
-                        class Rooms: Codable {
-                        \(Game.rooms.sorted.codeValues(.doubleLineBreak).indented)
-                        }
-
-                        // MARK: - Shortcuts
-
-                        extension Rooms {
-                            static var Global: Globals { \(project).shared.globals }
-                            static var Object: Objects { \(project).shared.objects }
-                        }
-                        """
-                )
-            }
-
-            if !Game.routines.isEmpty {
-                let routines = Game.routines.sorted
-                let mappings = routines.compactMap { routine in
-                    guard let id = routine.id else { return nil }
-                    return """
-                        "\(id)": .voidVoid(\(id)),
-                        """
-                }.joined(separator: "\n            ")
-
-                try createFile(
-                    named: "Actions.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: routines.codeValues(.doubleLineBreak),
-                    wrapper: """
-                        /// \(project) action mappings.
-                        extension \(project) {
-                            var actions: [Routine.ID: Routine.Function] {
-                                [
-                                    \(mappings)
-                                ]
-                            }
-                        }
-
-                        // MARK: - Action definitions
-
-                        /// \(project) action definitions.
-                        extension \(project) {
-                            {{code}}
-                        }
-                        """
-                )
-            }
-
-            if !Game.syntax.isEmpty {
-                try createFile(
-                    named: "Syntax.swift",
-                    project: project,
-                    in: sourcesFolder,
-                    with: Game.syntax.sorted.codeValues(.commaLineBreakSeparated),
-                    wrapper: """
-                        /// Syntax rules defined in \(project).
-                        extension Syntax {
-                            static private(set) var rules: [Syntax] = [
-                            {{code}}
-                            ]
-                        }
-                        """
-                )
-            }
+            try addActions()
+            try addConstants()
+            try addDirections()
+            try addGlobals()
+            try addObjects()
+            try addRooms()
+            try addSyntax()
         }
     }
+}
+
+private extension Game.Package {
+    func addActions() throws {
+        guard !Game.routines.isEmpty else { return }
+
+        let routines = Game.routines.sorted
+        let mappings = routines.compactMap { routine in
+            guard let id = routine.id else { return nil }
+            return """
+                "\(id)": .voidVoid(\(id)),
+                """
+        }.joined(separator: "\n            ")
+
+        try createFile(
+            named: "Actions.swift",
+            project: project,
+            in: sourcesFolder,
+            with: routines.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// \(project) action mappings.
+                extension \(project) {
+                    var actions: [Routine.ID: Routine.Function] {
+                        [
+                            \(mappings)
+                        ]
+                    }
+                }
+
+                // MARK: - Action definitions
+
+                /// \(project) action definitions.
+                extension \(project) {
+                    {{code}}
+                }
+                """
+        )
+    }
+
+    func addConstants() throws {
+        guard !Game.constants.isEmpty else { return }
+
+        try createFile(
+            named: "Constants.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.constants.sorted.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// Immutable constants defined in \(project).
+                struct Constants {
+                    {{code}}
+                }
+                """
+        )
+    }
+
+    func addDirections() throws {
+        guard !Game.directions.isEmpty else { return }
+
+        try createFile(
+            named: "Directions.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.directions.sorted.codeValues(),
+            wrapper: """
+                /// Custom directions defined in \(project).
+                extension Direction {
+                    {{code}}
+                }
+                """
+        )
+    }
+
+
+    func addGlobals() throws {
+        guard !Game.globals.isEmpty else { return }
+
+        try createFile(
+            named: "Globals.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.globals.sorted.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// Mutable global values defined in \(project).
+                class Globals: Codable {
+                    /// A shortcut to the game's constant values.
+                    static var Constant: Constants {
+                        \(project).shared.constants
+                    }
+
+                    {{code}}
+                }
+                """
+        )
+    }
+
+    func addObjects() throws {
+        guard !Game.objects.isEmpty else { return }
+
+        try createFile(
+            named: "Objects.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.objects.sorted.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// Mutable objects defined in \(project).
+                class Objects: Codable {
+                    {{code}}
+                }
+                """
+        )
+    }
+
+    func addRooms() throws {
+        guard !Game.rooms.isEmpty else { return }
+
+        try createFile(
+            named: "Rooms.swift",
+            project: project,
+            in: sourcesFolder,
+            with: """
+                /// Mutable rooms defined in \(project).
+                class Rooms: Codable {
+                \(Game.rooms.sorted.codeValues(.doubleLineBreak).indented)
+                }
+
+                // MARK: - Shortcuts
+
+                extension Rooms {
+                    static var Global: Globals { \(project).shared.globals }
+                    static var Object: Objects { \(project).shared.objects }
+                }
+                """
+        )
+    }
+
+    func addSyntax() throws {
+        guard !Game.syntax.isEmpty else { return }
+
+        try createFile(
+            named: "Syntax.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.syntax.sorted.codeValues(.commaLineBreakSeparated),
+            wrapper: """
+                /// Syntax rules defined in \(project).
+                extension Syntax {
+                    static private(set) var rules: [Syntax] = [
+                    {{code}}
+                    ]
+                }
+                """
+        )
+    }
+
 }
 
 private extension Game.Package {
@@ -262,6 +293,26 @@ private extension Game.Package {
                     }
 
                     private(set) static var shared = \(project)()
+                }
+
+                /// A global shortcut to the game constants.
+                var Constant: Constants {
+                    \(project).shared.constants
+                }
+
+                /// A global shortcut to the game globals.
+                var Global: Globals {
+                    \(project).shared.globals
+                }
+
+                /// A global shortcut to the game objects.
+                var Object: Objects {
+                    \(project).shared.objects
+                }
+
+                /// A global shortcut to the game rooms.
+                var Room: Rooms {
+                    \(project).shared.rooms
                 }
 
                 \(project).shared.go()

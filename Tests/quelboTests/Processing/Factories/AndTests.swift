@@ -82,7 +82,7 @@ final class AndTests: QuelboTests {
             code: """
             .and(
                 rarg.equals(Global.mEnter),
-                .isNot(foundTreasureChest)
+                .isNot(Global.foundTreasureChest)
             )
             """,
             type: .bool

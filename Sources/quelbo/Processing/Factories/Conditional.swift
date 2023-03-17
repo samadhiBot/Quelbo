@@ -59,12 +59,12 @@ extension Factories {
 
             let predicateCode = {
                 if predicate.type.dataType == .bool && predicate.type.isTableElement != true {
-                    return predicate.code
+                    return predicate.handle
                 }
                 if !predicate.code.contains(/\W/) {
-                    return "let \(predicate.code)"
+                    return "let \(predicate.handle)"
                 }
-                return "_ = \(predicate.code)"
+                return "_ = \(predicate.handle)"
             }()
 
             switch predicateCode {

@@ -42,7 +42,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "try \(container.handle).get(at: \(offset.code))"
+                    "try \(container.handle).get(at: \(offset.handle))"
                 },
                 type: try {
                     switch container.type.dataType {

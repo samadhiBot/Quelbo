@@ -134,10 +134,10 @@ final class BufferPrintTests: QuelboTests {
                                 if wrd.equals(Word.period, Word.comma) {
                                     nosp.set(to: true)
                                 } else if wrd.equals(Word.me) {
-                                    output(me.description)
+                                    output(Object.me.description)
                                     pn.set(to: true)
                                 } else if wrd.equals(Word.intnum) {
-                                    output(pNumber)
+                                    output(Global.pNumber)
                                     pn.set(to: true)
                                 } else {
                                     if .and(isFirst, .isNot(pn), cp) {
@@ -149,7 +149,7 @@ final class BufferPrintTests: QuelboTests {
                                         wrd.equals(Word.it),
                                         isAccessible(obj: Global.pItObject)
                                     ) {
-                                        output(pItObject.description)
+                                        output(Global.pItObject.description)
                                     } else {
                                         wordPrint(
                                             cnt: try beg.get(at: 2),

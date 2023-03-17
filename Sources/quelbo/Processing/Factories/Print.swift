@@ -38,7 +38,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "output(\(string.code))"
+                    "output(\(string.handle))"
                 },
                 type: .void
             )

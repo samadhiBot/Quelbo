@@ -64,7 +64,7 @@ final class ApplyTests: QuelboTests {
         XCTAssertNoDifference(
             process("<APPLY ,<NTH ,DISPATCH-TBL 1> 2>"),
             .statement(
-                code: "dispatchTbl.nthElement(1)(2)",
+                code: "Constant.dispatchTbl.nthElement(1)(2)",
                 type: .int.element
             )
         )
@@ -72,7 +72,7 @@ final class ApplyTests: QuelboTests {
         XCTAssertNoDifference(
             process("<APPLY ,<NTH ,DISPATCH-TBL 2> 2>"),
             .statement(
-                code: "dispatchTbl.nthElement(2)(2)",
+                code: "Constant.dispatchTbl.nthElement(2)(2)",
                 type: .int.element
             )
         )

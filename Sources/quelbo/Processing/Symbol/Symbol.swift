@@ -79,21 +79,7 @@ extension Symbol {
         case .definition(let definition):
             return definition.code
         case .instance(let instance):
-            let id = instance.variable.id ?? instance.variable.code
-            switch instance.category {
-            case .constants:
-                return "Constant.\(id)"
-            case .definitions, .directions, .flags, .none, .properties, .syntax:
-                return id
-            case .globals:
-                return "Global.\(id)"
-            case .objects:
-                return "Object.\(id)"
-            case .rooms:
-                return "Room.\(id)"
-            case .routines:
-                return id.quoted
-            }
+            return instance.globalID
         case .literal(let literal):
             return literal.code
         case .statement(let statement):

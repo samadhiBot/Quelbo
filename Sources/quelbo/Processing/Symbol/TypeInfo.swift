@@ -231,7 +231,7 @@ extension TypeInfo {
         clone(isOptional: false)
     }
 
-    var nonTableElement: TypeInfo {
+    var root: TypeInfo {
         clone(isTableElement: false)
     }
 
@@ -293,7 +293,7 @@ extension TypeInfo {
         if isArray == true { return " = [\(self)]()" }
 
         switch dataType {
-        case .atom, .comment, .void:
+        case .atom, .comment, .none, .void:
             return " = \(self)"
         case .bool:
             return " = false"
@@ -301,8 +301,6 @@ extension TypeInfo {
             return " = 0"
         case .int8, .int16, .int32:
             return ": \(self) = 0"
-        case .none:
-            return ": \(self)"
         case .object, .routine, .table, .tableElement, .verb, .word:
             return isOptional == true ? ": \(self)" : ": \(self)?"
         case .oneOf(let dataTypes):

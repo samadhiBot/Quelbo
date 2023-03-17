@@ -98,7 +98,7 @@ final class ConstantTests: QuelboTests {
                     .room("forest3")
                 )
                 """,
-            type: .table.nonTableElement,
+            type: .table.root,
             category: .constants,
             isCommittable: true
         )
@@ -125,7 +125,7 @@ final class ConstantTests: QuelboTests {
                     flags: .length, .pure
                 )
                 """,
-            type: .table.nonTableElement,
+            type: .table.root,
             category: .constants,
             isCommittable: true
         )
@@ -190,7 +190,7 @@ final class ConstantTests: QuelboTests {
         let def1Res = Statement(
             id: "def1Res",
             code: "let def1Res = Table(.table(def1), .int(0), .int(0))",
-            type: .table,
+            type: .table.root,
             category: .constants,
             isCommittable: true
         )

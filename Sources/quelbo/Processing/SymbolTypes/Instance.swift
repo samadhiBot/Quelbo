@@ -77,8 +77,29 @@ final class Instance: SymbolType {
         id
     }
 
+    var globalID: String {
+        switch category {
+        case .constants:
+            return "Constant.\(id)"
+        case .definitions, .directions, .flags, .none, .properties:
+            return id
+        case .globals:
+            return "Global.\(id)"
+        case .objects:
+            return "Object.\(id)"
+        case .rooms:
+            return "Room.\(id)"
+        case .routines:
+            return "Routine.\(id)"
+        case .syntax:
+            return "Syntax.\(id)"
+        }
+    }
+
     var id: String {
-        guard let id = variable.id else { return "<missing id>" }
+        guard let id = variable.id else {
+            return #"#error("missing id")"#
+        }
         return id
     }
 
@@ -138,7 +159,7 @@ extension Instance {
             return "\(id): \(typeDescription) = \(defaultValue.code)"
         }
         if context == .optional {
-            return "\(id): \(type.emptyValueAssignment)"
+            return "\(id): \(typeDescription) = nil"
         }
         return "\(id): \(typeDescription)"
     }

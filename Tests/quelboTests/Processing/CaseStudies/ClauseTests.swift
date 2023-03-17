@@ -265,7 +265,7 @@ final class ClauseTests: QuelboTests {
                         var buf = 0
                         Global.oopsTable.put(
                             element: ptr,
-                            at: oPtr
+                            at: Constant.oPtr
                         )
                         if isParsedVerb(.say) {
                             output("Nothing happens.")
@@ -320,7 +320,7 @@ final class ClauseTests: QuelboTests {
                         } else {
                             Global.pLen.set(to: .add(Global.pLen, 1))
                         }
-                        if pLen.isZero {
+                        if Global.pLen.isZero {
                             Global.pNcn.set(to: .subtract(Global.pNcn, 1))
                             return -1
                         }
@@ -346,7 +346,7 @@ final class ClauseTests: QuelboTests {
                                 wrd.set(to: try Global.pLexv.get(at: ptr)),
                                 wrd.set(to: isNumber(ptr: ptr))
                             ) {
-                                if pLen.isZero {
+                                if Global.pLen.isZero {
                                     nw.set(to: nil)
                                 } else {
                                     nw.set(to: try Global.pLexv.get(at: .add(ptr, Constant.pLexelen)))
@@ -362,7 +362,7 @@ final class ClauseTests: QuelboTests {
                                     wrd.equals(Word.then, Word.period),
                                     .and(
                                         isWt(ptr: wrd, bit: PartsOfSpeech.preposition),
-                                        try Global.pItbl.get(at: pVerb),
+                                        try Global.pItbl.get(at: Constant.pVerb),
                                         .isNot(isFirst)
                                     )
                                 ) {
@@ -406,7 +406,7 @@ final class ClauseTests: QuelboTests {
                                     .or(
                                         Global.pMerged,
                                         Global.pOflag,
-                                        .isNot(try Global.pItbl.get(at: pVerb).equals(0))
+                                        .isNot(try Global.pItbl.get(at: Constant.pVerb).equals(0))
                                     ),
                                     .or(
                                         isWt(ptr: wrd, bit: PartsOfSpeech.adjective),
