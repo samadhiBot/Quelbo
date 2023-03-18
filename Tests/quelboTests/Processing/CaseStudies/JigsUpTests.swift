@@ -28,7 +28,7 @@ final class JigsUpTests: QuelboTests {
     }
 
     func sharedSetUp() {
-        process("""
+        process(#"""
             <SETG ZORK-NUMBER 1>
 
             <CONSTANT M-ENTER 2>
@@ -286,7 +286,7 @@ final class JigsUpTests: QuelboTests {
                      <RANDOMIZE-OBJECTS>
                      <KILL-INTERRUPTS>
                      <RFATAL>)>>>
-        """)
+        """#)
     }
 
     func testDisable() throws {
@@ -297,7 +297,10 @@ final class JigsUpTests: QuelboTests {
                 code: """
                     /// The `disable` (DISABLE) macro.
                     func disable(int: Table) {
-                        try int.put(element: 0, at: isCEnabled)
+                        int.put(
+                            element: 0,
+                            at: isCEnabled
+                        )
                     }
                     """,
                 type: .void,
@@ -316,19 +319,19 @@ final class JigsUpTests: QuelboTests {
                 code: """
                     /// The `randomizeObjects` (RANDOMIZE-OBJECTS) routine.
                     func randomizeObjects() {
-                        var r: Object? = nil
-                        var f: Object? = nil
-                        var n: Object? = nil
-                        var l: Int = 0
-                        if lamp.isIn(winner) {
-                            lamp.move(to: livingRoom)
+                        var r: Object?
+                        var f: Object?
+                        var n: Object?
+                        var l = 0
+                        if Object.lamp.isIn(Global.winner) {
+                            lamp.move(to: Room.livingRoom)
                         }
-                        if coffin.isIn(winner) {
-                            coffin.move(to: egyptRoom)
+                        if Object.coffin.isIn(Global.winner) {
+                            coffin.move(to: Room.egyptRoom)
                         }
                         sword.takeValue = 0
-                        n.set(to: winner.firstChild)
-                        l.set(to: try aboveGround.get(at: 0))
+                        n.set(to: Global.winner.firstChild)
+                        l.set(to: try Constant.aboveGround.get(at: 0))
                         while true {
                             f.set(to: n)
                             if .isNot(f) {
@@ -338,7 +341,7 @@ final class JigsUpTests: QuelboTests {
                             if f.takeValue.isGreaterThan(0) {
                                 while true {
                                     if .isNot(r) {
-                                        r.set(to: rooms.firstChild)
+                                        r.set(to: Object.rooms.firstChild)
                                     }
                                     if .and(
                                         r.hasFlag(.isDryLand),
@@ -352,7 +355,7 @@ final class JigsUpTests: QuelboTests {
                                     }
                                 }
                             } else {
-                                f.move(to: try aboveGround.get(at: .random(l)))
+                                f.move(to: try Constant.aboveGround.get(at: .random(l)))
                             }
                         }
                     }
@@ -376,25 +379,13 @@ final class JigsUpTests: QuelboTests {
                     func killInterrupts() -> Bool {
                         disable(int: int(rtn: iXb))
                         disable(int: int(rtn: iXc))
-                        disable(
-                            int: int(rtn: iCyclops)
-                        )
-                        disable(
-                            int: int(rtn: iLantern)
-                        )
-                        disable(
-                            int: int(rtn: iCandles)
-                        )
-                        disable(
-                            int: int(rtn: iSword)
-                        )
-                        disable(
-                            int: int(rtn: iForestRoom)
-                        )
-                        disable(
-                            int: int(rtn: iMatch)
-                        )
-                        match.isOn.set(false)
+                        disable(int: int(rtn: iCyclops))
+                        disable(int: int(rtn: iLantern))
+                        disable(int: int(rtn: iCandles))
+                        disable(int: int(rtn: iSword))
+                        disable(int: int(rtn: iForestRoom))
+                        disable(int: int(rtn: iMatch))
+                        Object.match.isOn.set(false)
                         return true
                     }
                     """,
@@ -413,10 +404,7 @@ final class JigsUpTests: QuelboTests {
                 id: "noGoTell",
                 code: #"""
                     /// The `noGoTell` (NO-GO-TELL) routine.
-                    func noGoTell(
-                        av: Bool,
-                        wloc: Object
-                    ) {
+                    func noGoTell(av: Bool, wloc: Object) {
                         if av {
                             output("You can't go there in a ")
                             output(wloc.description)
@@ -440,32 +428,27 @@ final class JigsUpTests: QuelboTests {
             Game.routines.find("scoreUpd"),
             Statement(
                 id: "scoreUpd",
-                code: """
+                code: #"""
                     @discardableResult
                     /// The `scoreUpd` (SCORE-UPD) routine.
                     func scoreUpd(num: Int) -> Bool {
-                        baseScore.set(to: .add(baseScore, num))
-                        score.set(to: .add(score, num))
+                        Global.baseScore.set(to: .add(Global.baseScore, num))
+                        Global.score.set(to: .add(Global.score, num))
                         if .and(
-                            score.equals(350),
-                            .isNot(wonFlag)
+                            Global.score.equals(350),
+                            .isNot(Global.wonFlag)
                         ) {
-                            wonFlag.set(to: true)
-                            map.isInvisible.set(false)
-                            westOfHouse.hasBeenTouched.set(false)
-                            output("An almost inaudible voice whispers in your ear, ")
-                            output(look)
-                            output(to)
-                            output(your)
-                            output(treasures)
-                            output(for)
-                            output(the)
-                            output(final)
-                            output(secret."")
+                            Global.wonFlag.set(to: true)
+                            Object.map.isInvisible.set(false)
+                            Room.westOfHouse.hasBeenTouched.set(false)
+                            output("""
+                                An almost inaudible voice whispers in your ear, "Look to \
+                                your treasures for the final secret."
+                                """)
                         }
                         return true
                     }
-                    """,
+                    """#,
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
@@ -482,7 +465,7 @@ final class JigsUpTests: QuelboTests {
                 code: """
                     /// The `scoreObj` (SCORE-OBJ) routine.
                     func scoreObj(obj: Object) {
-                        var temp: Int = 0
+                        var temp = 0
                         if temp.set(to: obj.value).isGreaterThan(0) {
                             scoreUpd(num: temp)
                             obj.value = 0
@@ -505,34 +488,25 @@ final class JigsUpTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `goto` (GOTO) routine.
-                    func goto(
-                        rm: Object,
-                        isV: Bool = true
-                    ) -> Bool {
-                        var lb: Bool = rm.hasFlag(.isDryLand)
-                        var wloc: Object = winner.parent
-                        var av: Bool = false
-                        var olit: Bool = false
-                        var ohere: Object? = nil
-                        olit.set(to: lit)
-                        ohere.set(to: here)
+                    func goto(rm: Object, isV: Bool = true) -> Bool {
+                        var lb = rm.hasFlag(.isDryLand)
+                        var wloc = Global.winner.parent
+                        var av = false
+                        var olit = false
+                        var ohere: Object?
+                        olit.set(to: Global.lit)
+                        ohere.set(to: Global.here)
                         if wloc.hasFlag(.isVehicle) {
                             av.set(to: wloc.vehicleType)
                         }
-                        if .and(
-                            .isNot(lb),
-                            .isNot(av)
-                        ) {
+                        if .and(.isNot(lb), .isNot(av)) {
+                            noGoTell(av: av, wloc: wloc)
+                            return false
+                        } else if .and(.isNot(lb), .isNot(rm.hasFlag(.av))) {
                             noGoTell(av: av, wloc: wloc)
                             return false
                         } else if .and(
-                            .isNot(lb),
-                            .isNot(rm.hasFlag(.av))
-                        ) {
-                            noGoTell(av: av, wloc: wloc)
-                            return false
-                        } else if .and(
-                            here.hasFlag(.isDryLand),
+                            Global.here.hasFlag(.isDryLand),
                             lb,
                             av,
                             .isNot(av.equals(.isDryLand)),
@@ -546,8 +520,8 @@ final class JigsUpTests: QuelboTests {
                         } else {
                             if .and(
                                 lb,
-                                .isNot(here.hasFlag(.isDryLand)),
-                                .isNot(dead),
+                                .isNot(Global.here.hasFlag(.isDryLand)),
+                                .isNot(Global.dead),
                                 wloc.hasFlag(.isVehicle)
                             ) {
                                 output("The ")
@@ -559,14 +533,14 @@ final class JigsUpTests: QuelboTests {
                             } else {
                                 winner.move(to: rm)
                             }
-                            here.set(to: rm)
-                            lit.set(to: isLit(rm: here))
+                            Global.here.set(to: rm)
+                            Global.lit.set(to: isLit(rm: Global.here))
                             if .and(
                                 .isNot(olit),
-                                .isNot(lit),
+                                .isNot(Global.lit),
                                 prob(isBase: 80)
                             ) {
-                                if isSprayed {
+                                if Global.isSprayed {
                                     output("""
                                         There are sinister gurgling noises in the darkness all \
                                         around you!
@@ -575,43 +549,41 @@ final class JigsUpTests: QuelboTests {
                                     return false
                                 } else {
                                     output("Oh, no! A lurking grue slithered into the ")
-                                    if winner.parent.hasFlag(.isVehicle) {
-                                        output(winner.parent.description)
+                                    if Global.winner.parent.hasFlag(.isVehicle) {
+                                        output(Global.winner.parent.description)
                                     } else {
                                         output("room")
                                     }
-                                    jigsUp(
-                                        desc: " and devoured you!"
-                                    )
+                                    jigsUp(desc: " and devoured you!")
                                     return true
                                 }
                             }
                             if .and(
-                                .isNot(lit),
-                                winner.equals(adventurer)
+                                .isNot(Global.lit),
+                                Global.winner.equals(Object.adventurer)
                             ) {
                                 output("You have moved into a dark place.")
                                 pCont.set(to: false)
                             }
-                            here.action(mEnter)
+                            Global.here.action(Constant.mEnter)
                             scoreObj(obj: rm)
-                            if .isNot(here.equals(rm)) {
+                            if .isNot(Global.here.equals(rm)) {
                                 return true
                             } else if .and(
-                                .isNot(adventurer.equals(winner)),
-                                adventurer.isIn(ohere)
+                                .isNot(Object.adventurer.equals(Global.winner)),
+                                Object.adventurer.isIn(ohere)
                             ) {
                                 output("The ")
-                                output(winner.description)
+                                output(Global.winner.description)
                                 output(" leaves the room.")
                             } else if .and(
-                                here.equals(ohere),
-                                here.equals(entranceToHades)
+                                Global.here.equals(ohere),
+                                Global.here.equals(Room.entranceToHades)
                             ) {
                                 return true
                             } else if .and(
                                 isV,
-                                winner.equals(adventurer)
+                                Global.winner.equals(Object.adventurer)
                             ) {
                                 vFirstLook()
                             }
@@ -634,12 +606,9 @@ final class JigsUpTests: QuelboTests {
                 id: "jigsUp",
                 code: #"""
                     /// The `jigsUp` (JIGS-UP) routine.
-                    func jigsUp(
-                        desc: String,
-                        isPlayer: Bool = false
-                    ) {
-                        winner.set(to: adventurer)
-                        if dead {
+                    func jigsUp(desc: String, isPlayer: Bool = false) {
+                        Global.winner.set(to: Object.adventurer)
+                        if Global.dead {
                             output("""
 
                                 It takes a talented person to be killed while already dead. \
@@ -649,7 +618,7 @@ final class JigsUpTests: QuelboTests {
                             finish()
                         }
                         output(desc)
-                        if .isNot(lucky) {
+                        if .isNot(Global.lucky) {
                             output("Bad luck, huh?")
                         }
                         do {
@@ -660,10 +629,10 @@ final class JigsUpTests: QuelboTests {
 
 
                                 """)
-                            if winner.parent.hasFlag(.isVehicle) {
-                                winner.move(to: here)
+                            if Global.winner.parent.hasFlag(.isVehicle) {
+                                winner.move(to: Global.here)
                             }
-                            if .isNot(deaths.isLessThan(2)) {
+                            if .isNot(Global.deaths.isLessThan(2)) {
                                 output("""
                                     You clearly are a suicidal maniac. We don't allow psychotics \
                                     in the cave, since they may harm other adventurers. Your \
@@ -672,9 +641,9 @@ final class JigsUpTests: QuelboTests {
                                     """)
                                 finish()
                             } else {
-                                deaths.set(to: .add(deaths, 1))
-                                winner.move(to: here)
-                                if southTemple.hasFlag(.hasBeenTouched) {
+                                Global.deaths.set(to: .add(Global.deaths, 1))
+                                winner.move(to: Global.here)
+                                if Room.southTemple.hasFlag(.hasBeenTouched) {
                                     output("""
                                         As you take your last breath, you feel relieved of your \
                                         burdens. The feeling passes as you find yourself before the \
@@ -682,21 +651,21 @@ final class JigsUpTests: QuelboTests {
                                         entry. Your senses are disturbed. The objects in the dungeon \
                                         appear indistinct, bleached of color, even unreal.
                                         """)
-                                    dead.set(to: true)
-                                    trollFlag.set(to: true)
+                                    Global.dead.set(to: true)
+                                    Global.trollFlag.set(to: true)
                                     // <SETG GWIM-DISABLE T>
-                                    alwaysLit.set(to: true)
+                                    Global.alwaysLit.set(to: true)
                                     winner.action = deadFunc
-                                    goto(rm: entranceToHades)
+                                    goto(rm: Room.entranceToHades)
                                 } else {
                                     output("""
                                         Now, let's take a look here... Well, you probably deserve \
                                         another chance. I can't quite fix you up completely, but you \
                                         can't have everything.
                                         """)
-                                    goto(rm: forest1)
+                                    goto(rm: Room.forest1)
                                 }
-                                trapDoor.hasBeenTouched.set(false)
+                                Object.trapDoor.hasBeenTouched.set(false)
                                 pCont.set(to: false)
                                 randomizeObjects()
                                 killInterrupts()

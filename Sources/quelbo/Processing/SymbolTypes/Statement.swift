@@ -56,7 +56,6 @@ final class Statement: SymbolType {
     var code: String {
         do {
             return try codeBlock(self)
-                .replacingOccurrences(of: "try try", with: "try")
         } catch {
             return "Statement:code:\(error)"
         }
