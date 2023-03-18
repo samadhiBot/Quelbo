@@ -56,11 +56,19 @@ extension Array where Element == Symbol {
         return statement
     }
 
+    func handleMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
+        handleMultiTypeValues(displayOptions)
+    }
+
+    func handleMultiTypeValues(_ displayOptions: [CodeValuesDisplayOption]) -> String {
+        nonCommentSymbols
+            .map(\.handleMultiType)
+            .values(displayOptions)
+    }
+
     func handles(_ displayOptions: CodeValuesDisplayOption...) -> String {
         if returnTypes.count > 1, !displayOptions.contains(.forceSingleType) {
-            return nonCommentSymbols
-                .map(\.handleMultiType)
-                .values(displayOptions)
+            return handleMultiTypeValues(displayOptions)
         }
         return nonCommentSymbols
             .map(\.handle)

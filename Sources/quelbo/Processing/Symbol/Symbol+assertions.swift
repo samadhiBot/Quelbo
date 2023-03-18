@@ -204,7 +204,18 @@ extension Symbol {
     }
 
     func assertIsTableElement() throws {
-        try type.assertIsTableElement()
+        switch self {
+        case .definition, .literal, .statement:
+            try type.assertIsTableElement(
+                isTableElement: true,
+                isInstance: false
+            )
+        case .instance:
+            try type.assertIsTableElement(
+                isTableElement: true,
+                isInstance: true
+            )
+        }
     }
 
     func assertIsVariable() throws {
@@ -213,7 +224,10 @@ extension Symbol {
         case .statement(let statement):
             guard statement.id != nil else { break }
             if statement.type.dataType == .table {
-                try type.assertIsTableElement(false)
+                try type.assertIsTableElement(
+                    isTableElement: false,
+                    isInstance: false
+                )
             }
             return
         case .instance: return

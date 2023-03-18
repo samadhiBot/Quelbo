@@ -56,11 +56,11 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object("troll"),
-                    .object("sword"),
+                    .object("Object.troll"),
+                    .object("Object.sword"),
                     .int(1),
                     .int(0),
-                    .table(trollMelee)
+                    .table(Constant.trollMelee)
                 )
                 """,
             type: .table,
@@ -122,13 +122,12 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("forest1"),
-                    .room("forest2"),
-                    .room("forest3"),
-                    .room("path"),
-                    .room("clearing"),
-                    .room("forest1"),
-                    flags: .pure
+                    .room("Room.forest1"),
+                    .room("Room.forest2"),
+                    .room("Room.forest3"),
+                    .room("Room.path"),
+                    .room("Room.clearing"),
+                    .room("Room.forest1")
                 )
                 """,
             type: .table,

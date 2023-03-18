@@ -44,27 +44,32 @@ extension Factories {
 
             return .statement(
                 code: {
+                    let isTableElement = $0.type.isTableElement == true
                     var elements = $0.payload.symbols
                     let types = elements.returnTypes
-                    if let flagSymbol {
+                    if let flagSymbol = flagSymbol(isTableElement) {
                         elements.append(flagSymbol)
                     }
                     var tableValues: String {
                         switch types.first {
                         case .object, .routine:
-                            return elements.codeMultiTypeValues(.commaSeparatedNoTrailingComma)
+                            return elements.handleMultiTypeValues(
+                                .commaSeparatedNoTrailingComma
+                            )
                         default:
                             if types.count > 1 {
-                                return elements.codeMultiTypeValues(.commaSeparatedNoTrailingComma)
+                                return elements.handleMultiTypeValues(
+                                    .commaSeparatedNoTrailingComma
+                                )
                             } else {
-                                return elements.codeValues(
+                                return elements.handles(
                                     .commaSeparatedNoTrailingComma,
                                     .forceSingleType
                                 )
                             }
                         }
                     }
-                    if $0.type.isTableElement == true {
+                    if isTableElement {
                         return ".table(\(tableValues))"
                     } else {
                         return "Table(\(tableValues))"
@@ -103,9 +108,10 @@ extension Factories.Table {
         return tableFlags.unique.sorted()
     }
 
-    var flagSymbol: Symbol? {
+    func flagSymbol(_ isTableElement: Bool) -> Symbol? {
         let flagValues = flags
-            .map { ".\($0)" }
+            .filter { isTableElement || $0 != .pure }
+            .map(\.rawValue.withDotPrefix)
             .values(.commaSeparatedNoTrailingComma)
 
         guard !flagValues.isEmpty else { return nil }

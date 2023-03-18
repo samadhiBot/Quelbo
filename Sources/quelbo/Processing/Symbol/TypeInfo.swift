@@ -204,14 +204,17 @@ extension TypeInfo {
         self.isProperty = true
     }
 
-    func assertIsTableElement(_ value: Bool = true) throws {
+    func assertIsTableElement(
+        isTableElement: Bool,
+        isInstance: Bool
+    ) throws {
         guard dataType?.canBeTableElement != false else {
             throw Symbol.AssertionError.isTableElementAssertionFailed
         }
-        if value == true, self.isTableElement == false {
+        if isTableElement, !isInstance, self.isTableElement == false {
             return
         }
-        self.isTableElement = value
+        self.isTableElement = isTableElement
     }
 }
 
@@ -275,15 +278,25 @@ extension TypeInfo {
     ) -> String {
         guard isTableElement == true else { return code }
 
-        switch dataType {
-        case .bool: return ".bool(\(code))"
-        case .int16: return ".int16(\(code))"
-        case .int32: return ".int32(\(code))"
-        case .int8: return ".int8(\(code))"
-        case .int: return ".int(\(code))"
-        case .object: return category == .rooms ? ".room(\"\(code)\")" : ".object(\"\(code)\")"
-        case .string: return ".string(\(code))"
-        case .table: return ".table(\(code))"
+        switch (dataType, category) {
+        case (.bool, _):
+            return ".bool(\(code))"
+        case (.int16, _):
+            return ".int16(\(code))"
+        case (.int32, _):
+            return ".int32(\(code))"
+        case (.int8, _):
+            return ".int8(\(code))"
+        case (.int, _):
+            return ".int(\(code))"
+        case (.object, .rooms):
+            return ".room(\"\(code)\")"
+        case (.object, _):
+            return ".object(\"\(code)\")"
+        case (.string, _):
+            return ".string(\(code))"
+        case (.table, _):
+            return ".table(\(code))"
         default: return code
         }
     }
