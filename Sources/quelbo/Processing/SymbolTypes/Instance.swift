@@ -80,17 +80,17 @@ final class Instance: SymbolType {
     var globalID: String {
         switch category {
         case .constants:
-            return "Constant.\(id)"
+            return "Constants.\(id)"
         case .definitions, .directions, .flags, .none, .properties:
             return id
         case .globals:
-            return "Global.\(id)"
+            return "Globals.\(id)"
         case .objects:
-            return "Object.\(id)"
+            return "Objects.\(id)"
         case .rooms:
-            return "Room.\(id)"
+            return "Rooms.\(id)"
         case .routines:
-            return "Routine.\(id)"
+            return "Routines.\(id)"
         case .syntax:
             return "Syntax.\(id)"
         }

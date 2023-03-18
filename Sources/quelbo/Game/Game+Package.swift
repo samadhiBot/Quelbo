@@ -268,7 +268,7 @@ private extension Game.Package {
         var plusCustomDirections: String {
             let directions = Game.directions
             guard !directions.isEmpty else { return "" }
-            return "+ [\(directions.sorted.handles(.dotPrefixed))]"
+            return " + [\(directions.sorted.codeValues(.dotPrefixed))]"
         }
 
         try createFile(
