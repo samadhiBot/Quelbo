@@ -94,12 +94,12 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 var foo = Table(
-                    .room("forest1"),
-                    .room("forest2"),
-                    .room("forest3")
+                    .room("Room.forest1"),
+                    .room("Room.forest2"),
+                    .room("Room.forest3")
                 )
                 """,
-            type: .table,
+            type: .table.root,
             category: .globals,
             isCommittable: true
         )
@@ -117,16 +117,16 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 let foo = Table(
-                    .room("forest1"),
-                    .room("forest2"),
-                    .room("forest3"),
-                    .room("path"),
-                    .room("clearing"),
-                    .room("forest1"),
-                    flags: .length, .pure
+                    .room("Room.forest1"),
+                    .room("Room.forest2"),
+                    .room("Room.forest3"),
+                    .room("Room.path"),
+                    .room("Room.clearing"),
+                    .room("Room.forest1"),
+                    flags: .length
                 )
                 """,
-            type: .table,
+            type: .table.root,
             category: .constants,
             isCommittable: true
         )
@@ -148,30 +148,30 @@ final class GlobalTests: QuelboTests {
             code: """
                 var villains = Table(
                     .table(
-                        .object("troll"),
-                        .object("sword"),
+                        .object("Object.troll"),
+                        .object("Object.sword"),
                         .int(1),
                         .int(0),
-                        .table(trollMelee)
+                        .table(Constant.trollMelee)
                     ),
                     .table(
-                        .object("thief"),
-                        .object("knife"),
+                        .object("Object.thief"),
+                        .object("Object.knife"),
                         .int(1),
                         .int(0),
-                        .table(thiefMelee)
+                        .table(Constant.thiefMelee)
                     ),
                     .table(
-                        .object("cyclops"),
+                        .object("Object.cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .table(cyclopsMelee)
+                        .table(Constant.cyclopsMelee)
                     ),
                     flags: .length
                 )
                 """,
-            type: .table,
+            type: .table.root,
             category: .globals,
             isCommittable: true
         )
@@ -190,8 +190,8 @@ final class GlobalTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "var def1Res = Table(.table(def1), .int(0), .int(0))",
-            type: .table,
+            code: "var def1Res = Table(.table(Constant.def1), .int(0), .int(0))",
+            type: .table.root,
             category: .globals,
             isCommittable: true
         )
@@ -386,7 +386,7 @@ extension GlobalTests {
                     @discardableResult
                     /// The `nullFunc` (NULL-F) routine.
                     func nullFunc(a1: Any? = nil, a2: Any? = nil) -> Bool {
-                        return false
+                        false
                     }
                     """,
                 type: .bool,

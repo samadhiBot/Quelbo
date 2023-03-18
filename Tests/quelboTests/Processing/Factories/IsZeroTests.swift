@@ -42,7 +42,7 @@ final class IsZeroTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "foo.isZero",
+            code: "Global.foo.isZero",
             type: .bool
         ))
     }

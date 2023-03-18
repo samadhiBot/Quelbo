@@ -85,30 +85,17 @@ final class SwordTests: QuelboTests {
                     /// The `sword` (SWORD) object.
                     var sword = Object(
                         id: "sword",
-                        action: swordFunc,
-                        adjectives: [
-                            "elvish",
-                            "old",
-                            "antique",
-                        ],
+                        action: "swordFunc",
+                        adjectives: ["elvish", "old", "antique"],
                         description: "sword",
                         firstDescription: """
                             Above the trophy case hangs an elvish sword of great \
                             antiquity.
                             """,
-                        flags: [
-                            .isTakable,
-                            .isWeapon,
-                            .noImplicitTake,
-                        ],
-                        location: livingRoom,
+                        flags: [.isTakable, .isWeapon, .noImplicitTake],
+                        location: "livingRoom",
                         size: 30,
-                        synonyms: [
-                            "sword",
-                            "orcrist",
-                            "glamdring",
-                            "blade",
-                        ],
+                        synonyms: ["sword", "orcrist", "glamdring", "blade"],
                         takeValue: 0
                     )
                     """#,
@@ -128,14 +115,14 @@ final class SwordTests: QuelboTests {
                     @discardableResult
                     /// The `iSword` (I-SWORD) routine.
                     func iSword() -> Bool {
-                        var dem: Table = int(rtn: iSword)
-                        var g: Int = sword.takeValue
-                        var ng: Int = 0
-                        var p: Int = 0
-                        var t: Table? = nil
-                        var l: Int = 0
-                        if sword.isIn(adventurer) {
-                            if isInfested(r: here) {
+                        var dem = int(rtn: iSword)
+                        var g = Object.sword.takeValue
+                        var ng = 0
+                        var p = 0
+                        var t: Table?
+                        var l = 0
+                        if Object.sword.isIn(Object.adventurer) {
+                            if isInfested(r: Global.here) {
                                 ng.set(to: 2)
                             } else {
                                 p.set(to: 0)
@@ -143,9 +130,13 @@ final class SwordTests: QuelboTests {
                                     if p.set(to: here.property(after: p)).isZero {
                                         break
                                     } else if .isNot(p.isLessThan(lowDirection)) {
-                                        t.set(to: here.property(p))
+                                        t.set(to: Global.here.property(p))
                                         l.set(to: t.propertySize)
-                                        if l.equals(uexit, cexit, dexit) {
+                                        if l.equals(
+                                            Constant.uexit,
+                                            Constant.cexit,
+                                            Constant.dexit
+                                        ) {
                                             if isInfested(r: try t.get(at: 0)) {
                                                 ng.set(to: 1)
                                                 break
@@ -166,7 +157,10 @@ final class SwordTests: QuelboTests {
                             sword.takeValue = ng
                             return true
                         } else {
-                            try dem.put(element: 0, at: isCEnabled)
+                            dem.put(
+                                element: 0,
+                                at: Global.isCEnabled
+                            )
                             return false
                         }
                     }

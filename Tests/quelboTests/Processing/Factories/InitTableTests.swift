@@ -97,12 +97,7 @@ final class InitTableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                Table(
-                    count: 100,
-                    flags: .none
-                )
-                """,
+            code: "Table(count: 100, flags: .none)",
             type: .table,
             isMutable: true,
             returnHandling: .implicit
@@ -119,12 +114,7 @@ final class InitTableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                Table(
-                    count: readbufSize,
-                    flags: .byte, .none
-                )
-                """,
+            code: "Table(count: readbufSize, flags: .byte, .none)",
             type: .table,
             isMutable: true,
             returnHandling: .implicit
@@ -148,11 +138,7 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 59,
-                    defaults:
-                        .int(0),
-                        .int8(0),
-                        .int8(0)
-                    ,
+                    defaults: .int(0), .int8(0), .int8(0),
                     flags: .lexv
                 )
                 """,

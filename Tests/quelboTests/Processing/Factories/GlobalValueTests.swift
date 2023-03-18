@@ -25,7 +25,7 @@ final class GlobalValueTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .instance(.init(
             id: "foo",
-            code: "var foo: Int = 42",
+            code: "var foo = 42",
             type: .int,
             category: .globals,
             isCommittable: true

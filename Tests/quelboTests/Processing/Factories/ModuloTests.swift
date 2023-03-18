@@ -43,12 +43,7 @@ final class ModuloTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .modulo(
-                    bigNumber,
-                    biggerNumber
-                )
-                """,
+            code: ".modulo(bigNumber, biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))

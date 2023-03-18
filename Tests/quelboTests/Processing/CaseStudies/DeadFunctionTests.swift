@@ -131,12 +131,7 @@ final class DeadFunctionTests: QuelboTests {
                             .restart
                         ) {
                             return false
-                        } else if isParsedVerb(
-                            .attack,
-                            .mung,
-                            .alarm,
-                            .swing
-                        ) {
+                        } else if isParsedVerb(.attack, .mung, .alarm, .swing) {
                             output("All such attacks are vain in your condition.")
                         } else if isParsedVerb(
                             .open,
@@ -160,11 +155,7 @@ final class DeadFunctionTests: QuelboTests {
                             output("You're dead! How can you think of your score?")
                         } else if isParsedVerb(.take, .rub) {
                             output("Your hand passes through its object.")
-                        } else if isParsedVerb(
-                            .drop,
-                            .throw,
-                            .inventory
-                        ) {
+                        } else if isParsedVerb(.drop, .throw, .inventory) {
                             output("You have no possessions.")
                         } else if isParsedVerb(.diagnose) {
                             output("You are dead.")
@@ -185,13 +176,13 @@ final class DeadFunctionTests: QuelboTests {
                             output("\n")
                             return false
                         } else if isParsedVerb(.pray) {
-                            if Global.here.equals(southTemple) {
-                                lamp.isInvisible.set(false)
+                            if Global.here.equals(Room.southTemple) {
+                                Object.lamp.isInvisible.set(false)
                                 winner.action = 0
                                 // <SETG GWIM-DISABLE false>
-                                alwaysLit.set(to: false)
-                                dead.set(to: false)
-                                if troll.isIn(trollRoom) {
+                                Global.alwaysLit.set(to: false)
+                                Global.dead.set(to: false)
+                                if Object.troll.isIn(Room.trollRoom) {
                                     Global.trollFlag.set(to: false)
                                 }
                                 output("""

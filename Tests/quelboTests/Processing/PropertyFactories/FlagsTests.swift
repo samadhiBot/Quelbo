@@ -32,11 +32,7 @@ final class FlagsTests: QuelboTests {
                     id: "brokenEgg",
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
-                    flags: [
-                        .isContainer,
-                        .isOpen,
-                        .isTakable,
-                    ]
+                    flags: [.isContainer, .isOpen, .isTakable]
                 )
                 """,
             type: .object,

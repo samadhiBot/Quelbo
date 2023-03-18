@@ -60,6 +60,7 @@ final class JigsUpTests: QuelboTests {
             <GLOBAL LUCKY T>
             <GLOBAL SPRAYED? <>>
             <GLOBAL SUPER-BRIEF <>>
+            <GLOBAL TROLL-FLAG <>>
             <GLOBAL WON-FLAG <>>
 
             <OBJECT ADVENTURER (FLAGS NDESCBIT INVISIBLE SACREDBIT ACTORBIT)>

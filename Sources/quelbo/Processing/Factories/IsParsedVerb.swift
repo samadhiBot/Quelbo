@@ -25,11 +25,15 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let values = symbols.nonCommentSymbols.map { ".\($0.handle)" }
+            let verbs = symbols.codeValues(
+                .commaSeparatedNoTrailingComma,
+                .dotPrefixed,
+                .forceSingleType
+            )
 
             return .statement(
                 code: { _ in
-                    "isParsedVerb(\(values.values(.commaSeparatedNoTrailingComma)))"
+                    "isParsedVerb(\(verbs))"
                 },
                 type: .bool
             )

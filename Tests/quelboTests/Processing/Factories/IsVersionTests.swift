@@ -42,12 +42,12 @@ final class IsVersionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                if zMachineVersion == .zip {
-                   resp.set(to: try readbuf.get(at: 1))
+                   resp.set(to: try Global.readbuf.get(at: 1))
                } else if zMachineVersion == .ezip {
-                   resp.set(to: try readbuf.get(at: 1))
+                   resp.set(to: try Global.readbuf.get(at: 1))
                } else {
-                   if _ = try readbuf.get(at: 1) {
-                       resp.set(to: try readbuf.get(at: 2))
+                   if _ = try Global.readbuf.get(at: 1) {
+                       resp.set(to: try Global.readbuf.get(at: 2))
                    } else {
                        resp.set(to: 0)
                    }

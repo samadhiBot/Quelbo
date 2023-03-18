@@ -60,26 +60,29 @@ final class IntTests: QuelboTests {
                         var e: Table? = e
                         var c: Table? = c
                         var int: Table? = int
-                        e.set(to: cTable.rest(bytes: cTablelen))
-                        c.set(to: cTable.rest(bytes: cInts))
+                        e.set(to: Global.cTable.rest(bytes: Constant.cTablelen))
+                        c.set(to: Global.cTable.rest(bytes: Global.cInts))
                         while true {
                             if c.equals(e) {
-                                cInts.set(to: .subtract(cInts, cIntlen))
+                                Global.cInts.set(to: .subtract(Global.cInts, Constant.cIntlen))
                                 .and(
                                     demon,
-                                    cDemons.set(to: .subtract(cDemons, cIntlen))
+                                    Global.cDemons.set(to: .subtract(Global.cDemons, Constant.cIntlen))
                                 )
-                                int.set(to: cTable.rest(bytes: cInts))
-                                try int.put(element: rtn, at: cRtn)
+                                int.set(to: Global.cTable.rest(bytes: Global.cInts))
+                                int.put(
+                                    element: rtn,
+                                    at: Constant.cRtn
+                                )
                                 return int
-                            } else if try c.get(at: cRtn).equals(rtn) {
+                            } else if try c.get(at: Constant.cRtn).equals(rtn) {
                                 return c
                             }
-                            c.set(to: c.rest(bytes: cIntlen))
+                            c.set(to: c.rest(bytes: Constant.cIntlen))
                         }
                     }
                     """,
-                type: .table,
+                type: .table.root,
                 category: .routines,
                 isCommittable: true,
                 returnHandling: .passthrough

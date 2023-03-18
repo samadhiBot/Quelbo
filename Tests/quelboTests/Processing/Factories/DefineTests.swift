@@ -30,7 +30,7 @@ final class DefineTests: QuelboTests {
             Game.constants.find("readbufSize"),
             Statement(
                 id: "readbufSize",
-                code: "let readbufSize: Int = 100",
+                code: "let readbufSize = 100",
                 type: .int,
                 category: .constants,
                 isCommittable: true
@@ -45,13 +45,10 @@ final class DefineTests: QuelboTests {
                     @discardableResult
                     /// The `makeReadbuf` (MAKE-READBUF) routine.
                     func makeReadbuf() -> Table {
-                        return Table(
-                            count: readbufSize,
-                            flags: .byte, .none
-                        )
+                        return Table(count: readbufSize, flags: .byte, .none)
                     }
                     """,
-                type: .table,
+                type: .table.root,
                 category: Category.routines,
                 isCommittable: true,
                 returnHandling: .passthrough
@@ -80,8 +77,8 @@ final class DefineTests: QuelboTests {
             Game.constants.find("kbdReadbuf"),
             Statement(
                 id: "kbdReadbuf",
-                code: "let kbdReadbuf: Table = makeReadbuf()",
-                type: .table,
+                code: "let kbdReadbuf = makeReadbuf()",
+                type: .table.root,
                 category: .constants,
                 isCommittable: true
             )
@@ -91,8 +88,8 @@ final class DefineTests: QuelboTests {
             Game.constants.find("editReadbuf"),
             Statement(
                 id: "editReadbuf",
-                code: "let editReadbuf: Table = makeReadbuf()",
-                type: .table,
+                code: "let editReadbuf = makeReadbuf()",
+                type: .table.root,
                 category: .constants,
                 isCommittable: true
             )
@@ -132,7 +129,7 @@ final class DefineTests: QuelboTests {
                     @discardableResult
                     /// The `incForm` (INC-FORM) routine.
                     func incForm(foo: Int) -> Int {
-                        var foo: Int = foo
+                        var foo = foo
                         return foo.set(to: .add(1, foo))
                     }
                     """,
@@ -225,8 +222,8 @@ final class DefineTests: QuelboTests {
                         if y.equals(0) {
                             return 1
                         }
-                        var z: Int = 1
-                        var i: Int = 0
+                        var z = 1
+                        var i = 0
                         while true {
                             z.set(to: .multiply(z, foo))
                             i.set(to: .add(i, 1))

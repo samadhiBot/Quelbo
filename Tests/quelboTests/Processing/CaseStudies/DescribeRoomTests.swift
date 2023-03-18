@@ -107,59 +107,53 @@ final class DescribeRoomTests: QuelboTests {
                     @discardableResult
                     /// The `describeRoom` (DESCRIBE-ROOM) routine.
                     func describeRoom(isLook: Bool = false) -> Bool {
-                        var isV: Bool = false
-                        var str: String = ""
-                        var av: Object? = nil
-                        isV.set(to: .or(isLook, verbose))
-                        if .isNot(lit) {
+                        var isV = false
+                        var str = ""
+                        var av: Object?
+                        isV.set(to: .or(isLook, Global.verbose))
+                        if .isNot(Global.lit) {
                             output("It is pitch black.")
-                            if .isNot(isSprayed) {
+                            if .isNot(Global.isSprayed) {
                                 output(" You are likely to be eaten by a grue.")
                             }
                             output("\n")
                             nullFunc()
                             return false
                         }
-                        if .isNot(here.hasFlag(.hasBeenTouched)) {
-                            here.hasBeenTouched.set(true)
+                        if .isNot(Global.here.hasFlag(.hasBeenTouched)) {
+                            Global.here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
-                        if here.hasFlag(.isMaze) {
-                            here.hasBeenTouched.set(false)
+                        if Global.here.hasFlag(.isMaze) {
+                            Global.here.hasBeenTouched.set(false)
                         }
-                        if here.isIn(rooms) {
+                        if Global.here.isIn(Object.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(here.description)
-                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
+                            output(Global.here.description)
+                            if av.set(to: Global.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
                             output("\n")
                         }
-                        if .or(
-                            isLook,
-                            .isNot(superBrief)
-                        ) {
-                            av.set(to: winner.parent)
+                        if .or(isLook, .isNot(Global.superBrief)) {
+                            av.set(to: Global.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(
-                                isV,
-                                here.action(mLook)
-                            ) {
+                            if _ = .and(isV, Global.here.action(Constant.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: here.longDescription)
+                                str.set(to: Global.here.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                here.action(mFlash)
+                                Global.here.action(Constant.mFlash)
                             }
                             if .and(
-                                .isNot(here.equals(av)),
+                                .isNot(Global.here.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
-                                av.action(mLook)
+                                av.action(Constant.mLook)
                             }
                         }
                         return true
@@ -184,28 +178,28 @@ final class DescribeRoomTests: QuelboTests {
                     @discardableResult
                     /// The `describeRoom` (DESCRIBE-ROOM) routine.
                     func describeRoom(isLook: Bool = false) -> Bool {
-                        var isV: Bool = false
-                        var str: String = ""
-                        var av: Object? = nil
-                        isV.set(to: .or(isLook, verbose))
-                        if .isNot(lit) {
+                        var isV = false
+                        var str = ""
+                        var av: Object?
+                        isV.set(to: .or(isLook, Global.verbose))
+                        if .isNot(Global.lit) {
                             output("It is pitch black.")
-                            if .isNot(isSprayed) {
+                            if .isNot(Global.isSprayed) {
                                 output(" You are likely to be eaten by a grue.")
                             }
                             output("\n")
                             nullFunc()
                             return false
                         }
-                        if .isNot(here.hasFlag(.hasBeenTouched)) {
-                            here.hasBeenTouched.set(true)
+                        if .isNot(Global.here.hasFlag(.hasBeenTouched)) {
+                            Global.here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
                         nullFunc()
-                        if here.isIn(rooms) {
+                        if Global.here.isIn(Object.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(here.description)
-                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
+                            output(Global.here.description)
+                            if av.set(to: Global.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
@@ -213,29 +207,26 @@ final class DescribeRoomTests: QuelboTests {
                         }
                         if .or(
                             isLook,
-                            .isNot(superBrief),
-                            here.equals(zork3)
+                            .isNot(Global.superBrief),
+                            Global.here.equals(Room.zork3)
                         ) {
-                            av.set(to: winner.parent)
+                            av.set(to: Global.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(
-                                isV,
-                                here.action(mLook)
-                            ) {
+                            if _ = .and(isV, Global.here.action(Constant.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: here.longDescription)
+                                str.set(to: Global.here.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                here.action(mFlash)
+                                Global.here.action(Constant.mFlash)
                             }
                             if .and(
-                                .isNot(here.equals(av)),
+                                .isNot(Global.here.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
-                                av.action(mLook)
+                                av.action(Constant.mLook)
                             }
                         }
                         return true
@@ -260,17 +251,17 @@ final class DescribeRoomTests: QuelboTests {
                     @discardableResult
                     /// The `describeRoom` (DESCRIBE-ROOM) routine.
                     func describeRoom(isLook: Bool = false) -> Bool {
-                        var isV: Bool = false
-                        var str: String = ""
-                        var av: Object? = nil
-                        isV.set(to: .or(isLook, verbose))
-                        if .isNot(lit) {
+                        var isV = false
+                        var str = ""
+                        var av: Object?
+                        isV.set(to: .or(isLook, Global.verbose))
+                        if .isNot(Global.lit) {
                             output("It is pitch black.")
-                            if .isNot(isSprayed) {
+                            if .isNot(Global.isSprayed) {
                                 output(" You are likely to be eaten by a grue.")
                             }
                             output("\n")
-                            if here.equals(dark2) {
+                            if Global.here.equals(Room.dark2) {
                                 output("""
                                     The ground continues to slope upwards away from the lake. \
                                     You can barely detect a dim light from the east.
@@ -278,44 +269,38 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             return false
                         }
-                        if .isNot(here.hasFlag(.hasBeenTouched)) {
-                            here.hasBeenTouched.set(true)
+                        if .isNot(Global.here.hasFlag(.hasBeenTouched)) {
+                            Global.here.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
                         nullFunc()
-                        if here.isIn(rooms) {
+                        if Global.here.isIn(Object.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(here.description)
-                            if av.set(to: winner.parent).hasFlag(.isVehicle) {
+                            output(Global.here.description)
+                            if av.set(to: Global.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
                             output("\n")
                         }
-                        if .or(
-                            isLook,
-                            .isNot(superBrief)
-                        ) {
-                            av.set(to: winner.parent)
+                        if .or(isLook, .isNot(Global.superBrief)) {
+                            av.set(to: Global.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(
-                                isV,
-                                here.action(mLook)
-                            ) {
+                            if _ = .and(isV, Global.here.action(Constant.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: here.longDescription)
+                                str.set(to: Global.here.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                here.action(mFlash)
+                                Global.here.action(Constant.mFlash)
                             }
                             if .and(
-                                .isNot(here.equals(av)),
+                                .isNot(Global.here.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
-                                av.action(mLook)
+                                av.action(Constant.mLook)
                             }
                         }
                         return true

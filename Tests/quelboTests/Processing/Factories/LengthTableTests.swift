@@ -27,8 +27,8 @@ final class LengthTableTests: QuelboTests {
             <ROOM FOREST2>
             <ROOM FOREST3>
             <ROOM PATH>
-            <ROUTINE THIEF-MELEE () T>
-            <ROUTINE TROLL-MELEE () T>
+            <GLOBAL THIEF-MELEE <TABLE (PURE) "The thief swings his knife, but it misses.">>
+            <GLOBAL TROLL-MELEE <TABLE (PURE) "The troll swings his axe, but it misses.">>
         """)
     }
 
@@ -44,9 +44,9 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
+                    .room("Room.forest1"),
+                    .room("Room.forest2"),
+                    .room("Room.forest3"),
                     flags: .length
                 )
                 """,
@@ -64,11 +64,11 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object(troll),
-                    .object(sword),
+                    .object("Object.troll"),
+                    .object("Object.sword"),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee),
+                    .table(Constant.trollMelee),
                     flags: .length
                 )
                 """,
@@ -90,14 +90,14 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "jumploss",
             code: """
-                var jumploss: Table = Table(
+                var jumploss = Table(
                     "You should have looked before you leaped.",
                     "In the movies, your life would be passing before your eyes.",
                     "Geronimo...",
                     flags: .length
                 )
                 """,
-            type: .table,
+            type: .table.root,
             category: .globals,
             isCommittable: true
         ))
@@ -111,13 +111,13 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
-                    flags: .length, .pure
+                    .room("Room.forest1"),
+                    .room("Room.forest2"),
+                    .room("Room.forest3"),
+                    .room("Room.path"),
+                    .room("Room.clearing"),
+                    .room("Room.forest1"),
+                    flags: .length
                 )
                 """,
             type: .table,
@@ -137,19 +137,19 @@ final class LengthTableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("Object.troll"),
+                        .object("Object.sword"),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee),
+                        .table(Constant.trollMelee),
                         flags: .length
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("Object.thief"),
+                        .object("Object.knife"),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee)
+                        .table(Constant.thiefMelee)
                     ),
                     flags: .length
                 )
@@ -174,7 +174,7 @@ final class LengthTableTests: QuelboTests {
             Statement(
                 id: "hellos",
                 code: """
-                    var hellos: Table = Table(
+                    var hellos = Table(
                         "Hello.",
                         "Good day.",
                         "Nice weather we've been having lately.",
@@ -182,11 +182,10 @@ final class LengthTableTests: QuelboTests {
                         flags: .length
                     )
                     """,
-                type: .table,
+                type: .table.root,
                 category: .globals,
                 isCommittable: true
             )
         )
     }
-
 }

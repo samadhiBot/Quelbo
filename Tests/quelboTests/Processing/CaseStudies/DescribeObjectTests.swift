@@ -216,17 +216,13 @@ final class DescribeObjectTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `describeObject` (DESCRIBE-OBJECT) routine.
-                    func describeObject(
-                        obj: Object,
-                        isV: Bool,
-                        level: Int
-                    ) -> Bool {
-                        var str: String? = nil
-                        var av: Object? = nil
+                    func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
+                        var str: String?
+                        var av: Object?
                         descObject.set(to: obj)
                         if _ = .and(
                             level.isZero,
-                            obj.descriptionFunction(mObjdesc)
+                            obj.descriptionFunction(Constant.mObjdesc)
                         ) {
                             return true
                         } else if _ = .and(
@@ -249,14 +245,14 @@ final class DescribeObjectTests: QuelboTests {
                             }
                             output(".")
                         } else {
-                            output(try indents.get(at: level))
+                            output(try Constant.indents.get(at: level))
                             output("A ")
                             output(obj.description)
                             if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
                                 obj.hasFlag(.isWearable),
-                                obj.isIn(winner)
+                                obj.isIn(Global.winner)
                             ) {
                                 output(" (being worn)")
                             }
@@ -264,7 +260,7 @@ final class DescribeObjectTests: QuelboTests {
                         nullFunc()
                         if .and(
                             level.isZero,
-                            av.set(to: winner.parent),
+                            av.set(to: Global.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -272,15 +268,8 @@ final class DescribeObjectTests: QuelboTests {
                             output(")")
                         }
                         output("\n")
-                        if .and(
-                            isSeeInside(obj: obj),
-                            obj.firstChild
-                        ) {
-                            printCont(
-                                obj: obj,
-                                isV: isV,
-                                level: level
-                            )
+                        if .and(isSeeInside(obj: obj), obj.firstChild) {
+                            printCont(obj: obj, isV: isV, level: level)
                         }
                     }
                     """#,
@@ -302,17 +291,13 @@ final class DescribeObjectTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `describeObject` (DESCRIBE-OBJECT) routine.
-                    func describeObject(
-                        obj: Object,
-                        isV: Bool,
-                        level: Int
-                    ) -> Bool {
-                        var str: String? = nil
-                        var av: Object? = nil
+                    func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
+                        var str: String?
+                        var av: Object?
                         descObject.set(to: obj)
                         if _ = .and(
                             level.isZero,
-                            obj.descriptionFunction(mObjdesc)
+                            obj.descriptionFunction(Constant.mObjdesc)
                         ) {
                             return true
                         } else if _ = .and(
@@ -335,27 +320,27 @@ final class DescribeObjectTests: QuelboTests {
                             }
                             output(".")
                         } else {
-                            output(try indents.get(at: level))
+                            output(try Constant.indents.get(at: level))
                             output("A ")
                             output(obj.description)
                             if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
                                 obj.hasFlag(.isWearable),
-                                obj.isIn(winner)
+                                obj.isIn(Global.winner)
                             ) {
                                 output(" (being worn)")
                             }
                         }
                         if .and(
-                            obj.equals(spellVictim),
-                            spellUsed.equals(Word.float)
+                            obj.equals(Global.spellVictim),
+                            Global.spellUsed.equals(Word.float)
                         ) {
                             output(" (floating in midair)")
                         }
                         if .and(
                             level.isZero,
-                            av.set(to: winner.parent),
+                            av.set(to: Global.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -363,15 +348,8 @@ final class DescribeObjectTests: QuelboTests {
                             output(")")
                         }
                         output("\n")
-                        if .and(
-                            isSeeInside(obj: obj),
-                            obj.firstChild
-                        ) {
-                            printCont(
-                                obj: obj,
-                                isV: isV,
-                                level: level
-                            )
+                        if .and(isSeeInside(obj: obj), obj.firstChild) {
+                            printCont(obj: obj, isV: isV, level: level)
                         }
                     }
                     """#,
@@ -398,19 +376,19 @@ final class DescribeObjectTests: QuelboTests {
                         isV: Bool = false,
                         level: Int = 0
                     ) -> Bool {
-                        var y: Object? = nil
-                        var is1St: Bool = false
-                        var shit: Bool = false
-                        var av: Object? = nil
-                        var str: String = ""
-                        var isPv: Bool = false
-                        var isInv: Bool = false
-                        var level: Int = 0
+                        var y: Object?
+                        var is1St = false
+                        var shit = false
+                        var av: Object?
+                        var str = ""
+                        var isPv = false
+                        var isInv = false
+                        var level = 0
                         if .isNot(y.set(to: obj.firstChild)) {
                             return true
                         }
                         if _ = .and(
-                            av.set(to: winner.parent),
+                            av.set(to: Global.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -419,7 +397,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if winner.equals(obj, obj.parent) {
+                        if Global.winner.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {
@@ -427,7 +405,7 @@ final class DescribeObjectTests: QuelboTests {
                                     break
                                 } else if y.equals(av) {
                                     isPv.set(to: true)
-                                } else if y.equals(winner) {
+                                } else if y.equals(Global.winner) {
                                     // do nothing
                                 } else if _ = .and(
                                     .isNot(y.hasFlag(.isInvisible)),
@@ -444,11 +422,7 @@ final class DescribeObjectTests: QuelboTests {
                                         .isNot(y.parent.descriptionFunction),
                                         y.firstChild
                                     ) {
-                                        if printCont(
-                                            obj: y,
-                                            isV: isV,
-                                            level: 0
-                                        ) {
+                                        if printCont(obj: y, isV: isV, level: 0) {
                                             is1St.set(to: false)
                                         }
                                     }
@@ -459,21 +433,13 @@ final class DescribeObjectTests: QuelboTests {
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if _ = .and(
-                                    isPv,
-                                    av,
-                                    av.firstChild
-                                ) {
+                                if _ = .and(isPv, av, av.firstChild) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
-                                    printCont(
-                                        obj: av,
-                                        isV: isV,
-                                        level: level
-                                    )
+                                    printCont(obj: av, isV: isV, level: level)
                                 }
                                 break
-                            } else if y.equals(av, adventurer) {
+                            } else if y.equals(av, Object.adventurer) {
                                 // do nothing
                             } else if .and(
                                 .isNot(y.hasFlag(.isInvisible)),
@@ -485,10 +451,7 @@ final class DescribeObjectTests: QuelboTests {
                             ) {
                                 if .isNot(y.hasFlag(.omitDescription)) {
                                     if is1St {
-                                        if firster(
-                                            obj: obj,
-                                            level: level
-                                        ) {
+                                        if firster(obj: obj, level: level) {
                                             if level.isLessThan(0) {
                                                 level.set(to: 0)
                                             }
@@ -499,22 +462,11 @@ final class DescribeObjectTests: QuelboTests {
                                     if level.isLessThan(0) {
                                         level.set(to: 0)
                                     }
-                                    describeObject(
-                                        obj: y,
-                                        isV: isV,
-                                        level: level
-                                    )
-                                } else if _ = .and(
-                                    y.firstChild,
-                                    isSeeInside(obj: y)
-                                ) {
+                                    describeObject(obj: y, isV: isV, level: level)
+                                } else if _ = .and(y.firstChild, isSeeInside(obj: y)) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
-                                    printCont(
-                                        obj: y,
-                                        isV: isV,
-                                        level: level
-                                    )
+                                    printCont(obj: y, isV: isV, level: level)
                                     level.set(to: .subtract(level, 1))
                                     // "not in Zork III"
                                 }
@@ -551,19 +503,19 @@ final class DescribeObjectTests: QuelboTests {
                         isV: Bool = false,
                         level: Int = 0
                     ) -> Bool {
-                        var y: Object? = nil
-                        var is1St: Bool = false
-                        var shit: Bool = false
-                        var av: Object? = nil
-                        var str: String = ""
-                        var isPv: Bool = false
-                        var isInv: Bool = false
-                        var level: Int = 0
+                        var y: Object?
+                        var is1St = false
+                        var shit = false
+                        var av: Object?
+                        var str = ""
+                        var isPv = false
+                        var isInv = false
+                        var level = 0
                         if .isNot(y.set(to: obj.firstChild)) {
                             return true
                         }
                         if _ = .and(
-                            av.set(to: winner.parent),
+                            av.set(to: Global.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -572,25 +524,25 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if winner.equals(obj, obj.parent) {
+                        if Global.winner.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {
                                 if .isNot(y) {
                                     if .and(
                                         level.isZero,
-                                        isSpell.equals(sFantasize),
+                                        Global.isSpell.equals(Constant.sFantasize),
                                         prob(isBase: 20)
                                     ) {
                                         output("There is a ")
-                                        output(pickOne(frob: fantasies))
+                                        output(pickOne(frob: Global.fantasies))
                                         output(" here.")
                                         is1St.set(to: false)
                                     }
                                     break
                                 } else if y.equals(av) {
                                     isPv.set(to: true)
-                                } else if y.equals(winner) {
+                                } else if y.equals(Global.winner) {
                                     // do nothing
                                 } else if _ = .and(
                                     .isNot(y.hasFlag(.isInvisible)),
@@ -607,11 +559,7 @@ final class DescribeObjectTests: QuelboTests {
                                         .isNot(y.parent.descriptionFunction),
                                         y.firstChild
                                     ) {
-                                        if printCont(
-                                            obj: y,
-                                            isV: isV,
-                                            level: 0
-                                        ) {
+                                        if printCont(obj: y, isV: isV, level: 0) {
                                             is1St.set(to: false)
                                         }
                                     }
@@ -622,21 +570,13 @@ final class DescribeObjectTests: QuelboTests {
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if _ = .and(
-                                    isPv,
-                                    av,
-                                    av.firstChild
-                                ) {
+                                if _ = .and(isPv, av, av.firstChild) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
-                                    printCont(
-                                        obj: av,
-                                        isV: isV,
-                                        level: level
-                                    )
+                                    printCont(obj: av, isV: isV, level: level)
                                 }
                                 break
-                            } else if y.equals(av, adventurer) {
+                            } else if y.equals(av, Object.adventurer) {
                                 // do nothing
                             } else if .and(
                                 .isNot(y.hasFlag(.isInvisible)),
@@ -648,10 +588,7 @@ final class DescribeObjectTests: QuelboTests {
                             ) {
                                 if .isNot(y.hasFlag(.omitDescription)) {
                                     if is1St {
-                                        if firster(
-                                            obj: obj,
-                                            level: level
-                                        ) {
+                                        if firster(obj: obj, level: level) {
                                             if level.isLessThan(0) {
                                                 level.set(to: 0)
                                             }
@@ -662,22 +599,11 @@ final class DescribeObjectTests: QuelboTests {
                                     if level.isLessThan(0) {
                                         level.set(to: 0)
                                     }
-                                    describeObject(
-                                        obj: y,
-                                        isV: isV,
-                                        level: level
-                                    )
-                                } else if _ = .and(
-                                    y.firstChild,
-                                    isSeeInside(obj: y)
-                                ) {
+                                    describeObject(obj: y, isV: isV, level: level)
+                                } else if _ = .and(y.firstChild, isSeeInside(obj: y)) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
-                                    printCont(
-                                        obj: y,
-                                        isV: isV,
-                                        level: level
-                                    )
+                                    printCont(obj: y, isV: isV, level: level)
                                     level.set(to: .subtract(level, 1))
                                     // "not in Zork III"
                                 }

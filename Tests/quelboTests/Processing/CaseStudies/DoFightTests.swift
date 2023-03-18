@@ -81,32 +81,32 @@ final class DoFightTests: QuelboTests {
             Statement(
                 id: "villains",
                 code: """
-                    var villains: Table = Table(
+                    var villains = Table(
                         .table(
-                            .object(troll),
-                            .object(sword),
+                            .object("Object.troll"),
+                            .object("Object.sword"),
                             .int(1),
                             .int(0),
-                            .table(trollMelee)
+                            .table(Constant.trollMelee)
                         ),
                         .table(
-                            .object(thief),
-                            .object(knife),
+                            .object("Object.thief"),
+                            .object("Object.knife"),
                             .int(1),
                             .int(0),
-                            .table(thiefMelee)
+                            .table(Constant.thiefMelee)
                         ),
                         .table(
-                            .object(cyclops),
+                            .object("Object.cyclops"),
                             .bool(false),
                             .int(0),
                             .int(0),
-                            .table(cyclopsMelee)
+                            .table(Constant.cyclopsMelee)
                         ),
                         flags: .length
                     )
                     """,
-                type: .table,
+                type: .table.root,
                 category: .globals,
                 isCommittable: true
             )
@@ -122,11 +122,11 @@ final class DoFightTests: QuelboTests {
                     @discardableResult
                     /// The `doFight` (DO-FIGHT) routine.
                     func doFight(len: Int) -> Bool {
-                        var cnt: Int = 0
-                        var res: Int? = 0
-                        var o: Object? = nil
-                        var oo: Table? = nil
-                        var out: Bool = false
+                        var cnt = 0
+                        var res = 0
+                        var o: Object?
+                        var oo: Table?
+                        var out = false
                         while true {
                             cnt.set(to: 0)
                             while true {
@@ -135,16 +135,16 @@ final class DoFightTests: QuelboTests {
                                     res.set(to: 1)
                                     return true
                                 }
-                                oo.set(to: try villains.get(at: cnt))
-                                o.set(to: try oo.get(at: vVillain))
+                                oo.set(to: try Global.villains.get(at: cnt))
+                                o.set(to: try oo.get(at: Constant.vVillain))
                                 if .isNot(o.hasFlag(.isFightable)) {
                                     // do nothing
-                                } else if _ = o.action(isFBusy) {
+                                } else if _ = o.action(Constant.isFBusy) {
                                     // do nothing
                                 } else if .isNot(res.set(to: villainBlow(oo: oo, isOut: out))) {
                                     res.set(to: 0)
                                     break
-                                } else if res.equals(unconscious) {
+                                } else if res.equals(Constant.unconscious) {
                                     out.set(to: .add(1, .random(3)))
                                 }
                             }

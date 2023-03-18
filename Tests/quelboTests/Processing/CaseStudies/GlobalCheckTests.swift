@@ -86,9 +86,9 @@ final class GlobalCheckTests: QuelboTests {
                  /// The `pseudoObject` (PSEUDO-OBJECT) object.
                  var pseudoObject = Object(
                      id: "pseudoObject",
-                     action: cretinFunc,
+                     action: "cretinFunc",
                      description: "pseudo",
-                     location: localGlobals
+                     location: "localGlobals"
                  )
                  """,
                 type: .object.array.property.tableElement,
@@ -106,16 +106,16 @@ final class GlobalCheckTests: QuelboTests {
                 code: """
                     /// The `globalCheck` (GLOBAL-CHECK) routine.
                     func globalCheck(tbl: Table) {
-                        var len: TableElement? = nil
-                        var rmg: [Object] = []
-                        var rmgl: Int = 0
-                        var cnt: Int = 0
-                        var obj: [Object] = []
-                        var obits: Int = 0
-                        var foo: [Routine] = []
-                        len.set(to: try tbl.get(at: pMatchlen))
-                        obits.set(to: pSlocbits)
-                        if _ = rmg.set(to: here.globals) {
+                        var len: TableElement?
+                        var rmg = [[Object]]()
+                        var rmgl = 0
+                        var cnt = 0
+                        var obj = [[Object]]()
+                        var obits = 0
+                        var foo = [[Routine]]()
+                        len.set(to: try tbl.get(at: Global.pMatchlen))
+                        obits.set(to: Global.pSlocbits)
+                        if _ = rmg.set(to: Global.here.globals) {
                             rmgl.set(to: .subtract(rmg.propertySize, 1))
                             while true {
                                 if isThisIt(
@@ -129,52 +129,42 @@ final class GlobalCheckTests: QuelboTests {
                                 }
                             }
                         }
-                        if _ = rmg.set(to: here.things) {
-                            rmgl.set(to: .subtract(
-                                .divide(rmg.propertySize, 4),
-                                1
-                            ))
+                        if _ = rmg.set(to: Global.here.things) {
+                            rmgl.set(to: .subtract(.divide(rmg.propertySize, 4), 1))
                             cnt.set(to: 0)
                             while true {
-                                if pNam.equals(
-                                    try rmg.get(at: .multiply(cnt, 2))
-                                ) {
+                                if Global.pNam.equals(try rmg.get(at: .multiply(cnt, 2))) {
                                     pseudoObject.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
-                                    foo.set(to: pseudoObject.action.back(bytes: 5))
-                                    try foo.put(element: try pNam.get(at: 0), at: 0)
-                                    try foo.put(element: try pNam.get(at: 1), at: 1)
-                                    objFound(
-                                        obj: pseudoObject,
-                                        tbl: tbl
+                                    foo.set(to: Object.pseudoObject.action.back(bytes: 5))
+                                    foo.put(
+                                        element: try Global.pNam.get(at: 0),
+                                        at: 0
                                     )
+                                    foo.put(
+                                        element: try Global.pNam.get(at: 1),
+                                        at: 1
+                                    )
+                                    objFound(obj: Object.pseudoObject, tbl: tbl)
                                     break
                                 } else if cnt.increment().isGreaterThan(rmgl) {
                                     break
                                 }
                             }
                         }
-                        if try tbl.get(at: pMatchlen).equals(len) {
-                            pSlocbits.set(to: -1)
-                            pTable.set(to: tbl)
+                        if try tbl.get(at: Global.pMatchlen).equals(len) {
+                            Global.pSlocbits.set(to: -1)
+                            Global.pTable.set(to: tbl)
                             doSl(
-                                obj: globalObjects,
+                                obj: Object.globalObjects,
                                 bit1: 1,
                                 bit2: 1
                             )
-                            pSlocbits.set(to: obits)
+                            Global.pSlocbits.set(to: obits)
                             if .and(
-                                try tbl.get(at: pMatchlen).isZero,
-                                parsedVerb.equals(
-                                    Verb.lookInside,
-                                    Verb.search,
-                                    Verb.examine
-                                )
+                                try tbl.get(at: Global.pMatchlen).isZero,
+                                Global.parsedVerb.equals(Verb.lookInside, Verb.search, Verb.examine)
                             ) {
-                                doSl(
-                                    obj: rooms,
-                                    bit1: 1,
-                                    bit2: 1
-                                )
+                                doSl(obj: Object.rooms, bit1: 1, bit2: 1)
                             }
                         }
                     }

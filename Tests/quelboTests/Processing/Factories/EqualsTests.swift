@@ -95,7 +95,7 @@ final class EqualsTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isPlayerAlive.equals(isWorldAlive)",
+            code: "Global.isPlayerAlive.equals(Global.isWorldAlive)",
             type: .bool
         ))
     }

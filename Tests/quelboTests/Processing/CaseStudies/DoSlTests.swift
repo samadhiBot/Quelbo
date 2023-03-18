@@ -45,33 +45,26 @@ final class DoSlTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `doSl` (DO-SL) routine.
-                    func doSl(
-                        obj: Object,
-                        bit1: Int,
-                        bit2: Int
-                    ) -> Bool {
+                    func doSl(obj: Object, bit1: Int, bit2: Int) -> Bool {
                         // var bts: <Unknown>
-                        if _ = .bitwiseCompare(
-                            pSlocbits,
-                            .add(bit1, bit2)
-                        ) {
+                        if _ = .bitwiseCompare(Global.pSlocbits, .add(bit1, bit2)) {
                             searchList(
                                 obj: obj,
-                                tbl: pTable,
-                                lvl: pSrcall
+                                tbl: Global.pTable,
+                                lvl: Constant.pSrcall
                             )
                         } else {
-                            if _ = .bitwiseCompare(pSlocbits, bit1) {
+                            if _ = .bitwiseCompare(Global.pSlocbits, bit1) {
                                 searchList(
                                     obj: obj,
-                                    tbl: pTable,
-                                    lvl: pSrctop
+                                    tbl: Global.pTable,
+                                    lvl: Constant.pSrctop
                                 )
-                            } else if _ = .bitwiseCompare(pSlocbits, bit2) {
+                            } else if _ = .bitwiseCompare(Global.pSlocbits, bit2) {
                                 searchList(
                                     obj: obj,
-                                    tbl: pTable,
-                                    lvl: pSrcbot
+                                    tbl: Global.pTable,
+                                    lvl: Constant.pSrcbot
                                 )
                             } else {
                                 return true

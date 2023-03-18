@@ -142,16 +142,16 @@ final class ItakeTests: QuelboTests {
                     @discardableResult
                     /// The `itake` (ITAKE) routine.
                     func itake(vb: Bool = true) -> Bool {
-                        var cnt: Int = 0
+                        var cnt = 0
                         // var obj: <Unknown>
-                        if dead {
+                        if Global.dead {
                             if vb {
                                 output("Your hand passes through its object.")
                             }
                             return false
                         } else if .isNot(Global.parsedDirectObject.hasFlag(.isTakable)) {
                             if vb {
-                                output(pickOne(frob: yuks))
+                                output(pickOne(frob: Global.yuks))
                             }
                             return false
                         } else if nullFunc() {
@@ -163,17 +163,15 @@ final class ItakeTests: QuelboTests {
                             // "Kludge for parser calling itake"
                             return false
                         } else if .and(
-                            .isNot(Global.parsedDirectObject.parent.isIn(winner)),
+                            .isNot(Global.parsedDirectObject.parent.isIn(Global.winner)),
                             .add(
-                                weight(
-                                    obj: Global.parsedDirectObject
-                                ),
-                                weight(obj: winner)
-                            ).isGreaterThan(loadAllowed)
+                                weight(obj: Global.parsedDirectObject),
+                                weight(obj: Global.winner)
+                            ).isGreaterThan(Global.loadAllowed)
                         ) {
                             if vb {
                                 output("Your load is too heavy")
-                                if loadAllowed.isLessThan(loadMax) {
+                                if Global.loadAllowed.isLessThan(Global.loadMax) {
                                     output(", especially in light of your condition.")
                                 } else {
                                     output(".")
@@ -183,21 +181,19 @@ final class ItakeTests: QuelboTests {
                             returnFatal()
                         } else if .and(
                             isParsedVerb(.take),
-                            cnt.set(to: ccount(obj: winner)).isGreaterThan(fumbleNumber),
+                            cnt.set(to: ccount(obj: Global.winner)).isGreaterThan(Global.fumbleNumber),
                             prob(
-                                isBase: .multiply(cnt, fumbleProb)
+                                isBase: .multiply(cnt, Global.fumbleProb)
                             )
                         ) {
                             output("You're holding too many things already!")
                             return false
                         } else {
-                            Global.parsedDirectObject.move(to: winner)
+                            parsedDirectObject.move(to: Global.winner)
                             Global.parsedDirectObject.omitDescription.set(false)
                             Global.parsedDirectObject.hasBeenTouched.set(true)
                             nullFunc()
-                            scoreObj(
-                                obj: Global.parsedDirectObject
-                            )
+                            scoreObj(obj: Global.parsedDirectObject)
                             return true
                         }
                     }

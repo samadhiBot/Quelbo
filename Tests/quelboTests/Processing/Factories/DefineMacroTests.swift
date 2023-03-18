@@ -39,7 +39,7 @@ final class DefineMacroTests: QuelboTests {
                 @discardableResult
                 /// The `inc` (INC) macro.
                 func inc(atm: Int, n: Int = 1) -> Int {
-                    var atm: Int = atm
+                    var atm = atm
                     return atm.set(to: .add(atm, n))
                 }
                 """,

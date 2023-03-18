@@ -18,11 +18,11 @@ final class FactorySymbolizeTests: QuelboTests {
             /// The `boardedWindow` (BOARDED-WINDOW) object.
             var boardedWindow = Object(
                 id: "boardedWindow",
-                action: boardedWindowFunc,
+                action: "boardedWindowFunc",
                 adjectives: ["boarded"],
                 description: "boarded window",
                 flags: [.omitDescription],
-                location: localGlobals,
+                location: "localGlobals",
                 synonyms: ["window"]
             )
             """,

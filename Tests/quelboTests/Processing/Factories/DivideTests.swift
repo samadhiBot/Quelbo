@@ -68,12 +68,7 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .divide(
-                    bigNumber,
-                    biggerNumber
-                )
-                """,
+            code: ".divide(bigNumber, biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -86,7 +81,7 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".divide(cyclowrath, 1)",
+            code: ".divide(Global.cyclowrath, 1)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -101,12 +96,7 @@ final class DivideTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .divide(
-                    baseScore,
-                    otvalFrob()
-                )
-                """,
+            code: ".divide(Global.baseScore, otvalFrob())",
             type: .int,
             returnHandling: .implicit
         ))

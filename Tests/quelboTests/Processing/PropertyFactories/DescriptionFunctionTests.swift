@@ -23,7 +23,9 @@ final class DescriptionFunctionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "descriptionFunction",
-            code: "descriptionFunction: batD",
+            code: """
+                descriptionFunction: "batD"
+                """,
             type: .routine
         ))
     }

@@ -57,7 +57,7 @@ final class IsLessThanOrEqualToTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "2.isLessThanOrEqualTo(foo)",
+            code: "2.isLessThanOrEqualTo(Global.foo)",
             type: .bool
         ))
     }

@@ -113,7 +113,7 @@ final class FinishTests: QuelboTests {
                     /// The `vFirstLook` (V-FIRST-LOOK) routine.
                     func vFirstLook() {
                         if describeRoom() {
-                            if .isNot(superBrief) {
+                            if .isNot(Global.superBrief) {
                                 describeObjects()
                             }
                         }
@@ -133,10 +133,7 @@ final class FinishTests: QuelboTests {
             Statement(
                 id: "quit",
                 code: """
-                    Syntax(
-                        verb: "quit",
-                        action: "vQuit"
-                    )
+                    Syntax(verb: "quit", action: "vQuit")
                     """,
                 type: .void,
                 category: .syntax,
@@ -177,10 +174,7 @@ final class FinishTests: QuelboTests {
             Statement(
                 id: "restart",
                 code: """
-                    Syntax(
-                        verb: "restart",
-                        action: "vRestart"
-                    )
+                    Syntax(verb: "restart", action: "vRestart")
                     """,
                 type: .void,
                 category: .syntax,
@@ -220,10 +214,7 @@ final class FinishTests: QuelboTests {
             Statement(
                 id: "restore",
                 code: """
-                    Syntax(
-                        verb: "restore",
-                        action: "vRestore"
-                    )
+                    Syntax(verb: "restore", action: "vRestore")
                     """,
                 type: .void,
                 category: .syntax,
@@ -266,35 +257,35 @@ final class FinishTests: QuelboTests {
                     /// The `vScore` (V-SCORE) routine.
                     func vScore(isAsk: Bool = true) -> Int {
                         output("Your score is ")
-                        output(score)
+                        output(Global.score)
                         output(" (total of 350 points), in ")
-                        output(moves)
-                        if moves.isOne {
+                        output(Global.moves)
+                        if Global.moves.isOne {
                             output(" move.")
                         } else {
                             output(" moves.")
                         }
                         output("\n")
                         output("This gives you the rank of ")
-                        if score.equals(350) {
+                        if Global.score.equals(350) {
                             output("Master Adventurer")
-                        } else if score.isGreaterThan(330) {
+                        } else if Global.score.isGreaterThan(330) {
                             output("Wizard")
-                        } else if score.isGreaterThan(300) {
+                        } else if Global.score.isGreaterThan(300) {
                             output("Master")
-                        } else if score.isGreaterThan(200) {
+                        } else if Global.score.isGreaterThan(200) {
                             output("Adventurer")
-                        } else if score.isGreaterThan(100) {
+                        } else if Global.score.isGreaterThan(100) {
                             output("Junior Adventurer")
-                        } else if score.isGreaterThan(50) {
+                        } else if Global.score.isGreaterThan(50) {
                             output("Novice Adventurer")
-                        } else if score.isGreaterThan(25) {
+                        } else if Global.score.isGreaterThan(25) {
                             output("Amateur Adventurer")
                         } else {
                             output("Beginner")
                         }
                         output(".")
-                        return score
+                        return Global.score
                     }
                     """#,
                 type: .int,
@@ -313,7 +304,7 @@ final class FinishTests: QuelboTests {
                 code: #"""
                     /// The `finish` (FINISH) routine.
                     func finish() {
-                        var wrd: Word? = nil
+                        var wrd: Word?
                         vScore()
                         while true {
                             output("\n")
@@ -325,7 +316,7 @@ final class FinishTests: QuelboTests {
                                 >
                                 """)
                             read(&pInbuf, &pLexv)
-                            wrd.set(to: try pLexv.get(at: 1))
+                            wrd.set(to: try Global.pLexv.get(at: 1))
                             if wrd.equals(Word.restart) {
                                 vRestart()
                                 output("Failed.")
