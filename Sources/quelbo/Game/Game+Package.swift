@@ -34,6 +34,7 @@ extension Game {
             try addGlobals()
             try addObjects()
             try addRooms()
+            try addRoutines()
             try addSyntax()
         }
     }
@@ -43,34 +44,26 @@ private extension Game.Package {
     func addActions() throws {
         guard !Game.routines.isEmpty else { return }
 
-        let routines = Game.routines.sorted
-        let mappings = routines.compactMap { routine in
+        let mappings = Game.routines.sorted.compactMap { routine in
             guard let id = routine.id else { return nil }
             return """
                 "\(id)": .voidVoid(\(id)),
                 """
-        }.joined(separator: "\n            ")
+        }.joined(separator: "\n")
 
         try createFile(
             named: "Actions.swift",
             project: project,
             in: sourcesFolder,
-            with: routines.codeValues(.doubleLineBreak),
+            with: mappings,
             wrapper: """
                 /// \(project) action mappings.
                 extension \(project) {
                     var actions: [Routine.ID: Routine.Function] {
                         [
-                            \(mappings)
+                            {{code}}
                         ]
                     }
-                }
-
-                // MARK: - Action definitions
-
-                /// \(project) action definitions.
-                extension \(project) {
-                    {{code}}
                 }
                 """
         )
@@ -86,7 +79,7 @@ private extension Game.Package {
             with: Game.constants.sorted.codeValues(.doubleLineBreak),
             wrapper: """
                 /// Immutable constants defined in \(project).
-                struct Constants {
+                struct \(project)Constants {
                     {{code}}
                 }
                 """
@@ -121,12 +114,7 @@ private extension Game.Package {
             with: Game.globals.sorted.codeValues(.doubleLineBreak),
             wrapper: """
                 /// Mutable global values defined in \(project).
-                class Globals: Codable {
-                    /// A shortcut to the game's constant values.
-                    static var Constant: Constants {
-                        \(project).shared.constants
-                    }
-
+                class \(project)Globals: Codable {
                     {{code}}
                 }
                 """
@@ -143,7 +131,7 @@ private extension Game.Package {
             with: Game.objects.sorted.codeValues(.doubleLineBreak),
             wrapper: """
                 /// Mutable objects defined in \(project).
-                class Objects: Codable {
+                class \(project)Objects: Codable {
                     {{code}}
                 }
                 """
@@ -157,17 +145,28 @@ private extension Game.Package {
             named: "Rooms.swift",
             project: project,
             in: sourcesFolder,
-            with: """
+            with: Game.rooms.sorted.codeValues(.doubleLineBreak).indented,
+            wrapper: """
                 /// Mutable rooms defined in \(project).
-                class Rooms: Codable {
-                \(Game.rooms.sorted.codeValues(.doubleLineBreak).indented)
+                class \(project)Rooms: Codable {
+                    {{code}}
                 }
+                """
+        )
+    }
 
-                // MARK: - Shortcuts
+    func addRoutines() throws {
+        guard !Game.routines.isEmpty else { return }
 
-                extension Rooms {
-                    static var Global: Globals { \(project).shared.globals }
-                    static var Object: Objects { \(project).shared.objects }
+        try createFile(
+            named: "Routines.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.routines.sorted.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// \(project) action definitions.
+                extension \(project) {
+                    {{code}}
                 }
                 """
         )
@@ -206,6 +205,7 @@ private extension Game.Package {
         var wrappedCode: String {
             guard let wrapper else { return code }
             return wrapper
+                .replacingOccurrences(of: "            {{code}}", with: code.indented.indented.indented)
                 .replacingOccurrences(of: "        {{code}}", with: code.indented.indented)
                 .replacingOccurrences(of: "    {{code}}", with: code.indented)
         }
@@ -278,40 +278,40 @@ private extension Game.Package {
             with: """
                 /// Represents the \(project) game.
                 final class \(project) {
-                    let constants: Constants
+                    let constants: \(project)Constants
                     let directions: [Direction]
-                    let globals: Globals
-                    let objects: Objects
-                    let rooms: Rooms
+                    let globals: \(project)Globals
+                    let objects: \(project)Objects
+                    let rooms: \(project)Rooms
 
                     private init() {
-                        constants = Constants()
+                        constants = \(project)Constants()
                         directions = Direction.defaults\(plusCustomDirections)
-                        globals = Globals()
-                        objects = Objects()
-                        rooms = Rooms()
+                        globals = \(project)Globals()
+                        objects = \(project)Objects()
+                        rooms = \(project)Rooms()
                     }
 
                     private(set) static var shared = \(project)()
                 }
 
-                /// A global shortcut to the game constants.
-                var Constant: Constants {
+                /// A global shortcut to the \(project) game constants.
+                var Constants: \(project)Constants {
                     \(project).shared.constants
                 }
 
-                /// A global shortcut to the game globals.
-                var Global: Globals {
+                /// A global shortcut to the \(project) game globals.
+                var Globals: \(project)Globals {
                     \(project).shared.globals
                 }
 
-                /// A global shortcut to the game objects.
-                var Object: Objects {
+                /// A global shortcut to the \(project) game objects.
+                var Objects: \(project)Objects {
                     \(project).shared.objects
                 }
 
-                /// A global shortcut to the game rooms.
-                var Room: Rooms {
+                /// A global shortcut to the \(project) game rooms.
+                var Rooms: \(project)Rooms {
                     \(project).shared.rooms
                 }
 
