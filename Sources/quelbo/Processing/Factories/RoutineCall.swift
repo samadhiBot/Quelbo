@@ -79,15 +79,22 @@ extension Factories {
             }
             let comment = params.isEmpty ? "" : comment
             let params = params
+            let tryDeclaration = routine.isThrowing ? "try " : ""
 
             return .statement(
                 id: routineID,
                 code: { _ in
-                    "\(routineID)(\(params.handles(.commaSeparatedNoTrailingComma)))\(comment)"
+                    """
+                    \(tryDeclaration)\
+                    \(routineID)\
+                    (\(params.handles(.commaSeparatedNoTrailingComma)))\
+                    \(comment)
+                    """
                 },
                 type: routine.type,
                 payload: .init(symbols: params),
-                isFunctionCall: true
+                isFunctionCall: true,
+                isThrowing: routine.isThrowing
             )
         }
     }

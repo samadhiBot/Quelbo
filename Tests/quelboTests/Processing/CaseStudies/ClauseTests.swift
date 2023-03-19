@@ -169,7 +169,7 @@ final class ClauseTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `cantUse` (CANT-USE) routine.
-                    func cantUse(ptr: Int) -> Bool {
+                    func cantUse(ptr: Int) throws -> Bool {
                         var buf = 0
                         if isParsedVerb(.say) {
                             output("Nothing happens.")
@@ -188,6 +188,7 @@ final class ClauseTests: QuelboTests {
                 type: .booleanFalse,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -201,7 +202,7 @@ final class ClauseTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `isNumber` (NUMBER?) routine.
-                    func isNumber(ptr: Int) -> Word? {
+                    func isNumber(ptr: Int) throws -> Word? {
                         var cnt = 0
                         var bptr = 0
                         var chr = 0
@@ -248,6 +249,7 @@ final class ClauseTests: QuelboTests {
                 type: .word.optional.tableElement,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -261,7 +263,7 @@ final class ClauseTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `unknownWord` (UNKNOWN-WORD) routine.
-                    func unknownWord(ptr: Int) -> Bool {
+                    func unknownWord(ptr: Int) throws -> Bool {
                         var buf = 0
                         try Globals.oopsTable.put(
                             element: ptr,
@@ -284,6 +286,7 @@ final class ClauseTests: QuelboTests {
                 type: .booleanFalse,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -297,7 +300,7 @@ final class ClauseTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `clause` (CLAUSE) routine.
-                    func clause(ptr: Int, val: Int, wrd: Word) -> Int? {
+                    func clause(ptr: Int, val: Int, wrd: Word) throws -> Int? {
                         var off = 0
                         var num = 0
                         var andflg = false
@@ -344,7 +347,7 @@ final class ClauseTests: QuelboTests {
                             }
                             if _ = .or(
                                 wrd.set(to: try Globals.pLexv.get(at: ptr)),
-                                wrd.set(to: isNumber(ptr: ptr))
+                                wrd.set(to: try isNumber(ptr: ptr))
                             ) {
                                 if Globals.pLen.isZero {
                                     nw.set(to: nil)
@@ -361,7 +364,7 @@ final class ClauseTests: QuelboTests {
                                 } else if .or(
                                     wrd.equals(Word.then, Word.period),
                                     .and(
-                                        isWt(ptr: wrd, bit: PartsOfSpeech.preposition),
+                                        try isWt(ptr: wrd, bit: PartsOfSpeech.preposition),
                                         try Globals.pItbl.get(at: Constants.pVerb),
                                         .isNot(isFirst)
                                     )
@@ -372,7 +375,7 @@ final class ClauseTests: QuelboTests {
                                         at: .add(num, 1)
                                     )
                                     return .subtract(ptr, Constants.pLexelen)
-                                } else if isWt(ptr: wrd, bit: PartsOfSpeech.object) {
+                                } else if try isWt(ptr: wrd, bit: PartsOfSpeech.object) {
                                     if .and(
                                         Globals.pLen.isGreaterThan(0),
                                         nw.equals(Word.of),
@@ -380,13 +383,13 @@ final class ClauseTests: QuelboTests {
                                     ) {
                                         return 1
                                     } else if .and(
-                                        isWt(
+                                        try isWt(
                                             ptr: wrd,
                                             bit: PartsOfSpeech.adjective,
                                             b1: PartsOfSpeech.adjectiveFirst
                                         ),
                                         .isNot(nw.equals(nil)),
-                                        isWt(ptr: nw, bit: PartsOfSpeech.object)
+                                        try isWt(ptr: nw, bit: PartsOfSpeech.object)
                                     ) {
                                         // do nothing
                                     } else if .and(
@@ -409,16 +412,16 @@ final class ClauseTests: QuelboTests {
                                         .isNot(try Globals.pItbl.get(at: Constants.pVerb).equals(0))
                                     ),
                                     .or(
-                                        isWt(ptr: wrd, bit: PartsOfSpeech.adjective),
-                                        isWt(ptr: wrd, bit: PartsOfSpeech.buzzWord)
+                                        try isWt(ptr: wrd, bit: PartsOfSpeech.adjective),
+                                        try isWt(ptr: wrd, bit: PartsOfSpeech.buzzWord)
                                     )
                                 ) {
                                     // do nothing
                                 } else if .and(
                                     andflg,
                                     .or(
-                                        isWt(ptr: wrd, bit: PartsOfSpeech.direction),
-                                        isWt(ptr: wrd, bit: PartsOfSpeech.verb)
+                                        try isWt(ptr: wrd, bit: PartsOfSpeech.direction),
+                                        try isWt(ptr: wrd, bit: PartsOfSpeech.verb)
                                     )
                                 ) {
                                     ptr.set(to: .subtract(ptr, 4))
@@ -427,14 +430,14 @@ final class ClauseTests: QuelboTests {
                                         at: .add(ptr, 2)
                                     )
                                     Globals.pLen.set(to: .add(Globals.pLen, 2))
-                                } else if isWt(ptr: wrd, bit: PartsOfSpeech.preposition) {
+                                } else if try isWt(ptr: wrd, bit: PartsOfSpeech.preposition) {
                                     return 1
                                 } else {
-                                    cantUse(ptr: ptr)
+                                    try cantUse(ptr: ptr)
                                     return nil
                                 }
                             } else {
-                                unknownWord(ptr: ptr)
+                                try unknownWord(ptr: ptr)
                                 return nil
                             }
                             lw.set(to: wrd)
@@ -446,6 +449,7 @@ final class ClauseTests: QuelboTests {
                 type: .int.optional.tableElement,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

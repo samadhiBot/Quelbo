@@ -59,7 +59,20 @@ final class RoutineCallTests: QuelboTests {
                 ),
                 category: .routines,
                 isCommittable: true
-            )
+            ),
+            .statement(
+                id: "throwingFunc",
+                code: "",
+                type: .string,
+                payload: .init(
+                    parameters: [
+                        Instance(Statement(id: "key", type: .int)),
+                    ]
+                ),
+                category: .routines,
+                isCommittable: true,
+                isThrowing: true
+            ),
         ])
     }
 
@@ -77,10 +90,7 @@ final class RoutineCallTests: QuelboTests {
     }
 
     func testProcessRoutineOneParam() throws {
-        let symbol = try Factories.RoutineCall([
-            .atom("ONE-FCN"),
-            .decimal(42)
-        ], with: &localVariables).process()
+        let symbol = process("<ONE-FCN 42>")
 
         XCTAssertNoDifference(symbol, .statement(
             id: "oneFunc",
@@ -91,19 +101,14 @@ final class RoutineCallTests: QuelboTests {
     }
 
     func testProcessRoutineTwoParams() throws {
-        let symbol = try Factories.RoutineCall([
-            .atom("TWO-F"),
-            .string("Answer"),
-            .decimal(42),
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <TWO-F "Answer" 42>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "twoFunc",
             code: """
-                twoFunc(
-                    answer: \"Answer\",
-                    number: 42
-                )
+                twoFunc(answer: "Answer", number: 42)
                 """,
             type: .string,
             returnHandling: .implicit
@@ -111,15 +116,9 @@ final class RoutineCallTests: QuelboTests {
     }
 
     func testProcessRoutineThreeParams() throws {
-        let symbol = try Factories.RoutineCall([
-            .atom("THREE-FUNCTION"),
-            .string("Answer"),
-            .bool(true),
-            .form([
-                .atom("ONE-FCN"),
-                .decimal(42),
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <THREE-FUNCTION "Answer" T <ONE-FCN 42>>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "threeFunc",
@@ -128,6 +127,37 @@ final class RoutineCallTests: QuelboTests {
                     answer: \"Answer\",
                     isValid: true,
                     number: oneFunc(number: 42)
+                )
+                """,
+            type: .string,
+            returnHandling: .implicit
+        ))
+    }
+
+    func testProcessThrowingRoutine() throws {
+        let symbol = process("<THROWING-FCN 42>")
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "throwingFunc",
+            code: "try throwingFunc(key: 42)",
+            type: .string,
+            isThrowing: true,
+            returnHandling: .implicit
+        ))
+    }
+
+    func testProcessThrowingRoutineThreeParams() throws {
+        let symbol = process("""
+            <THREE-FUNCTION "Answer" T <THROWING-FCN 42>>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "threeFunc",
+            code: """
+                threeFunc(
+                    answer: \"Answer\",
+                    isValid: true,
+                    number: try throwingFunc(key: 42)
                 )
                 """,
             type: .string,

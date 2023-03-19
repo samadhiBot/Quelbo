@@ -112,7 +112,7 @@ final class BufferPrintTests: QuelboTests {
                 id: "bufferPrint",
                 code: """
                     /// The `bufferPrint` (BUFFER-PRINT) routine.
-                    func bufferPrint(beg: Table, end: Table, cp: Bool) {
+                    func bufferPrint(beg: Table, end: Table, cp: Bool) throws {
                         var nosp = true
                         var wrd: Word?
                         var isFirst = true
@@ -166,6 +166,7 @@ final class BufferPrintTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
