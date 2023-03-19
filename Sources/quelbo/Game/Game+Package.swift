@@ -265,10 +265,13 @@ private extension Game.Package {
             """
         )
 
-        var plusCustomDirections: String {
-            let directions = Game.directions
-            guard !directions.isEmpty else { return "" }
-            return " + [\(directions.sorted.codeValues(.dotPrefixed))]"
+        var directions: String {
+            (Game.directions.first?.payload?.symbols ?? [])
+                .compactMap {
+                    guard let id = $0.id else { return nil }
+                    return ".\(id),"
+                }
+                .joined(separator: "\n            ")
         }
 
         try createFile(
@@ -286,7 +289,9 @@ private extension Game.Package {
 
                     private init() {
                         constants = \(project)Constants()
-                        directions = Direction.defaults\(plusCustomDirections)
+                        directions = [
+                            \(directions)
+                        ]
                         globals = \(project)Globals()
                         objects = \(project)Objects()
                         rooms = \(project)Rooms()
@@ -315,7 +320,7 @@ private extension Game.Package {
                     \(project).shared.rooms
                 }
 
-                \(project).shared.go()
+                try \(project).shared.go()
                 """
         )
 
