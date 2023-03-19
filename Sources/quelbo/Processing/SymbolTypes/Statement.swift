@@ -169,7 +169,7 @@ extension Statement {
         if assertedMutability == isMutable { return }
         guard isMutable == nil || assertedMutability == false else {
             throw Symbol.AssertionError.hasMutabilityAssertionFailed(
-                for: "\(Self.self)",
+                for: id ?? code,
                 asserted: assertedMutability,
                 actual: isMutable
             )

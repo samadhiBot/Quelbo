@@ -44,10 +44,9 @@ extension Factories {
 
             return .statement(
                 code: {
-                    let isTableElement = $0.type.isTableElement == true
                     var elements = $0.payload.symbols
                     let types = elements.returnTypes
-                    if let flagSymbol = flagSymbol(isTableElement) {
+                    if let flagSymbol {
                         elements.append(flagSymbol)
                     }
                     var tableValues: String {
@@ -69,7 +68,7 @@ extension Factories {
                             }
                         }
                     }
-                    if isTableElement {
+                    if $0.type.isTableElement == true {
                         return ".table(\(tableValues))"
                     } else {
                         return "Table(\(tableValues))"
@@ -79,8 +78,7 @@ extension Factories {
                 payload: .init(
                     flags: flags,
                     symbols: symbols
-                ),
-                isMutable: !flags.contains(.pure)
+                )
             )
         }
     }
@@ -108,9 +106,8 @@ extension Factories.Table {
         return tableFlags.unique.sorted()
     }
 
-    func flagSymbol(_ isTableElement: Bool) -> Symbol? {
+    var flagSymbol: Symbol? {
         let flagValues = flags
-            .filter { isTableElement || $0 != .pure }
             .map(\.rawValue.withDotPrefix)
             .values(.commaSeparatedNoTrailingComma)
 
