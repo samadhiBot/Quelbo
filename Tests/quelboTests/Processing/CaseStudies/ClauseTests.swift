@@ -227,7 +227,7 @@ final class ClauseTests: QuelboTests {
                                 bptr.set(to: .add(bptr, 1))
                             }
                         }
-                        Globals.pLexv.put(
+                        try Globals.pLexv.put(
                             element: Word.intnum,
                             at: ptr
                         )
@@ -263,7 +263,7 @@ final class ClauseTests: QuelboTests {
                     /// The `unknownWord` (UNKNOWN-WORD) routine.
                     func unknownWord(ptr: Int) -> Bool {
                         var buf = 0
-                        Globals.oopsTable.put(
+                        try Globals.oopsTable.put(
                             element: ptr,
                             at: Constants.oPtr
                         )
@@ -308,11 +308,11 @@ final class ClauseTests: QuelboTests {
                         var wrd = wrd
                         off.set(to: .multiply(.subtract(Globals.pNcn, 1), 2))
                         if .isNot(val.equals(0)) {
-                            Globals.pItbl.put(
+                            try Globals.pItbl.put(
                                 element: val,
                                 at: num.set(to: .add(Constants.pPrep1, off))
                             )
-                            Globals.pItbl.put(
+                            try Globals.pItbl.put(
                                 element: wrd,
                                 at: .add(num, 1)
                             )
@@ -324,19 +324,19 @@ final class ClauseTests: QuelboTests {
                             Globals.pNcn.set(to: .subtract(Globals.pNcn, 1))
                             return -1
                         }
-                        Globals.pItbl.put(
+                        try Globals.pItbl.put(
                             element: Globals.pLexv.rest(bytes: .multiply(ptr, 2)),
                             at: num.set(to: .add(Constants.pNc1, off))
                         )
                         if try Globals.pLexv.get(at: ptr).equals(Word.the, Word.a, Word.an) {
-                            Globals.pItbl.put(
+                            try Globals.pItbl.put(
                                 element: try Globals.pItbl.get(at: num).rest(bytes: 4),
                                 at: num
                             )
                         }
                         while true {
                             if Globals.pLen.set(to: .subtract(Globals.pLen, 1)).isLessThan(0) {
-                                Globals.pItbl.put(
+                                try Globals.pItbl.put(
                                     element: Globals.pLexv.rest(bytes: .multiply(ptr, 2)),
                                     at: .add(num, 1)
                                 )
@@ -367,7 +367,7 @@ final class ClauseTests: QuelboTests {
                                     )
                                 ) {
                                     Globals.pLen.set(to: .add(Globals.pLen, 1))
-                                    Globals.pItbl.put(
+                                    try Globals.pItbl.put(
                                         element: Globals.pLexv.rest(bytes: .multiply(ptr, 2)),
                                         at: .add(num, 1)
                                     )
@@ -394,7 +394,7 @@ final class ClauseTests: QuelboTests {
                                         .isNot(nw.equals(Word.but, Word.except)),
                                         .isNot(nw.equals(Word.and, Word.comma))
                                     ) {
-                                        Globals.pItbl.put(
+                                        try Globals.pItbl.put(
                                             element: Globals.pLexv.rest(bytes: .multiply(.add(ptr, 2), 2)),
                                             at: .add(num, 1)
                                         )
@@ -422,7 +422,7 @@ final class ClauseTests: QuelboTests {
                                     )
                                 ) {
                                     ptr.set(to: .subtract(ptr, 4))
-                                    Globals.pLexv.put(
+                                    try Globals.pLexv.put(
                                         element: Word.then,
                                         at: .add(ptr, 2)
                                     )

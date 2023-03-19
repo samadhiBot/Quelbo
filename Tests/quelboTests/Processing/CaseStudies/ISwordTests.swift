@@ -157,7 +157,7 @@ final class SwordTests: QuelboTests {
                             sword.takeValue = ng
                             return true
                         } else {
-                            dem.put(
+                            try dem.put(
                                 element: 0,
                                 at: Globals.isCEnabled
                             )

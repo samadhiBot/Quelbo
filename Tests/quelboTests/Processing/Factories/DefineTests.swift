@@ -33,7 +33,8 @@ final class DefineTests: QuelboTests {
                 code: "let readbufSize = 100",
                 type: .int,
                 category: .constants,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: false
             )
         )
 
@@ -80,7 +81,8 @@ final class DefineTests: QuelboTests {
                 code: "let kbdReadbuf = makeReadbuf()",
                 type: .table.root,
                 category: .constants,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: false
             )
         )
 
@@ -91,7 +93,8 @@ final class DefineTests: QuelboTests {
                 code: "let editReadbuf = makeReadbuf()",
                 type: .table.root,
                 category: .constants,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: false
             )
         )
     }

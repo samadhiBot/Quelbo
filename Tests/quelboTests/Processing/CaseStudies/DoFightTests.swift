@@ -108,7 +108,8 @@ final class DoFightTests: QuelboTests {
                     """,
                 type: .table.root,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
     }

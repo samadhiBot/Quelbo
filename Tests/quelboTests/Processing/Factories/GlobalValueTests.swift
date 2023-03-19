@@ -28,7 +28,8 @@ final class GlobalValueTests: QuelboTests {
             code: "var foo = 42",
             type: .int,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )))
     }
 }

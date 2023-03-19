@@ -33,6 +33,18 @@ extension Array where Element == Symbol {
             .values(displayOptions)
     }
 
+    var containThrowingStatement: Bool {
+        for symbol in self {
+            guard case .statement(let statement) = symbol else {
+                continue
+            }
+            if statement.isThrowing || statement.payload.symbols.containThrowingStatement {
+                return true
+            }
+        }
+        return false
+    }
+
     var evaluationErrors: [Swift.Error] {
         compactMap { symbol in
             guard

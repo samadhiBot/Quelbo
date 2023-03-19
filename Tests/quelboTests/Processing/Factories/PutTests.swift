@@ -33,7 +33,12 @@ final class PutTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try mytable.put(element: 123, at: 1)",
+            code: """
+                try Globals.mytable.put(
+                    element: 123,
+                    at: 1
+                )
+                """,
             type: .int.tableElement,
             returnHandling: .suppressed
         ))

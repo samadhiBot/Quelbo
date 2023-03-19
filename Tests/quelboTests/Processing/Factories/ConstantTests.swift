@@ -40,7 +40,8 @@ final class ConstantTests: QuelboTests {
             code: "let foo = true",
             type: .booleanTrue,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -55,7 +56,8 @@ final class ConstantTests: QuelboTests {
             code: "let foo = false",
             type: .booleanFalse,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -79,7 +81,8 @@ final class ConstantTests: QuelboTests {
             code: "let foo = 42",
             type: .int,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -100,7 +103,8 @@ final class ConstantTests: QuelboTests {
                 """,
             type: .table.root,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -127,7 +131,8 @@ final class ConstantTests: QuelboTests {
                 """,
             type: .table.root,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -172,7 +177,8 @@ final class ConstantTests: QuelboTests {
                 """,
             type: .table.root,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(villains))
@@ -192,7 +198,8 @@ final class ConstantTests: QuelboTests {
             code: "let def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
             type: .table.root,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(def1Res))
@@ -211,7 +218,8 @@ final class ConstantTests: QuelboTests {
                 """,
             type: .string.array,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -230,7 +238,8 @@ final class ConstantTests: QuelboTests {
                 """,
             type: .string,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))

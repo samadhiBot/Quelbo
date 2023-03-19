@@ -95,10 +95,10 @@ final class VLeapTests: QuelboTests {
                         var tx: Object? = nil
                         var s: Int = 0
                         if let Globals.parsedDirectObject {
-                            if Globals.parsedDirectObjects.isIn(here) {
-                                if Globals.parsedDirectObjects.hasFlag(.isActor) {
+                            if Globals.parsedDirectObject.isIn(here) {
+                                if Globals.parsedDirectObject.hasFlag(.isActor) {
                                     output("The ")
-                                    output(Globals.parsedDirectObjects.description)
+                                    output(Globals.parsedDirectObject.description)
                                     output(" is too big to jump over.")
                                 } else {
                                     vSkip()

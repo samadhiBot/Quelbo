@@ -296,8 +296,8 @@ final class JigsUpTests: QuelboTests {
                 id: "disable",
                 code: """
                     /// The `disable` (DISABLE) macro.
-                    func disable(int: Table) {
-                        int.put(
+                    func disable(int: Table) throws {
+                        try int.put(
                             element: 0,
                             at: isCEnabled
                         )
@@ -306,6 +306,7 @@ final class JigsUpTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

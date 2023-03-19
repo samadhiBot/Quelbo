@@ -521,7 +521,7 @@ final class VillainBlowTests: QuelboTests {
                             }
                             if _ = .and(
                                 .object(Globals.parsedIndirectObject),
-                                Globals.parsedIndirectObjects.hasFlag(.isWeapon),
+                                Globals.parsedIndirectObject.hasFlag(.isWeapon),
                                 try oo.get(at: vBest).equals(Globals.parsedIndirectObject)
                             ) {
                                 tmp.set(to: .subtract(

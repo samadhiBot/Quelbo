@@ -11,7 +11,7 @@ import XCTest
 @testable import quelbo
 
 final class GlobalTests: QuelboTests {
-    let factory = Factories.Globals.self
+    let factory = Factories.Global.self
 
     override func setUp() {
         super.setUp()
@@ -41,7 +41,8 @@ final class GlobalTests: QuelboTests {
             code: "var foo = true",
             type: .booleanTrue,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -56,7 +57,8 @@ final class GlobalTests: QuelboTests {
             code: "var foo = false",
             type: .booleanFalse,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -80,7 +82,8 @@ final class GlobalTests: QuelboTests {
             code: "var foo = 42",
             type: .int,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -101,7 +104,8 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .table.root,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -128,7 +132,8 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .table.root,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -173,7 +178,8 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .table.root,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(villains))
@@ -193,7 +199,8 @@ final class GlobalTests: QuelboTests {
             code: "var def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
             type: .table.root,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(def1Res))
@@ -212,7 +219,8 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .string.array,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -231,7 +239,8 @@ final class GlobalTests: QuelboTests {
                 """,
             type: .string,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -250,7 +259,8 @@ final class GlobalTests: QuelboTests {
                 code: "var againDir = false",
                 type: .booleanFalse,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             ))
         )
 
@@ -285,7 +295,8 @@ final class GlobalTests: QuelboTests {
                 code: "var kitchenWindowFlag = false",
                 type: .booleanFalse,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             ))
         )
 
@@ -343,7 +354,8 @@ extension GlobalTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try Globals.actions.get(at: a)",
-            type: .someTableElement
+            type: .someTableElement,
+            isThrowing: true
         ))
     }
 

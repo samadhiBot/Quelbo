@@ -18,6 +18,7 @@ final class Statement: SymbolType {
     private(set) var isCommittable: Bool
     private(set) var isFunctionCall: Bool
     private(set) var isMutable: Bool?
+    private(set) var isThrowing: Bool
     private(set) var payload: Payload
     private(set) var repeating: Bool
     private(set) var returnHandling: Symbol.ReturnHandling
@@ -36,6 +37,7 @@ final class Statement: SymbolType {
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
         isRepeating: Bool = false,
+        isThrowing: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) {
         self.activation = activation
@@ -47,6 +49,7 @@ final class Statement: SymbolType {
         self.isCommittable = isCommittable
         self.isFunctionCall = isFunctionCall
         self.isMutable = isMutable
+        self.isThrowing = isThrowing
         self.payload = payload ?? .empty
         self.repeating = isRepeating
         self.returnHandling = returnHandling
@@ -94,6 +97,7 @@ extension Symbol {
         isCommittable: Bool = false,
         isFunctionCall: Bool = false,
         isMutable: Bool? = nil,
+        isThrowing: Bool = false,
         isRepeating: Bool = false,
         returnHandling: Symbol.ReturnHandling = .implicit
     ) -> Symbol {
@@ -110,6 +114,7 @@ extension Symbol {
             isFunctionCall: isFunctionCall,
             isMutable: isMutable,
             isRepeating: isRepeating,
+            isThrowing: isThrowing,
             returnHandling: returnHandling
         ))
     }
@@ -275,6 +280,7 @@ extension Statement: CustomDumpReflectable {
                 "isCommittable": self.isCommittable,
                 "isMutable": self.isMutable as Any,
                 "isRepeating": self.isRepeating,
+                "isThrowing": self.isThrowing,
                 "returnHandling": self.returnHandling,
             ],
             displayStyle: .struct
@@ -295,6 +301,7 @@ extension Statement: Equatable {
         lhs.isCommittable == rhs.isCommittable &&
         lhs.isMutable == rhs.isMutable &&
         lhs.isRepeating == rhs.isRepeating &&
+        lhs.isThrowing == rhs.isThrowing &&
         lhs.returnHandling == rhs.returnHandling
     }
 }

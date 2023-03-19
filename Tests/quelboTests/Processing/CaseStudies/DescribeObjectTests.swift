@@ -219,7 +219,7 @@ final class DescribeObjectTests: QuelboTests {
                     func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
                         var str: String?
                         var av: Object?
-                        descObjects.set(to: obj)
+                        descObject.set(to: obj)
                         if _ = .and(
                             level.isZero,
                             obj.descriptionFunction(Constants.mObjdesc)
@@ -294,7 +294,7 @@ final class DescribeObjectTests: QuelboTests {
                     func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
                         var str: String?
                         var av: Object?
-                        descObjects.set(to: obj)
+                        descObject.set(to: obj)
                         if _ = .and(
                             level.isZero,
                             obj.descriptionFunction(Constants.mObjdesc)

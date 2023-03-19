@@ -43,13 +43,14 @@ extension Factories {
             return .statement(
                 code: { _ in
                     """
-                    \(table.handle).put(
+                    \(table.tryHandle).put(
                         element: \(value.handle),
                         at: \(offset.handle)
                     )
                     """
                 },
                 type: value.type,
+                isThrowing: true,
                 returnHandling: .suppressed
             )
         }

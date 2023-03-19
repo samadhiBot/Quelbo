@@ -182,6 +182,14 @@ extension Symbol {
         }
     }
 
+    var tryHandle: String {
+        let code = handle
+        if code.hasPrefix("try ") {
+            return code
+        }
+        return "try \(code)"
+    }
+
     var type: TypeInfo {
         switch self {
         case .definition(let definition):

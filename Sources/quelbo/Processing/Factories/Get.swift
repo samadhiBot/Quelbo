@@ -42,7 +42,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "try \(container.handle).get(at: \(offset.handle))"
+                    "\(container.tryHandle).get(at: \(offset.handle))"
                 },
                 type: try {
                     switch container.type.dataType {
@@ -62,13 +62,13 @@ extension Factories {
                     case .word:
                         return .someTableElement
                     default:
-//                        throw Error.unknownContainerForGet(container)
                         guard container.isProperty else {
                             throw Error.invalidNonPropertyGet(container)
                         }
                         return container.type
                     }
-                }()
+                }(),
+                isThrowing: true
             )
         }
     }
@@ -79,6 +79,5 @@ extension Factories {
 extension Factories.Get {
     enum Error: Swift.Error {
         case invalidNonPropertyGet(Symbol)
-        case unknownContainerForGet(Symbol)
     }
 }

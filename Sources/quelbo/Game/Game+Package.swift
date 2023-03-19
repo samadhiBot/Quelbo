@@ -19,7 +19,7 @@ extension Game {
             guard let name = target.split(separator: "/").last else {
                 throw FilesError(path: target, reason: "Unable to create package name.")
             }
-            self.project = "\(name)"
+            self.project = "\(name.capitalized)"
 
             self.folder = try folder(path: "Output/\(target)")
             try createPackage(named: project, in: folder)

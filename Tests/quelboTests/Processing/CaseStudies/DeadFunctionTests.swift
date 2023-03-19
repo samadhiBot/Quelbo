@@ -116,7 +116,7 @@ final class DeadFunctionTests: QuelboTests {
                         if isParsedVerb(.walk) {
                             if .and(
                                 Globals.here.equals(Rooms.timberRoom),
-                                Globals.parsedDirectObjects.equals(west)
+                                Globals.parsedDirectObject.equals(west)
                             ) {
                                 output("You cannot enter in your condition.")
                             }

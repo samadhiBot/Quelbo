@@ -64,6 +64,7 @@ extension Factories {
                         /// The `\(name)` (\(zilName)) \(typeName).
                         func \(name)\
                         (\($0.payload.paramDeclarations))\
+                        \($0.payload.throwsDeclaration)\
                         \($0.payload.returnDeclaration) \
                         {
                         \($0.payload.auxiliaryDefs.indented)\
@@ -75,6 +76,7 @@ extension Factories {
                 payload: blockProcessor.payload,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: blockProcessor.payload.symbols.containThrowingStatement,
                 returnHandling: .passthrough
             )
         }

@@ -77,7 +77,7 @@ final class IsLitTests: QuelboTests {
                         if .and(rmBit, rm.hasFlag(.isOn)) {
                             lit.set(to: true)
                         } else {
-                            Globals.pMerge.put(
+                            try Globals.pMerge.put(
                                 element: 0,
                                 at: Globals.pMatchlen
                             )

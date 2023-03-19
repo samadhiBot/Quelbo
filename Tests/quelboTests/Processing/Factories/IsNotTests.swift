@@ -119,7 +119,7 @@ final class IsNotTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".isNot(Routine.theVoid)",
+            code: ".isNot(Routines.theVoid)",
             type: .bool
         ))
     }

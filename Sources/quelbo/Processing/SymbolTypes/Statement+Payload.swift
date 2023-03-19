@@ -178,6 +178,10 @@ extension Statement {
                 .returningSymbols
                 .returnType
         }
+
+        var throwsDeclaration: String {
+            symbols.containThrowingStatement ? " throws" : ""
+        }
     }
 }
 

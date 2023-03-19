@@ -36,7 +36,8 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try Globals.foo.get(at: 2)",
-            type: .someTableElement
+            type: .someTableElement,
+            isThrowing: true
         ))
     }
 
@@ -50,7 +51,8 @@ final class GetTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "try Globals.pItbl.get(at: Constants.pVerbn).get(at: 0)",
-            type: .someTableElement
+            type: .someTableElement,
+            isThrowing: true
         ))
     }
 

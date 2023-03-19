@@ -72,7 +72,8 @@ final class GlobalCheckTests: QuelboTests {
                 code: "var pNam: [Object]",
                 type: .object.array.property.optional.tableElement,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
     }
@@ -134,13 +135,13 @@ final class GlobalCheckTests: QuelboTests {
                             cnt.set(to: 0)
                             while true {
                                 if Globals.pNam.equals(try rmg.get(at: .multiply(cnt, 2))) {
-                                    pseudoObjects.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
-                                    foo.set(to: Objects.pseudoObjects.action.back(bytes: 5))
-                                    foo.put(
+                                    pseudoObject.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
+                                    foo.set(to: Objects.pseudoObject.action.back(bytes: 5))
+                                    try foo.put(
                                         element: try Globals.pNam.get(at: 0),
                                         at: 0
                                     )
-                                    foo.put(
+                                    try foo.put(
                                         element: try Globals.pNam.get(at: 1),
                                         at: 1
                                     )

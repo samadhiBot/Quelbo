@@ -70,7 +70,7 @@ final class IntTests: QuelboTests {
                                     Globals.cDemons.set(to: .subtract(Globals.cDemons, Constants.cIntlen))
                                 )
                                 int.set(to: Globals.cTable.rest(bytes: Globals.cInts))
-                                int.put(
+                                try int.put(
                                     element: rtn,
                                     at: Constants.cRtn
                                 )

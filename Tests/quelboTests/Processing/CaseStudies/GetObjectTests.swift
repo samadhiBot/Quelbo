@@ -264,7 +264,7 @@ final class GetObjectTests: QuelboTests {
                                 .isNot(len.isZero)
                             ) {
                                 if .isNot(len.equals(1)) {
-                                    tbl.put(
+                                    try tbl.put(
                                         element: try tbl.get(at: .random(len)),
                                         at: 1
                                     )
@@ -272,7 +272,7 @@ final class GetObjectTests: QuelboTests {
                                     output(try tbl.get(at: 1).description)
                                     output("?)")
                                 }
-                                tbl.put(
+                                try tbl.put(
                                     element: 1,
                                     at: Globals.pMatchlen
                                 )
@@ -286,7 +286,7 @@ final class GetObjectTests: QuelboTests {
                                 if Globals.pSlocbits.equals(-1) {
                                     Globals.pSlocbits.set(to: xbits)
                                     olen.set(to: len)
-                                    tbl.put(
+                                    try tbl.put(
                                         element: .subtract(try tbl.get(at: Globals.pMatchlen), len),
                                         at: Globals.pMatchlen
                                     )
