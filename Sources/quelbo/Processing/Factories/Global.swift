@@ -51,12 +51,19 @@ extension Factories {
                 .hasReturnValue
             )
 
-            let isMutable = symbols[1].isMutable != false
-            try symbols[0].assert(
-                .hasCategory(isMutable ? .globals : .constants),
-                isMutable ? .isMutable : .isImmutable,
-                .isVariable
-            )
+            if symbols[1].isMutable == false {
+                try symbols[0].assert(
+                    .hasCategory(.constants),
+                    .isImmutable,
+                    .isVariable
+                )
+            } else {
+                try symbols[0].assert(
+                    .hasCategory(.globals),
+                    .isMutable,
+                    .isVariable
+                )
+            }
         }
 
         @discardableResult
@@ -86,8 +93,9 @@ extension Factories {
                     evaluation: value.evaluation,
                     symbols: [variable, value]
                 ),
-                category: variable.isMutable ?? false ? .globals : .constants,
-                isCommittable: true
+                category: variable.category,
+                isCommittable: true,
+                isMutable: variable.isMutable
             )
         }
     }

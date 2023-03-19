@@ -39,9 +39,9 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("forest1"),
-                    .room("forest2"),
-                    .room("forest3")
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3")
                 )
                 """,
             type: .table,
@@ -56,11 +56,11 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object("Object.troll"),
-                    .object("Object.sword"),
+                    .object("Objects.troll"),
+                    .object("Objects.sword"),
                     .int(1),
                     .int(0),
-                    .table(Constant.trollMelee)
+                    .table(Constants.trollMelee)
                 )
                 """,
             type: .table,
@@ -106,6 +106,40 @@ final class TableTests: QuelboTests {
         ))
     }
 
+    func testPureTable() throws {
+        let symbol = process("""
+            <GLOBAL CANDLE-TABLE
+                <TABLE (PURE)
+                       20
+                       "The candles grow shorter."
+                       10
+                       "The candles are becoming quite short."
+                       5
+                       "The candles won't last long now."
+                       0>>
+        """)
+
+        XCTAssertNoDifference(symbol, .statement(
+            id: "candleTable",
+            code: """
+                let candleTable = Table(
+                    .int(20),
+                    .string("The candles grow shorter."),
+                    .int(10),
+                    .string("The candles are becoming quite short."),
+                    .int(5),
+                    .string("The candles won't last long now."),
+                    .int(0)
+                )
+                """,
+            type: .table.root,
+            category: .constants,
+            isCommittable: true,
+            isMutable: false,
+            returnHandling: .implicit
+        ))
+    }
+
     func testFormPureTable() throws {
         let symbol = try factory.init([
             .list([
@@ -122,12 +156,12 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Room.forest1"),
-                    .room("Room.forest2"),
-                    .room("Room.forest3"),
-                    .room("Room.path"),
-                    .room("Room.clearing"),
-                    .room("Room.forest1")
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
+                    .room("Rooms.path"),
+                    .room("Rooms.clearing"),
+                    .room("Rooms.forest1")
                 )
                 """,
             type: .table,
@@ -163,8 +197,7 @@ final class TableTests: QuelboTests {
                     "up to your chest.",
                     "up to your neck.",
                     "over your head.",
-                    "high in your lungs.",
-                    flags: .pure
+                    "high in your lungs."
                 )
                 """,
             type: .table,
@@ -197,18 +230,18 @@ final class TableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object("troll"),
-                        .object("sword"),
+                        .object("Objects.troll"),
+                        .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(trollMelee)
+                        .table(Constants.trollMelee)
                     ),
                     .table(
-                        .object("thief"),
-                        .object("knife"),
+                        .object("Objects.thief"),
+                        .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(thiefMelee)
+                        .table(Constants.thiefMelee)
                     )
                 )
                 """,

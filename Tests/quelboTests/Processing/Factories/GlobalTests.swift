@@ -94,9 +94,9 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 var foo = Table(
-                    .room("Room.forest1"),
-                    .room("Room.forest2"),
-                    .room("Room.forest3")
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3")
                 )
                 """,
             type: .table.root,
@@ -117,12 +117,12 @@ final class GlobalTests: QuelboTests {
             id: "foo",
             code: """
                 let foo = Table(
-                    .room("Room.forest1"),
-                    .room("Room.forest2"),
-                    .room("Room.forest3"),
-                    .room("Room.path"),
-                    .room("Room.clearing"),
-                    .room("Room.forest1"),
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
+                    .room("Rooms.path"),
+                    .room("Rooms.clearing"),
+                    .room("Rooms.forest1"),
                     flags: .length
                 )
                 """,
@@ -148,25 +148,25 @@ final class GlobalTests: QuelboTests {
             code: """
                 var villains = Table(
                     .table(
-                        .object("Object.troll"),
-                        .object("Object.sword"),
+                        .object("Objects.troll"),
+                        .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constant.trollMelee)
+                        .table(Constants.trollMelee)
                     ),
                     .table(
-                        .object("Object.thief"),
-                        .object("Object.knife"),
+                        .object("Objects.thief"),
+                        .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constant.thiefMelee)
+                        .table(Constants.thiefMelee)
                     ),
                     .table(
-                        .object("Object.cyclops"),
+                        .object("Objects.cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .table(Constant.cyclopsMelee)
+                        .table(Constants.cyclopsMelee)
                     ),
                     flags: .length
                 )
@@ -190,7 +190,7 @@ final class GlobalTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "var def1Res = Table(.table(Constant.def1), .int(0), .int(0))",
+            code: "var def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
             type: .table.root,
             category: .globals,
             isCommittable: true
@@ -304,7 +304,7 @@ final class GlobalTests: QuelboTests {
                     @discardableResult
                     /// The `kitchenWindowFunc` (KITCHEN-WINDOW-F) routine.
                     func kitchenWindowFunc() -> Bool {
-                        return Global.kitchenWindowFlag.set(to: true)
+                        return Globals.kitchenWindowFlag.set(to: true)
                     }
                     """,
                 type: .booleanTrue,
@@ -342,7 +342,7 @@ extension GlobalTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try Global.actions.get(at: a)",
+            code: "try Globals.actions.get(at: a)",
             type: .someTableElement
         ))
     }
