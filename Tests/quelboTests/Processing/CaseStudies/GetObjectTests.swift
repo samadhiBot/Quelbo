@@ -199,31 +199,31 @@ final class GetObjectTests: QuelboTests {
                         var gcheck = false
                         var olen = 0
                         // var obj: <Unknown>
-                        xbits.set(to: Global.pSlocbits)
-                        tlen.set(to: try tbl.get(at: Global.pMatchlen))
-                        if _ = .bitwiseCompare(Global.pGetflags, Constant.pInhiBit) {
+                        xbits.set(to: Globals.pSlocbits)
+                        tlen.set(to: try tbl.get(at: Globals.pMatchlen))
+                        if _ = .bitwiseCompare(Globals.pGetflags, Constants.pInhiBit) {
                             return true
                         }
                         if _ = .and(
-                            .isNot(Global.pNam),
-                            .object("Global.pAdj")
+                            .isNot(Globals.pNam),
+                            .object("Globals.pAdj")
                         ) {
                             if isWt(
-                                ptr: Global.pAdjn,
+                                ptr: Globals.pAdjn,
                                 bit: PartsOfSpeech.object,
                                 b1: PartsOfSpeech.objectFirst
                             ) {
-                                Global.pNam.set(to: Global.pAdjn)
-                                Global.pAdj.set(to: nil)
+                                Globals.pNam.set(to: Globals.pAdjn)
+                                Globals.pAdj.set(to: nil)
                             } else if nullFunc() {
                                 return true
                             }
                         }
                         if .and(
-                            .isNot(Global.pNam),
-                            .isNot(Global.pAdj),
-                            .isNot(Global.pGetflags.equals(Constant.pAll)),
-                            Global.pGwimBit.isFalse
+                            .isNot(Globals.pNam),
+                            .isNot(Globals.pAdj),
+                            .isNot(Globals.pGetflags.equals(Constants.pAll)),
+                            Globals.pGwimBit.isFalse
                         ) {
                             if vrb {
                                 output("There seems to be a noun missing in that sentence!")
@@ -231,36 +231,36 @@ final class GetObjectTests: QuelboTests {
                             return false
                         }
                         if .or(
-                            .isNot(Global.pGetflags.equals(Constant.pAll)),
-                            Global.pSlocbits.isZero
+                            .isNot(Globals.pGetflags.equals(Constants.pAll)),
+                            Globals.pSlocbits.isZero
                         ) {
-                            Global.pSlocbits.set(to: -1)
+                            Globals.pSlocbits.set(to: -1)
                         }
-                        Global.pTable.set(to: tbl)
+                        Globals.pTable.set(to: tbl)
                         do {
                             if gcheck {
                                 globalCheck(tbl: tbl)
                             } else {
-                                if Global.lit {
-                                    Global.player.isTransparent.set(false)
+                                if Globals.lit {
+                                    Globals.player.isTransparent.set(false)
                                     doSl(
-                                        obj: Global.here,
-                                        bit1: Constant.sog,
-                                        bit2: Constant.sir
+                                        obj: Globals.here,
+                                        bit1: Constants.sog,
+                                        bit2: Constants.sir
                                     )
-                                    Global.player.isTransparent.set(true)
+                                    Globals.player.isTransparent.set(true)
                                 }
                                 doSl(
-                                    obj: Global.player,
-                                    bit1: Constant.sh,
-                                    bit2: Constant.sc
+                                    obj: Globals.player,
+                                    bit1: Constants.sh,
+                                    bit2: Constants.sc
                                 )
                             }
-                            len.set(to: .subtract(try tbl.get(at: Global.pMatchlen), tlen))
-                            if _ = .bitwiseCompare(Global.pGetflags, Constant.pAll) {
+                            len.set(to: .subtract(try tbl.get(at: Globals.pMatchlen), tlen))
+                            if _ = .bitwiseCompare(Globals.pGetflags, Constants.pAll) {
                                 // do nothing
                             } else if _ = .and(
-                                .bitwiseCompare(Global.pGetflags, Constant.pOne),
+                                .bitwiseCompare(Globals.pGetflags, Constants.pOne),
                                 .isNot(len.isZero)
                             ) {
                                 if .isNot(len.equals(1)) {
@@ -274,79 +274,79 @@ final class GetObjectTests: QuelboTests {
                                 }
                                 tbl.put(
                                     element: 1,
-                                    at: Global.pMatchlen
+                                    at: Globals.pMatchlen
                                 )
                             } else if .or(
                                 len.isGreaterThan(1),
                                 .and(
                                     len.isZero,
-                                    .isNot(Global.pSlocbits.equals(-1))
+                                    .isNot(Globals.pSlocbits.equals(-1))
                                 )
                             ) {
-                                if Global.pSlocbits.equals(-1) {
-                                    Global.pSlocbits.set(to: xbits)
+                                if Globals.pSlocbits.equals(-1) {
+                                    Globals.pSlocbits.set(to: xbits)
                                     olen.set(to: len)
                                     tbl.put(
-                                        element: .subtract(try tbl.get(at: Global.pMatchlen), len),
-                                        at: Global.pMatchlen
+                                        element: .subtract(try tbl.get(at: Globals.pMatchlen), len),
+                                        at: Globals.pMatchlen
                                     )
                                     continue
                                 } else {
                                     if len.isZero {
                                         len.set(to: olen)
                                     }
-                                    if .isNot(Global.winner.equals(Global.player)) {
+                                    if .isNot(Globals.winner.equals(Globals.player)) {
                                         cantOrphan()
                                         return false
-                                    } else if _ = .and(vrb, Global.pNam) {
+                                    } else if _ = .and(vrb, Globals.pNam) {
                                         whichPrint(tlen: tlen, len: len, tbl: tbl)
                                         pAclause.set(to: {
-                                            if tbl.equals(Global.pPrso) {
-                                                return Constant.pNc1
+                                            if tbl.equals(Globals.pPrso) {
+                                                return Constants.pNc1
                                             } else {
-                                                return Constant.pNc2
+                                                return Constants.pNc2
                                             }
                                         }())
-                                        pAadj.set(to: Global.pAdj)
-                                        Global.pAnam.set(to: Global.pNam)
+                                        pAadj.set(to: Globals.pAdj)
+                                        Globals.pAnam.set(to: Globals.pNam)
                                         orphan(d1: nil, d2: nil)
-                                        Global.pOflag.set(to: true)
+                                        Globals.pOflag.set(to: true)
                                     } else if vrb {
                                         output("There seems to be a noun missing in that sentence!")
                                     }
-                                    Global.pNam.set(to: nil)
-                                    Global.pAdj.set(to: nil)
+                                    Globals.pNam.set(to: nil)
+                                    Globals.pAdj.set(to: nil)
                                     return false
                                 }
                             }
                             if .and(len.isZero, gcheck) {
                                 if vrb {
                                     // "next added 1/2/85 by JW"
-                                    Global.pSlocbits.set(to: xbits)
-                                    if .or(Global.lit, isParsedVerb(.tell)) {
+                                    Globals.pSlocbits.set(to: xbits)
+                                    if .or(Globals.lit, isParsedVerb(.tell)) {
                                         // "Changed 6/10/83 - MARC"
-                                        objFound(obj: Object.notHereObject, tbl: tbl)
-                                        pXnam.set(to: Global.pNam)
-                                        pXadj.set(to: Global.pAdj)
-                                        pXadjn.set(to: Global.pAdjn)
-                                        Global.pNam.set(to: nil)
-                                        Global.pAdj.set(to: nil)
-                                        Global.pAdjn.set(to: nil)
+                                        objFound(obj: Objects.notHereObject, tbl: tbl)
+                                        pXnam.set(to: Globals.pNam)
+                                        pXadj.set(to: Globals.pAdj)
+                                        pXadjn.set(to: Globals.pAdjn)
+                                        Globals.pNam.set(to: nil)
+                                        Globals.pAdj.set(to: nil)
+                                        Globals.pAdjn.set(to: nil)
                                         return true
                                     } else {
                                         output("It's too dark to see!")
                                     }
                                 }
-                                Global.pNam.set(to: nil)
-                                Global.pAdj.set(to: nil)
+                                Globals.pNam.set(to: nil)
+                                Globals.pAdj.set(to: nil)
                                 return false
                             } else if len.isZero {
                                 gcheck.set(to: true)
                                 continue
                             }
-                            Global.pSlocbits.set(to: xbits)
-                            Global.pNam.set(to: nil)
-                            Global.pAdj.set(to: nil)
+                            Globals.pSlocbits.set(to: xbits)
+                            Globals.pNam.set(to: nil)
+                            Globals.pAdj.set(to: nil)
                             return true
                         }
                     }

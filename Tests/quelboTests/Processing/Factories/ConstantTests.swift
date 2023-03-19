@@ -93,9 +93,9 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo = Table(
-                    .room("Room.forest1"),
-                    .room("Room.forest2"),
-                    .room("Room.forest3")
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3")
                 )
                 """,
             type: .table.root,
@@ -116,12 +116,12 @@ final class ConstantTests: QuelboTests {
             id: "foo",
             code: """
                 let foo = Table(
-                    .room("Room.forest1"),
-                    .room("Room.forest2"),
-                    .room("Room.forest3"),
-                    .room("Room.path"),
-                    .room("Room.clearing"),
-                    .room("Room.forest1"),
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
+                    .room("Rooms.path"),
+                    .room("Rooms.clearing"),
+                    .room("Rooms.forest1"),
                     flags: .length
                 )
                 """,
@@ -147,25 +147,25 @@ final class ConstantTests: QuelboTests {
             code: """
                 let villains = Table(
                     .table(
-                        .object("Object.troll"),
-                        .object("Object.sword"),
+                        .object("Objects.troll"),
+                        .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constant.trollMelee)
+                        .table(Constants.trollMelee)
                     ),
                     .table(
-                        .object("Object.thief"),
-                        .object("Object.knife"),
+                        .object("Objects.thief"),
+                        .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constant.thiefMelee)
+                        .table(Constants.thiefMelee)
                     ),
                     .table(
-                        .object("Object.cyclops"),
+                        .object("Objects.cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .table(Constant.cyclopsMelee)
+                        .table(Constants.cyclopsMelee)
                     ),
                     flags: .length
                 )
@@ -189,7 +189,7 @@ final class ConstantTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "let def1Res = Table(.table(Constant.def1), .int(0), .int(0))",
+            code: "let def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
             type: .table.root,
             category: .constants,
             isCommittable: true

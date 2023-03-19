@@ -39,11 +39,11 @@ final class DescribeObjectsTests: QuelboTests {
                     /// The `describeObjects` (DESCRIBE-OBJECTS) routine.
                     func describeObjects(isV: Bool = false) {
                         var isV = false
-                        if Global.lit {
-                            if _ = Global.here.firstChild {
+                        if Globals.lit {
+                            if _ = Globals.here.firstChild {
                                 printCont(
-                                    obj: Global.here,
-                                    isV: isV.set(to: .or(isV, Global.verbose)),
+                                    obj: Globals.here,
+                                    isV: isV.set(to: .or(isV, Globals.verbose)),
                                     level: -1
                                 )
                             }

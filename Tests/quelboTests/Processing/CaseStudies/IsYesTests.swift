@@ -42,7 +42,7 @@ final class IsYesTests: QuelboTests {
                     func isYes() -> Bool {
                         output(">")
                         read(&pInbuf, &pLexv)
-                        if try Global.pLexv.get(at: 1).equals(Word.yes, Word.y) {
+                        if try Globals.pLexv.get(at: 1).equals(Word.yes, Word.y) {
                             return true
                         } else {
                             return false

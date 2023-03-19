@@ -8,14 +8,14 @@
 
 􀂒 Constants should ignore optionality and always declare a value
 
-􀂒 Globals with references to constants should use `Constant.` prefix
+􀂒 Globals with references to constants should use `Constants.` prefix
     ```
     static var Constant: Constants {
         Zork1.shared.constants
     }
 
     ❌ var def1Res = Table(def1, .int(0), .int(0))
-    ✅ var def1Res = Table(Constant.def1, .int(0), .int(0))
+    ✅ var def1Res = Table(Constants.def1, .int(0), .int(0))
     ```
 
 􀂒 Correctly handle `<SETG WBREAKS <STRING !\" !,WBREAKS>>>`

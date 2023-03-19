@@ -117,17 +117,17 @@ final class PickOneTests: QuelboTests {
                 code: #"""
                     /// The `vHello` (V-HELLO) routine.
                     func vHello() {
-                        if let Global.parsedDirectObject {
-                            if Global.parsedDirectObject.hasFlag(.isActor) {
+                        if let Globals.parsedDirectObject {
+                            if Globals.parsedDirectObjects.hasFlag(.isActor) {
                                 output("The ")
-                                output(Global.parsedDirectObject.description)
+                                output(Globals.parsedDirectObjects.description)
                                 output(" bows his head to you in greeting.")
                             } else {
                                 output("""
                                     It's a well known fact that only schizophrenics say "Hello" \
                                     to a
                                     """)
-                                output(Global.parsedDirectObject.description)
+                                output(Globals.parsedDirectObjects.description)
                                 output(".")
                             }
                         } else {

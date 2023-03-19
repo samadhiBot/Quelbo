@@ -11,7 +11,7 @@ import XCTest
 @testable import quelbo
 
 final class GlobalTests: QuelboTests {
-    let factory = Factories.Global.self
+    let factory = Factories.Globals.self
 
     override func setUp() {
         super.setUp()

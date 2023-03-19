@@ -41,7 +41,7 @@ final class IsOneTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Global.foo.isOne",
+            code: "Globals.foo.isOne",
             type: .bool
         ))
     }

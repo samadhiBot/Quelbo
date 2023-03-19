@@ -241,20 +241,17 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Instance {
-    func assertHasMutability(_ assertedMutability: Bool) throws {
-        switch isMutable {
-        case assertedMutability:
-            return
-        case .none:
-            try variable.assertHasMutability(assertedMutability)
-        default:
-            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
-                for: "\(Self.self)",
-                asserted: assertedMutability,
-                actual: assertedMutability
-            )
-        }
-    }
+//    func assertHasMutability(_ assertedMutability: Bool) throws {
+//        if assertedMutability == isMutable { return }
+//        guard isMutable == nil || assertedMutability == false else {
+//            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
+//                for: "\(Self.self)",
+//                asserted: assertedMutability,
+//                actual: assertedMutability
+//            )
+//        }
+//        try variable.assertHasMutability(assertedMutability)
+//    }
 
     func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
         switch (assertedHandling, returnHandling) {

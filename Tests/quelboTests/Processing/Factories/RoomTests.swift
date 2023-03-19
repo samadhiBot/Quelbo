@@ -57,8 +57,8 @@ final class RoomTests: QuelboTests {
                         .southEast: .to("southOfHouse"),
                         .west: .to("forest1"),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
-                        .southWest: .conditional("stoneBarrow", if: Global.wonFlag),
-                        .in: .conditional("stoneBarrow", if: Global.wonFlag),
+                        .southWest: .conditional("stoneBarrow", if: Globals.wonFlag),
+                        .in: .conditional("stoneBarrow", if: Globals.wonFlag),
                     ],
                     flags: [
                         .isDryLand,
@@ -154,7 +154,7 @@ final class RoomTests: QuelboTests {
                     .east: .to("damRoom"),
                     .west: .to("streamView"),
                     .north: .conditionalElse("reservoir",
-                        if: Global.lowTide,
+                        if: Globals.lowTide,
                         else: "You would drown."
                     ),
                 ],
@@ -267,8 +267,8 @@ final class RoomTests: QuelboTests {
                     .southWest: .to("southOfHouse"),
                     .northWest: .to("northOfHouse"),
                     .east: .to("clearing"),
-                    .west: .conditional("kitchen", if: Object.kitchenWindow.isOpen),
-                    .in: .conditional("kitchen", if: Object.kitchenWindow.isOpen),
+                    .west: .conditional("kitchen", if: Objects.kitchenWindow.isOpen),
+                    .in: .conditional("kitchen", if: Objects.kitchenWindow.isOpen),
                 ],
                 flags: [
                     .isDryLand,
@@ -276,9 +276,9 @@ final class RoomTests: QuelboTests {
                     .isSacred,
                 ],
                 globals: [
-                    Object.whiteHouse,
-                    Object.kitchenWindow,
-                    Object.forest,
+                    Objects.whiteHouse,
+                    Objects.kitchenWindow,
+                    Objects.forest,
                 ],
                 location: rooms
             )

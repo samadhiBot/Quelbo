@@ -60,25 +60,25 @@ final class IntTests: QuelboTests {
                         var e: Table? = e
                         var c: Table? = c
                         var int: Table? = int
-                        e.set(to: Global.cTable.rest(bytes: Constant.cTablelen))
-                        c.set(to: Global.cTable.rest(bytes: Global.cInts))
+                        e.set(to: Globals.cTable.rest(bytes: Constants.cTablelen))
+                        c.set(to: Globals.cTable.rest(bytes: Globals.cInts))
                         while true {
                             if c.equals(e) {
-                                Global.cInts.set(to: .subtract(Global.cInts, Constant.cIntlen))
+                                Globals.cInts.set(to: .subtract(Globals.cInts, Constants.cIntlen))
                                 .and(
                                     demon,
-                                    Global.cDemons.set(to: .subtract(Global.cDemons, Constant.cIntlen))
+                                    Globals.cDemons.set(to: .subtract(Globals.cDemons, Constants.cIntlen))
                                 )
-                                int.set(to: Global.cTable.rest(bytes: Global.cInts))
+                                int.set(to: Globals.cTable.rest(bytes: Globals.cInts))
                                 int.put(
                                     element: rtn,
-                                    at: Constant.cRtn
+                                    at: Constants.cRtn
                                 )
                                 return int
-                            } else if try c.get(at: Constant.cRtn).equals(rtn) {
+                            } else if try c.get(at: Constants.cRtn).equals(rtn) {
                                 return c
                             }
-                            c.set(to: c.rest(bytes: Constant.cIntlen))
+                            c.set(to: c.rest(bytes: Constants.cIntlen))
                         }
                     }
                     """,

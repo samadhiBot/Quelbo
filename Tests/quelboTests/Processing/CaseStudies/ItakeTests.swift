@@ -144,34 +144,34 @@ final class ItakeTests: QuelboTests {
                     func itake(vb: Bool = true) -> Bool {
                         var cnt = 0
                         // var obj: <Unknown>
-                        if Global.dead {
+                        if Globals.dead {
                             if vb {
                                 output("Your hand passes through its object.")
                             }
                             return false
-                        } else if .isNot(Global.parsedDirectObject.hasFlag(.isTakable)) {
+                        } else if .isNot(Globals.parsedDirectObjects.hasFlag(.isTakable)) {
                             if vb {
-                                output(pickOne(frob: Global.yuks))
+                                output(pickOne(frob: Globals.yuks))
                             }
                             return false
                         } else if nullFunc() {
                             return false
                         } else if .and(
-                            Global.parsedDirectObject.parent.hasFlag(.isContainer),
-                            .isNot(Global.parsedDirectObject.parent.hasFlag(.isOpen))
+                            Globals.parsedDirectObjects.parent.hasFlag(.isContainer),
+                            .isNot(Globals.parsedDirectObjects.parent.hasFlag(.isOpen))
                         ) {
                             // "Kludge for parser calling itake"
                             return false
                         } else if .and(
-                            .isNot(Global.parsedDirectObject.parent.isIn(Global.winner)),
+                            .isNot(Globals.parsedDirectObjects.parent.isIn(Globals.winner)),
                             .add(
-                                weight(obj: Global.parsedDirectObject),
-                                weight(obj: Global.winner)
-                            ).isGreaterThan(Global.loadAllowed)
+                                weight(obj: Globals.parsedDirectObject),
+                                weight(obj: Globals.winner)
+                            ).isGreaterThan(Globals.loadAllowed)
                         ) {
                             if vb {
                                 output("Your load is too heavy")
-                                if Global.loadAllowed.isLessThan(Global.loadMax) {
+                                if Globals.loadAllowed.isLessThan(Globals.loadMax) {
                                     output(", especially in light of your condition.")
                                 } else {
                                     output(".")
@@ -181,19 +181,19 @@ final class ItakeTests: QuelboTests {
                             returnFatal()
                         } else if .and(
                             isParsedVerb(.take),
-                            cnt.set(to: ccount(obj: Global.winner)).isGreaterThan(Global.fumbleNumber),
+                            cnt.set(to: ccount(obj: Globals.winner)).isGreaterThan(Globals.fumbleNumber),
                             prob(
-                                isBase: .multiply(cnt, Global.fumbleProb)
+                                isBase: .multiply(cnt, Globals.fumbleProb)
                             )
                         ) {
                             output("You're holding too many things already!")
                             return false
                         } else {
-                            parsedDirectObject.move(to: Global.winner)
-                            Global.parsedDirectObject.omitDescription.set(false)
-                            Global.parsedDirectObject.hasBeenTouched.set(true)
+                            parsedDirectObjects.move(to: Globals.winner)
+                            Globals.parsedDirectObjects.omitDescription.set(false)
+                            Globals.parsedDirectObjects.hasBeenTouched.set(true)
                             nullFunc()
-                            scoreObj(obj: Global.parsedDirectObject)
+                            scoreObj(obj: Globals.parsedDirectObject)
                             return true
                         }
                     }

@@ -91,7 +91,7 @@ final class BufferPrintTests: QuelboTests {
                             if cnt.decrement().isLessThan(0) {
                                 break
                             } else {
-                                output(try Global.pInbuf.get(at: buf))
+                                output(try Globals.pInbuf.get(at: buf))
                                 buf.set(to: .add(buf, 1))
                             }
                         }
@@ -134,22 +134,22 @@ final class BufferPrintTests: QuelboTests {
                                 if wrd.equals(Word.period, Word.comma) {
                                     nosp.set(to: true)
                                 } else if wrd.equals(Word.me) {
-                                    output(Object.me.description)
+                                    output(Objects.me.description)
                                     pn.set(to: true)
                                 } else if wrd.equals(Word.intnum) {
-                                    output(Global.pNumber)
+                                    output(Globals.pNumber)
                                     pn.set(to: true)
                                 } else {
                                     if .and(isFirst, .isNot(pn), cp) {
                                         output("the ")
                                     }
-                                    if .or(Global.pOflag, Global.pMerged) {
+                                    if .or(Globals.pOflag, Globals.pMerged) {
                                         output(wrd)
                                     } else if .and(
                                         wrd.equals(Word.it),
-                                        isAccessible(obj: Global.pItObject)
+                                        isAccessible(obj: Globals.pItObject)
                                     ) {
-                                        output(Global.pItObject.description)
+                                        output(Globals.pItObject.description)
                                     } else {
                                         wordPrint(
                                             cnt: try beg.get(at: 2),
@@ -159,7 +159,7 @@ final class BufferPrintTests: QuelboTests {
                                     isFirst.set(to: false)
                                 }
                             }
-                            beg.set(to: beg.rest(bytes: Constant.pWordlen))
+                            beg.set(to: beg.rest(bytes: Constants.pWordlen))
                         }
                     }
                     """,

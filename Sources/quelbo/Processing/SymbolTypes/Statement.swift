@@ -160,20 +160,30 @@ extension Statement {
         }
     }
 
-    func assertHasMutability(_ mutability: Bool) throws {
-        print("▶️", code)
-        switch isMutable {
-        case mutability:
-            break
-        case .none:
-            self.isMutable = mutability
-        default:
+    func assertHasMutability(_ assertedMutability: Bool) throws {
+        if assertedMutability == isMutable { return }
+        guard isMutable == nil || assertedMutability == false else {
             throw Symbol.AssertionError.hasMutabilityAssertionFailed(
                 for: "\(Self.self)",
-                asserted: mutability,
+                asserted: assertedMutability,
                 actual: isMutable
             )
         }
+        self.isMutable = assertedMutability
+
+//        print("▶️", code)
+//        switch isMutable {
+//        case mutability:
+//            break
+//        case .none:
+//            self.isMutable = mutability
+//        default:
+//            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
+//                for: "\(Self.self)",
+//                asserted: mutability,
+//                actual: isMutable
+//            )
+//        }
     }
 
     func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {

@@ -22,7 +22,7 @@ final class SetGlobalTests: QuelboTests {
         let symbol = process("<SETG FOO 42>", type: .zCode)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "foo.set(to: 42)",
+            code: "Globals.foo.set(to: 42)",
             type: .int.optional
         ))
 
@@ -51,7 +51,7 @@ final class SetGlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "foo.set(to: n)",
+            code: "Globals.foo.set(to: n)",
             type: .string.optional
         ))
     }
@@ -68,7 +68,7 @@ final class SetGlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "n.set(to: .subtract(n, 1))",
+            code: "Globals.n.set(to: .subtract(Globals.n, 1))",
             type: .int
         ))
     }
@@ -79,7 +79,7 @@ final class SetGlobalTests: QuelboTests {
         let symbol = process("<SETG C-ENABLED? 42>", type: .zCode)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isCEnabled.set(to: 42)",
+            code: "Constants.isCEnabled.set(to: 42)",
             type: .int
         ))
 

@@ -47,24 +47,24 @@ final class DoSlTests: QuelboTests {
                     /// The `doSl` (DO-SL) routine.
                     func doSl(obj: Object, bit1: Int, bit2: Int) -> Bool {
                         // var bts: <Unknown>
-                        if _ = .bitwiseCompare(Global.pSlocbits, .add(bit1, bit2)) {
+                        if _ = .bitwiseCompare(Globals.pSlocbits, .add(bit1, bit2)) {
                             searchList(
                                 obj: obj,
-                                tbl: Global.pTable,
-                                lvl: Constant.pSrcall
+                                tbl: Globals.pTable,
+                                lvl: Constants.pSrcall
                             )
                         } else {
-                            if _ = .bitwiseCompare(Global.pSlocbits, bit1) {
+                            if _ = .bitwiseCompare(Globals.pSlocbits, bit1) {
                                 searchList(
                                     obj: obj,
-                                    tbl: Global.pTable,
-                                    lvl: Constant.pSrctop
+                                    tbl: Globals.pTable,
+                                    lvl: Constants.pSrctop
                                 )
-                            } else if _ = .bitwiseCompare(Global.pSlocbits, bit2) {
+                            } else if _ = .bitwiseCompare(Globals.pSlocbits, bit2) {
                                 searchList(
                                     obj: obj,
-                                    tbl: Global.pTable,
-                                    lvl: Constant.pSrcbot
+                                    tbl: Globals.pTable,
+                                    lvl: Constants.pSrcbot
                                 )
                             } else {
                                 return true

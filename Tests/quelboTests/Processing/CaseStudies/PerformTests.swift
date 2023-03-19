@@ -328,8 +328,8 @@ final class PerformTests: QuelboTests {
                             }
                         }
                         oa.set(to: parsedVerb)
-                        oo.set(to: Global.parsedDirectObject)
-                        oi.set(to: Global.parsedIndirectObject)
+                        oo.set(to: Globals.parsedDirectObject)
+                        oi.set(to: Globals.parsedIndirectObject)
                         if .and(
                             it.equals(i, o),
                             .isNot(isAccessible(obj: pItObject))
@@ -344,18 +344,18 @@ final class PerformTests: QuelboTests {
                             i.set(to: pItObject)
                         }
                         parsedVerb.set(to: a)
-                        Global.parsedDirectObject.set(to: o)
+                        Globals.parsedDirectObjects.set(to: o)
                         if _ = .and(
-                            .object(Global.parsedDirectObject),
+                            .object(Globals.parsedDirectObject),
                             .isNot(isParsedVerb(.walk))
                         ) {
-                            pItObject.set(to: Global.parsedDirectObject)
+                            pItObject.set(to: Globals.parsedDirectObject)
                         }
-                        Global.parsedIndirectObject.set(to: i)
+                        Globals.parsedIndirectObjects.set(to: i)
                         if _ = .and(
-                            notHereObject.equals(
-                                Global.parsedDirectObject,
-                                Global.parsedIndirectObject
+                            notHereObjects.equals(
+                                Globals.parsedDirectObject,
+                                Globals.parsedIndirectObject
                             ),
                             v.set(to: dApply(
                                 str: "Not Here",
@@ -364,8 +364,8 @@ final class PerformTests: QuelboTests {
                         ) {
                             return v
                         } else {
-                            o.set(to: Global.parsedDirectObject)
-                            i.set(to: Global.parsedIndirectObject)
+                            o.set(to: Globals.parsedDirectObject)
+                            i.set(to: Globals.parsedIndirectObject)
                             if _ = v.set(to: ddApply(
                                 str: "Actor",
                                 obj: winner,
@@ -420,8 +420,8 @@ final class PerformTests: QuelboTests {
                             }
                         }
                         parsedVerb.set(to: oa)
-                        Global.parsedDirectObject.set(to: oo)
-                        Global.parsedIndirectObject.set(to: oi)
+                        Globals.parsedDirectObjects.set(to: oo)
+                        Globals.parsedIndirectObjects.set(to: oi)
                         return v
                     }
                     """#,

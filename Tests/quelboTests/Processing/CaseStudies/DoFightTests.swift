@@ -83,25 +83,25 @@ final class DoFightTests: QuelboTests {
                 code: """
                     var villains = Table(
                         .table(
-                            .object("Object.troll"),
-                            .object("Object.sword"),
+                            .object("Objects.troll"),
+                            .object("Objects.sword"),
                             .int(1),
                             .int(0),
-                            .table(Constant.trollMelee)
+                            .table(Constants.trollMelee)
                         ),
                         .table(
-                            .object("Object.thief"),
-                            .object("Object.knife"),
+                            .object("Objects.thief"),
+                            .object("Objects.knife"),
                             .int(1),
                             .int(0),
-                            .table(Constant.thiefMelee)
+                            .table(Constants.thiefMelee)
                         ),
                         .table(
-                            .object("Object.cyclops"),
+                            .object("Objects.cyclops"),
                             .bool(false),
                             .int(0),
                             .int(0),
-                            .table(Constant.cyclopsMelee)
+                            .table(Constants.cyclopsMelee)
                         ),
                         flags: .length
                     )
@@ -135,16 +135,16 @@ final class DoFightTests: QuelboTests {
                                     res.set(to: 1)
                                     return true
                                 }
-                                oo.set(to: try Global.villains.get(at: cnt))
-                                o.set(to: try oo.get(at: Constant.vVillain))
+                                oo.set(to: try Globals.villains.get(at: cnt))
+                                o.set(to: try oo.get(at: Constants.vVillain))
                                 if .isNot(o.hasFlag(.isFightable)) {
                                     // do nothing
-                                } else if _ = o.action(Constant.isFBusy) {
+                                } else if _ = o.action(Constants.isFBusy) {
                                     // do nothing
                                 } else if .isNot(res.set(to: villainBlow(oo: oo, isOut: out))) {
                                     res.set(to: 0)
                                     break
-                                } else if res.equals(Constant.unconscious) {
+                                } else if res.equals(Constants.unconscious) {
                                     out.set(to: .add(1, .random(3)))
                                 }
                             }

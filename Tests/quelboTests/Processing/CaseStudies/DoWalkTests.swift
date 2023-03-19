@@ -45,7 +45,7 @@ final class DoWalkTests: QuelboTests {
                     @discardableResult
                     /// The `doWalk` (DO-WALK) routine.
                     func doWalk(dir: Object) -> Int? {
-                        Global.pWalkDir.set(to: dir)
+                        Globals.pWalkDir.set(to: dir)
                         return perform(a: Verb.walk, o: dir)
                     }
                     """,

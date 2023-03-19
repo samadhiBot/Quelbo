@@ -74,7 +74,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if rarg.equals(Global.mEnter) {
+                if rarg.equals(Globals.mEnter) {
                     output("You are in a dark and damp cellar.")
                 }
                 """,
@@ -132,7 +132,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if rarg.equals(Global.mEnter) {
+                if rarg.equals(Globals.mEnter) {
                     rarg.set(to: other)
                 }
                 """,
@@ -155,7 +155,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if Global.wonFlag {
+                if Globals.wonFlag {
                     output(" A secret path leads southwest into the forest.")
                 }
                 """,
@@ -177,7 +177,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                if Room.here.equals(Room.clearing) {
+                if Rooms.here.equals(Rooms.clearing) {
                     return "The grating opens."
                 } else {
                     return "The grating opens to reveal trees above you."
@@ -248,7 +248,7 @@ final class ConditionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: #"""
-                if Global.isFunnyReturn {
+                if Globals.isFunnyReturn {
                     output("RETURN EXIT ROUTINE")
                 }
                 """#,
@@ -273,9 +273,9 @@ final class ConditionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 if .or(
-                    Global.parsedIndirectObject.hasFlag(.openBit),
+                    Globals.parsedIndirectObjects.hasFlag(.openBit),
                     isOpenable(),
-                    Global.parsedIndirectObject.hasFlag(.vehBit)
+                    Globals.parsedIndirectObjects.hasFlag(.vehBit)
                 ) {
                     // do nothing
                 } else {

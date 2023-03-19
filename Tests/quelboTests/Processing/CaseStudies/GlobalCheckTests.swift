@@ -113,9 +113,9 @@ final class GlobalCheckTests: QuelboTests {
                         var obj = [[Object]]()
                         var obits = 0
                         var foo = [[Routine]]()
-                        len.set(to: try tbl.get(at: Global.pMatchlen))
-                        obits.set(to: Global.pSlocbits)
-                        if _ = rmg.set(to: Global.here.globals) {
+                        len.set(to: try tbl.get(at: Globals.pMatchlen))
+                        obits.set(to: Globals.pSlocbits)
+                        if _ = rmg.set(to: Globals.here.globals) {
                             rmgl.set(to: .subtract(rmg.propertySize, 1))
                             while true {
                                 if isThisIt(
@@ -129,42 +129,42 @@ final class GlobalCheckTests: QuelboTests {
                                 }
                             }
                         }
-                        if _ = rmg.set(to: Global.here.things) {
+                        if _ = rmg.set(to: Globals.here.things) {
                             rmgl.set(to: .subtract(.divide(rmg.propertySize, 4), 1))
                             cnt.set(to: 0)
                             while true {
-                                if Global.pNam.equals(try rmg.get(at: .multiply(cnt, 2))) {
-                                    pseudoObject.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
-                                    foo.set(to: Object.pseudoObject.action.back(bytes: 5))
+                                if Globals.pNam.equals(try rmg.get(at: .multiply(cnt, 2))) {
+                                    pseudoObjects.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
+                                    foo.set(to: Objects.pseudoObjects.action.back(bytes: 5))
                                     foo.put(
-                                        element: try Global.pNam.get(at: 0),
+                                        element: try Globals.pNam.get(at: 0),
                                         at: 0
                                     )
                                     foo.put(
-                                        element: try Global.pNam.get(at: 1),
+                                        element: try Globals.pNam.get(at: 1),
                                         at: 1
                                     )
-                                    objFound(obj: Object.pseudoObject, tbl: tbl)
+                                    objFound(obj: Objects.pseudoObject, tbl: tbl)
                                     break
                                 } else if cnt.increment().isGreaterThan(rmgl) {
                                     break
                                 }
                             }
                         }
-                        if try tbl.get(at: Global.pMatchlen).equals(len) {
-                            Global.pSlocbits.set(to: -1)
-                            Global.pTable.set(to: tbl)
+                        if try tbl.get(at: Globals.pMatchlen).equals(len) {
+                            Globals.pSlocbits.set(to: -1)
+                            Globals.pTable.set(to: tbl)
                             doSl(
-                                obj: Object.globalObjects,
+                                obj: Objects.globalObjects,
                                 bit1: 1,
                                 bit2: 1
                             )
-                            Global.pSlocbits.set(to: obits)
+                            Globals.pSlocbits.set(to: obits)
                             if .and(
-                                try tbl.get(at: Global.pMatchlen).isZero,
-                                Global.parsedVerb.equals(Verb.lookInside, Verb.search, Verb.examine)
+                                try tbl.get(at: Globals.pMatchlen).isZero,
+                                Globals.parsedVerb.equals(Verb.lookInside, Verb.search, Verb.examine)
                             ) {
-                                doSl(obj: Object.rooms, bit1: 1, bit2: 1)
+                                doSl(obj: Objects.rooms, bit1: 1, bit2: 1)
                             }
                         }
                     }

@@ -35,7 +35,7 @@ final class GetTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try Global.foo.get(at: 2)",
+            code: "try Globals.foo.get(at: 2)",
             type: .someTableElement
         ))
     }
@@ -49,7 +49,7 @@ final class GetTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "try Global.pItbl.get(at: Constant.pVerbn).get(at: 0)",
+            code: "try Globals.pItbl.get(at: Constants.pVerbn).get(at: 0)",
             type: .someTableElement
         ))
     }

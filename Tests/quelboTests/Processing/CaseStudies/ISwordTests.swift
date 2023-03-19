@@ -116,13 +116,13 @@ final class SwordTests: QuelboTests {
                     /// The `iSword` (I-SWORD) routine.
                     func iSword() -> Bool {
                         var dem = int(rtn: iSword)
-                        var g = Object.sword.takeValue
+                        var g = Objects.sword.takeValue
                         var ng = 0
                         var p = 0
                         var t: Table?
                         var l = 0
-                        if Object.sword.isIn(Object.adventurer) {
-                            if isInfested(r: Global.here) {
+                        if Objects.sword.isIn(Objects.adventurer) {
+                            if isInfested(r: Globals.here) {
                                 ng.set(to: 2)
                             } else {
                                 p.set(to: 0)
@@ -130,12 +130,12 @@ final class SwordTests: QuelboTests {
                                     if p.set(to: here.property(after: p)).isZero {
                                         break
                                     } else if .isNot(p.isLessThan(lowDirection)) {
-                                        t.set(to: Global.here.property(p))
+                                        t.set(to: Globals.here.property(p))
                                         l.set(to: t.propertySize)
                                         if l.equals(
-                                            Constant.uexit,
-                                            Constant.cexit,
-                                            Constant.dexit
+                                            Constants.uexit,
+                                            Constants.cexit,
+                                            Constants.dexit
                                         ) {
                                             if isInfested(r: try t.get(at: 0)) {
                                                 ng.set(to: 1)
@@ -159,7 +159,7 @@ final class SwordTests: QuelboTests {
                         } else {
                             dem.put(
                                 element: 0,
-                                at: Global.isCEnabled
+                                at: Globals.isCEnabled
                             )
                             return false
                         }

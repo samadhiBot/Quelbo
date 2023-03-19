@@ -24,7 +24,7 @@ final class GetValueTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Global.sandwich",
+            code: "Globals.sandwich",
             type: .booleanTrue
         ))
     }

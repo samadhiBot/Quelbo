@@ -219,10 +219,10 @@ final class DescribeObjectTests: QuelboTests {
                     func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
                         var str: String?
                         var av: Object?
-                        descObject.set(to: obj)
+                        descObjects.set(to: obj)
                         if _ = .and(
                             level.isZero,
-                            obj.descriptionFunction(Constant.mObjdesc)
+                            obj.descriptionFunction(Constants.mObjdesc)
                         ) {
                             return true
                         } else if _ = .and(
@@ -245,14 +245,14 @@ final class DescribeObjectTests: QuelboTests {
                             }
                             output(".")
                         } else {
-                            output(try Constant.indents.get(at: level))
+                            output(try Constants.indents.get(at: level))
                             output("A ")
                             output(obj.description)
                             if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
                                 obj.hasFlag(.isWearable),
-                                obj.isIn(Global.winner)
+                                obj.isIn(Globals.winner)
                             ) {
                                 output(" (being worn)")
                             }
@@ -260,7 +260,7 @@ final class DescribeObjectTests: QuelboTests {
                         nullFunc()
                         if .and(
                             level.isZero,
-                            av.set(to: Global.winner.parent),
+                            av.set(to: Globals.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -294,10 +294,10 @@ final class DescribeObjectTests: QuelboTests {
                     func describeObject(obj: Object, isV: Bool, level: Int) -> Bool {
                         var str: String?
                         var av: Object?
-                        descObject.set(to: obj)
+                        descObjects.set(to: obj)
                         if _ = .and(
                             level.isZero,
-                            obj.descriptionFunction(Constant.mObjdesc)
+                            obj.descriptionFunction(Constants.mObjdesc)
                         ) {
                             return true
                         } else if _ = .and(
@@ -320,27 +320,27 @@ final class DescribeObjectTests: QuelboTests {
                             }
                             output(".")
                         } else {
-                            output(try Constant.indents.get(at: level))
+                            output(try Constants.indents.get(at: level))
                             output("A ")
                             output(obj.description)
                             if obj.hasFlag(.isOn) {
                                 output(" (providing light)")
                             } else if .and(
                                 obj.hasFlag(.isWearable),
-                                obj.isIn(Global.winner)
+                                obj.isIn(Globals.winner)
                             ) {
                                 output(" (being worn)")
                             }
                         }
                         if .and(
-                            obj.equals(Global.spellVictim),
-                            Global.spellUsed.equals(Word.float)
+                            obj.equals(Globals.spellVictim),
+                            Globals.spellUsed.equals(Word.float)
                         ) {
                             output(" (floating in midair)")
                         }
                         if .and(
                             level.isZero,
-                            av.set(to: Global.winner.parent),
+                            av.set(to: Globals.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -388,7 +388,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            av.set(to: Global.winner.parent),
+                            av.set(to: Globals.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -397,7 +397,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if Global.winner.equals(obj, obj.parent) {
+                        if Globals.winner.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {
@@ -405,7 +405,7 @@ final class DescribeObjectTests: QuelboTests {
                                     break
                                 } else if y.equals(av) {
                                     isPv.set(to: true)
-                                } else if y.equals(Global.winner) {
+                                } else if y.equals(Globals.winner) {
                                     // do nothing
                                 } else if _ = .and(
                                     .isNot(y.hasFlag(.isInvisible)),
@@ -439,7 +439,7 @@ final class DescribeObjectTests: QuelboTests {
                                     printCont(obj: av, isV: isV, level: level)
                                 }
                                 break
-                            } else if y.equals(av, Object.adventurer) {
+                            } else if y.equals(av, Objects.adventurer) {
                                 // do nothing
                             } else if .and(
                                 .isNot(y.hasFlag(.isInvisible)),
@@ -515,7 +515,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            av.set(to: Global.winner.parent),
+                            av.set(to: Globals.winner.parent),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -524,25 +524,25 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if Global.winner.equals(obj, obj.parent) {
+                        if Globals.winner.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {
                                 if .isNot(y) {
                                     if .and(
                                         level.isZero,
-                                        Global.isSpell.equals(Constant.sFantasize),
+                                        Globals.isSpell.equals(Constants.sFantasize),
                                         prob(isBase: 20)
                                     ) {
                                         output("There is a ")
-                                        output(pickOne(frob: Global.fantasies))
+                                        output(pickOne(frob: Globals.fantasies))
                                         output(" here.")
                                         is1St.set(to: false)
                                     }
                                     break
                                 } else if y.equals(av) {
                                     isPv.set(to: true)
-                                } else if y.equals(Global.winner) {
+                                } else if y.equals(Globals.winner) {
                                     // do nothing
                                 } else if _ = .and(
                                     .isNot(y.hasFlag(.isInvisible)),
@@ -576,7 +576,7 @@ final class DescribeObjectTests: QuelboTests {
                                     printCont(obj: av, isV: isV, level: level)
                                 }
                                 break
-                            } else if y.equals(av, Object.adventurer) {
+                            } else if y.equals(av, Objects.adventurer) {
                                 // do nothing
                             } else if .and(
                                 .isNot(y.hasFlag(.isInvisible)),

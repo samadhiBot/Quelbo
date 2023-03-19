@@ -55,7 +55,8 @@ final class ApplyTests: QuelboTests {
                 code: "let dispatchTbl = [func1, func2]",
                 type: .int.array,
                 category: .constants,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: false
             ))
         )
     }
@@ -64,7 +65,7 @@ final class ApplyTests: QuelboTests {
         XCTAssertNoDifference(
             process("<APPLY ,<NTH ,DISPATCH-TBL 1> 2>"),
             .statement(
-                code: "Constant.dispatchTbl.nthElement(1)(2)",
+                code: "Constants.dispatchTbl.nthElement(1)(2)",
                 type: .int.element
             )
         )
@@ -72,7 +73,7 @@ final class ApplyTests: QuelboTests {
         XCTAssertNoDifference(
             process("<APPLY ,<NTH ,DISPATCH-TBL 2> 2>"),
             .statement(
-                code: "Constant.dispatchTbl.nthElement(2)(2)",
+                code: "Constants.dispatchTbl.nthElement(2)(2)",
                 type: .int.element
             )
         )

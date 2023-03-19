@@ -115,8 +115,8 @@ final class DeadFunctionTests: QuelboTests {
                         // var m: <Unknown>
                         if isParsedVerb(.walk) {
                             if .and(
-                                Global.here.equals(Room.timberRoom),
-                                Global.parsedDirectObject.equals(west)
+                                Globals.here.equals(Rooms.timberRoom),
+                                Globals.parsedDirectObjects.equals(west)
                             ) {
                                 output("You cannot enter in your condition.")
                             }
@@ -161,13 +161,13 @@ final class DeadFunctionTests: QuelboTests {
                             output("You are dead.")
                         } else if isParsedVerb(.look) {
                             output("The room looks strange and unearthly")
-                            if .isNot(Global.here.firstChild) {
+                            if .isNot(Globals.here.firstChild) {
                                 output(".")
                             } else {
                                 output(" and objects appear indistinct.")
                             }
                             output("\n")
-                            if .isNot(Global.here.hasFlag(.isOn)) {
+                            if .isNot(Globals.here.hasFlag(.isOn)) {
                                 output("""
                                     Although there is no light, the room seems dimly \
                                     illuminated.
@@ -176,14 +176,14 @@ final class DeadFunctionTests: QuelboTests {
                             output("\n")
                             return false
                         } else if isParsedVerb(.pray) {
-                            if Global.here.equals(Room.southTemple) {
-                                Object.lamp.isInvisible.set(false)
+                            if Globals.here.equals(Rooms.southTemple) {
+                                Objects.lamp.isInvisible.set(false)
                                 winner.action = 0
                                 // <SETG GWIM-DISABLE false>
-                                Global.alwaysLit.set(to: false)
-                                Global.dead.set(to: false)
-                                if Object.troll.isIn(Room.trollRoom) {
-                                    Global.trollFlag.set(to: false)
+                                Globals.alwaysLit.set(to: false)
+                                Globals.dead.set(to: false)
+                                if Objects.troll.isIn(Rooms.trollRoom) {
+                                    Globals.trollFlag.set(to: false)
                                 }
                                 output("""
                                     From the distance the sound of a lone trumpet is heard. The \
@@ -192,7 +192,7 @@ final class DeadFunctionTests: QuelboTests {
                                     if from a long sleep, deep in the woods. In the distance you \
                                     can faintly hear a songbird and the sounds of the forest.
                                     """)
-                                goto(rm: Room.forest1)
+                                goto(rm: Rooms.forest1)
                             } else {
                                 output("Your prayers are not heard.")
                             }

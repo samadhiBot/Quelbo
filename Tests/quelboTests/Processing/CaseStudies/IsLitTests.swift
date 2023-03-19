@@ -66,39 +66,39 @@ final class IsLitTests: QuelboTests {
                         var ohere: Object?
                         var lit = false
                         if .and(
-                            Global.alwaysLit,
-                            Global.winner.equals(Global.player)
+                            Globals.alwaysLit,
+                            Globals.winner.equals(Globals.player)
                         ) {
                             return true
                         }
-                        Global.pGwimBit.set(to: .isOn)
-                        ohere.set(to: Global.here)
-                        Global.here.set(to: rm)
+                        Globals.pGwimBit.set(to: .isOn)
+                        ohere.set(to: Globals.here)
+                        Globals.here.set(to: rm)
                         if .and(rmBit, rm.hasFlag(.isOn)) {
                             lit.set(to: true)
                         } else {
-                            Global.pMerge.put(
+                            Globals.pMerge.put(
                                 element: 0,
-                                at: Global.pMatchlen
+                                at: Globals.pMatchlen
                             )
-                            Global.pTable.set(to: Global.pMerge)
-                            Global.pSlocbits.set(to: -1)
+                            Globals.pTable.set(to: Globals.pMerge)
+                            Globals.pSlocbits.set(to: -1)
                             if ohere.equals(rm) {
-                                doSl(obj: Global.winner, bit1: 1, bit2: 1)
+                                doSl(obj: Globals.winner, bit1: 1, bit2: 1)
                                 if .and(
-                                    .isNot(Global.winner.equals(Global.player)),
-                                    Global.player.isIn(rm)
+                                    .isNot(Globals.winner.equals(Globals.player)),
+                                    Globals.player.isIn(rm)
                                 ) {
-                                    doSl(obj: Global.player, bit1: 1, bit2: 1)
+                                    doSl(obj: Globals.player, bit1: 1, bit2: 1)
                                 }
                             }
                             doSl(obj: rm, bit1: 1, bit2: 1)
-                            if try Global.pTable.get(at: Global.pMatchlen).isGreaterThan(0) {
+                            if try Globals.pTable.get(at: Globals.pMatchlen).isGreaterThan(0) {
                                 lit.set(to: true)
                             }
                         }
-                        Global.here.set(to: ohere)
-                        Global.pGwimBit.set(to: false)
+                        Globals.here.set(to: ohere)
+                        Globals.pGwimBit.set(to: false)
                         return lit
                     }
                     """,

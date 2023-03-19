@@ -44,9 +44,9 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
                         if isParsedVerb(.examine) {
-                            if Global.here.equals(
-                                Object.mirror1.parent,
-                                Object.mirror2.parent
+                            if Globals.here.equals(
+                                Objects.mirror1.parent,
+                                Objects.mirror2.parent
                             ) {
                                 output("Your image in the mirror looks tired.")
                             } else {
@@ -141,7 +141,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
                         if isParsedVerb(.examine) {
-                            if Global.invis {
+                            if Globals.invis {
                                 output("A good trick, as you are currently invisible.")
                             } else {
                                 output("What you can see looks pretty much as usual, sorry to say.")

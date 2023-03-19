@@ -84,7 +84,7 @@ final class IsNotTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".isNot(Global.readbuf)",
+            code: ".isNot(Globals.readbuf)",
             type: .bool
         ))
     }
@@ -132,7 +132,7 @@ final class IsNotTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".isNot(try Global.silly.get(at: 0))",
+            code: ".isNot(try Globals.silly.get(at: 0))",
             type: .bool
         ))
     }

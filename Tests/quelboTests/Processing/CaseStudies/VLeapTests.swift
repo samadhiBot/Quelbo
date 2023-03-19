@@ -94,11 +94,11 @@ final class VLeapTests: QuelboTests {
                     func vLeap() -> Bool {
                         var tx: Object? = nil
                         var s: Int = 0
-                        if let Global.parsedDirectObject {
-                            if Global.parsedDirectObject.isIn(here) {
-                                if Global.parsedDirectObject.hasFlag(.isActor) {
+                        if let Globals.parsedDirectObject {
+                            if Globals.parsedDirectObjects.isIn(here) {
+                                if Globals.parsedDirectObjects.hasFlag(.isActor) {
                                     output("The ")
-                                    output(Global.parsedDirectObject.description)
+                                    output(Globals.parsedDirectObjects.description)
                                     output(" is too big to jump over.")
                                 } else {
                                     vSkip()

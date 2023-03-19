@@ -84,19 +84,19 @@ final class IsAccessibleTests: QuelboTests {
                             return false
                         } else if .isNot(l) {
                             return false
-                        } else if l.equals(Object.globalObjects) {
+                        } else if l.equals(Objects.globalObjects) {
                             return true
                         } else if .and(
-                            l.equals(Object.localGlobals),
-                            isGlobalIn(obj1: obj, obj2: Global.here)
+                            l.equals(Objects.localGlobals),
+                            isGlobalIn(obj1: obj, obj2: Globals.here)
                         ) {
                             return true
-                        } else if .isNot(metaLoc(obj: obj).equals(Global.here, Global.winner.parent)) {
+                        } else if .isNot(metaLoc(obj: obj).equals(Globals.here, Globals.winner.parent)) {
                             return false
                         } else if l.equals(
-                            Global.winner,
-                            Global.here,
-                            Global.winner.parent
+                            Globals.winner,
+                            Globals.here,
+                            Globals.winner.parent
                         ) {
                             return true
                         } else if .and(l.hasFlag(.isOpen), isAccessible(obj: l)) {

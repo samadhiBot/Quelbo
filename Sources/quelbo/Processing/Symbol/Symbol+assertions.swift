@@ -148,7 +148,7 @@ extension Symbol {
         case .statement(let statement):
             try statement.assertHasMutability(mutability)
         case .instance(let instance):
-            try instance.assertHasMutability(mutability)
+            try instance.variable.assertHasMutability(mutability)
         }
     }
 

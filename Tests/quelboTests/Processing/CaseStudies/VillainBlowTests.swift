@@ -520,9 +520,9 @@ final class VillainBlowTests: QuelboTests {
                                 thiefEngrossed.set(to: false)
                             }
                             if _ = .and(
-                                .object(Global.parsedIndirectObject),
-                                Global.parsedIndirectObject.hasFlag(.isWeapon),
-                                try oo.get(at: vBest).equals(Global.parsedIndirectObject)
+                                .object(Globals.parsedIndirectObject),
+                                Globals.parsedIndirectObjects.hasFlag(.isWeapon),
+                                try oo.get(at: vBest).equals(Globals.parsedIndirectObject)
                             ) {
                                 tmp.set(to: .subtract(
                                     od,

@@ -25,7 +25,7 @@ final class GetPropertyTests: QuelboTests {
          """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Object.troll.strength",
+            code: "Objects.troll.strength",
             type: .int.property
         ))
     }
@@ -38,7 +38,7 @@ final class GetPropertyTests: QuelboTests {
          """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Object.troll.strength",
+            code: "Objects.troll.strength",
             type: .int.property
         ))
     }
@@ -53,7 +53,7 @@ final class GetPropertyTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Global.here.property(dir)",
+            code: "Globals.here.property(dir)",
             type: .unknown.property
         ))
     }

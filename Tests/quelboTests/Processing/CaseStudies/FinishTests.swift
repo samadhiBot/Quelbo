@@ -113,7 +113,7 @@ final class FinishTests: QuelboTests {
                     /// The `vFirstLook` (V-FIRST-LOOK) routine.
                     func vFirstLook() {
                         if describeRoom() {
-                            if .isNot(Global.superBrief) {
+                            if .isNot(Globals.superBrief) {
                                 describeObjects()
                             }
                         }
@@ -257,35 +257,35 @@ final class FinishTests: QuelboTests {
                     /// The `vScore` (V-SCORE) routine.
                     func vScore(isAsk: Bool = true) -> Int {
                         output("Your score is ")
-                        output(Global.score)
+                        output(Globals.score)
                         output(" (total of 350 points), in ")
-                        output(Global.moves)
-                        if Global.moves.isOne {
+                        output(Globals.moves)
+                        if Globals.moves.isOne {
                             output(" move.")
                         } else {
                             output(" moves.")
                         }
                         output("\n")
                         output("This gives you the rank of ")
-                        if Global.score.equals(350) {
+                        if Globals.score.equals(350) {
                             output("Master Adventurer")
-                        } else if Global.score.isGreaterThan(330) {
+                        } else if Globals.score.isGreaterThan(330) {
                             output("Wizard")
-                        } else if Global.score.isGreaterThan(300) {
+                        } else if Globals.score.isGreaterThan(300) {
                             output("Master")
-                        } else if Global.score.isGreaterThan(200) {
+                        } else if Globals.score.isGreaterThan(200) {
                             output("Adventurer")
-                        } else if Global.score.isGreaterThan(100) {
+                        } else if Globals.score.isGreaterThan(100) {
                             output("Junior Adventurer")
-                        } else if Global.score.isGreaterThan(50) {
+                        } else if Globals.score.isGreaterThan(50) {
                             output("Novice Adventurer")
-                        } else if Global.score.isGreaterThan(25) {
+                        } else if Globals.score.isGreaterThan(25) {
                             output("Amateur Adventurer")
                         } else {
                             output("Beginner")
                         }
                         output(".")
-                        return Global.score
+                        return Globals.score
                     }
                     """#,
                 type: .int,
@@ -316,7 +316,7 @@ final class FinishTests: QuelboTests {
                                 >
                                 """)
                             read(&pInbuf, &pLexv)
-                            wrd.set(to: try Global.pLexv.get(at: 1))
+                            wrd.set(to: try Globals.pLexv.get(at: 1))
                             if wrd.equals(Word.restart) {
                                 vRestart()
                                 output("Failed.")

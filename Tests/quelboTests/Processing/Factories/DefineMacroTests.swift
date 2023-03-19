@@ -101,7 +101,7 @@ final class DefineMacroTests: QuelboTests {
             process("<OPENABLE? ,PRSI>"),
             .statement(
                 id: "isOpenable",
-                code: "isOpenable(obj: Global.parsedIndirectObject)",
+                code: "isOpenable(obj: Globals.parsedIndirectObject)",
                 type: .bool,
                 returnHandling: .implicit
             )

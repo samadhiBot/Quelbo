@@ -31,7 +31,7 @@ final class FirstChildTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Object.thief.firstChild",
+            code: "Objects.thief.firstChild",
             type: .object
         ))
     }
@@ -42,7 +42,7 @@ final class FirstChildTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Room.clearing.firstChild",
+            code: "Rooms.clearing.firstChild",
             type: .object
         ))
     }

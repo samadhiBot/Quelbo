@@ -125,10 +125,11 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "score",
-            code: "var score = .add(Global.baseScore, otvalFrob())",
+            code: "var score = .add(Globals.baseScore, otvalFrob())",
             type: .int,
             category: .globals,
             isCommittable: true,
+            isMutable: true,
             returnHandling: .implicit
         ))
 
@@ -139,7 +140,8 @@ final class AddTests: QuelboTests {
                 code: "var baseScore = 0",
                 type: .int,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             ))
         )
     }
@@ -159,7 +161,7 @@ final class AddTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".add(try Global.src.get(at: 0), 1)",
+            code: ".add(try Globals.src.get(at: 0), 1)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -173,7 +175,8 @@ final class AddTests: QuelboTests {
             code: "var pAclause = false",
             type: .booleanFalse,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         )
 
         XCTAssertNoDifference(pAclause, .statement(processed))
@@ -186,7 +189,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(
             process("<+ P-ACLAUSE 1>"),
             .statement(
-                code: ".add(Global.pAclause, 1)",
+                code: ".add(Globals.pAclause, 1)",
                 type: .int,
                 returnHandling: .implicit
             )
@@ -199,7 +202,8 @@ final class AddTests: QuelboTests {
                 code: "var pAclause: Int?",
                 type: .int.optional,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             ))
         )
 
@@ -208,7 +212,8 @@ final class AddTests: QuelboTests {
             code: "var pAclause: Int?",
             type: .int.optional,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         ))
     }
 

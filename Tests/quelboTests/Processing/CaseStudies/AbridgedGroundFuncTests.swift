@@ -39,7 +39,7 @@ final class AbridgedGroundFuncTests: QuelboTests {
                 code: """
                     /// The `abridgedGroundFunc` (ABRIDGED-GROUND-FUNCTION) routine.
                     func abridgedGroundFunc() {
-                        if Global.here.equals(Room.sandyCave) {
+                        if Globals.here.equals(Rooms.sandyCave) {
                             abridgedSandFunc()
                         } else if isParsedVerb(.dig) {
                             output("The ground is too hard for digging here.")
