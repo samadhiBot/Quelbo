@@ -95,7 +95,7 @@ final class ThingsTests: QuelboTests {
             code: #"""
                 things: [
                     Thing(
-                        action: pitCrackFunc,
+                        action: "pitCrackFunc",
                         adjectives: ["flowery", "scrawled"],
                         nouns: ["writing", "script"]
                     ),

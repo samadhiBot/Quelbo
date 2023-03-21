@@ -45,7 +45,6 @@ final class TableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -60,11 +59,10 @@ final class TableTests: QuelboTests {
                     .object("Objects.sword"),
                     .int(1),
                     .int(0),
-                    .table(Constants.trollMelee)
+                    .table(Globals.trollMelee)
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -84,7 +82,6 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "Table(1, 2, 3, 4, flags: .byte, .length)",
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -101,7 +98,6 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: "Table(.int(0), .int8(0), .int8(0))",
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -122,20 +118,21 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "candleTable",
             code: """
-                let candleTable = Table(
+                var candleTable = Table(
                     .int(20),
                     .string("The candles grow shorter."),
                     .int(10),
                     .string("The candles are becoming quite short."),
                     .int(5),
                     .string("The candles won't last long now."),
-                    .int(0)
+                    .int(0),
+                    flags: .pure
                 )
                 """,
             type: .table.root,
-            category: .constants,
+            category: .globals,
             isCommittable: true,
-            isMutable: false,
+            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -161,11 +158,11 @@ final class TableTests: QuelboTests {
                     .room("Rooms.forest3"),
                     .room("Rooms.path"),
                     .room("Rooms.clearing"),
-                    .room("Rooms.forest1")
+                    .room("Rooms.forest1"),
+                    flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -197,11 +194,11 @@ final class TableTests: QuelboTests {
                     "up to your chest.",
                     "up to your neck.",
                     "over your head.",
-                    "high in your lungs."
+                    "high in your lungs.",
+                    flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -234,19 +231,18 @@ final class TableTests: QuelboTests {
                         .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constants.trollMelee)
+                        .table(Globals.trollMelee)
                     ),
                     .table(
                         .object("Objects.thief"),
                         .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constants.thiefMelee)
+                        .table(Globals.thiefMelee)
                     )
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }

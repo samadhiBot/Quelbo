@@ -21,10 +21,11 @@ final class VersionTests: QuelboTests {
 
         let expected = Statement(
             id: "zMachineVersion",
-            code: #"let zMachineVersion: String = "z3""#,
+            code: #"let zMachineVersion = "z3""#,
             type: .string,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -36,10 +37,11 @@ final class VersionTests: QuelboTests {
 
         let expected = Statement(
             id: "zMachineVersion",
-            code: #"let zMachineVersion: String = "z3Time""#,
+            code: #"let zMachineVersion = "z3Time""#,
             type: .string,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
@@ -51,10 +53,11 @@ final class VersionTests: QuelboTests {
 
         let expected = Statement(
             id: "zMachineVersion",
-            code: #"let zMachineVersion: String = "z3""#,
+            code: #"let zMachineVersion = "z3""#,
             type: .string,
             category: .constants,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: false
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))

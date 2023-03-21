@@ -91,35 +91,32 @@ final class VLeapTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `vLeap` (V-LEAP) routine.
-                    func vLeap() -> Bool {
-                        var tx: Object? = nil
-                        var s: Int = 0
+                    func vLeap() throws -> Bool {
+                        var tx: Object?
+                        var s = 0
                         if let Globals.parsedDirectObject {
-                            if Globals.parsedDirectObject.isIn(here) {
+                            if Globals.parsedDirectObject.isIn(Globals.here) {
                                 if Globals.parsedDirectObject.hasFlag(.isActor) {
                                     output("The ")
                                     output(Globals.parsedDirectObject.description)
                                     output(" is too big to jump over.")
                                 } else {
-                                    vSkip()
+                                    try vSkip()
                                 }
                             } else {
                                 output("That would be a good trick.")
                             }
-                        } else if _ = tx.set(to: here.down) {
+                        } else if _ = tx.set(to: Globals.here.down) {
                             s.set(to: tx.propertySize)
                             if .or(
                                 s.equals(2),
-                                .and(
-                                    s.equals(4),
-                                    .isNot(try tx.get(at: 1))
-                                )
+                                .and(s.equals(4), .isNot(try tx.get(at: 1)))
                             ) {
                                 output("This was not a very safe place to try jumping.")
-                                jigsUp(
-                                    desc: pickOne(frob: jumploss)
+                                try jigsUp(
+                                    desc: try pickOne(frob: Globals.jumploss)
                                 )
-                            } else if here.equals(upATree) {
+                            } else if Globals.here.equals(Rooms.upATree) {
                                 output("""
                                     In a feat of unaccustomed daring, you manage to land on your \
                                     feet without killing yourself.
@@ -127,16 +124,17 @@ final class VLeapTests: QuelboTests {
                                 doWalk(dir: down)
                                 return true
                             } else {
-                                vSkip()
+                                try vSkip()
                             }
                         } else {
-                            vSkip()
+                            try vSkip()
                         }
                     }
                     """#,
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

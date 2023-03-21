@@ -71,29 +71,23 @@ final class WhichPrintTests: QuelboTests {
                 id: "thingPrint",
                 code: """
                     /// The `thingPrint` (THING-PRINT) routine.
-                    func thingPrint(
-                        isPrso: Bool,
-                        isThe: Bool = false
-                    ) {
-                        var beg: Table? = nil
-                        var end: Table? = nil
+                    func thingPrint(isPrso: Bool, isThe: Bool = false) throws {
+                        var beg: Table?
+                        var end: Table?
                         if isPrso {
-                            beg.set(to: try pItbl.get(at: pNc1))
-                            end.set(to: try pItbl.get(at: pNc1L))
+                            beg.set(to: try Globals.pItbl.get(at: Constants.pNc1))
+                            end.set(to: try Globals.pItbl.get(at: Constants.pNc1L))
                         } else {
-                            beg.set(to: try pItbl.get(at: pNc2))
-                            end.set(to: try pItbl.get(at: pNc2L))
+                            beg.set(to: try Globals.pItbl.get(at: Constants.pNc2))
+                            end.set(to: try Globals.pItbl.get(at: Constants.pNc2L))
                         }
-                        bufferPrint(
-                            beg: beg,
-                            end: end,
-                            cp: isThe
-                        )
+                        try bufferPrint(beg: beg, end: end, cp: isThe)
                     }
                     """,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -106,31 +100,29 @@ final class WhichPrintTests: QuelboTests {
                 id: "whichPrint",
                 code: """
                     /// The `whichPrint` (WHICH-PRINT) routine.
-                    func whichPrint(
-                        tlen: Int,
-                        len: Int,
-                        tbl: Table
-                    ) {
-                        var obj: Object? = nil
-                        var rlen: Int = 0
-                        var tlen: Int = tlen
-                        var len: Int = len
+                    func whichPrint(tlen: Int, len: Int, tbl: Table) throws {
+                        var obj: Object?
+                        var rlen = 0
+                        var tlen = tlen
+                        var len = len
                         rlen.set(to: len)
                         output("Which ")
-                        if .or(pOflag, pMerged, pAnd) {
+                        if .or(
+                            Globals.pOflag,
+                            Globals.pMerged,
+                            Globals.pAnd
+                        ) {
                             output({
-                                if let pNam {
-                                    return pNam
-                                } else if pAdj {
-                                    return pAdjn
+                                if let Globals.pNam {
+                                    return Globals.pNam
+                                } else if Globals.pAdj {
+                                    return Globals.pAdjn
                                 } else {
                                     return Word.one
                                 }
                             }())
                         } else {
-                            thingPrint(
-                                isPrso: tbl.equals(pPrso)
-                            )
+                            try thingPrint(isPrso: tbl.equals(Globals.pPrso))
                         }
                         output(" do you mean, ")
                         while true {
@@ -156,6 +148,7 @@ final class WhichPrintTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

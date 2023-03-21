@@ -50,8 +50,8 @@ final class ZmemqTests: QuelboTests {
                         tbl: Table,
                         size: Int = -1
                     ) -> Table? {
-                        var cnt: Int = 1
-                        var size: Int = -1
+                        var cnt = 1
+                        var size = -1
                         if .isNot(tbl) {
                             return nil
                         }
@@ -85,12 +85,8 @@ final class ZmemqTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `zmemqb` (ZMEMQB) routine.
-                    func zmemqb(
-                        itm: TableElement,
-                        tbl: Table,
-                        size: Int
-                    ) -> Bool {
-                        var cnt: Int = 0
+                    func zmemqb(itm: TableElement, tbl: Table, size: Int) -> Bool {
+                        var cnt = 0
                         while true {
                             if itm.equals(try tbl.get(at: cnt)) {
                                 return true

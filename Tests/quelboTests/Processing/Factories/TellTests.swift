@@ -42,7 +42,7 @@ final class TellTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
             output("You are in a large cavernous room")
-            output(troll.description)
+            output(Objects.troll.description)
             output(42)
             output("z")
             output(utf8: 65)

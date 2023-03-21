@@ -277,12 +277,8 @@ final class VillainBlowTests: QuelboTests {
                     /// The `thief` (THIEF) object.
                     var thief = Object(
                         id: "thief",
-                        action: robberFunc,
-                        adjectives: [
-                            "shady",
-                            "suspicious",
-                            "seedy",
-                        ],
+                        action: "robberFunc",
+                        adjectives: ["shady", "suspicious", "seedy"],
                         description: "thief",
                         flags: [
                             .isActor,
@@ -291,19 +287,14 @@ final class VillainBlowTests: QuelboTests {
                             .isOpen,
                             .noImplicitTake,
                         ],
-                        location: roundRoom,
+                        location: "roundRoom",
                         longDescription: """
                             There is a suspicious-looking individual, holding a large \
                             bag, leaning against one wall. He is armed with a deadly \
                             stiletto.
                             """,
                         strength: 5,
-                        synonyms: [
-                            "thief",
-                            "robber",
-                            "man",
-                            "person",
-                        ]
+                        synonyms: ["thief", "robber", "man", "person"]
                     )
                     """#,
                 type: .object.tableElement,
@@ -321,7 +312,7 @@ final class VillainBlowTests: QuelboTests {
                 code: """
                     /// The `zprob` (ZPROB) routine.
                     func zprob(base: Int) {
-                        if lucky {
+                        if Globals.lucky {
                             base.isGreaterThan(.random(100))
                         } else {
                             base.isGreaterThan(.random(300))
@@ -344,13 +335,14 @@ final class VillainBlowTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `randomElement` (RANDOM-ELEMENT) routine.
-                    func randomElement(frob: Table) -> Table {
+                    func randomElement(frob: Table) throws -> Table {
                         return try frob.get(at: .random(try frob.get(at: 0)))
                     }
                     """,
                 type: .table.tableElement,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -363,10 +355,7 @@ final class VillainBlowTests: QuelboTests {
                 id: "prob",
                 code: """
                     /// The `prob` (PROB) macro.
-                    func prob(
-                        isBase: Int,
-                        isLoser: Int = 0
-                    ) {
+                    func prob(isBase: Int, isLoser: Int? = nil) {
                         if isLoser.isAssigned {
                             zprob(base: isBase)
                         } else {
@@ -390,25 +379,23 @@ final class VillainBlowTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `fightStrength` (FIGHT-STRENGTH) routine.
-                    func fightStrength(
-                        isAdjust: Bool = true
-                    ) -> Int {
-                        var s: Int = 0
+                    func fightStrength(isAdjust: Bool = true) -> Int {
+                        var s = 0
                         s.set(to: .add(
-                            strengthMin,
+                            Constants.strengthMin,
                             .divide(
-                                score,
+                                Globals.score,
                                 .divide(
-                                    scoreMax,
+                                    Globals.scoreMax,
                                     .subtract(
-                                        strengthMax,
-                                        strengthMin
+                                        Constants.strengthMax,
+                                        Constants.strengthMin
                                     )
                                 )
                             )
                         ))
                         if isAdjust {
-                            .add(s, winner.strength)
+                            .add(s, Globals.winner.strength)
                         } else {
                             return s
                         }
@@ -431,15 +418,19 @@ final class VillainBlowTests: QuelboTests {
                     @discardableResult
                     /// The `findWeapon` (FIND-WEAPON) routine.
                     func findWeapon(o: Object) -> Object? {
-                        var w: Object? = nil
+                        var w: Object?
                         w.set(to: o.firstChild)
                         if .isNot(w) {
                             return nil
                         }
                         while true {
                             if .or(
-                                w.equals(stiletto, axe, sword),
-                                w.equals(knife, rustyKnife)
+                                w.equals(
+                                    Objects.stiletto,
+                                    Objects.axe,
+                                    Objects.sword
+                                ),
+                                w.equals(Objects.knife, Objects.rustyKnife)
                             ) {
                                 return w
                             } else if .isNot(w.set(to: w.nextSibling)) {
@@ -464,22 +455,18 @@ final class VillainBlowTests: QuelboTests {
                 id: "remark",
                 code: #"""
                     /// The `remark` (REMARK) routine.
-                    func remark(
-                        remark: Table,
-                        d: Object,
-                        w: Object
-                    ) {
-                        var len: Int = try remark.get(at: 0)
-                        var cnt: Int = 0
-                        var str: String = ""
+                    func remark(remark: Table, d: Object, w: Object) {
+                        var len = try remark.get(at: 0)
+                        var cnt = 0
+                        var str = ""
                         while true {
                             if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                                 break
                             }
                             str.set(to: try remark.get(at: cnt))
-                            if str.equals(fWep) {
+                            if str.equals(Constants.fWep) {
                                 output(w.description)
-                            } else if str.equals(fDef) {
+                            } else if str.equals(Constants.fDef) {
                                 output(d.description)
                             } else {
                                 output(str)
@@ -505,29 +492,26 @@ final class VillainBlowTests: QuelboTests {
                     @discardableResult
                     /// The `villainStrength` (VILLAIN-STRENGTH) routine.
                     func villainStrength(oo: Table) -> Int {
-                        var villain: Object = try oo.get(at: vVillain)
-                        var od: Int = 0
-                        var tmp: Int = 0
+                        var villain = try oo.get(at: Constants.vVillain)
+                        var od = 0
+                        var tmp = 0
                         od.set(to: villain.strength)
                         if .isNot(od.isLessThan(0)) {
                             if .and(
-                                villain.equals(thief),
-                                thiefEngrossed
+                                villain.equals(Objects.thief),
+                                Globals.thiefEngrossed
                             ) {
                                 if od.isGreaterThan(2) {
                                     od.set(to: 2)
                                 }
-                                thiefEngrossed.set(to: false)
+                                Globals.thiefEngrossed.set(to: false)
                             }
                             if _ = .and(
-                                .object(Globals.parsedIndirectObject),
+                                .object("Globals.parsedIndirectObject"),
                                 Globals.parsedIndirectObject.hasFlag(.isWeapon),
-                                try oo.get(at: vBest).equals(Globals.parsedIndirectObject)
+                                try oo.get(at: Constants.vBest).equals(Globals.parsedIndirectObject)
                             ) {
-                                tmp.set(to: .subtract(
-                                    od,
-                                    try oo.get(at: vBestAdv)
-                                ))
+                                tmp.set(to: .subtract(od, try oo.get(at: Constants.vBestAdv)))
                                 if tmp.isLessThan(1) {
                                     tmp.set(to: 1)
                                 }
@@ -553,31 +537,21 @@ final class VillainBlowTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `winnerResult` (WINNER-RESULT) routine.
-                    func winnerResult(
-                        def: Int,
-                        res: Int,
-                        od: Int
-                    ) -> Int? {
-                        var def: Int = def
+                    func winnerResult(def: Int, res: Int, od: Int) throws -> Int? {
+                        var def = def
                         winner.strength = if def.isZero {
                             return -10000
                         } else {
                             .subtract(def, od)
                         }
                         if .subtract(def, od).isLessThan(0) {
-                            enable(
-                                int: queue(
-                                    rtn: iCure,
-                                    tick: cureWait
-                                )
+                            try enable(
+                                int: try queue(rtn: iCure, tick: Constants.cureWait)
                             )
                         }
                         if .isNot(fightStrength().isGreaterThan(0)) {
-                            winner.strength = .add(
-                                1,
-                                -fightStrength(isAdjust: false)
-                            )
-                            jigsUp(
+                            winner.strength = .add(1, -fightStrength(isAdjust: false))
+                            try jigsUp(
                                 desc: """
                                     It appears that that last blow was too much for you. I'm \
                                     afraid you are dead.
@@ -592,10 +566,10 @@ final class VillainBlowTests: QuelboTests {
                 type: .int.optional.tableElement,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
-
     }
 
     func testVillainBlow() throws {
@@ -606,21 +580,18 @@ final class VillainBlowTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `villainBlow` (VILLAIN-BLOW) routine.
-                    func villainBlow(
-                        oo: Table,
-                        isOut: Bool
-                    ) -> Bool {
-                        var villain: Object = try oo.get(at: vVillain)
-                        var remarks: Table = try oo.get(at: vMsgs)
-                        var dweapon: Object? = nil
-                        var att: Int = 0
-                        var def: Int = 0
-                        var oa: Int = 0
-                        var od: Int = 0
-                        var tbl: Table? = nil
-                        var res: Int? = 0
-                        var nweapon: Object? = nil
-                        winner.isStaggered.set(false)
+                    func villainBlow(oo: Table, isOut: Bool) throws -> Bool {
+                        var villain = try oo.get(at: Constants.vVillain)
+                        var remarks = try oo.get(at: Constants.vMsgs)
+                        var dweapon: Object?
+                        var att = 0
+                        var def = 0
+                        var oa = 0
+                        var od = 0
+                        var tbl: Table?
+                        var res = 0
+                        var nweapon: Object?
+                        Globals.winner.isStaggered.set(false)
                         if villain.hasFlag(.isStaggered) {
                             output("The ")
                             output(villain.description)
@@ -633,20 +604,20 @@ final class VillainBlowTests: QuelboTests {
                             return true
                         }
                         od.set(to: fightStrength(isAdjust: false))
-                        dweapon.set(to: findWeapon(o: winner))
+                        dweapon.set(to: findWeapon(o: Globals.winner))
                         if def.isLessThan(0) {
-                            res.set(to: killed)
+                            res.set(to: Constants.killed)
                         } else {
                             if def.isOne {
                                 if att.isGreaterThan(2) {
                                     att.set(to: 3)
                                 }
-                                tbl.set(to: try def1Res.get(at: .subtract(att, 1)))
+                                tbl.set(to: try Globals.def1Res.get(at: .subtract(att, 1)))
                             } else if def.equals(2) {
                                 if att.isGreaterThan(3) {
                                     att.set(to: 4)
                                 }
-                                tbl.set(to: try def2Res.get(at: .subtract(att, 1)))
+                                tbl.set(to: try Globals.def2Res.get(at: .subtract(att, 1)))
                             } else if def.isGreaterThan(2) {
                                 att.set(to: .subtract(att, def))
                                 if att.isLessThan(-1) {
@@ -654,18 +625,18 @@ final class VillainBlowTests: QuelboTests {
                                 } else if att.isGreaterThan(1) {
                                     att.set(to: 2)
                                 }
-                                tbl.set(to: try def3Res.get(at: .add(att, 2)))
+                                tbl.set(to: try Globals.def3Res.get(at: .add(att, 2)))
                             }
                             res.set(to: try tbl.get(at: .subtract(.random(9), 1)))
                             if isOut {
-                                if res.equals(stagger) {
-                                    res.set(to: hesitate)
+                                if res.equals(Constants.stagger) {
+                                    res.set(to: Constants.hesitate)
                                 } else {
-                                    res.set(to: sittingDuck)
+                                    res.set(to: Constants.sittingDuck)
                                 }
                             }
                             if _ = .and(
-                                res.equals(stagger),
+                                res.equals(Constants.stagger),
                                 dweapon,
                                 prob(
                                     isBase: 25,
@@ -676,65 +647,62 @@ final class VillainBlowTests: QuelboTests {
                                     }()
                                 )
                             ) {
-                                res.set(to: loseWeapon)
+                                res.set(to: Constants.loseWeapon)
                             }
                             remark(
-                                remark: randomElement(
+                                remark: try randomElement(
                                     frob: try remarks.get(at: .subtract(res, 1))
                                 ),
-                                d: winner,
+                                d: Globals.winner,
                                 w: dweapon
                             )
                         }
                         if .or(
-                            res.equals(missed),
-                            res.equals(hesitate)
+                            res.equals(Constants.missed),
+                            res.equals(Constants.hesitate)
                         ) {
                             // do nothing
-                        } else if res.equals(unconscious) {
+                        } else if res.equals(Constants.unconscious) {
                             // do nothing
                         } else if .or(
-                            res.equals(killed),
-                            res.equals(sittingDuck)
+                            res.equals(Constants.killed),
+                            res.equals(Constants.sittingDuck)
                         ) {
                             def.set(to: 0)
-                        } else if res.equals(lightWound) {
+                        } else if res.equals(Constants.lightWound) {
                             def.set(to: .subtract(def, 1))
                             if def.isLessThan(0) {
                                 def.set(to: 0)
                             }
-                            if loadAllowed.isGreaterThan(50) {
-                                loadAllowed.set(to: .subtract(loadAllowed, 10))
+                            if Globals.loadAllowed.isGreaterThan(50) {
+                                Globals.loadAllowed.set(to: .subtract(Globals.loadAllowed, 10))
                             }
-                        } else if res.equals(seriousWound) {
+                        } else if res.equals(Constants.seriousWound) {
                             def.set(to: .subtract(def, 2))
                             if def.isLessThan(0) {
                                 def.set(to: 0)
                             }
-                            if loadAllowed.isGreaterThan(50) {
-                                loadAllowed.set(to: .subtract(loadAllowed, 20))
+                            if Globals.loadAllowed.isGreaterThan(50) {
+                                Globals.loadAllowed.set(to: .subtract(Globals.loadAllowed, 20))
                             }
-                        } else if res.equals(stagger) {
-                            winner.isStaggered.set(true)
+                        } else if res.equals(Constants.stagger) {
+                            Globals.winner.isStaggered.set(true)
                         } else {
                             // <AND <EQUAL? .RES ,LOSE-WEAPON> .DWEAPON>
-                            dweapon.move(to: here)
-                            if _ = nweapon.set(to: findWeapon(o: winner)) {
+                            dweapon.move(to: Globals.here)
+                            if _ = nweapon.set(to: findWeapon(o: Globals.winner)) {
                                 output("Fortunately, you still have a ")
                                 output(nweapon.description)
                                 output(".")
                             }
                         }
-                        winnerResult(
-                            def: def,
-                            res: res,
-                            od: od
-                        )
+                        try winnerResult(def: def, res: res, od: od)
                     }
                     """,
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

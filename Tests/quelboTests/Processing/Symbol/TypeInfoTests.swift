@@ -54,7 +54,7 @@ final class TypeInfoTests: QuelboTests {
             TypeInfo.someTableElement,
             TypeInfo(
                 dataType: .tableElement,
-                confidence: .limited,
+                confidence: .assured,
                 isArray: nil,
                 isOptional: nil,
                 isProperty: nil,
@@ -66,7 +66,7 @@ final class TypeInfoTests: QuelboTests {
             TypeInfo.someTableElement.array,
             TypeInfo(
                 dataType: .tableElement,
-                confidence: .limited,
+                confidence: .assured,
                 isArray: true,
                 isOptional: nil,
                 isProperty: nil,
