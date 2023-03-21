@@ -167,7 +167,7 @@ extension Statement {
 
     func assertHasMutability(_ assertedMutability: Bool) throws {
         if assertedMutability == isMutable { return }
-        guard isMutable == nil || assertedMutability == false else {
+        guard isMutable == nil || assertedMutability == true else {
             throw Symbol.AssertionError.hasMutabilityAssertionFailed(
                 for: id ?? code,
                 asserted: assertedMutability,

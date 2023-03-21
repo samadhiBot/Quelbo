@@ -84,7 +84,7 @@ extension Factories {
                         }
                         return " = \(value.code)"
                     }
-                    let declare = variable.isMutable != false ? "var" : "let"
+                    let declare = statement.isMutable != false ? "var" : "let"
 
                     return "\(declare) \(variable.handle)\(assignment)"
                 },

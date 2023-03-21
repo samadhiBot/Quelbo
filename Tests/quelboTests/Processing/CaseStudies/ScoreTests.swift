@@ -24,10 +24,11 @@ final class ScoreTests: QuelboTests {
             Game.globals.find("score"),
             Statement(
                 id: "score",
-                code: "var score: Int = 0",
+                code: "var score = 0",
                 type: .int,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
 
@@ -36,10 +37,7 @@ final class ScoreTests: QuelboTests {
             Statement(
                 id: "score",
                 code: """
-                    Syntax(
-                        verb: "score",
-                        action: "vScore"
-                    )
+                    Syntax(verb: "score", action: "vScore")
                     """,
                 type: .void,
                 category: .syntax,
@@ -62,10 +60,11 @@ final class ScoreTests: QuelboTests {
             Game.globals.find("score"),
             Statement(
                 id: "score",
-                code: "var score: Int = 0",
+                code: "var score = 0",
                 type: .int,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
 
@@ -74,10 +73,7 @@ final class ScoreTests: QuelboTests {
             Statement(
                 id: "score",
                 code: """
-                    Syntax(
-                        verb: "score",
-                        action: "vScore"
-                    )
+                    Syntax(verb: "score", action: "vScore")
                     """,
                 type: .void,
                 category: .syntax,
@@ -105,35 +101,35 @@ final class ScoreTests: QuelboTests {
                     /// The `vScore` (V-SCORE) routine.
                     func vScore(isAsk: Bool = true) -> Int {
                         output("Your score is ")
-                        output(score)
+                        output(Globals.score)
                         output(" (total of 350 points), in ")
-                        output(moves)
-                        if moves.isOne {
+                        output(Globals.moves)
+                        if Globals.moves.isOne {
                             output(" move.")
                         } else {
                             output(" moves.")
                         }
                         output("\n")
                         output("This gives you the rank of ")
-                        if score.equals(350) {
+                        if Globals.score.equals(350) {
                             output("Master Adventurer")
-                        } else if score.isGreaterThan(330) {
+                        } else if Globals.score.isGreaterThan(330) {
                             output("Wizard")
-                        } else if score.isGreaterThan(300) {
+                        } else if Globals.score.isGreaterThan(300) {
                             output("Master")
-                        } else if score.isGreaterThan(200) {
+                        } else if Globals.score.isGreaterThan(200) {
                             output("Adventurer")
-                        } else if score.isGreaterThan(100) {
+                        } else if Globals.score.isGreaterThan(100) {
                             output("Junior Adventurer")
-                        } else if score.isGreaterThan(50) {
+                        } else if Globals.score.isGreaterThan(50) {
                             output("Novice Adventurer")
-                        } else if score.isGreaterThan(25) {
+                        } else if Globals.score.isGreaterThan(25) {
                             output("Amateur Adventurer")
                         } else {
                             output("Beginner")
                         }
                         output(".")
-                        return score
+                        return Globals.score
                     }
                     """#,
                 type: .int,

@@ -76,18 +76,31 @@ final class SetGlobalTests: QuelboTests {
     func testReassignConstantToGlobal() throws {
         process("<CONSTANT C-ENABLED? 0>")
 
-        let symbol = process("<SETG C-ENABLED? 42>", type: .zCode)
-
-        XCTAssertNoDifference(symbol, .statement(
-            code: "Constants.isCEnabled.set(to: 42)",
-            type: .int
-        ))
-
         XCTAssertNoDifference(
-            Game.globals.find("isCEnabled"),
+            try Game.find("isCEnabled"),
             Statement(
                 id: "isCEnabled",
-                code: "let isCEnabled: Int = 0",
+                code: "let isCEnabled = 0",
+                type: .integerZero,
+                category: .constants,
+                isCommittable: true,
+                isMutable: false
+            )
+        )
+
+        XCTAssertNoDifference(
+            process("<SETG C-ENABLED? 42>", type: .zCode),
+            .statement(
+                code: "Globals.isCEnabled.set(to: 42)",
+                type: .int
+            )
+        )
+
+        XCTAssertNoDifference(
+            try Game.find("isCEnabled"),
+            Statement(
+                id: "isCEnabled",
+                code: "var isCEnabled = 0",
                 type: .int,
                 category: .globals,
                 isCommittable: true,

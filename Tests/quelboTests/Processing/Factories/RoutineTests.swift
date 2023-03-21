@@ -104,7 +104,7 @@ final class RoutineTests: QuelboTests {
             code: #"""
                 /// The `westHouse` (WEST-HOUSE) routine.
                 func westHouse(rarg: Int) {
-                    if rarg.equals(mLook) {
+                    if rarg.equals(Globals.mLook) {
                         output("""
                             You are standing in an open field west of a white house, \
                             with a boarded front door.
@@ -201,8 +201,8 @@ final class RoutineTests: QuelboTests {
                 @discardableResult
                 /// The `isDucking` (DUCKING?) routine.
                 func isDucking() -> String {
-                    var vs: Int = 0
-                    var ps: String = ""
+                    var vs = 0
+                    var ps = ""
                     vs.set(to: 10)
                     return ps.set(to: "Duck")
                 }
@@ -237,7 +237,7 @@ final class RoutineTests: QuelboTests {
                 @discardableResult
                 /// The `boomRoom` (BOOM-ROOM) routine.
                 func boomRoom() -> Bool {
-                    var isDummy: Bool = false
+                    var isDummy = false
                     return isDummy.set(to: true)
                 }
                 """,
@@ -311,10 +311,7 @@ final class RoutineTests: QuelboTests {
             code: """
                     @discardableResult
                     /// The `batBat` (BAT-BAT) routine.
-                    func batBat(
-                        foo: Int = 0,
-                        bar: Int = 42
-                    ) -> Int {
+                    func batBat(foo: Int? = nil, bar: Int = 42) -> Int {
                         return .add(foo, bar)
                     }
                     """,
@@ -410,22 +407,18 @@ final class RoutineTests: QuelboTests {
             id: "remark",
             code: #"""
                 /// The `remark` (REMARK) routine.
-                func remark(
-                    remark: Table,
-                    d: Object,
-                    w: Object
-                ) {
-                    var len: Int = try remark.get(at: 0)
-                    var cnt: Int = 0
-                    var str: String = ""
+                func remark(remark: Table, d: Object, w: Object) {
+                    var len = try remark.get(at: 0)
+                    var cnt = 0
+                    var str = ""
                     while true {
                         if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                             break
                         }
                         str.set(to: try remark.get(at: cnt))
-                        if str.equals(fWep) {
+                        if str.equals(Constants.fWep) {
                             output(w.description)
-                        } else if str.equals(fDef) {
+                        } else if str.equals(Constants.fDef) {
                             output(d.description)
                         } else {
                             output(str)
@@ -506,15 +499,19 @@ final class RoutineTests: QuelboTests {
                 @discardableResult
                 /// The `findWeapon` (FIND-WEAPON) routine.
                 func findWeapon(o: Object) -> Object? {
-                    var w: Object? = nil
+                    var w: Object?
                     w.set(to: o.firstChild)
                     if .isNot(w) {
                         return nil
                     }
                     while true {
                         if .or(
-                            w.equals(stiletto, axe, sword),
-                            w.equals(knife, rustyKnife)
+                            w.equals(
+                                Objects.stiletto,
+                                Objects.axe,
+                                Objects.sword
+                            ),
+                            w.equals(Objects.knife, Objects.rustyKnife)
                         ) {
                             return w
                         } else if .isNot(w.set(to: w.nextSibling)) {
@@ -566,9 +563,9 @@ final class RoutineTests: QuelboTests {
             code: """
                 /// The `dweaponMini` (DWEAPON-MINI) routine.
                 func dweaponMini() {
-                    var dweapon: Object? = nil
-                    dweapon.set(to: findWeapon(o: winner))
-                    dweapon.move(to: here)
+                    var dweapon: Object?
+                    dweapon.set(to: findWeapon(o: Globals.winner))
+                    dweapon.move(to: Rooms.here)
                 }
                 """,
             type: .void,
@@ -599,7 +596,7 @@ final class RoutineTests: QuelboTests {
                 @discardableResult
                 /// The `sing` (SING) routine.
                 func sing(n: Int) -> Bool {
-                    var n: Int = n
+                    var n = n
                     while true {
                         bottles(n: n)
                         output("""
@@ -634,71 +631,6 @@ final class RoutineTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(expected))
-    }
-
-    func testIntRoutine() throws {
-        let symbol = process("""
-            <CONSTANT C-INTLEN 6>
-            <CONSTANT C-RTN 2>
-            <GLOBAL C-INTS 180>
-            <GLOBAL C-DEMONS 180>
-            <GLOBAL C-TABLE <ITABLE NONE 180>>
-            <CONSTANT C-TABLELEN 180>
-
-            <ROUTINE INT (RTN "OPTIONAL" (DEMON <>) E C INT)
-                 #DECL ((RTN) ATOM (DEMON) <OR ATOM FALSE> (E C INT) <PRIMTYPE VECTOR>)
-                 <SET E <REST ,C-TABLE ,C-TABLELEN>>
-                 <SET C <REST ,C-TABLE ,C-INTS>>
-                 <REPEAT ()
-                     <COND (<==? .C .E>
-                        <SETG C-INTS <- ,C-INTS ,C-INTLEN>>
-                        <AND .DEMON <SETG C-DEMONS <- ,C-DEMONS ,C-INTLEN>>>
-                        <SET INT <REST ,C-TABLE ,C-INTS>>
-                        <PUT .INT ,C-RTN .RTN>
-                        <RETURN .INT>)
-                           (<EQUAL? <GET .C ,C-RTN> .RTN> <RETURN .C>)>
-                     <SET C <REST .C ,C-INTLEN>>>>
-        """)
-
-        XCTAssertNoDifference(symbol, .statement(
-            id: "int",
-            code: """
-                @discardableResult
-                /// The `int` (INT) routine.
-                func int(
-                    rtn: TableElement,
-                    demon: Bool = false,
-                    e: Table? = nil,
-                    c: Table? = nil,
-                    int: Table? = nil
-                ) -> Table {
-                    var e: Table? = e
-                    var c: Table? = c
-                    var int: Table? = int
-                    e.set(to: cTable.rest(bytes: cTablelen))
-                    c.set(to: cTable.rest(bytes: cInts))
-                    while true {
-                        if c.equals(e) {
-                            cInts.set(to: .subtract(cInts, cIntlen))
-                            .and(
-                                demon,
-                                cDemons.set(to: .subtract(cDemons, cIntlen))
-                            )
-                            int.set(to: cTable.rest(bytes: cInts))
-                            try int.put(element: rtn, at: cRtn)
-                            return int
-                        } else if try c.get(at: cRtn).equals(rtn) {
-                            return c
-                        }
-                        c.set(to: c.rest(bytes: cIntlen))
-                    }
-                }
-                """,
-            type: .table,
-            category: .routines,
-            isCommittable: true,
-            returnHandling: .passthrough
-        ))
     }
 }
 

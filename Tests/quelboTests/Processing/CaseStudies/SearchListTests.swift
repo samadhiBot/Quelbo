@@ -82,31 +82,25 @@ final class SearchListTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `isThisIt` (THIS-IT?) routine.
-                    func isThisIt(
-                        obj: Object,
-                        tbl: Table
-                    ) -> Bool {
-                        var syns: [String] = []
+                    func isThisIt(obj: Object, tbl: Table) -> Bool {
+                        var syns = [[String]]()
                         if obj.hasFlag(.isInvisible) {
                             return false
                         } else if .and(
-                            pNam,
+                            Globals.pNam,
                             .isNot(zmemq(
-                                itm: pNam,
+                                itm: Globals.pNam,
                                 tbl: syns.set(to: obj.synonyms),
-                                size: .subtract(
-                                    .divide(syns.propertySize, 2),
-                                    1
-                                )
+                                size: .subtract(.divide(syns.propertySize, 2), 1)
                             ))
                         ) {
                             return false
                         } else if .and(
-                            pAdj,
+                            Globals.pAdj,
                             .or(
                                 .isNot(syns.set(to: obj.adjectives)),
                                 .isNot(zmemqb(
-                                    itm: pAdj,
+                                    itm: Globals.pAdj,
                                     tbl: syns,
                                     size: .subtract(syns.propertySize, 1)
                                 ))
@@ -114,7 +108,7 @@ final class SearchListTests: QuelboTests {
                         ) {
                             return false
                         } else if .and(
-                            .isNot(pGwimBit.isFalse),
+                            .isNot(Globals.pGwimBit.isFalse),
                             .isNot(obj.hasFlag(.pGwimBit))
                         ) {
                             return false
@@ -137,19 +131,23 @@ final class SearchListTests: QuelboTests {
                 id: "objFound",
                 code: """
                     /// The `objFound` (OBJ-FOUND) routine.
-                    func objFound(
-                        obj: Object,
-                        tbl: Table
-                    ) {
-                        var ptr: Int = 0
-                        ptr.set(to: try tbl.get(at: pMatchlen))
-                        try tbl.put(element: obj, at: .add(ptr, 1))
-                        try tbl.put(element: .add(ptr, 1), at: pMatchlen)
+                    func objFound(obj: Object, tbl: Table) throws {
+                        var ptr = 0
+                        ptr.set(to: try tbl.get(at: Globals.pMatchlen))
+                        try tbl.put(
+                            element: obj,
+                            at: .add(ptr, 1)
+                        )
+                        try tbl.put(
+                            element: .add(ptr, 1),
+                            at: Globals.pMatchlen
+                        )
                     }
                     """,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -162,26 +160,22 @@ final class SearchListTests: QuelboTests {
                 id: "searchList",
                 code: """
                     /// The `searchList` (SEARCH-LIST) routine.
-                    func searchList(
-                        obj: Object,
-                        tbl: Table,
-                        lvl: Int
-                    ) {
+                    func searchList(obj: Object, tbl: Table, lvl: Int) throws {
                         // var fls: <Unknown>
-                        var nobj: Object? = nil
-                        var obj: Object = obj
+                        var nobj: Object?
+                        var obj = obj
                         if _ = obj.set(to: obj.firstChild) {
                             while true {
                                 if _ = .and(
-                                    .isNot(lvl.equals(pSrcbot)),
+                                    .isNot(lvl.equals(Constants.pSrcbot)),
                                     obj.synonyms,
                                     isThisIt(obj: obj, tbl: tbl)
                                 ) {
-                                    objFound(obj: obj, tbl: tbl)
+                                    try objFound(obj: obj, tbl: tbl)
                                 }
                                 if .and(
                                     .or(
-                                        .isNot(lvl.equals(pSrctop)),
+                                        .isNot(lvl.equals(Constants.pSrctop)),
                                         obj.hasFlag(.isSearchable),
                                         obj.hasFlag(.isSurface)
                                     ),
@@ -191,16 +185,16 @@ final class SearchListTests: QuelboTests {
                                         obj.hasFlag(.isTransparent)
                                     )
                                 ) {
-                                    fls.set(to: searchList(
+                                    fls.set(to: try searchList(
                                         obj: obj,
                                         tbl: tbl,
                                         lvl: {
                                             if obj.hasFlag(.isSurface) {
-                                                return pSrcall
+                                                return Constants.pSrcall
                                             } else if obj.hasFlag(.isSearchable) {
-                                                return pSrcall
+                                                return Constants.pSrcall
                                             } else {
-                                                return pSrctop
+                                                return Constants.pSrctop
                                             }
                                         }()
                                     ))
@@ -217,6 +211,7 @@ final class SearchListTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
