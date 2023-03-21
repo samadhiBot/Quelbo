@@ -143,7 +143,7 @@ final class MoveDirectionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                .west: .conditional("kitchen", if: "Objects.kitchenWindow.isOpen")
+                .west: .conditional("kitchen", if: "kitchenWindow.isOpen")
                 """,
             type: .object
         ))
@@ -165,7 +165,7 @@ final class MoveDirectionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 .west: .conditionalElse("kitchen",
-                    if: "Objects.kitchenWindow.isOpen",
+                    if: "kitchenWindow.isOpen",
                     else: "The kitchen window is closed."
                 )
                 """,

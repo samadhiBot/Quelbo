@@ -37,11 +37,11 @@ final class DescribeObjectsTests: QuelboTests {
                 id: "describeObjects",
                 code: """
                     /// The `describeObjects` (DESCRIBE-OBJECTS) routine.
-                    func describeObjects(isV: Bool = false) {
+                    func describeObjects(isV: Bool = false) throws {
                         var isV = false
                         if Globals.lit {
                             if _ = Globals.here.firstChild {
-                                printCont(
+                                try printCont(
                                     obj: Globals.here,
                                     isV: isV.set(to: .or(isV, Globals.verbose)),
                                     level: -1
@@ -55,6 +55,7 @@ final class DescribeObjectsTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

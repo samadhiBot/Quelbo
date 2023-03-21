@@ -30,7 +30,6 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let symbols = symbols
             let typeInfo: TypeInfo = {
                 let types = symbols.nonCommentSymbols.map(\.type).unique
                 switch types.count {
@@ -41,8 +40,8 @@ extension Factories {
             }()
 
             return .statement(
-                code: { _ in
-                    "[\(symbols.handles(.commaSeparated))]"
+                code: {
+                    "[\($0.payload.symbols.handles(.commaSeparated))]"
                 },
                 type: typeInfo,
                 payload: .init(

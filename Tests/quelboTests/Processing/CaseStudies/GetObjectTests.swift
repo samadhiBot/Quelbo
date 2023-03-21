@@ -191,7 +191,7 @@ final class GetObjectTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `getObject` (GET-OBJECT) routine.
-                    func getObject(tbl: Table, vrb: Bool = true) -> Bool {
+                    func getObject(tbl: Table, vrb: Bool = true) throws -> Bool {
                         // var bits: <Unknown>
                         var len = 0
                         var xbits = 0
@@ -208,7 +208,7 @@ final class GetObjectTests: QuelboTests {
                             .isNot(Globals.pNam),
                             .object("Globals.pAdj")
                         ) {
-                            if isWt(
+                            if try isWt(
                                 ptr: Globals.pAdjn,
                                 bit: PartsOfSpeech.object,
                                 b1: PartsOfSpeech.objectFirst
@@ -239,18 +239,18 @@ final class GetObjectTests: QuelboTests {
                         Globals.pTable.set(to: tbl)
                         do {
                             if gcheck {
-                                globalCheck(tbl: tbl)
+                                try globalCheck(tbl: tbl)
                             } else {
                                 if Globals.lit {
                                     Globals.player.isTransparent.set(false)
-                                    doSl(
+                                    try doSl(
                                         obj: Globals.here,
                                         bit1: Constants.sog,
                                         bit2: Constants.sir
                                     )
                                     Globals.player.isTransparent.set(true)
                                 }
-                                doSl(
+                                try doSl(
                                     obj: Globals.player,
                                     bit1: Constants.sh,
                                     bit2: Constants.sc
@@ -299,7 +299,7 @@ final class GetObjectTests: QuelboTests {
                                         cantOrphan()
                                         return false
                                     } else if _ = .and(vrb, Globals.pNam) {
-                                        whichPrint(tlen: tlen, len: len, tbl: tbl)
+                                        try whichPrint(tlen: tlen, len: len, tbl: tbl)
                                         pAclause.set(to: {
                                             if tbl.equals(Globals.pPrso) {
                                                 return Constants.pNc1
@@ -309,7 +309,7 @@ final class GetObjectTests: QuelboTests {
                                         }())
                                         pAadj.set(to: Globals.pAdj)
                                         Globals.pAnam.set(to: Globals.pNam)
-                                        orphan(d1: nil, d2: nil)
+                                        try orphan(d1: nil, d2: nil)
                                         Globals.pOflag.set(to: true)
                                     } else if vrb {
                                         output("There seems to be a noun missing in that sentence!")
@@ -325,7 +325,7 @@ final class GetObjectTests: QuelboTests {
                                     Globals.pSlocbits.set(to: xbits)
                                     if .or(Globals.lit, isParsedVerb(.tell)) {
                                         // "Changed 6/10/83 - MARC"
-                                        objFound(obj: Objects.notHereObject, tbl: tbl)
+                                        try objFound(obj: Objects.notHereObject, tbl: tbl)
                                         pXnam.set(to: Globals.pNam)
                                         pXadj.set(to: Globals.pAdj)
                                         pXadjn.set(to: Globals.pAdjn)
@@ -354,6 +354,7 @@ final class GetObjectTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

@@ -84,11 +84,7 @@ final class PutRestTests: QuelboTests {
                     .string("A"),
                     .int(3),
                     .string("C"),
-                ].putRest([
-                    .int(2),
-                    .string("B"),
-                    .int(4),
-                ])
+                ].putRest([.int(2), .string("B"), .int(4)])
                 """,
             type: .someTableElement.array
         ))

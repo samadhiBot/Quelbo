@@ -35,10 +35,7 @@ final class MungRoomTests: QuelboTests {
                 id: "mungRoom",
                 code: """
                     /// The `mungRoom` (MUNG-ROOM) routine.
-                    func mungRoom(
-                        rm: Object,
-                        str: String
-                    ) {
+                    func mungRoom(rm: Object, str: String) {
                         rm.isDestroyed.set(true)
                         rm.longDescription = str
                     }
@@ -73,11 +70,8 @@ final class MungRoomTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `mungRoom` (MUNG-ROOM) routine.
-                    func mungRoom(
-                        rm: Object,
-                        str: String
-                    ) -> Bool {
-                        if rm.equals(insideBarrow) {
+                    func mungRoom(rm: Object, str: String) -> Bool {
+                        if rm.equals(Rooms.insideBarrow) {
                             return false
                         }
                         rm.isDestroyed.set(true)

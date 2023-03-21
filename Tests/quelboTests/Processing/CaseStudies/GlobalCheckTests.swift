@@ -106,7 +106,7 @@ final class GlobalCheckTests: QuelboTests {
                 id: "globalCheck",
                 code: """
                     /// The `globalCheck` (GLOBAL-CHECK) routine.
-                    func globalCheck(tbl: Table) {
+                    func globalCheck(tbl: Table) throws {
                         var len: TableElement?
                         var rmg = [[Object]]()
                         var rmgl = 0
@@ -123,7 +123,7 @@ final class GlobalCheckTests: QuelboTests {
                                     obj: obj.set(to: try rmg.get(at: cnt)),
                                     tbl: tbl
                                 ) {
-                                    objFound(obj: obj, tbl: tbl)
+                                    try objFound(obj: obj, tbl: tbl)
                                 }
                                 if cnt.increment().isGreaterThan(rmgl) {
                                     break
@@ -145,7 +145,7 @@ final class GlobalCheckTests: QuelboTests {
                                         element: try Globals.pNam.get(at: 1),
                                         at: 1
                                     )
-                                    objFound(obj: Objects.pseudoObject, tbl: tbl)
+                                    try objFound(obj: Objects.pseudoObject, tbl: tbl)
                                     break
                                 } else if cnt.increment().isGreaterThan(rmgl) {
                                     break
@@ -155,7 +155,7 @@ final class GlobalCheckTests: QuelboTests {
                         if try tbl.get(at: Globals.pMatchlen).equals(len) {
                             Globals.pSlocbits.set(to: -1)
                             Globals.pTable.set(to: tbl)
-                            doSl(
+                            try doSl(
                                 obj: Objects.globalObjects,
                                 bit1: 1,
                                 bit2: 1
@@ -165,7 +165,7 @@ final class GlobalCheckTests: QuelboTests {
                                 try tbl.get(at: Globals.pMatchlen).isZero,
                                 Globals.parsedVerb.equals(Verb.lookInside, Verb.search, Verb.examine)
                             ) {
-                                doSl(obj: Objects.rooms, bit1: 1, bit2: 1)
+                                try doSl(obj: Objects.rooms, bit1: 1, bit2: 1)
                             }
                         }
                     }
@@ -173,6 +173,7 @@ final class GlobalCheckTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

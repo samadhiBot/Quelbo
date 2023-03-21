@@ -56,7 +56,7 @@ final class IntTests: QuelboTests {
                         e: Table? = nil,
                         c: Table? = nil,
                         int: Table? = nil
-                    ) -> Table {
+                    ) throws -> Table {
                         var e: Table? = e
                         var c: Table? = c
                         var int: Table? = int
@@ -85,6 +85,7 @@ final class IntTests: QuelboTests {
                 type: .table.root,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

@@ -40,7 +40,8 @@ extension Factories {
                 code: { _ in
                     "output(\(string.handle))"
                 },
-                type: .void
+                type: .void,
+                payload: .init(symbols: symbols)
             )
         }
     }

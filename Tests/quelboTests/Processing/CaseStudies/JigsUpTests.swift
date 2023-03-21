@@ -332,7 +332,7 @@ final class JigsUpTests: QuelboTests {
                         }
                         sword.takeValue = 0
                         n.set(to: Globals.winner.firstChild)
-                        l.set(to: try Constants.aboveGround.get(at: 0))
+                        l.set(to: try Globals.aboveGround.get(at: 0))
                         while true {
                             f.set(to: n)
                             if .isNot(f) {
@@ -356,7 +356,7 @@ final class JigsUpTests: QuelboTests {
                                     }
                                 }
                             } else {
-                                f.move(to: try Constants.aboveGround.get(at: .random(l)))
+                                f.move(to: try Globals.aboveGround.get(at: .random(l)))
                             }
                         }
                     }
@@ -377,15 +377,15 @@ final class JigsUpTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `killInterrupts` (KILL-INTERRUPTS) routine.
-                    func killInterrupts() -> Bool {
-                        disable(int: int(rtn: iXb))
-                        disable(int: int(rtn: iXc))
-                        disable(int: int(rtn: iCyclops))
-                        disable(int: int(rtn: iLantern))
-                        disable(int: int(rtn: iCandles))
-                        disable(int: int(rtn: iSword))
-                        disable(int: int(rtn: iForestRoom))
-                        disable(int: int(rtn: iMatch))
+                    func killInterrupts() throws -> Bool {
+                        try disable(int: try int(rtn: iXb))
+                        try disable(int: try int(rtn: iXc))
+                        try disable(int: try int(rtn: iCyclops))
+                        try disable(int: try int(rtn: iLantern))
+                        try disable(int: try int(rtn: iCandles))
+                        try disable(int: try int(rtn: iSword))
+                        try disable(int: try int(rtn: iForestRoom))
+                        try disable(int: try int(rtn: iMatch))
                         Objects.match.isOn.set(false)
                         return true
                     }
@@ -393,6 +393,7 @@ final class JigsUpTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -489,7 +490,7 @@ final class JigsUpTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `goto` (GOTO) routine.
-                    func goto(rm: Object, isV: Bool = true) -> Bool {
+                    func goto(rm: Object, isV: Bool = true) throws -> Bool {
                         var lb = rm.hasFlag(.isDryLand)
                         var wloc = Globals.winner.parent
                         var av = false
@@ -535,7 +536,7 @@ final class JigsUpTests: QuelboTests {
                                 winner.move(to: rm)
                             }
                             Globals.here.set(to: rm)
-                            Globals.lit.set(to: isLit(rm: Globals.here))
+                            Globals.lit.set(to: try isLit(rm: Globals.here))
                             if .and(
                                 .isNot(olit),
                                 .isNot(Globals.lit),
@@ -555,7 +556,7 @@ final class JigsUpTests: QuelboTests {
                                     } else {
                                         output("room")
                                     }
-                                    jigsUp(desc: " and devoured you!")
+                                    try jigsUp(desc: " and devoured you!")
                                     return true
                                 }
                             }
@@ -586,7 +587,7 @@ final class JigsUpTests: QuelboTests {
                                 isV,
                                 Globals.winner.equals(Objects.adventurer)
                             ) {
-                                vFirstLook()
+                                try vFirstLook()
                             }
                             return true
                         }
@@ -595,6 +596,7 @@ final class JigsUpTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -607,7 +609,7 @@ final class JigsUpTests: QuelboTests {
                 id: "jigsUp",
                 code: #"""
                     /// The `jigsUp` (JIGS-UP) routine.
-                    func jigsUp(desc: String, isPlayer: Bool = false) {
+                    func jigsUp(desc: String, isPlayer: Bool = false) throws {
                         Globals.winner.set(to: Objects.adventurer)
                         if Globals.dead {
                             output("""
@@ -657,19 +659,19 @@ final class JigsUpTests: QuelboTests {
                                     // <SETG GWIM-DISABLE T>
                                     Globals.alwaysLit.set(to: true)
                                     winner.action = deadFunc
-                                    goto(rm: Rooms.entranceToHades)
+                                    try goto(rm: Rooms.entranceToHades)
                                 } else {
                                     output("""
                                         Now, let's take a look here... Well, you probably deserve \
                                         another chance. I can't quite fix you up completely, but you \
                                         can't have everything.
                                         """)
-                                    goto(rm: Rooms.forest1)
+                                    try goto(rm: Rooms.forest1)
                                 }
                                 Objects.trapDoor.hasBeenTouched.set(false)
                                 pCont.set(to: false)
                                 randomizeObjects()
-                                killInterrupts()
+                                try killInterrupts()
                                 returnFatal()
                             }
                         }
@@ -678,6 +680,7 @@ final class JigsUpTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

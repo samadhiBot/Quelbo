@@ -77,7 +77,8 @@ extension Factories {
                 code: { _ in
                     prints.codeValues(.singleLineBreak)
                 },
-                type: .void
+                type: .void,
+                payload: .init(symbols: symbols)
             )
         }
     }

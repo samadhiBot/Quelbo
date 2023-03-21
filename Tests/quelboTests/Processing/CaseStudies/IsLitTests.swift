@@ -62,7 +62,7 @@ final class IsLitTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `isLit` (LIT?) routine.
-                    func isLit(rm: Object, rmBit: Bool = true) -> Bool {
+                    func isLit(rm: Object, rmBit: Bool = true) throws -> Bool {
                         var ohere: Object?
                         var lit = false
                         if .and(
@@ -84,15 +84,15 @@ final class IsLitTests: QuelboTests {
                             Globals.pTable.set(to: Globals.pMerge)
                             Globals.pSlocbits.set(to: -1)
                             if ohere.equals(rm) {
-                                doSl(obj: Globals.winner, bit1: 1, bit2: 1)
+                                try doSl(obj: Globals.winner, bit1: 1, bit2: 1)
                                 if .and(
                                     .isNot(Globals.winner.equals(Globals.player)),
                                     Globals.player.isIn(rm)
                                 ) {
-                                    doSl(obj: Globals.player, bit1: 1, bit2: 1)
+                                    try doSl(obj: Globals.player, bit1: 1, bit2: 1)
                                 }
                             }
-                            doSl(obj: rm, bit1: 1, bit2: 1)
+                            try doSl(obj: rm, bit1: 1, bit2: 1)
                             if try Globals.pTable.get(at: Globals.pMatchlen).isGreaterThan(0) {
                                 lit.set(to: true)
                             }
@@ -105,6 +105,7 @@ final class IsLitTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

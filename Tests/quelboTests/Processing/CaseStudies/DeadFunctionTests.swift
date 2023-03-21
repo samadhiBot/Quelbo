@@ -111,7 +111,7 @@ final class DeadFunctionTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `deadFunc` (DEAD-FUNCTION) routine.
-                    func deadFunc(foo: Bool = false) -> Bool {
+                    func deadFunc(foo: Bool = false) throws -> Bool {
                         // var m: <Unknown>
                         if isParsedVerb(.walk) {
                             if .and(
@@ -192,7 +192,7 @@ final class DeadFunctionTests: QuelboTests {
                                     if from a long sleep, deep in the woods. In the distance you \
                                     can faintly hear a songbird and the sounds of the forest.
                                     """)
-                                goto(rm: Rooms.forest1)
+                                try goto(rm: Rooms.forest1)
                             } else {
                                 output("Your prayers are not heard.")
                             }
@@ -206,6 +206,7 @@ final class DeadFunctionTests: QuelboTests {
                 type: .booleanFalse,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

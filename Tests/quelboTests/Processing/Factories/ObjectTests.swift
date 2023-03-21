@@ -35,15 +35,11 @@ final class ObjectTests: QuelboTests {
                 /// The `whiteHouse` (WHITE-HOUSE) object.
                 var whiteHouse = Object(
                     id: "whiteHouse",
-                    action: whiteHouseFunc,
-                    adjectives: [
-                        "white",
-                        "beauti",
-                        "coloni",
-                    ],
+                    action: "whiteHouseFunc",
+                    adjectives: ["white", "beauti", "coloni"],
                     description: "white house",
                     flags: [.omitDescription],
-                    location: localGlobals,
+                    location: "Objects.localGlobals",
                     synonyms: ["house"]
                 )
                 """,
@@ -74,19 +70,10 @@ final class ObjectTests: QuelboTests {
                 /// The `brokenEgg` (BROKEN-EGG) object.
                 var brokenEgg = Object(
                     id: "brokenEgg",
-                    adjectives: [
-                        "broken",
-                        "birds",
-                        "encrusted",
-                        "jewel",
-                    ],
+                    adjectives: ["broken", "birds", "encrusted", "jewel"],
                     capacity: 6,
                     description: "broken jewel-encrusted egg",
-                    flags: [
-                        .isContainer,
-                        .isOpen,
-                        .isTakable,
-                    ],
+                    flags: [.isContainer, .isOpen, .isTakable],
                     longDescription: "There is a somewhat ruined egg here.",
                     synonyms: ["egg", "treasure"],
                     takeValue: 2
@@ -119,15 +106,12 @@ final class ObjectTests: QuelboTests {
                 /// The `bat` (BAT) object.
                 var bat = Object(
                     id: "bat",
-                    action: batFunc,
+                    action: "batFunc",
                     adjectives: ["vampire", "deranged"],
                     description: "bat",
-                    descriptionFunction: batD,
-                    flags: [
-                        .isActor,
-                        .noImplicitTake,
-                    ],
-                    location: batRoom,
+                    descriptionFunction: "batD",
+                    flags: [.isActor, .noImplicitTake],
+                    location: "batRoom",
                     synonyms: ["bat", "vampire"]
                 )
                 """,
@@ -169,12 +153,8 @@ final class ObjectTests: QuelboTests {
                         nastily.
                         """,
                     flags: [.isTakable],
-                    location: landOfLivingDead,
-                    synonyms: [
-                        "skull",
-                        "head",
-                        "treasure",
-                    ],
+                    location: "landOfLivingDead",
+                    synonyms: ["skull", "head", "treasure"],
                     takeValue: 10,
                     value: 10
                 )
@@ -205,21 +185,12 @@ final class ObjectTests: QuelboTests {
                 /// The `water` (WATER) object.
                 var water = Object(
                     id: "water",
-                    action: waterFunc,
+                    action: "waterFunc",
                     description: "quantity of water",
-                    flags: [
-                        .isDrinkable,
-                        .isTakable,
-                        .noImplicitTake,
-                    ],
-                    location: bottle,
+                    flags: [.isDrinkable, .isTakable, .noImplicitTake],
+                    location: "bottle",
                     size: 4,
-                    synonyms: [
-                        "water",
-                        "quantity",
-                        "liquid",
-                        "h2o",
-                    ]
+                    synonyms: ["water", "quantity", "liquid", "h2o"]
                 )
                 """,
             type: .object,
@@ -252,15 +223,11 @@ final class ObjectTests: QuelboTests {
                 /// The `troll` (TROLL) object.
                 var troll = Object(
                     id: "troll",
-                    action: trollFunc,
+                    action: "trollFunc",
                     adjectives: ["nasty"],
                     description: "troll",
-                    flags: [
-                        .isActor,
-                        .isOpen,
-                        .noImplicitTake,
-                    ],
-                    location: trollRoom,
+                    flags: [.isActor, .isOpen, .noImplicitTake],
+                    location: "trollRoom",
                     longDescription: """
                         A nasty-looking troll, brandishing a bloody axe, blocks all \
                         passages out of the room.
@@ -304,12 +271,8 @@ final class ObjectTests: QuelboTests {
                     id: "advertisement",
                     adjectives: ["small"],
                     description: "leaflet",
-                    flags: [
-                        .isBurnable,
-                        .isReadable,
-                        .isTakable,
-                    ],
-                    location: mailbox,
+                    flags: [.isBurnable, .isReadable, .isTakable],
+                    location: "mailbox",
                     longDescription: "A small leaflet is on the ground.",
                     size: 2,
                     synonyms: [
@@ -351,7 +314,7 @@ final class ObjectTests: QuelboTests {
                 /// The `trophyCase` (TROPHY-CASE) object.
                 var trophyCase = Object(
                     id: "trophyCase",
-                    action: trophyCaseFunc,
+                    action: "trophyCaseFunc",
                     adjectives: ["trophy"],
                     capacity: 10000,
                     description: "trophy case",
@@ -362,7 +325,7 @@ final class ObjectTests: QuelboTests {
                         .noImplicitTake,
                         .omitDescription,
                     ],
-                    location: livingRoom,
+                    location: "livingRoom",
                     synonyms: ["case"]
                 )
                 """,
@@ -437,16 +400,16 @@ final class ObjectTests: QuelboTests {
                     adventurerFunction: nil,
                     capacity: 0,
                     containerFunction: nil,
-                    descriptionFunction: pathObject,
+                    descriptionFunction: "pathObject",
                     firstDescription: "F",
-                    globals: [globalObjects],
-                    location: globalObjects,
+                    globals: ["globalObjects"],
+                    location: "globalObjects",
                     longDescription: "F",
                     size: 0,
                     synonyms: ["zzmgck"],
                     things: [
                         Thing(
-                            action: vWalk,
+                            action: "vWalk",
                             adjectives: [],
                             nouns: ["foobar"]
                         ),
@@ -479,7 +442,7 @@ final class ObjectTests: QuelboTests {
                 /// The `adventurer` (ADVENTURER) object.
                 var adventurer = Object(
                     id: "adventurer",
-                    action: nil,
+                    action: "nil",
                     description: "cretin",
                     flags: [
                         .isActor,

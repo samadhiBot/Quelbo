@@ -177,17 +177,9 @@ final class PerformTests: QuelboTests {
                     var it = Object(
                         id: "it",
                         description: "random object",
-                        flags: [
-                            .hasBeenTouched,
-                            .omitDescription,
-                        ],
-                        location: globalObjects,
-                        synonyms: [
-                            "it",
-                            "them",
-                            "her",
-                            "him",
-                        ]
+                        flags: [.hasBeenTouched, .omitDescription],
+                        location: "Objects.globalObjects",
+                        synonyms: ["it", "them", "her", "him"]
                     )
                     """,
                 type: .object.optional.property.tableElement,
@@ -207,16 +199,12 @@ final class PerformTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `dApply` (D-APPLY) routine.
-                    func dApply(
-                        str: String,
-                        fcn: Routine,
-                        foo: Int? = 0
-                    ) -> Int? {
-                        var res: Int? = 0
+                    func dApply(str: String, fcn: Routine, foo: Int? = nil) -> Int? {
+                        var res = 0
                         if .isNot(fcn) {
                             return 0
                         } else {
-                            if debug {
+                            if Globals.debug {
                                 if .isNot(str) {
                                     output("\n")
                                 } else {
@@ -232,7 +220,7 @@ final class PerformTests: QuelboTests {
                                     fcn()
                                 }
                             }())
-                            if .and(debug, str) {
+                            if .and(Globals.debug, str) {
                                 if res.equals(2) {
                                     output("Fatal")
                                 } else if .isNot(res) {
@@ -267,16 +255,12 @@ final class PerformTests: QuelboTests {
                         fcn: Routine,
                         foo: Int = 0
                     ) -> Int? {
-                        if debug {
+                        if Globals.debug {
                             output("[")
                             output(obj.description)
                             output("=]")
                         }
-                        return dApply(
-                            str: str,
-                            fcn: fcn,
-                            foo: foo
-                        )
+                        return dApply(str: str, fcn: fcn, foo: foo)
                     }
                     """,
                 type: .int.optional,
@@ -295,24 +279,17 @@ final class PerformTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `perform` (PERFORM) routine.
-                    func perform(
-                        a: Int,
-                        o: Object = nil,
-                        i: Object = nil
-                    ) -> Int? {
-                        var v: Int? = 0
-                        var oa: Verb? = nil
-                        var oo: Object? = nil
-                        var oi: Object? = nil
-                        var o: Object? = nil
-                        var i: Object? = nil
-                        if debug {
+                    func perform(a: Int, o: Object = nil, i: Object = nil) -> Int? {
+                        var v = 0
+                        var oa: Verb?
+                        var oo: Object?
+                        var oi: Object?
+                        var o: Object?
+                        var i: Object?
+                        if Globals.debug {
                             output("** PERFORM: PRSA = ")
-                            output(actions.nthElement(.add(.multiply(a, 2), 1)))
-                            if .and(
-                                o,
-                                .isNot(a.equals(Verb.walk))
-                            ) {
+                            output(Globals.actions.nthElement(.add(.multiply(a, 2), 1)))
+                            if .and(o, .isNot(a.equals(Verb.walk))) {
                                 output("""
 
                                      PRSO =
@@ -327,39 +304,39 @@ final class PerformTests: QuelboTests {
                                 output(i.description)
                             }
                         }
-                        oa.set(to: parsedVerb)
+                        oa.set(to: Globals.parsedVerb)
                         oo.set(to: Globals.parsedDirectObject)
                         oi.set(to: Globals.parsedIndirectObject)
                         if .and(
-                            it.equals(i, o),
-                            .isNot(isAccessible(obj: pItObject))
+                            Objects.it.equals(i, o),
+                            .isNot(isAccessible(obj: Globals.pItObject))
                         ) {
                             output("I don't see what you are referring to.")
                             returnFatal()
                         }
-                        if o.equals(it) {
-                            o.set(to: pItObject)
+                        if o.equals(Objects.it) {
+                            o.set(to: Globals.pItObject)
                         }
-                        if i.equals(it) {
-                            i.set(to: pItObject)
+                        if i.equals(Objects.it) {
+                            i.set(to: Globals.pItObject)
                         }
-                        parsedVerb.set(to: a)
+                        Globals.parsedVerb.set(to: a)
                         Globals.parsedDirectObject.set(to: o)
                         if _ = .and(
-                            .object(Globals.parsedDirectObject),
+                            .object("Globals.parsedDirectObject"),
                             .isNot(isParsedVerb(.walk))
                         ) {
-                            pItObject.set(to: Globals.parsedDirectObject)
+                            Globals.pItObject.set(to: Globals.parsedDirectObject)
                         }
                         Globals.parsedIndirectObject.set(to: i)
                         if _ = .and(
-                            notHereObjects.equals(
+                            Objects.notHereObject.equals(
                                 Globals.parsedDirectObject,
                                 Globals.parsedIndirectObject
                             ),
                             v.set(to: dApply(
                                 str: "Not Here",
-                                fcn: notHereObjectFunc
+                                fcn: Routines.notHereObjectFunc
                             ))
                         ) {
                             return v
@@ -368,27 +345,24 @@ final class PerformTests: QuelboTests {
                             i.set(to: Globals.parsedIndirectObject)
                             if _ = v.set(to: ddApply(
                                 str: "Actor",
-                                obj: winner,
-                                fcn: winner.action
+                                obj: Globals.winner,
+                                fcn: Globals.winner.action
                             )) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: "Room (M-BEG)",
-                                fcn: winner.parent.action,
-                                foo: mBeg
+                                fcn: Globals.winner.parent.action,
+                                foo: Constants.mBeg
                             )) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: "Preaction",
-                                fcn: try preactions.get(at: a)
+                                fcn: try Globals.preactions.get(at: a)
                             )) {
                                 return v
                             } else if _ = .and(
                                 i,
-                                v.set(to: dApply(
-                                    str: "PRSI",
-                                    fcn: i.action
-                                ))
+                                v.set(to: dApply(str: "PRSI", fcn: i.action))
                             ) {
                                 return v
                             } else if _ = .and(
@@ -406,20 +380,17 @@ final class PerformTests: QuelboTests {
                             } else if _ = .and(
                                 o,
                                 .isNot(a.equals(Verb.walk)),
-                                v.set(to: dApply(
-                                    str: "PRSO",
-                                    fcn: o.action
-                                ))
+                                v.set(to: dApply(str: "PRSO", fcn: o.action))
                             ) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: nil,
-                                fcn: try actions.get(at: a)
+                                fcn: try Globals.actions.get(at: a)
                             )) {
                                 return v
                             }
                         }
-                        parsedVerb.set(to: oa)
+                        Globals.parsedVerb.set(to: oa)
                         Globals.parsedDirectObject.set(to: oo)
                         Globals.parsedIndirectObject.set(to: oi)
                         return v

@@ -46,14 +46,13 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
                     flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -70,16 +69,15 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object(troll),
-                    .object(sword),
+                    .object("Objects.troll"),
+                    .object("Objects.sword"),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee),
+                    .bool(Routines.trollMelee),
                     flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -100,17 +98,16 @@ final class PureTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
+                    .room("Rooms.path"),
+                    .room("Rooms.clearing"),
+                    .room("Rooms.forest1"),
                     flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -139,25 +136,24 @@ final class PureTableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("Objects.troll"),
+                        .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee),
+                        .bool(Routines.trollMelee),
                         flags: .length, .pure
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("Objects.thief"),
+                        .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee)
+                        .bool(Routines.thiefMelee)
                     ),
                     flags: .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }

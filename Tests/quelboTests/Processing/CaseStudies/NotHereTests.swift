@@ -83,7 +83,7 @@ final class NotHereTests: QuelboTests {
                     /// The `notHereObject` (NOT-HERE-OBJECT) object.
                     var notHereObject = Object(
                         id: "notHereObject",
-                        action: notHereObjectFunc,
+                        action: "notHereObjectFunc",
                         description: "such thing"
                     )
                     """,
@@ -101,24 +101,24 @@ final class NotHereTests: QuelboTests {
                 id: "notHerePrint",
                 code: """
                     /// The `notHerePrint` (NOT-HERE-PRINT) routine.
-                    func notHerePrint(isPrso: Bool) {
-                        if pOflag {
-                            if pXadj {
-                                output(pXadjn)
+                    func notHerePrint(isPrso: Bool) throws {
+                        if Globals.pOflag {
+                            if Globals.pXadj {
+                                output(Globals.pXadjn)
                             }
-                            if let pXnam {
-                                output(pXnam)
+                            if let Globals.pXnam {
+                                output(Globals.pXnam)
                             }
                         } else if isPrso {
-                            bufferPrint(
-                                beg: try pItbl.get(at: pNc1),
-                                end: try pItbl.get(at: pNc1L),
+                            try bufferPrint(
+                                beg: try Globals.pItbl.get(at: Constants.pNc1),
+                                end: try Globals.pItbl.get(at: Constants.pNc1L),
                                 cp: false
                             )
                         } else {
-                            bufferPrint(
-                                beg: try pItbl.get(at: pNc2),
-                                end: try pItbl.get(at: pNc2L),
+                            try bufferPrint(
+                                beg: try Globals.pItbl.get(at: Constants.pNc2),
+                                end: try Globals.pItbl.get(at: Constants.pNc2L),
                                 cp: false
                             )
                         }
@@ -127,6 +127,7 @@ final class NotHereTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -140,35 +141,35 @@ final class NotHereTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `notHereObjectFunc` (NOT-HERE-OBJECT-F) routine.
-                    func notHereObjectFunc() -> Bool {
-                        var tbl: Table? = nil
-                        var isPrso: Bool = true
+                    func notHereObjectFunc() throws -> Bool {
+                        var tbl: Table?
+                        var isPrso = true
                         // var obj: <Unknown>
                         // "This COND is game independent (except the TELL)"
                         if .and(
-                            Globals.parsedDirectObject.equals(notHereObject),
-                            Globals.parsedIndirectObject.equals(notHereObject)
+                            Globals.parsedDirectObject.equals(Objects.notHereObject),
+                            Globals.parsedIndirectObject.equals(Objects.notHereObject)
                         ) {
                             output("Those things aren't here!")
                             return true
-                        } else if Globals.parsedDirectObject.equals(notHereObject) {
-                            tbl.set(to: pPrso)
+                        } else if Globals.parsedDirectObject.equals(Objects.notHereObject) {
+                            tbl.set(to: Globals.pPrso)
                         } else {
-                            tbl.set(to: pPrsi)
+                            tbl.set(to: Globals.pPrsi)
                             isPrso.set(to: false)
                         }
                         // "Here is the default 'cant see any' printer"
                         pCont.set(to: false)
                         quoteFlag.set(to: false)
-                        if winner.equals(player) {
+                        if Globals.winner.equals(Globals.player) {
                             output("You can't see any ")
-                            notHerePrint(isPrso: isPrso)
+                            try notHerePrint(isPrso: isPrso)
                             output(" here!")
                         } else {
                             output("The ")
-                            output(winner.description)
+                            output(Globals.winner.description)
                             output(" seems confused. \"I don't see any ")
-                            notHerePrint(isPrso: isPrso)
+                            try notHerePrint(isPrso: isPrso)
                             output(" here!\"")
                         }
                         return true
@@ -177,6 +178,7 @@ final class NotHereTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

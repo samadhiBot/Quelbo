@@ -51,7 +51,6 @@ final class LengthTableTests: QuelboTests {
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -68,12 +67,11 @@ final class LengthTableTests: QuelboTests {
                     .object("Objects.sword"),
                     .int(1),
                     .int(0),
-                    .table(Constants.trollMelee),
+                    .table(Globals.trollMelee),
                     flags: .length
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -99,7 +97,8 @@ final class LengthTableTests: QuelboTests {
                 """,
             type: .table.root,
             category: .globals,
-            isCommittable: true
+            isCommittable: true,
+            isMutable: true
         ))
     }
 
@@ -117,11 +116,10 @@ final class LengthTableTests: QuelboTests {
                     .room("Rooms.path"),
                     .room("Rooms.clearing"),
                     .room("Rooms.forest1"),
-                    flags: .length
+                    flags: .length, .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -141,7 +139,7 @@ final class LengthTableTests: QuelboTests {
                         .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constants.trollMelee),
+                        .table(Globals.trollMelee),
                         flags: .length
                     ),
                     .table(
@@ -149,13 +147,12 @@ final class LengthTableTests: QuelboTests {
                         .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constants.thiefMelee)
+                        .table(Globals.thiefMelee)
                     ),
                     flags: .length
                 )
                 """,
             type: .table,
-            isMutable: true,
             returnHandling: .implicit
         ))
     }
@@ -184,7 +181,8 @@ final class LengthTableTests: QuelboTests {
                     """,
                 type: .table.root,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
     }

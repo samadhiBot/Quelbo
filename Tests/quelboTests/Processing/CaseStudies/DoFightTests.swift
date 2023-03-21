@@ -87,21 +87,21 @@ final class DoFightTests: QuelboTests {
                             .object("Objects.sword"),
                             .int(1),
                             .int(0),
-                            .table(Constants.trollMelee)
+                            .table(Globals.trollMelee)
                         ),
                         .table(
                             .object("Objects.thief"),
                             .object("Objects.knife"),
                             .int(1),
                             .int(0),
-                            .table(Constants.thiefMelee)
+                            .table(Globals.thiefMelee)
                         ),
                         .table(
                             .object("Objects.cyclops"),
                             .bool(false),
                             .int(0),
                             .int(0),
-                            .table(Constants.cyclopsMelee)
+                            .table(Globals.cyclopsMelee)
                         ),
                         flags: .length
                     )
@@ -142,7 +142,7 @@ final class DoFightTests: QuelboTests {
                                     // do nothing
                                 } else if _ = o.action(Constants.isFBusy) {
                                     // do nothing
-                                } else if .isNot(res.set(to: villainBlow(oo: oo, isOut: out))) {
+                                } else if .isNot(res.set(to: try villainBlow(oo: oo, isOut: out))) {
                                     res.set(to: 0)
                                     break
                                 } else if res.equals(Constants.unconscious) {

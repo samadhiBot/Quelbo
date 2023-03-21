@@ -31,7 +31,7 @@ final class ParentTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "thief.parent",
+            code: "Objects.thief.parent",
             type: .object
         ))
     }

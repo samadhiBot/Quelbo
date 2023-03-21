@@ -46,14 +46,13 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
                     flags: .length, .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -70,16 +69,15 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object(troll),
-                    .object(sword),
+                    .object("Objects.troll"),
+                    .object("Objects.sword"),
                     .int(1),
                     .int(0),
-                    .bool(trollMelee),
+                    .bool(Routines.trollMelee),
                     flags: .length, .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -96,16 +94,17 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "jumploss",
             code: """
-                let jumploss: Table = Table(
+                var jumploss = Table(
                     "You should have looked before you leaped.",
                     "In the movies, your life would be passing before your eyes.",
                     "Geronimo...",
                     flags: .length, .pure
                 )
                 """,
-            type: .table,
-            category: .constants,
-            isCommittable: true
+            type: .table.root,
+            category: .globals,
+            isCommittable: true,
+            isMutable: true
         ))
     }
 
@@ -125,17 +124,16 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    forest1,
-                    forest2,
-                    forest3,
-                    path,
-                    clearing,
-                    forest1,
+                    .room("Rooms.forest1"),
+                    .room("Rooms.forest2"),
+                    .room("Rooms.forest3"),
+                    .room("Rooms.path"),
+                    .room("Rooms.clearing"),
+                    .room("Rooms.forest1"),
                     flags: .length, .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }
@@ -164,25 +162,24 @@ final class PureLengthTableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object(troll),
-                        .object(sword),
+                        .object("Objects.troll"),
+                        .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .bool(trollMelee),
+                        .bool(Routines.trollMelee),
                         flags: .length, .pure
                     ),
                     .table(
-                        .object(thief),
-                        .object(knife),
+                        .object("Objects.thief"),
+                        .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .bool(thiefMelee)
+                        .bool(Routines.thiefMelee)
                     ),
                     flags: .length, .pure
                 )
                 """,
             type: .table,
-            isMutable: false,
             returnHandling: .implicit
         ))
     }

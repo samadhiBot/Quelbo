@@ -63,7 +63,7 @@ final class NullFuncTests: QuelboTests {
                     @discardableResult
                     /// The `nullFunc` (NULL-F) routine.
                     func nullFunc(a1: Any? = nil, a2: Any? = nil) -> Bool {
-                        return false
+                        false
                     }
                     """,
                 type: .bool,

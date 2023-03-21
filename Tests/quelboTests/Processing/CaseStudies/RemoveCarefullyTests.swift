@@ -63,17 +63,14 @@ final class RemoveCarefullyTests: QuelboTests {
                     @discardableResult
                     /// The `removeCarefully` (REMOVE-CAREFULLY) routine.
                     func removeCarefully(obj: Object) -> Bool {
-                        var olit: Bool = false
-                        if obj.equals(pItObject) {
-                            pItObject.set(to: nil)
+                        var olit = false
+                        if obj.equals(Globals.pItObject) {
+                            Globals.pItObject.set(to: nil)
                         }
-                        olit.set(to: lit)
+                        olit.set(to: Globals.lit)
                         obj.remove()
-                        lit.set(to: isLit(rm: here))
-                        if .and(
-                            olit,
-                            .isNot(olit.equals(lit))
-                        ) {
+                        Globals.lit.set(to: try isLit(rm: Globals.here))
+                        if .and(olit, .isNot(olit.equals(Globals.lit))) {
                             output("You are left in the dark...")
                         }
                         return true

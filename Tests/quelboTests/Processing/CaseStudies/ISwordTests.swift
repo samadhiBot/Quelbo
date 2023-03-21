@@ -114,8 +114,8 @@ final class SwordTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `iSword` (I-SWORD) routine.
-                    func iSword() -> Bool {
-                        var dem = int(rtn: iSword)
+                    func iSword() throws -> Bool {
+                        var dem = try int(rtn: iSword)
                         var g = Objects.sword.takeValue
                         var ng = 0
                         var p = 0
@@ -168,6 +168,7 @@ final class SwordTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

@@ -27,9 +27,7 @@ final class ParseTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: nil,
             code: """
-                [
-                    ["V?", atm.id].joined(),
-                ].parse()
+                [["V?", atm.id].joined()].parse()
                 """,
             type: .verb
         ))

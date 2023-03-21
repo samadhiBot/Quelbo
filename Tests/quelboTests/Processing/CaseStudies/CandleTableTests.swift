@@ -164,7 +164,7 @@ final class CandleTableTests: QuelboTests {
                 id: "lightInt",
                 code: """
                     /// The `lightInt` (LIGHT-INT) routine.
-                    func lightInt(obj: Object, tbl: Table, tick: Int) {
+                    func lightInt(obj: Object, tbl: Table, tick: Int) throws {
                         if tick.isZero {
                             obj.isOn.set(false)
                             obj.isDestroyed.set(true)
@@ -183,6 +183,7 @@ final class CandleTableTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -205,7 +206,7 @@ final class CandleTableTests: QuelboTests {
                                 tick: tick.set(to: try tbl.get(at: 0))
                             )
                         )
-                        lightInt(obj: Objects.candles, tbl: tbl, tick: tick)
+                        try lightInt(obj: Objects.candles, tbl: tbl, tick: tick)
                         if .isNot(tick.isZero) {
                             Globals.candleTable.set(to: tbl.rest(bytes: 4))
                         }

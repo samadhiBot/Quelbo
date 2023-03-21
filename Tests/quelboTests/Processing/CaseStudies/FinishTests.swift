@@ -111,10 +111,10 @@ final class FinishTests: QuelboTests {
                 id: "vFirstLook",
                 code: """
                     /// The `vFirstLook` (V-FIRST-LOOK) routine.
-                    func vFirstLook() {
+                    func vFirstLook() throws {
                         if describeRoom() {
                             if .isNot(Globals.superBrief) {
-                                describeObjects()
+                                try describeObjects()
                             }
                         }
                     }
@@ -122,6 +122,7 @@ final class FinishTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -230,10 +231,10 @@ final class FinishTests: QuelboTests {
                 id: "vRestore",
                 code: """
                     /// The `vRestore` (V-RESTORE) routine.
-                    func vRestore() {
+                    func vRestore() throws {
                         if restore() {
                             output("Ok.")
-                            vFirstLook()
+                            try vFirstLook()
                         } else {
                             output("Failed.")
                         }
@@ -242,6 +243,7 @@ final class FinishTests: QuelboTests {
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

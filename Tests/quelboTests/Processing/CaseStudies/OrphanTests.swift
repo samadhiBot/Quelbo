@@ -118,20 +118,30 @@ final class OrphanTests: QuelboTests {
                 id: "clauseAdd",
                 code: """
                     /// The `clauseAdd` (CLAUSE-ADD) routine.
-                    func clauseAdd(wrd: Bool) {
-                        var ptr: Int = 0
+                    func clauseAdd(wrd: TableElement) throws {
+                        var ptr = 0
                         ptr.set(to: .add(
-                            try pOclause.get(at: pMatchlen),
+                            try Globals.pOclause.get(at: Globals.pMatchlen),
                             2
                         ))
-                        try pOclause.put(element: wrd, at: .subtract(ptr, 1))
-                        try pOclause.put(element: 0, at: ptr)
-                        try pOclause.put(element: ptr, at: pMatchlen)
+                        try Globals.pOclause.put(
+                            element: wrd,
+                            at: .subtract(ptr, 1)
+                        )
+                        try Globals.pOclause.put(
+                            element: 0,
+                            at: ptr
+                        )
+                        try Globals.pOclause.put(
+                            element: ptr,
+                            at: Globals.pMatchlen
+                        )
                     }
                     """,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -147,47 +157,52 @@ final class OrphanTests: QuelboTests {
                     func clauseCopy(
                         src: Table,
                         dest: Table,
-                        insrt: Bool = false
-                    ) {
-                        var beg: Table? = nil
-                        var end: Table? = nil
-                        beg.set(to: try src.get(at: try pCctbl.get(at: ccSbptr)))
-                        end.set(to: try src.get(at: try pCctbl.get(at: ccSeptr)))
-                        try dest.put(element: pOclause.rest(bytes: .add(
+                        insrt: TableElement = nil
+                    ) throws {
+                        var beg: Table?
+                        var end: Table?
+                        beg.set(to: try src.get(at: try Globals.pCctbl.get(at: Constants.ccSbptr)))
+                        end.set(to: try src.get(at: try Globals.pCctbl.get(at: Constants.ccSeptr)))
+                        try dest.put(
+                            element: Globals.pOclause.rest(bytes: .add(
                             .multiply(
-                                try pOclause.get(at: pMatchlen),
-                                pLexelen
+                                try Globals.pOclause.get(at: Globals.pMatchlen),
+                                Constants.pLexelen
                             ),
                             2
-                        )), at: try pCctbl.get(at: ccDbptr))
+                        )),
+                            at: try Globals.pCctbl.get(at: Constants.ccDbptr)
+                        )
                         while true {
                             if beg.equals(end) {
-                                try dest.put(element: pOclause.rest(bytes: .add(
+                                try dest.put(
+                                    element: Globals.pOclause.rest(bytes: .add(
                                     .multiply(
-                                        try pOclause.get(at: pMatchlen),
-                                        pLexelen
+                                        try Globals.pOclause.get(at: Globals.pMatchlen),
+                                        Constants.pLexelen
                                     ),
                                     2
-                                )), at: try pCctbl.get(at: ccDeptr))
+                                )),
+                                    at: try Globals.pCctbl.get(at: Constants.ccDeptr)
+                                )
                                 break
                             } else {
                                 if .and(
                                     insrt,
-                                    pAnam.equals(try beg.get(at: 0))
+                                    Globals.pAnam.equals(try beg.get(at: 0))
                                 ) {
-                                    clauseAdd(wrd: insrt)
+                                    try clauseAdd(wrd: insrt)
                                 }
-                                clauseAdd(
-                                    wrd: try beg.get(at: 0)
-                                )
+                                try clauseAdd(wrd: try beg.get(at: 0))
                             }
-                            beg.set(to: beg.rest(bytes: pWordlen))
+                            beg.set(to: beg.rest(bytes: Constants.pWordlen))
                         }
                     }
                     """,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -221,53 +236,99 @@ final class OrphanTests: QuelboTests {
                 id: "orphan",
                 code: """
                     /// The `orphan` (ORPHAN) routine.
-                    func orphan(d1: Table, d2: Table) {
-                        var cnt: Int = -1
-                        if .isNot(pMerged) {
-                            try pOclause.put(element: 0, at: pMatchlen)
+                    func orphan(d1: Table, d2: Table) throws {
+                        var cnt = -1
+                        if .isNot(Globals.pMerged) {
+                            try Globals.pOclause.put(
+                                element: 0,
+                                at: Globals.pMatchlen
+                            )
                         }
-                        try pOvtbl.put(element: try pVtbl.get(at: 0), at: 0)
-                        try pOvtbl.put(element: try pVtbl.get(at: 2), at: 2)
-                        try pOvtbl.put(element: try pVtbl.get(at: 3), at: 3)
+                        try Globals.pOvtbl.put(
+                            element: try Globals.pVtbl.get(at: 0),
+                            at: 0
+                        )
+                        try Globals.pOvtbl.put(
+                            element: try Globals.pVtbl.get(at: 2),
+                            at: 2
+                        )
+                        try Globals.pOvtbl.put(
+                            element: try Globals.pVtbl.get(at: 3),
+                            at: 3
+                        )
                         while true {
                             if cnt.increment().isGreaterThan(pItbllen) {
                                 break
                             } else {
-                                try pOtbl.put(element: try pItbl.get(at: cnt), at: cnt)
+                                try Globals.pOtbl.put(
+                                    element: try Globals.pItbl.get(at: cnt),
+                                    at: cnt
+                                )
                             }
                         }
-                        if pNcn.equals(2) {
-                            try pCctbl.put(element: pNc2, at: ccSbptr)
-                            try pCctbl.put(element: pNc2L, at: ccSeptr)
-                            try pCctbl.put(element: pNc2, at: ccDbptr)
-                            try pCctbl.put(element: pNc2L, at: ccDeptr)
-                            clauseCopy(
-                                src: pItbl,
-                                dest: pOtbl
+                        if Globals.pNcn.equals(2) {
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc2,
+                                at: Constants.ccSbptr
                             )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc2L,
+                                at: Constants.ccSeptr
+                            )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc2,
+                                at: Constants.ccDbptr
+                            )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc2L,
+                                at: Constants.ccDeptr
+                            )
+                            try clauseCopy(src: Globals.pItbl, dest: Globals.pOtbl)
                         }
-                        if .isNot(pNcn.isLessThan(1)) {
-                            try pCctbl.put(element: pNc1, at: ccSbptr)
-                            try pCctbl.put(element: pNc1L, at: ccSeptr)
-                            try pCctbl.put(element: pNc1, at: ccDbptr)
-                            try pCctbl.put(element: pNc1L, at: ccDeptr)
-                            clauseCopy(
-                                src: pItbl,
-                                dest: pOtbl
+                        if .isNot(Globals.pNcn.isLessThan(1)) {
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc1,
+                                at: Constants.ccSbptr
                             )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc1L,
+                                at: Constants.ccSeptr
+                            )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc1,
+                                at: Constants.ccDbptr
+                            )
+                            try Globals.pCctbl.put(
+                                element: Constants.pNc1L,
+                                at: Constants.ccDeptr
+                            )
+                            try clauseCopy(src: Globals.pItbl, dest: Globals.pOtbl)
                         }
                         if let d1 {
-                            try pOtbl.put(element: try d1.get(at: pSprep1), at: pPrep1)
-                            try pOtbl.put(element: 1, at: pNc1)
+                            try Globals.pOtbl.put(
+                                element: try d1.get(at: Constants.pSprep1),
+                                at: Constants.pPrep1
+                            )
+                            try Globals.pOtbl.put(
+                                element: 1,
+                                at: Constants.pNc1
+                            )
                         } else if let d2 {
-                            try pOtbl.put(element: try d2.get(at: pSprep2), at: pPrep2)
-                            try pOtbl.put(element: 1, at: pNc2)
+                            try Globals.pOtbl.put(
+                                element: try d2.get(at: Constants.pSprep2),
+                                at: Constants.pPrep2
+                            )
+                            try Globals.pOtbl.put(
+                                element: 1,
+                                at: Constants.pNc2
+                            )
                         }
                     }
                     """,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

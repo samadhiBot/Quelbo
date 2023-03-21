@@ -35,12 +35,15 @@ extension Array where Element == Symbol {
 
     var containThrowingStatement: Bool {
         for symbol in self {
-            guard case .statement(let statement) = symbol else {
+            guard
+                case .statement(let statement) = symbol,
+                statement.isThrowing ||
+                statement.payload.symbols.containThrowingStatement ||
+                statement.payload.predicate?.isThrowing == true
+            else {
                 continue
             }
-            if statement.isThrowing || statement.payload.symbols.containThrowingStatement {
-                return true
-            }
+            return true
         }
         return false
     }

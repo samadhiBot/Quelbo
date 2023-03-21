@@ -126,7 +126,7 @@ final class ConstantTests: QuelboTests {
                     .room("Rooms.path"),
                     .room("Rooms.clearing"),
                     .room("Rooms.forest1"),
-                    flags: .length
+                    flags: .length, .pure
                 )
                 """,
             type: .table.root,
@@ -156,21 +156,21 @@ final class ConstantTests: QuelboTests {
                         .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constants.trollMelee)
+                        .table(Globals.trollMelee)
                     ),
                     .table(
                         .object("Objects.thief"),
                         .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constants.thiefMelee)
+                        .table(Globals.thiefMelee)
                     ),
                     .table(
                         .object("Objects.cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .table(Constants.cyclopsMelee)
+                        .table(Globals.cyclopsMelee)
                     ),
                     flags: .length
                 )
@@ -195,7 +195,7 @@ final class ConstantTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "let def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
+            code: "let def1Res = Table(.table(Globals.def1), .int(0), .int(0))",
             type: .table.root,
             category: .constants,
             isCommittable: true,

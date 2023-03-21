@@ -43,7 +43,7 @@ final class PrintTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "output(message)",
+            code: "output(Globals.message)",
             type: .void
         ))
     }

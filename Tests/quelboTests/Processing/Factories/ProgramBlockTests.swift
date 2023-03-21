@@ -47,11 +47,11 @@ final class ProgramBlockTests: QuelboTests {
             code: """
                 /// The `testProg1` (TEST-PROG-1) routine.
                 func testProg1() {
-                    var x: Int = 0
+                    var x = 0
                     x.set(to: 2)
                     output("START: ")
                     do {
-                        var x: Int = x
+                        var x = x
                         x.set(to: 1)
                         output(x)
                         output(" ")
@@ -115,7 +115,7 @@ final class ProgramBlockTests: QuelboTests {
                 /// The `testProg2` (TEST-PROG-2) routine.
                 func testProg2() {
                     output("START: ")
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
@@ -194,14 +194,14 @@ final class ProgramBlockTests: QuelboTests {
                 /// The `testProg3` (TEST-PROG-3) routine.
                 func testProg3() -> Bool {
                     output("START: ")
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
-                            if isFunnyReturn {
+                            if Globals.isFunnyReturn {
                                 output("RETURN EXIT ROUTINE")
                             }
                             return true

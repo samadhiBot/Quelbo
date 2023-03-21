@@ -45,23 +45,23 @@ final class DoSlTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `doSl` (DO-SL) routine.
-                    func doSl(obj: Object, bit1: Int, bit2: Int) -> Bool {
+                    func doSl(obj: Object, bit1: Int, bit2: Int) throws -> Bool {
                         // var bts: <Unknown>
                         if _ = .bitwiseCompare(Globals.pSlocbits, .add(bit1, bit2)) {
-                            searchList(
+                            try searchList(
                                 obj: obj,
                                 tbl: Globals.pTable,
                                 lvl: Constants.pSrcall
                             )
                         } else {
                             if _ = .bitwiseCompare(Globals.pSlocbits, bit1) {
-                                searchList(
+                                try searchList(
                                     obj: obj,
                                     tbl: Globals.pTable,
                                     lvl: Constants.pSrctop
                                 )
                             } else if _ = .bitwiseCompare(Globals.pSlocbits, bit2) {
-                                searchList(
+                                try searchList(
                                     obj: obj,
                                     tbl: Globals.pTable,
                                     lvl: Constants.pSrcbot
@@ -75,6 +75,7 @@ final class DoSlTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

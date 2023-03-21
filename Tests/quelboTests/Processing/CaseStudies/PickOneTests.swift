@@ -56,7 +56,7 @@ final class PickOneTests: QuelboTests {
             Statement(
                 id: "hellos",
                 code: """
-                    var hellos: Table = Table(
+                    var hellos = Table(
                         "Hello.",
                         "Good day.",
                         "Nice weather we've been having lately.",
@@ -64,9 +64,10 @@ final class PickOneTests: QuelboTests {
                         flags: .length
                     )
                     """,
-                type: .table,
+                type: .table.root,
                 category: .globals,
-                isCommittable: true
+                isCommittable: true,
+                isMutable: true
             )
         )
     }
@@ -79,31 +80,41 @@ final class PickOneTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `pickOne` (PICK-ONE) routine.
-                    func pickOne(frob: Table) -> String {
-                        var l: Int = try frob.get(at: 0)
-                        var cnt: Int = try frob.get(at: 1)
-                        var rnd: Int = 0
-                        var msg: String = ""
-                        var rfrob: Table? = nil
-                        var frob: Table = frob
+                    func pickOne(frob: Table) throws -> String {
+                        var l = try frob.get(at: 0)
+                        var cnt = try frob.get(at: 1)
+                        var rnd = 0
+                        var msg = ""
+                        var rfrob: Table?
+                        var frob = frob
                         l.set(to: .subtract(l, 1))
                         frob.set(to: frob.rest(bytes: 2))
                         rfrob.set(to: frob.rest(bytes: .multiply(cnt, 2)))
                         rnd.set(to: .random(.subtract(l, cnt)))
                         msg.set(to: try rfrob.get(at: rnd))
-                        try rfrob.put(element: try rfrob.get(at: 1), at: rnd)
-                        try rfrob.put(element: msg, at: 1)
+                        try rfrob.put(
+                            element: try rfrob.get(at: 1),
+                            at: rnd
+                        )
+                        try rfrob.put(
+                            element: msg,
+                            at: 1
+                        )
                         cnt.set(to: .add(cnt, 1))
                         if cnt.equals(l) {
                             cnt.set(to: 0)
                         }
-                        try frob.put(element: cnt, at: 0)
+                        try frob.put(
+                            element: cnt,
+                            at: 0
+                        )
                         return msg
                     }
                     """,
                 type: .string.tableElement,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -116,7 +127,7 @@ final class PickOneTests: QuelboTests {
                 id: "vHello",
                 code: #"""
                     /// The `vHello` (V-HELLO) routine.
-                    func vHello() {
+                    func vHello() throws {
                         if let Globals.parsedDirectObject {
                             if Globals.parsedDirectObject.hasFlag(.isActor) {
                                 output("The ")
@@ -131,13 +142,14 @@ final class PickOneTests: QuelboTests {
                                 output(".")
                             }
                         } else {
-                            output(pickOne(frob: hellos))
+                            output(try pickOne(frob: Globals.hellos))
                         }
                     }
                     """#,
                 type: .void,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

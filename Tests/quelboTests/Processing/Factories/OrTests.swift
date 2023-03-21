@@ -94,8 +94,8 @@ final class OrTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
             .or(
-                rarg.equals(mEnter),
-                .isNot(foundTreasureChest)
+                rarg.equals(Globals.mEnter),
+                .isNot(Globals.foundTreasureChest)
             )
             """,
             type: .bool

@@ -48,7 +48,7 @@ final class RepeatTests: QuelboTests {
                 /// The `testRepeat1` (TEST-REPEAT-1) routine.
                 func testRepeat1() {
                     output("START: ")
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
@@ -118,14 +118,14 @@ final class RepeatTests: QuelboTests {
                 /// The `testRepeat2` (TEST-REPEAT-2) routine.
                 func testRepeat2() -> Bool {
                     output("START: ")
-                    var x: Int = 0
+                    var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
                         x.set(to: .add(x, 1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
-                            if isFunnyReturn {
+                            if Globals.isFunnyReturn {
                                 output("RETURN EXIT ROUTINE")
                             }
                             return true

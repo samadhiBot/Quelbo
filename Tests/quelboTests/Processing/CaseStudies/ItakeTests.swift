@@ -141,7 +141,7 @@ final class ItakeTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `itake` (ITAKE) routine.
-                    func itake(vb: Bool = true) -> Bool {
+                    func itake(vb: Bool = true) throws -> Bool {
                         var cnt = 0
                         // var obj: <Unknown>
                         if Globals.dead {
@@ -151,7 +151,7 @@ final class ItakeTests: QuelboTests {
                             return false
                         } else if .isNot(Globals.parsedDirectObject.hasFlag(.isTakable)) {
                             if vb {
-                                output(pickOne(frob: Globals.yuks))
+                                output(try pickOne(frob: Globals.yuks))
                             }
                             return false
                         } else if nullFunc() {
@@ -201,6 +201,7 @@ final class ItakeTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )

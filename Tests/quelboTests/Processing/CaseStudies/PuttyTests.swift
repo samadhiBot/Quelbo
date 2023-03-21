@@ -41,11 +41,11 @@ final class PuttyTests: QuelboTests {
                     /// The `putty` (PUTTY) object.
                     var putty = Object(
                         id: "putty",
-                        action: puttyFunc,
+                        action: "puttyFunc",
                         adjectives: ["viscous"],
                         description: "viscous material",
                         flags: [.isTakable, .isTool],
-                        location: tube,
+                        location: "tube",
                         size: 6,
                         synonyms: ["material", "gunk"]
                     )
@@ -68,11 +68,11 @@ final class PuttyTests: QuelboTests {
                         if .or(
                             .and(
                                 isParsedVerb(.oil),
-                                Globals.parsedIndirectObject.equals(putty)
+                                Globals.parsedIndirectObject.equals(Objects.putty)
                             ),
                             .and(
                                 isParsedVerb(.put),
-                                Globals.parsedDirectObject.equals(putty)
+                                Globals.parsedDirectObject.equals(Objects.putty)
                             )
                         ) {
                             output("The all-purpose gunk isn't a lubricant.")

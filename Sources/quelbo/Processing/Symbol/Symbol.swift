@@ -146,6 +146,13 @@ extension Symbol {
         return statement.isRepeating
     }
 
+    var isThrowing: Bool {
+        guard case .statement(let statement) = self else {
+            return false
+        }
+        return statement.isThrowing
+    }
+
     var objID: String {
         let objID = {
             switch self {

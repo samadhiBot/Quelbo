@@ -65,6 +65,26 @@ final class GlobalTests: QuelboTests {
         XCTAssertNoDifference(Game.findInstance("foo"), Instance(foo))
     }
 
+    func testBoolMaybe() throws {
+        process("""
+            <GLOBAL AGAIN-DIR <>>
+
+            <ROUTINE TEST-RTN () <SETG AGAIN-DIR <>>>
+        """)
+
+        XCTAssertNoDifference(
+            Game.globals.find("againDir"),
+            Statement(
+                id: "againDir",
+                code: "var againDir = false",
+                type: .booleanFalse,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true
+            )
+        )
+    }
+
     func testCommentedThrows() throws {
         XCTAssertThrowsError(
             try factory.init([
@@ -120,20 +140,20 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
-                let foo = Table(
+                var foo = Table(
                     .room("Rooms.forest1"),
                     .room("Rooms.forest2"),
                     .room("Rooms.forest3"),
                     .room("Rooms.path"),
                     .room("Rooms.clearing"),
                     .room("Rooms.forest1"),
-                    flags: .length
+                    flags: .length, .pure
                 )
                 """,
             type: .table.root,
-            category: .constants,
+            category: .globals,
             isCommittable: true,
-            isMutable: false
+            isMutable: true
         )
 
         XCTAssertNoDifference(symbol, .statement(foo))
@@ -157,21 +177,21 @@ final class GlobalTests: QuelboTests {
                         .object("Objects.sword"),
                         .int(1),
                         .int(0),
-                        .table(Constants.trollMelee)
+                        .table(Globals.trollMelee)
                     ),
                     .table(
                         .object("Objects.thief"),
                         .object("Objects.knife"),
                         .int(1),
                         .int(0),
-                        .table(Constants.thiefMelee)
+                        .table(Globals.thiefMelee)
                     ),
                     .table(
                         .object("Objects.cyclops"),
                         .bool(false),
                         .int(0),
                         .int(0),
-                        .table(Constants.cyclopsMelee)
+                        .table(Globals.cyclopsMelee)
                     ),
                     flags: .length
                 )
@@ -196,7 +216,7 @@ final class GlobalTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "var def1Res = Table(.table(Constants.def1), .int(0), .int(0))",
+            code: "var def1Res = Table(.table(Globals.def1), .int(0), .int(0))",
             type: .table.root,
             category: .globals,
             isCommittable: true,

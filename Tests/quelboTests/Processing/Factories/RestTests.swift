@@ -22,7 +22,7 @@ final class RestTests: QuelboTests {
         let symbol = process("<REST STRUCT1>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "struct1.rest(bytes: 1)",
+            code: "Globals.struct1.rest(bytes: 1)",
             type: .int.array
         ))
     }
@@ -35,8 +35,8 @@ final class RestTests: QuelboTests {
         let symbol = process("<REST SOME-TABLE>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "someTable.rest(bytes: 1)",
-            type: .table
+            code: "Globals.someTable.rest(bytes: 1)",
+            type: .table.root
         ))
     }
 
@@ -46,20 +46,28 @@ final class RestTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(
-            Game.findInstance("struct2"),
-            Instance(Statement(
+            Game.globals.find("struct2"),
+            Statement(
                 id: "struct2",
-                code: "var struct2: [TableElement] = []",
-                type: .someTableElement.array,
+                code: """
+                    var struct2 = [
+                        .int(1),
+                        .int(2),
+                        .string("AB"),
+                        .string("C"),
+                    ]
+                    """,
+                type: .someTableElement.array.tableElement,
                 category: .globals,
-                isCommittable: true
-            ))
+                isCommittable: true,
+                isMutable: true
+            )
         )
 
         XCTAssertNoDifference(
             process("<REST STRUCT2>"),
             .statement(
-                code: "struct2.rest(bytes: 1)",
+                code: "Globals.struct2.rest(bytes: 1)",
                 type: .someTableElement.array
             )
         )
@@ -78,7 +86,7 @@ final class RestTests: QuelboTests {
         XCTAssertNoDifference(
             symbol,
             .statement(
-                code: "struct3.rest(bytes: 2)",
+                code: "Globals.struct3.rest(bytes: 2)",
                 type: .someTableElement.array
             )
         )

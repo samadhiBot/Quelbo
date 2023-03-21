@@ -64,7 +64,7 @@ final class PrintContentsTests: QuelboTests {
                     @discardableResult
                     /// The `thisIsIt` (THIS-IS-IT) routine.
                     func thisIsIt(obj: Object) -> Object? {
-                        return pItObject.set(to: obj)
+                        return Globals.pItObject.set(to: obj)
                     }
                     """,
                 type: .object.optional,
@@ -84,11 +84,11 @@ final class PrintContentsTests: QuelboTests {
                     @discardableResult
                     /// The `printContents` (PRINT-CONTENTS) routine.
                     func printContents(obj: Object) -> Bool {
-                        var f: Object? = nil
-                        var n: Object? = nil
-                        var is1St: Bool = true
-                        var isIt: Object? = nil
-                        var isTwo: Bool = false
+                        var f: Object?
+                        var n: Object?
+                        var is1St = true
+                        var isIt: Object?
+                        var isTwo = false
                         if _ = f.set(to: obj.firstChild) {
                             while true {
                                 n.set(to: f.nextSibling)
@@ -102,10 +102,7 @@ final class PrintContentsTests: QuelboTests {
                                 }
                                 output("a ")
                                 output(f.description)
-                                if .and(
-                                    .isNot(isIt),
-                                    .isNot(isTwo)
-                                ) {
+                                if .and(.isNot(isIt), .isNot(isTwo)) {
                                     isIt.set(to: f)
                                 } else {
                                     isTwo.set(to: true)

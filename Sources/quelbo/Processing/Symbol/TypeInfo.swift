@@ -114,7 +114,7 @@ extension TypeInfo {
     static var someTableElement: TypeInfo {
         .init(
             dataType: .tableElement,
-            confidence: .limited,
+            confidence: .assured,
             isTableElement: true
         )
     }
@@ -421,7 +421,7 @@ extension TypeInfo {
                 .replacingOccurrences(of: "    ", with: " ")
 
             print(
-                "\t􀄢\(identifier): \(initialType)􀠊\(assertedType) 􁉂 \(typeInfo.debugDescription)"
+                "\t􀄢\(identifier): \(initialType) 􁝮 \(assertedType) 􁉂 \(typeInfo.debugDescription)"
             )
 
             return typeInfo
@@ -472,6 +472,15 @@ extension TypeInfo {
                     with: self,
                     isOptional: true
                 ))
+            }
+            if dataType == .tableElement {
+                let elements = otherTypes.filter { $0.canBeTableElement }
+                if !elements.isEmpty {
+                    return logged(asserted.merge(
+                        with: self,
+                        dataType: .oneOf(elements)
+                    ))
+                }
             }
 
         case (_, .void):

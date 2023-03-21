@@ -409,7 +409,7 @@ final class ClauseTests: QuelboTests {
                                     .or(
                                         Globals.pMerged,
                                         Globals.pOflag,
-                                        .isNot(try Globals.pItbl.get(at: Constants.pVerb).equals(0))
+                                        .isNot(try Globals.pItbl.get(at: Constants.pVerb).equals(nil))
                                     ),
                                     .or(
                                         try isWt(ptr: wrd, bit: PartsOfSpeech.adjective),
