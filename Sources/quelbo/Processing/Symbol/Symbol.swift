@@ -74,6 +74,13 @@ extension Symbol {
         }
     }
 
+    var globalID: String {
+        guard case .instance(let instance) = self else {
+            return handle
+        }
+        return instance.globalID
+    }
+
     var handle: String {
         switch self {
         case .definition(let definition):

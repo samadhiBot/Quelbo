@@ -52,7 +52,7 @@ extension Factories {
                     guard case .atom(let cond) = tokens.shift() else {
                         throw Error.invalidIfDirectionParameter(token)
                     }
-                    self.condition = cond.lowerCamelCase
+                    self.condition = try symbolizeAtom(cond, mode: .process).globalID
                 case .atom("IS"):
                     guard case .atom(let cond) = tokens.shift() else {
                         throw Error.invalidIsDirectionParameter(token)

@@ -48,7 +48,7 @@ final class RoomTests: QuelboTests {
                 /// The `westOfHouse` (WEST-OF-HOUSE) room.
                 var westOfHouse = Room(
                     id: "westOfHouse",
-                    action: westHouse,
+                    action: "westHouse",
                     description: "West of House",
                     directions: [
                         .north: .to("northOfHouse"),
@@ -57,20 +57,12 @@ final class RoomTests: QuelboTests {
                         .southEast: .to("southOfHouse"),
                         .west: .to("forest1"),
                         .east: .blocked("The door is boarded and you can't remove the boards."),
-                        .southWest: .conditional("stoneBarrow", if: Globals.wonFlag),
-                        .in: .conditional("stoneBarrow", if: Globals.wonFlag),
+                        .southWest: .conditional("stoneBarrow", if: "wonFlag"),
+                        .in: .conditional("stoneBarrow", if: "wonFlag"),
                     ],
-                    flags: [
-                        .isDryLand,
-                        .isOn,
-                        .isSacred,
-                    ],
-                    globals: [
-                        whiteHouse,
-                        board,
-                        forest,
-                    ],
-                    location: rooms
+                    flags: [.isDryLand, .isOn, .isSacred],
+                    globals: ["whiteHouse", "board", "forest"],
+                    location: "rooms"
                 )
                 """,
             type: .object,
@@ -80,65 +72,21 @@ final class RoomTests: QuelboTests {
     }
 
     func testReservoirSouth() throws {
-        let symbol = try factory.init([
-            .atom("RESERVOIR-SOUTH"),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("DESC"),
-                .string("Reservoir South")
-            ]),
-            .list([
-                .atom("SE"),
-                .atom("TO"),
-                .atom("DEEP-CANYON")
-            ]),
-            .list([
-                .atom("SW"),
-                .atom("TO"),
-                .atom("CHASM-ROOM")
-            ]),
-            .list([
-                .atom("EAST"),
-                .atom("TO"),
-                .atom("DAM-ROOM")
-            ]),
-            .list([
-                .atom("WEST"),
-                .atom("TO"),
-                .atom("STREAM-VIEW")
-            ]),
-            .list([
-                .atom("NORTH"),
-                .atom("TO"),
-                .atom("RESERVOIR"),
-                .atom("IF"),
-                .atom("LOW-TIDE"),
-                .atom("ELSE"),
-                .string("You would drown.")
-            ]),
-            .list([
-                .atom("ACTION"),
-                .atom("RESERVOIR-SOUTH-FCN")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("RLANDBIT")
-            ]),
-            .list([
-                .atom("GLOBAL"),
-                .atom("GLOBAL-WATER")
-            ]),
-            .list([
-                .atom("PSEUDO"),
-                .string("LAKE"),
-                .atom("LAKE-PSEUDO"),
-                .string("CHASM"),
-                .atom("CHASM-PSEUDO")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROOM RESERVOIR-SOUTH
+                  (IN ROOMS)
+                  (DESC "Reservoir South")
+                  (SE TO DEEP-CANYON)
+                  (SW TO CHASM-ROOM)
+                  (EAST TO DAM-ROOM)
+                  (WEST TO STREAM-VIEW)
+                  (NORTH TO RESERVOIR
+                   IF LOW-TIDE ELSE "You would drown.")
+                  (ACTION RESERVOIR-SOUTH-FCN)
+                  (FLAGS RLANDBIT)
+                  (GLOBAL GLOBAL-WATER)
+                  (PSEUDO "LAKE" LAKE-PSEUDO "CHASM" CHASM-PSEUDO)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "reservoirSouth",
@@ -146,7 +94,7 @@ final class RoomTests: QuelboTests {
             /// The `reservoirSouth` (RESERVOIR-SOUTH) room.
             var reservoirSouth = Room(
                 id: "reservoirSouth",
-                action: reservoirSouthFunc,
+                action: "reservoirSouthFunc",
                 description: "Reservoir South",
                 directions: [
                     .southEast: .to("deepCanyon"),
@@ -154,21 +102,21 @@ final class RoomTests: QuelboTests {
                     .east: .to("damRoom"),
                     .west: .to("streamView"),
                     .north: .conditionalElse("reservoir",
-                        if: Globals.lowTide,
+                        if: "lowTide",
                         else: "You would drown."
                     ),
                 ],
                 flags: [.isDryLand],
-                globals: [globalWater],
-                location: rooms,
+                globals: ["globalWater"],
+                location: "rooms",
                 things: [
                     Thing(
-                        action: lakePseudo,
+                        action: "lakePseudo",
                         adjectives: [],
                         nouns: ["lake"]
                     ),
                     Thing(
-                        action: chasmPseudo,
+                        action: "chasmPseudo",
                         adjectives: [],
                         nouns: ["chasm"]
                     ),
@@ -182,76 +130,30 @@ final class RoomTests: QuelboTests {
     }
 
     func testEastOfHouse() throws {
-        let symbol = try factory.init([
-            .atom("EAST-OF-HOUSE"),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("DESC"),
-                .string("Behind House")
-            ]),
-            .list([
-                .atom("NORTH"),
-                .atom("TO"),
-                .atom("NORTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("SOUTH"),
-                .atom("TO"),
-                .atom("SOUTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("SW"),
-                .atom("TO"),
-                .atom("SOUTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("NW"),
-                .atom("TO"),
-                .atom("NORTH-OF-HOUSE")
-            ]),
-            .list([
-                .atom("EAST"),
-                .atom("TO"),
-                .atom("CLEARING")
-            ]),
-            .list([
-                .atom("WEST"),
-                .atom("TO"),
-                .atom("KITCHEN"),
-                .atom("IF"),
-                .atom("KITCHEN-WINDOW"),
-                .atom("IS"),
-                .atom("OPEN")
-            ]),
-            .list([
-                .atom("IN"),
-                .atom("TO"),
-                .atom("KITCHEN"),
-                .atom("IF"),
-                .atom("KITCHEN-WINDOW"),
-                .atom("IS"),
-                .atom("OPEN")
-            ]),
-            .list([
-                .atom("ACTION"),
-                .atom("EAST-HOUSE")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("RLANDBIT"),
-                .atom("ONBIT"),
-                .atom("SACREDBIT")
-            ]),
-            .list([
-                .atom("GLOBAL"),
-                .atom("WHITE-HOUSE"),
-                .atom("KITCHEN-WINDOW"),
-                .atom("FOREST")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <OBJECT KITCHEN-WINDOW>
+
+            <ROOM CLEARING>
+            <ROOM KITCHEN>
+            <ROOM NORTH-OF-HOUSE>
+            <ROOM NORTH-OF-HOUSE>
+            <ROOM SOUTH-OF-HOUSE>
+            <ROOM SOUTH-OF-HOUSE>
+
+            <ROOM EAST-OF-HOUSE
+                  (IN ROOMS)
+                  (DESC "Behind House")
+                  (NORTH TO NORTH-OF-HOUSE)
+                  (SOUTH TO SOUTH-OF-HOUSE)
+                  (SW TO SOUTH-OF-HOUSE)
+                  (NW TO NORTH-OF-HOUSE)
+                  (EAST TO CLEARING)
+                  (WEST TO KITCHEN IF KITCHEN-WINDOW IS OPEN)
+                  (IN TO KITCHEN IF KITCHEN-WINDOW IS OPEN)
+                  (ACTION EAST-HOUSE)
+                  (FLAGS RLANDBIT ONBIT SACREDBIT)
+                  (GLOBAL WHITE-HOUSE KITCHEN-WINDOW FOREST)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "eastOfHouse",
@@ -259,7 +161,7 @@ final class RoomTests: QuelboTests {
             /// The `eastOfHouse` (EAST-OF-HOUSE) room.
             var eastOfHouse = Room(
                 id: "eastOfHouse",
-                action: eastHouse,
+                action: "eastHouse",
                 description: "Behind House",
                 directions: [
                     .north: .to("northOfHouse"),
@@ -267,20 +169,12 @@ final class RoomTests: QuelboTests {
                     .southWest: .to("southOfHouse"),
                     .northWest: .to("northOfHouse"),
                     .east: .to("clearing"),
-                    .west: .conditional("kitchen", if: Objects.kitchenWindow.isOpen),
-                    .in: .conditional("kitchen", if: Objects.kitchenWindow.isOpen),
+                    .west: .conditional("kitchen", if: "Objects.kitchenWindow.isOpen"),
+                    .in: .conditional("kitchen", if: "Objects.kitchenWindow.isOpen"),
                 ],
-                flags: [
-                    .isDryLand,
-                    .isOn,
-                    .isSacred,
-                ],
-                globals: [
-                    Objects.whiteHouse,
-                    Objects.kitchenWindow,
-                    Objects.forest,
-                ],
-                location: rooms
+                flags: [.isDryLand, .isOn, .isSacred],
+                globals: ["whiteHouse", "kitchenWindow", "forest"],
+                location: "rooms"
             )
             """,
             type: .object,
@@ -290,53 +184,23 @@ final class RoomTests: QuelboTests {
     }
 
     func testStudio() throws {
-        let symbol = try factory.init([
-            .atom("STUDIO"),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("LDESC"),
-                .string("""
-                    This appears to have been an artist's studio. The walls and floors are \
-                    splattered with paints of 69 different colors. Strangely enough, nothing \
-                    of value is hanging here. At the south end of the room is an open door \
-                    (also covered with paint). A dark and narrow chimney leads up from a \
-                    fireplace; although you might be able to get up it, it seems unlikely \
-                    you could get back down.
-                    """)
-            ]),
-            .list([
-                .atom("DESC"),
-                .string("Studio")
-            ]),
-            .list([
-                .atom("SOUTH"),
-                .atom("TO"),
-                .atom("GALLERY")
-            ]),
-            .list([
-                .atom("UP"),
-                .atom("PER"),
-                .atom("UP-CHIMNEY-FUNCTION")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("RLANDBIT")
-            ]),
-            .list([
-                .atom("GLOBAL"),
-                .atom("CHIMNEY")
-            ]),
-            .list([
-                .atom("PSEUDO"),
-                .string("DOOR"),
-                .atom("DOOR-PSEUDO"),
-                .string("PAINT"),
-                .atom("PAINT-PSEUDO")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROOM STUDIO
+                  (IN ROOMS)
+                  (LDESC
+            "This appears to have been an artist's studio. The walls and floors are
+            splattered with paints of 69 different colors. Strangely enough, nothing
+            of value is hanging here. At the south end of the room is an open door
+            (also covered with paint). A dark and narrow chimney leads up from a
+            fireplace; although you might be able to get up it, it seems unlikely
+            you could get back down.")
+                  (DESC "Studio")
+                  (SOUTH TO GALLERY)
+                  (UP PER UP-CHIMNEY-FUNCTION)
+                  (FLAGS RLANDBIT)
+                  (GLOBAL CHIMNEY)
+                  (PSEUDO "DOOR" DOOR-PSEUDO "PAINT" PAINT-PSEUDO)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "studio",
@@ -350,8 +214,8 @@ final class RoomTests: QuelboTests {
                     .up: .per("upChimneyFunc"),
                 ],
                 flags: [.isDryLand],
-                globals: [chimney],
-                location: rooms,
+                globals: ["chimney"],
+                location: "rooms",
                 longDescription: """
                     This appears to have been an artist's studio. The walls and \
                     floors are splattered with paints of 69 different colors. \
@@ -363,12 +227,12 @@ final class RoomTests: QuelboTests {
                     """,
                 things: [
                     Thing(
-                        action: doorPseudo,
+                        action: "doorPseudo",
                         adjectives: [],
                         nouns: ["door"]
                     ),
                     Thing(
-                        action: paintPseudo,
+                        action: "paintPseudo",
                         adjectives: [],
                         nouns: ["paint"]
                     ),
@@ -382,40 +246,19 @@ final class RoomTests: QuelboTests {
     }
 
     func testFoyer() throws {
-        let symbol = try factory.init([
-            .atom("FOYER"),
-            .list([
-                .atom("DESC"),
-                .string("Foyer of the Opera House")
-            ]),
-            .list([
-                .atom("IN"),
-                .atom("ROOMS")
-            ]),
-            .list([
-                .atom("LDESC"),
-                .string("You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west.")
-            ]),
-            .list([
-                .atom("SOUTH"),
-                .atom("TO"),
-                .atom("BAR")
-            ]),
-            .list([
-                .atom("WEST"),
-                .atom("TO"),
-                .atom("CLOAKROOM")
-            ]),
-            .list([
-                .atom("NORTH"),
-                .atom("SORRY"),
-                .string("You\'ve only just arrived, and besides, the weather outside seems to be getting worse.")
-            ]),
-            .list([
-                .atom("FLAGS"),
-                .atom("LIGHTBIT")
-            ])
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ROOM FOYER
+                (DESC "Foyer of the Opera House")
+                (IN ROOMS)
+                (LDESC "You are standing in a spacious hall, splendidly decorated in red
+            and gold, with glittering chandeliers overhead. The entrance from
+            the street is to the north, and there are doorways south and west.")
+                (SOUTH TO BAR)
+                (WEST TO CLOAKROOM)
+                (NORTH SORRY "You've only just arrived, and besides, the weather outside
+            seems to be getting worse.")
+                (FLAGS LIGHTBIT)>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             id: "foyer",
@@ -433,7 +276,7 @@ final class RoomTests: QuelboTests {
                         """),
                 ],
                 flags: [.isLight],
-                location: rooms,
+                location: "rooms",
                 longDescription: """
                     You are standing in a spacious hall, splendidly decorated in \
                     red and gold, with glittering chandeliers overhead. The \
@@ -484,8 +327,8 @@ final class RoomTests: QuelboTests {
                     .east: .to("reservoir"),
                 ],
                 flags: [.isNotLand],
-                globals: [globalWater],
-                location: rooms,
+                globals: ["globalWater"],
+                location: "rooms",
                 longDescription: """
                     You are on the gently flowing stream. The upstream route is \
                     too narrow to navigate, and the downstream route is \
@@ -494,7 +337,7 @@ final class RoomTests: QuelboTests {
                     """,
                 things: [
                     Thing(
-                        action: streamPseudo,
+                        action: "streamPseudo",
                         adjectives: [],
                         nouns: ["stream"]
                     ),
