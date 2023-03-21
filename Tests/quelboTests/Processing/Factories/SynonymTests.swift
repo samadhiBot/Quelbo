@@ -44,11 +44,7 @@ final class SynonymTestsTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "synonym:under",
             code: """
-                Syntax.set("under", synonyms: [
-                    "below",
-                    "beneath",
-                    "underneath",
-                ])
+                Syntax.set("under", synonyms: ["below", "beneath", "underneath"])
                 """,
             type: .string,
             category: .syntax,
@@ -74,10 +70,10 @@ final class SynonymTestsTests: QuelboTests {
                     /// The `graniteWall` (GRANITE-WALL) object.
                     var graniteWall = Object(
                         id: "graniteWall",
-                        action: graniteWallFunc,
+                        action: "graniteWallFunc",
                         adjectives: ["granite"],
                         description: "granite wall",
-                        location: globalObjects,
+                        location: "globalObjects",
                         synonyms: ["wall"]
                     )
                     """,

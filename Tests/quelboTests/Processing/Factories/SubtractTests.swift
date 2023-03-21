@@ -94,12 +94,7 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .subtract(
-                    bigNumber,
-                    biggerNumber
-                )
-                """,
+            code: ".subtract(bigNumber, biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -112,7 +107,7 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".subtract(cyclowrath, 1)",
+            code: ".subtract(Globals.cyclowrath, 1)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -127,12 +122,7 @@ final class SubtractTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                .subtract(
-                    baseScore,
-                    otvalFrob()
-                )
-                """,
+            code: ".subtract(Globals.baseScore, otvalFrob())",
             type: .int,
             returnHandling: .implicit
         ))

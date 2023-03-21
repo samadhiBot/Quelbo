@@ -98,12 +98,7 @@ final class SetOutputStreamTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: """
-                setOutputStream(
-                    .tableOn,
-                    &outputTable
-                )
-                """,
+            code: "setOutputStream(.tableOn, &outputTable)",
             type: .void
         ))
     }

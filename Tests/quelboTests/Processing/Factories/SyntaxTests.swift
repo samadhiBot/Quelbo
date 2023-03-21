@@ -22,10 +22,7 @@ final class SyntaxTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "quit",
             code: """
-                Syntax(
-                    verb: "quit",
-                    action: "vQuit"
-                )
+                Syntax(verb: "quit", action: "vQuit")
                 """,
             type: .void,
             category: .syntax,

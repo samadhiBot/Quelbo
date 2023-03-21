@@ -88,17 +88,17 @@ final class ShakeLoopTests: QuelboTests {
                 code: """
                     /// The `shakeLoop` (SHAKE-LOOP) routine.
                     func shakeLoop() {
-                        var x: Object? = nil
+                        var x: Object?
                         while true {
                             if _ = x.set(to: Globals.parsedDirectObject.firstChild) {
                                 x.hasBeenTouched.set(true)
                                 x.move(to: {
-                                    if here.equals(upATree) {
-                                        return path
-                                    } else if .isNot(here.hasFlag(.isDryLand)) {
-                                        return pseudoObject
+                                    if Globals.here.equals(Rooms.upATree) {
+                                        return Rooms.path
+                                    } else if .isNot(Globals.here.hasFlag(.isDryLand)) {
+                                        return Objects.pseudoObject
                                     } else {
-                                        return here
+                                        return Globals.here
                                     }
                                 }())
                             } else {

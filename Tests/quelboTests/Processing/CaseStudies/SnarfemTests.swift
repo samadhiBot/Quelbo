@@ -136,62 +136,62 @@ final class SnarfemTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `snarfem` (SNARFEM) routine.
-                    func snarfem(
-                        ptr: Table,
-                        eptr: Table,
-                        tbl: Table
-                    ) -> Bool {
-                        var but: Table? = nil
+                    func snarfem(ptr: Table, eptr: Table, tbl: Table) throws -> Bool {
+                        var but: Table?
                         // var len: <Unknown>
-                        var wv: Bool = false
-                        var wrd: [Word] = []
-                        var nw: [Word] = []
-                        var wasAll: Bool = false
-                        var ptr: Table = ptr
-                        pAnd.set(to: false)
-                        if pGetflags.equals(pAll) {
+                        var wv = false
+                        var wrd = [[Word]]()
+                        var nw = [[Word]]()
+                        var wasAll = false
+                        var ptr = ptr
+                        Globals.pAnd.set(to: false)
+                        if Globals.pGetflags.equals(Constants.pAll) {
                             wasAll.set(to: true)
                         }
-                        pGetflags.set(to: 0)
-                        try tbl.put(element: 0, at: pMatchlen)
+                        Globals.pGetflags.set(to: 0)
+                        try tbl.put(
+                            element: 0,
+                            at: Globals.pMatchlen
+                        )
                         wrd.set(to: try ptr.get(at: 0))
                         while true {
                             if ptr.equals(eptr) {
-                                wv.set(to: getObject(tbl: .or(but, tbl)))
+                                wv.set(to: try getObject(tbl: .or(but, tbl)))
                                 if wasAll {
-                                    pGetflags.set(to: pAll)
+                                    Globals.pGetflags.set(to: Constants.pAll)
                                 }
                                 return wv
                             } else {
-                                if eptr.equals(
-                                    ptr.rest(bytes: pWordlen)
-                                ) {
+                                if eptr.equals(ptr.rest(bytes: Constants.pWordlen)) {
                                     nw.set(to: nil)
                                 } else {
-                                    nw.set(to: try ptr.get(at: pLexelen))
+                                    nw.set(to: try ptr.get(at: Constants.pLexelen))
                                 }
                                 if wrd.equals(Word.all) {
-                                    pGetflags.set(to: pAll)
+                                    Globals.pGetflags.set(to: Constants.pAll)
                                     if nw.equals(Word.of) {
-                                        ptr.set(to: ptr.rest(bytes: pWordlen))
+                                        ptr.set(to: ptr.rest(bytes: Constants.pWordlen))
                                     }
                                 } else if wrd.equals(Word.but, Word.except) {
                                     .or(
-                                        getObject(tbl: .or(but, tbl)),
+                                        try getObject(tbl: .or(but, tbl)),
                                         return false
                                     )
-                                    but.set(to: pButs)
-                                    try but.put(element: 0, at: pMatchlen)
+                                    but.set(to: Globals.pButs)
+                                    try but.put(
+                                        element: 0,
+                                        at: Globals.pMatchlen
+                                    )
                                 } else if wrd.equals(Word.a, Word.one) {
-                                    if .isNot(pAdj) {
-                                        pGetflags.set(to: pOne)
+                                    if .isNot(Globals.pAdj) {
+                                        Globals.pGetflags.set(to: Constants.pOne)
                                         if nw.equals(Word.of) {
-                                            ptr.set(to: ptr.rest(bytes: pWordlen))
+                                            ptr.set(to: ptr.rest(bytes: Constants.pWordlen))
                                         }
                                     } else {
-                                        pNam.set(to: pOneobj)
+                                        Globals.pNam.set(to: Globals.pOneobj)
                                         .or(
-                                            getObject(tbl: .or(but, tbl)),
+                                            try getObject(tbl: .or(but, tbl)),
                                             return false
                                         )
                                         .and(nw.isNil, return true)
@@ -200,44 +200,41 @@ final class SnarfemTests: QuelboTests {
                                     wrd.equals(Word.and, Word.comma),
                                     .isNot(nw.equals(Word.and, Word.comma))
                                 ) {
-                                    pAnd.set(to: true)
+                                    Globals.pAnd.set(to: true)
                                     .or(
-                                        getObject(tbl: .or(but, tbl)),
+                                        try getObject(tbl: .or(but, tbl)),
                                         return false
                                     )
                                     return true
-                                } else if isWt(
-                                    ptr: wrd,
-                                    bit: PartsOfSpeech.buzzWord
-                                ) {
+                                } else if try isWt(ptr: wrd, bit: PartsOfSpeech.buzzWord) {
                                     // do nothing
                                 } else if wrd.equals(Word.and, Word.comma) {
                                     // do nothing
                                 } else if wrd.equals(Word.of) {
-                                    if pGetflags.isZero {
-                                        pGetflags.set(to: pInhiBit)
+                                    if Globals.pGetflags.isZero {
+                                        Globals.pGetflags.set(to: Constants.pInhiBit)
                                     }
                                 } else if _ = .and(
-                                    wv.set(to: isWt(
+                                    wv.set(to: try isWt(
                                         ptr: wrd,
                                         bit: PartsOfSpeech.adjective,
                                         b1: PartsOfSpeech.adjectiveFirst
                                     )),
-                                    .isNot(pAdj)
+                                    .isNot(Globals.pAdj)
                                 ) {
-                                    pAdj.set(to: wv)
-                                    pAdjn.set(to: wrd)
-                                } else if _ = isWt(
+                                    Globals.pAdj.set(to: wv)
+                                    Globals.pAdjn.set(to: wrd)
+                                } else if _ = try isWt(
                                     ptr: wrd,
                                     bit: PartsOfSpeech.object,
                                     b1: PartsOfSpeech.objectFirst
                                 ) {
-                                    pNam.set(to: wrd)
-                                    pOneobj.set(to: wrd)
+                                    Globals.pNam.set(to: wrd)
+                                    Globals.pOneobj.set(to: wrd)
                                 }
                             }
                             if .isNot(ptr.equals(eptr)) {
-                                ptr.set(to: ptr.rest(bytes: pWordlen))
+                                ptr.set(to: ptr.rest(bytes: Constants.pWordlen))
                                 wrd.set(to: nw)
                             }
                         }
@@ -246,6 +243,7 @@ final class SnarfemTests: QuelboTests {
                 type: .bool,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -259,38 +257,48 @@ final class SnarfemTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `butMerge` (BUT-MERGE) routine.
-                    func butMerge(tbl: Table) -> Table? {
-                        var len: Int = 0
+                    func butMerge(tbl: Table) throws -> Table? {
+                        var len = 0
                         // var butlen: <Unknown>
-                        var cnt: Int = 1
-                        var matches: Int = 0
-                        var obj: [Object] = []
-                        var ntbl: Table? = nil
-                        len.set(to: try tbl.get(at: pMatchlen))
-                        try pMerge.put(element: 0, at: pMatchlen)
+                        var cnt = 1
+                        var matches = 0
+                        var obj = [[Object]]()
+                        var ntbl: Table?
+                        len.set(to: try tbl.get(at: Globals.pMatchlen))
+                        try Globals.pMerge.put(
+                            element: 0,
+                            at: Globals.pMatchlen
+                        )
                         while true {
                             if len.decrement().isLessThan(0) {
                                 break
                             } else if _ = zmemq(
                                 itm: obj.set(to: try tbl.get(at: cnt)),
-                                tbl: pButs
+                                tbl: Globals.pButs
                             ) {
                                 // do nothing
                             } else {
-                                try pMerge.put(element: obj, at: .add(matches, 1))
+                                try Globals.pMerge.put(
+                                    element: obj,
+                                    at: .add(matches, 1)
+                                )
                                 matches.set(to: .add(matches, 1))
                             }
                             cnt.set(to: .add(cnt, 1))
                         }
-                        try pMerge.put(element: matches, at: pMatchlen)
-                        ntbl.set(to: pMerge)
-                        pMerge.set(to: tbl)
+                        try Globals.pMerge.put(
+                            element: matches,
+                            at: Globals.pMatchlen
+                        )
+                        ntbl.set(to: Globals.pMerge)
+                        Globals.pMerge.set(to: tbl)
                         return ntbl
                     }
                     """,
-                type: .table.optional,
+                type: .table.root.optional,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
@@ -304,48 +312,51 @@ final class SnarfemTests: QuelboTests {
                 code: """
                     @discardableResult
                     /// The `snarfObjects` (SNARF-OBJECTS) routine.
-                    func snarfObjects() -> Bool {
-                        var optr: Table? = nil
-                        var iptr: Table? = nil
-                        var l: TableElement? = nil
-                        try pButs.put(element: 0, at: pMatchlen)
-                        if .isNot(iptr.set(to: try pItbl.get(at: pNc2)).equals(0)) {
-                            pSlocbits.set(to: try pSyntax.get(at: pSloc2))
+                    func snarfObjects() throws -> Bool {
+                        var optr: Table?
+                        var iptr: Table?
+                        var l: TableElement?
+                        try Globals.pButs.put(
+                            element: 0,
+                            at: Globals.pMatchlen
+                        )
+                        if .isNot(iptr.set(to: try Globals.pItbl.get(at: Constants.pNc2)).equals(nil)) {
+                            Globals.pSlocbits.set(to: try Globals.pSyntax.get(at: Constants.pSloc2))
                             .or(
-                                snarfem(
+                                try snarfem(
                                     ptr: iptr,
-                                    eptr: try pItbl.get(at: pNc2L),
-                                    tbl: pPrsi
+                                    eptr: try Globals.pItbl.get(at: Constants.pNc2L),
+                                    tbl: Globals.pPrsi
                                 ),
                                 return false
                             )
                         }
-                        if .isNot(optr.set(to: try pItbl.get(at: pNc1)).equals(0)) {
-                            pSlocbits.set(to: try pSyntax.get(at: pSloc1))
+                        if .isNot(optr.set(to: try Globals.pItbl.get(at: Constants.pNc1)).equals(nil)) {
+                            Globals.pSlocbits.set(to: try Globals.pSyntax.get(at: Constants.pSloc1))
                             .or(
-                                snarfem(
+                                try snarfem(
                                     ptr: optr,
-                                    eptr: try pItbl.get(at: pNc1L),
-                                    tbl: pPrso
+                                    eptr: try Globals.pItbl.get(at: Constants.pNc1L),
+                                    tbl: Globals.pPrso
                                 ),
                                 return false
                             )
                         }
-                        if .isNot(try pButs.get(at: pMatchlen).isZero) {
-                            l.set(to: try pPrso.get(at: pMatchlen))
+                        if .isNot(try Globals.pButs.get(at: Globals.pMatchlen).isZero) {
+                            l.set(to: try Globals.pPrso.get(at: Globals.pMatchlen))
                             if let optr {
-                                pPrso.set(to: butMerge(tbl: pPrso))
+                                Globals.pPrso.set(to: try butMerge(tbl: Globals.pPrso))
                             }
                             if _ = .and(
                                 iptr,
                                 .or(
                                     .isNot(optr),
                                     l.equals(
-                                        try pPrso.get(at: pMatchlen)
+                                        try Globals.pPrso.get(at: Globals.pMatchlen)
                                     )
                                 )
                             ) {
-                                pPrsi.set(to: butMerge(tbl: pPrsi))
+                                Globals.pPrsi.set(to: try butMerge(tbl: Globals.pPrsi))
                             }
                         }
                         return true
@@ -354,6 +365,7 @@ final class SnarfemTests: QuelboTests {
                 type: .booleanTrue,
                 category: .routines,
                 isCommittable: true,
+                isThrowing: true,
                 returnHandling: .passthrough
             )
         )
