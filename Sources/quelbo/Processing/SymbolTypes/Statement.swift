@@ -60,7 +60,9 @@ final class Statement: SymbolType {
         do {
             return try codeBlock(self)
         } catch {
-            return "Statement:code:\(error)"
+            return """
+                #error("Statement:code:\(error)")
+                """
         }
     }
 
@@ -227,7 +229,11 @@ extension Statement {
     }
 
     func assertHasType(_ assertedType: TypeInfo) throws {
-        self.type = try type.reconcile(".statement(\(id ?? code))", with: assertedType)
+        if isMutable == false && type != .unknown {
+            _ = try type.clone().reconcile(".statement(\(id ?? code))", with: assertedType)
+        } else {
+            self.type = try type.reconcile(".statement(\(id ?? code))", with: assertedType)
+        }
 
         if returnHandling.isPassthrough {
             try payload.symbols.returningSymbols.assert(

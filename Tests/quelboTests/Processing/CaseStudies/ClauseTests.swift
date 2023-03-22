@@ -446,7 +446,7 @@ final class ClauseTests: QuelboTests {
                         }
                     }
                     """,
-                type: .int.optional.tableElement,
+                type: .int.optional,
                 category: .routines,
                 isCommittable: true,
                 isThrowing: true,

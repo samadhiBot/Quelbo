@@ -51,19 +51,11 @@ extension Factories {
                 .hasReturnValue
             )
 
-            if symbols[1].isMutable == false {
-                try symbols[0].assert(
-                    .hasCategory(.constants),
-                    .isImmutable,
-                    .isVariable
-                )
-            } else {
-                try symbols[0].assert(
-                    .hasCategory(.globals),
-                    .isMutable,
-                    .isVariable
-                )
-            }
+            try symbols[0].assert(
+                .hasCategory(.globals),
+                .isMutable,
+                .isVariable
+            )
         }
 
         @discardableResult
@@ -76,10 +68,10 @@ extension Factories {
                 code: { statement in
                     let type = statement.type
                     var assignment: String {
-                        if type.isOptional == true, variable.isMutable == true {
+                        if type.isOptional == true, statement.isMutable == true {
                             return ": \(statement.typeDescription)"
                         }
-                        if type.confidence < .assured {
+                        if type.confidence < .assured, statement.isMutable == true {
                             return statement.type.emptyValueAssignment
                         }
                         return " = \(value.code)"
@@ -91,7 +83,7 @@ extension Factories {
                 type: value.type,
                 payload: .init(
                     evaluation: value.evaluation,
-                    symbols: [variable, value]
+                    symbols: symbols
                 ),
                 category: variable.category,
                 isCommittable: true,

@@ -76,6 +76,13 @@ extension TypeInfo {
         )
     }
 
+    static var integerOne: TypeInfo {
+        .init(
+            dataType: .int,
+            confidence: .integerOne
+        )
+    }
+
     static var integerZero: TypeInfo {
         .init(
             dataType: .int,
@@ -387,7 +394,7 @@ extension TypeInfo {
         self.confidence = newConfidence ?? max(type.confidence, confidence)
         self.isArray = newIsArray ?? type.isArray ?? isArray
         // print("\t❤️‍🔥", newIsOptional, type.isOptional, isOptional, isOptional(versus: type))
-        self.isOptional = newIsOptional ?? type.isOptional ?? isOptional ??
+        self.isOptional = type.isOptional ?? newIsOptional ?? isOptional ??
                           isOptional(versus: type) ? true : nil
         self.isProperty = newIsProperty ?? type.isProperty ?? isProperty
         // print("\t🍴", newIsTableElement, type.isTableElement, isTableElement)
