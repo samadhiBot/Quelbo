@@ -69,15 +69,21 @@ final class GlobalTests: QuelboTests {
         process("""
             <GLOBAL AGAIN-DIR <>>
 
-            <ROUTINE TEST-RTN () <SETG AGAIN-DIR <>>>
+            <ROUTINE MINI-PARSER ("AUX" (DIR <>))
+              <SET DIR ,AGAIN-DIR>
+              <COND (.DIR
+               <SETG PRSO .DIR>
+               <SETG AGAIN-DIR .DIR>)
+              (ELSE
+               <SETG AGAIN-DIR <>>)>>
         """)
 
         XCTAssertNoDifference(
             Game.globals.find("againDir"),
             Statement(
                 id: "againDir",
-                code: "var againDir = false",
-                type: .booleanFalse,
+                code: "var againDir: Object?",
+                type: .object.optional,
                 category: .globals,
                 isCommittable: true,
                 isMutable: true
