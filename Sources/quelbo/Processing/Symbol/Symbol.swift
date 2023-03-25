@@ -98,15 +98,50 @@ extension Symbol {
     }
 
     var handleMultiType: String {
-        switch self {
-        case .definition, .statement:
+        if case .definition = self { return handle }
+
+        switch (type.dataType, category) {
+        case (.bool, _):
+            return code
+        case (.int16, _):
+            return ".int16(\(code))"
+        case (.int32, _):
+            return ".int32(\(code))"
+        case (.int8, _):
+            return ".int8(\(code))"
+        case (.int, _):
+            return code
+        case (.object, .rooms):
+            return ".room(\"\(code)\")"
+        case (.object, _):
+            return ".object(\"\(code)\")"
+        case (.string, _):
+            return code
+        case (.table, _):
+            if case .instance(let instance) = self {
+                return ".table(\(instance.globalID))"
+            }
             return handle
-        case .instance, .literal:
-            return type.codeMultiType(
-                code: handle,
-                category: category
-            )
+        default:
+            if case .instance = self {
+                return globalID
+            }
+            return code
         }
+//        print("▶️", handle, type.dataType)
+//        switch self {
+//        case .definition:
+//
+//        case .instance, .literal, .statement:
+////            guard type.isTableElement == true else { return handle }
+//
+//
+//
+////            return type.codeMultiType(
+////                code: handle,
+////                category: category
+////            )
+//        }
     }
 
     var id: String? {

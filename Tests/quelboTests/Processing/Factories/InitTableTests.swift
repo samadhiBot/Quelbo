@@ -132,7 +132,7 @@ final class InitTableTests: QuelboTests {
             code: """
                 Table(
                     count: 59,
-                    defaults: .int(0), .int8(0), .int8(0),
+                    defaults: 0, .int8(0), .int8(0),
                     flags: .lexv
                 )
                 """,

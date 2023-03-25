@@ -204,10 +204,7 @@ final class GetObjectTests: QuelboTests {
                         if _ = .bitwiseCompare(Globals.pGetflags, Constants.pInhiBit) {
                             return true
                         }
-                        if _ = .and(
-                            .isNot(Globals.pNam),
-                            .object("Globals.pAdj")
-                        ) {
+                        if _ = .and(.isNot(Globals.pNam), .object("pAdj")) {
                             if try isWt(
                                 ptr: Globals.pAdjn,
                                 bit: PartsOfSpeech.object,

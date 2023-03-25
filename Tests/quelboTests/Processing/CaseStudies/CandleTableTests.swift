@@ -84,17 +84,17 @@ final class CandleTableTests: QuelboTests {
                 id: "candleTable",
                 code: """
                     var candleTable = Table(
-                        .int(20),
-                        .string("The candles grow shorter."),
-                        .int(10),
-                        .string("The candles are becoming quite short."),
-                        .int(5),
-                        .string("The candles won't last long now."),
-                        .int(0),
+                        20,
+                        "The candles grow shorter.",
+                        10,
+                        "The candles are becoming quite short.",
+                        5,
+                        "The candles won't last long now.",
+                        0,
                         flags: .pure
                     )
                     """,
-                type: .table.root,
+                type: .tableDeclaration,
                 category: .globals,
                 isCommittable: true,
                 isMutable: true,
@@ -122,7 +122,7 @@ final class CandleTableTests: QuelboTests {
                         synonyms: ["candles", "pair"]
                     )
                     """,
-                type: .object.optional.tableElement,
+                type: .object.optional,
                 category: .objects,
                 isCommittable: true
             )

@@ -23,9 +23,19 @@ final class TableTests: QuelboTests {
             <GLOBAL CYCLOPS-MELEE <TABLE (PURE) "Cyclops melee message">>
             <GLOBAL DEF1 <TABLE (PURE) MISSED MISSED MISSED MISSED>>
             <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
-            <GLOBAL TROLL-MELEE <TABLE (PURE) "Troll melee message">>
+            <GLOBAL TROLL-MELEE
+              <TABLE (PURE)
+               <LTABLE (PURE)
+                <LTABLE (PURE) "The troll swings his axe, but it misses.">
+                <LTABLE (PURE) "The troll's axe barely misses your ear.">>
+               <LTABLE (PURE)
+                <LTABLE (PURE) "The flat of the troll's axe hits you delicately on the head, knocking
+              you out.">>
+              >>
+
             <OBJECT CYCLOPS><OBJECT KNIFE><OBJECT SWORD><OBJECT THIEF><OBJECT TROLL>
-            <ROOM CLEARING><ROOM FOREST1><ROOM FOREST2><ROOM FOREST3><ROOM PATH>
+
+        <ROOM CLEARING><ROOM FOREST1><ROOM FOREST2><ROOM FOREST3><ROOM PATH>
         """)
     }
 
@@ -39,9 +49,9 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3")
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3")
                 )
                 """,
             type: .table,
@@ -55,10 +65,10 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object("Objects.troll"),
-                    .object("Objects.sword"),
-                    .int(1),
-                    .int(0),
+                    .object("troll"),
+                    .object("sword"),
+                    1,
+                    0,
                     .table(Globals.trollMelee)
                 )
                 """,
@@ -96,7 +106,7 @@ final class TableTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Table(.int(0), .int8(0), .int8(0))",
+            code: "Table(0, .int8(0), .int8(0))",
             type: .table,
             returnHandling: .implicit
         ))
@@ -119,17 +129,17 @@ final class TableTests: QuelboTests {
             id: "candleTable",
             code: """
                 var candleTable = Table(
-                    .int(20),
-                    .string("The candles grow shorter."),
-                    .int(10),
-                    .string("The candles are becoming quite short."),
-                    .int(5),
-                    .string("The candles won't last long now."),
-                    .int(0),
+                    20,
+                    "The candles grow shorter.",
+                    10,
+                    "The candles are becoming quite short.",
+                    5,
+                    "The candles won't last long now.",
+                    0,
                     flags: .pure
                 )
                 """,
-            type: .table.root,
+            type: .tableDeclaration,
             category: .globals,
             isCommittable: true,
             isMutable: true,
@@ -153,12 +163,12 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3"),
-                    .room("Rooms.path"),
-                    .room("Rooms.clearing"),
-                    .room("Rooms.forest1"),
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .pure
                 )
                 """,
@@ -168,20 +178,17 @@ final class TableTests: QuelboTests {
     }
 
     func testFormPureTableWithStrings() throws {
-        let symbol = try factory.init([
-            .list([
-                .atom("PURE")
-            ]),
-            .string("up to your ankles."),
-            .string("up to your shin."),
-            .string("up to your knees."),
-            .string("up to your hips."),
-            .string("up to your waist."),
-            .string("up to your chest."),
-            .string("up to your neck."),
-            .string("over your head."),
-            .string("high in your lungs.")
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <TABLE (PURE) "up to your ankles."
+                "up to your shin."
+                "up to your knees."
+                "up to your hips."
+                "up to your waist."
+                "up to your chest."
+                "up to your neck."
+                "over your head."
+                "high in your lungs.">
+            """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
@@ -204,46 +211,126 @@ final class TableTests: QuelboTests {
     }
 
     func testNestedTable() throws {
-        let symbol = try factory.init([
-            .form([
-                .atom("TABLE"),
-                .atom("TROLL"),
-                .atom("SWORD"),
-                .decimal(1),
-                .decimal(0),
-                .atom("TROLL-MELEE")
-            ]),
-            .form([
-                .atom("TABLE"),
-                .atom("THIEF"),
-                .atom("KNIFE"),
-                .decimal(1),
-                .decimal(0),
-                .atom("THIEF-MELEE")
-            ]),
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <LTABLE <TABLE TROLL SWORD 1 0 TROLL-MELEE>
+                <TABLE THIEF KNIFE 1 0 THIEF-MELEE>
+                <TABLE CYCLOPS <> 0 0 CYCLOPS-MELEE>>
+            """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
                     .table(
-                        .object("Objects.troll"),
-                        .object("Objects.sword"),
-                        .int(1),
-                        .int(0),
+                        .object("troll"),
+                        .object("sword"),
+                        1,
+                        0,
                         .table(Globals.trollMelee)
                     ),
                     .table(
-                        .object("Objects.thief"),
-                        .object("Objects.knife"),
-                        .int(1),
-                        .int(0),
+                        .object("thief"),
+                        .object("knife"),
+                        1,
+                        0,
                         .table(Globals.thiefMelee)
-                    )
+                    ),
+                    .table(
+                        .object("cyclops"),
+                        false,
+                        0,
+                        0,
+                        .table(Globals.cyclopsMelee)
+                    ),
+                    flags: .length
                 )
                 """,
             type: .table,
             returnHandling: .implicit
         ))
+    }
+
+    func testReferencedTable() throws {
+        process("""
+            <GLOBAL VILLAINS
+              <LTABLE <TABLE TROLL SWORD 1 0 TROLL-MELEE>
+                <TABLE THIEF KNIFE 1 0 THIEF-MELEE>
+                <TABLE CYCLOPS <> 0 0 CYCLOPS-MELEE>>>
+        """)
+
+        XCTAssertNoDifference(
+            try Game.find("trollMelee"),
+            Statement(
+                id: "trollMelee",
+                code: #"""
+                    var trollMelee = Table(
+                        .table(
+                            .table(
+                                "The troll swings his axe, but it misses.",
+                                flags: .length, .pure
+                            ),
+                            .table(
+                                "The troll's axe barely misses your ear.",
+                                flags: .length, .pure
+                            ),
+                            flags: .length, .pure
+                        ),
+                        .table(
+                            .table(
+                                """
+                                    The flat of the troll's axe hits you delicately on the head, \
+                                    knocking you out.
+                                    """,
+                                flags: .length, .pure
+                            ),
+                            flags: .length, .pure
+                        ),
+                        flags: .pure
+                    )
+                    """#,
+                type: .tableDeclaration,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true,
+                returnHandling: .implicit
+            )
+        )
+
+        XCTAssertNoDifference(
+            try Game.find("villains"),
+            Statement(
+                id: "villains",
+                code: """
+                    var villains = Table(
+                        .table(
+                            .object("troll"),
+                            .object("sword"),
+                            1,
+                            0,
+                            .table(Globals.trollMelee)
+                        ),
+                        .table(
+                            .object("thief"),
+                            .object("knife"),
+                            1,
+                            0,
+                            .table(Globals.thiefMelee)
+                        ),
+                        .table(
+                            .object("cyclops"),
+                            false,
+                            0,
+                            0,
+                            .table(Globals.cyclopsMelee)
+                        ),
+                        flags: .length
+                    )
+                    """,
+                type: .tableDeclaration,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true,
+                returnHandling: .implicit
+            )
+        )
     }
 }

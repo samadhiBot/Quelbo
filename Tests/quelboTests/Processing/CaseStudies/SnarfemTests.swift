@@ -214,7 +214,7 @@ final class SnarfemTests: QuelboTests {
                                     if Globals.pGetflags.isZero {
                                         Globals.pGetflags.set(to: Constants.pInhiBit)
                                     }
-                                } else if _ = .and(
+                                } else if .and(
                                     wv.set(to: try isWt(
                                         ptr: wrd,
                                         bit: PartsOfSpeech.adjective,
@@ -224,7 +224,7 @@ final class SnarfemTests: QuelboTests {
                                 ) {
                                     Globals.pAdj.set(to: wv)
                                     Globals.pAdjn.set(to: wrd)
-                                } else if _ = try isWt(
+                                } else if try isWt(
                                     ptr: wrd,
                                     bit: PartsOfSpeech.object,
                                     b1: PartsOfSpeech.objectFirst

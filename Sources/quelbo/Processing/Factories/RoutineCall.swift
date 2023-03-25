@@ -87,7 +87,7 @@ extension Factories {
                     """
                     \(tryDeclaration)\
                     \(routineID)\
-                    (\(params.handles(.commaSeparatedNoTrailingComma)))\
+                    (\(params.handles(.commaSeparatedNoTrailingComma, .forceSingleType)))\
                     \(comment)
                     """
                 },

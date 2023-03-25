@@ -49,7 +49,7 @@ final class DefineTests: QuelboTests {
                         return Table(count: readbufSize, flags: .byte, .none)
                     }
                     """,
-                type: .table.root,
+                type: .table,
                 category: Category.routines,
                 isCommittable: true,
                 returnHandling: .passthrough
@@ -79,7 +79,7 @@ final class DefineTests: QuelboTests {
             Statement(
                 id: "kbdReadbuf",
                 code: "let kbdReadbuf = makeReadbuf()",
-                type: .table.root,
+                type: .table,
                 category: .constants,
                 isCommittable: true,
                 isMutable: false
@@ -91,7 +91,7 @@ final class DefineTests: QuelboTests {
             Statement(
                 id: "editReadbuf",
                 code: "let editReadbuf = makeReadbuf()",
-                type: .table.root,
+                type: .table,
                 category: .constants,
                 isCommittable: true,
                 isMutable: false

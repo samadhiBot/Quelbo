@@ -289,7 +289,7 @@ final class PerformTests: QuelboTests {
                         if Globals.debug {
                             output("** PERFORM: PRSA = ")
                             output(Globals.actions.nthElement(.add(.multiply(a, 2), 1)))
-                            if .and(o, .isNot(a.equals(Verb.walk))) {
+                            if .and(.object("o"), .isNot(a.equals(Verb.walk))) {
                                 output("""
 
                                      PRSO =

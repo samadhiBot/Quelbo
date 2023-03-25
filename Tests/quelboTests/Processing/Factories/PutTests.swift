@@ -84,7 +84,7 @@ final class PutTests: QuelboTests {
                     at: 1
                 )
                 """,
-            type: .int.tableElement,
+            type: .int,
             isThrowing: true,
             returnHandling: .suppressed
         ))

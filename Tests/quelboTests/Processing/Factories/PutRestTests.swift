@@ -79,12 +79,7 @@ final class PutRestTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                [
-                    .int(1),
-                    .string("A"),
-                    .int(3),
-                    .string("C"),
-                ].putRest([.int(2), .string("B"), .int(4)])
+                [1, "A", 3, "C"].putRest([2, "B", 4])
                 """,
             type: .someTableElement.array
         ))

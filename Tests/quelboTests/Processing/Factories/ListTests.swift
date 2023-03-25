@@ -52,12 +52,7 @@ final class ListTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
-                [
-                    .int(1),
-                    .int(2),
-                    .string("AB"),
-                    .string("C"),
-                ]
+                [1, 2, "AB", "C"]
                 """,
             type: .someTableElement.array
         ))

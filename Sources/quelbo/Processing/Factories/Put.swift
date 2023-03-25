@@ -30,7 +30,7 @@ extension Factories {
                 .hasType(.int)
             )
 
-            try symbols[2].assert(
+            try? symbols[2].assert(
                 .isTableElement
             )
         }

@@ -34,7 +34,10 @@ extension Factories {
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.atLeast(1)),
-                .haveKnownType,
+                .haveKnownType
+            )
+
+            try? symbols.assert(
                 .areTableElements
             )
         }
@@ -45,29 +48,34 @@ extension Factories {
             return .statement(
                 code: {
                     var elements = $0.payload.symbols
-                    let types = elements.returnTypes
                     if let flagSymbol {
                         elements.append(flagSymbol)
                     }
-                    var tableValues: String {
-                        switch types.first {
-                        case .object, .routine:
-                            return elements.handleMultiTypeValues(
-                                .commaSeparatedNoTrailingComma
-                            )
-                        default:
-                            if types.count > 1 {
-                                return elements.handleMultiTypeValues(
-                                    .commaSeparatedNoTrailingComma
-                                )
-                            } else {
-                                return elements.handles(
-                                    .commaSeparatedNoTrailingComma,
-                                    .forceSingleType
-                                )
-                            }
-                        }
-                    }
+                    let tableValues = elements.handleMultiTypeValues(
+                        .commaSeparatedNoTrailingComma
+                    )
+
+//                        switch types.first {
+//                        case .object, .routine:
+//                            return elements.codeMultiTypeValues(
+//                                .commaSeparatedNoTrailingComma
+//                            )
+//                        default:
+//                            return elements.handleMultiTypeValues(
+//                                .commaSeparatedNoTrailingComma
+//                            )
+////                            if types.count > 1 {
+////                                return elements.handleMultiTypeValues(
+////                                    .commaSeparatedNoTrailingComma
+////                                )
+////                            } else {
+////                                return elements.handles(
+////                                    .commaSeparatedNoTrailingComma,
+////                                    .forceSingleType
+////                                )
+////                            }
+//                        }
+//                    }
                     if $0.type.isTableElement == true {
                         return ".table(\(tableValues))"
                     } else {

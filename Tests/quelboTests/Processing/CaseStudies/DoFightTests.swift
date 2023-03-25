@@ -83,30 +83,30 @@ final class DoFightTests: QuelboTests {
                 code: """
                     var villains = Table(
                         .table(
-                            .object("Objects.troll"),
-                            .object("Objects.sword"),
-                            .int(1),
-                            .int(0),
+                            .object("troll"),
+                            .object("sword"),
+                            1,
+                            0,
                             .table(Globals.trollMelee)
                         ),
                         .table(
-                            .object("Objects.thief"),
-                            .object("Objects.knife"),
-                            .int(1),
-                            .int(0),
+                            .object("thief"),
+                            .object("knife"),
+                            1,
+                            0,
                             .table(Globals.thiefMelee)
                         ),
                         .table(
-                            .object("Objects.cyclops"),
-                            .bool(false),
-                            .int(0),
-                            .int(0),
+                            .object("cyclops"),
+                            false,
+                            0,
+                            0,
                             .table(Globals.cyclopsMelee)
                         ),
                         flags: .length
                     )
                     """,
-                type: .table.root,
+                type: .tableDeclaration,
                 category: .globals,
                 isCommittable: true,
                 isMutable: true

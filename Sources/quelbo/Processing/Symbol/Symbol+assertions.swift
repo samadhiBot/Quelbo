@@ -21,6 +21,7 @@ enum SymbolElementAssertion {
     case isOptional
     case isProperty
     case isTableElement
+    case isTableRoot
     case isVariable
 }
 
@@ -72,6 +73,10 @@ extension Symbol {
             try assertIsProperty()
         case .isTableElement:
             try assertIsTableElement()
+        case .isTableRoot:
+            if type == .table {
+                try assertIsTableElement(false, force: true)
+            }
         case .isVariable:
             try assertIsVariable()
         }
@@ -203,34 +208,39 @@ extension Symbol {
         try type.assertIsProperty()
     }
 
-    func assertIsTableElement() throws {
+    func assertIsTableElement(
+        _ value: Bool = true,
+        force: Bool = false
+    ) throws {
         switch self {
-        case .definition, .literal, .statement:
-            try type.assertIsTableElement(
-                isTableElement: true,
-                isInstance: false
-            )
+        case .definition:
+//            print("❤️‍🔥 \(handle) <\(value)> -> .definition")
+            return
+        case .statement(let statement):
+//            print("❤️‍🔥 \(handle) <\(value)> -> .statement; <skip: \(statement.id != nil)>")
+            if statement.id != nil { return }
         case .instance:
-            try type.assertIsTableElement(
-                isTableElement: true,
-                isInstance: true
-            )
+//            print("❤️‍🔥 \(handle) <\(value)> -> .instance")
+            break
+        case .literal:
+//            print("❤️‍🔥 \(handle) <\(value)> -> .literal")
+            break
         }
+        try type.assertIsTableElement(
+            isTableElement: value,
+            force: force
+        )
     }
 
     func assertIsVariable() throws {
         switch self {
-        case .definition, .literal: break
+        case .definition, .literal:
+            break
         case .statement(let statement):
             guard statement.id != nil else { break }
-            if statement.type.dataType == .table {
-                try type.assertIsTableElement(
-                    isTableElement: false,
-                    isInstance: false
-                )
-            }
             return
-        case .instance: return
+        case .instance:
+            return
         }
         throw AssertionError.isVariableAssertionFailed(for: "\(self)")
     }
@@ -331,7 +341,7 @@ extension Array where Element == Symbol {
                 fallthrough
             }
         default:
-            try assert(
+            try? assert(
                 .areTableElements
             )
         }
@@ -358,7 +368,7 @@ extension Symbol {
         case isArrayAssertionFailed
         case isOptionalAssertionFailed
         case isPropertyAssertionFailed
-        case isTableElementAssertionFailed
+        case isTableElementAssertionFailed(String)
         case shouldReturnAssertionFailed
 
         case areVariablesAssertionFailed(asserted: Bool, actual: Bool)

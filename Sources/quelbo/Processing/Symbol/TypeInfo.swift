@@ -141,6 +141,15 @@ extension TypeInfo {
         )
     }
 
+    static var tableDeclaration: TypeInfo {
+        .init(
+            dataType: .table,
+            confidence: .certain,
+            isArray: false,
+            isTableElement: false
+        )
+    }
+
     static var tableElement: TypeInfo {
         .init(
             dataType: .tableElement,
@@ -212,16 +221,51 @@ extension TypeInfo {
     }
 
     func assertIsTableElement(
-        isTableElement: Bool,
-        isInstance: Bool
+        isTableElement assertedValue: Bool,
+        force: Bool
     ) throws {
         guard dataType?.canBeTableElement != false else {
-            throw Symbol.AssertionError.isTableElementAssertionFailed
+            throw Symbol.AssertionError.isTableElementAssertionFailed(
+                "\(self) cannot be a table element."
+            )
         }
-        if isTableElement, !isInstance, self.isTableElement == false {
+        guard let currentValue = self.isTableElement else {
+            self.isTableElement = assertedValue
             return
         }
-        self.isTableElement = isTableElement
+        if assertedValue == currentValue {
+            return
+        }
+        if force {
+            self.isTableElement = assertedValue
+            return
+        }
+        throw Symbol.AssertionError.isTableElementAssertionFailed(
+            "\(self) already assigned with `.isTableElement: \(currentValue)`"
+        )
+
+//        if self.isTableElement == assertedValue { return }
+//        guard self.isTableElement == nil else {
+//            throw Symbol.AssertionError.isTableElementAssertionFailed(
+//                "\(self) already assigned with `.isTableElement: \(self.isTableElement)`"
+//            )
+//        }
+
+
+        /*
+         if self.isTableElement == nil {
+
+             return
+         }
+
+         // TODO: replace the following with stricter handling
+         if isTableElement, !isInstance, self.isTableElement == false {
+             print("▶️ returning without change")
+             return
+         }
+         print("🧂", self.isTableElement, "->", isTableElement)
+         self.isTableElement = isTableElement
+         */
     }
 }
 
@@ -287,7 +331,7 @@ extension TypeInfo {
 
         switch (dataType, category) {
         case (.bool, _):
-            return ".bool(\(code))"
+            return code
         case (.int16, _):
             return ".int16(\(code))"
         case (.int32, _):
@@ -295,13 +339,13 @@ extension TypeInfo {
         case (.int8, _):
             return ".int8(\(code))"
         case (.int, _):
-            return ".int(\(code))"
+            return code
         case (.object, .rooms):
             return ".room(\"\(code)\")"
         case (.object, _):
             return ".object(\"\(code)\")"
         case (.string, _):
-            return ".string(\(code))"
+            return code
         case (.table, _):
             return ".table(\(code))"
         default: return code
@@ -539,9 +583,10 @@ extension TypeInfo: Comparable {
 extension TypeInfo: CustomDebugStringConvertible {
     var debugDescription: String {
         var modifiers: [String] = []
+        if confidence == .certain { modifiers.append("􀎠") }
         if isProperty == true { modifiers.append("􀀢") }
         if isTableElement == true { modifiers.append("􀀪") }
-        if confidence == .certain { modifiers.append("􀎠") }
+        if isTableElement == false { modifiers.append("􀁮")}
         return modifiers.joined(separator: "") + description
     }
 }

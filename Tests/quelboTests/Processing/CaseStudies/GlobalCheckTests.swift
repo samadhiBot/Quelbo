@@ -92,7 +92,7 @@ final class GlobalCheckTests: QuelboTests {
                      location: "localGlobals"
                  )
                  """,
-                type: .object.array.property.tableElement,
+                type: .object.array.property,
                 category: .objects,
                 isCommittable: true
             )

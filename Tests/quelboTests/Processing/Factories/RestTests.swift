@@ -50,12 +50,7 @@ final class RestTests: QuelboTests {
             Statement(
                 id: "struct2",
                 code: """
-                    var struct2 = [
-                        .int(1),
-                        .int(2),
-                        .string("AB"),
-                        .string("C"),
-                    ]
+                    var struct2 = [1, 2, "AB", "C"]
                     """,
                 type: .someTableElement.array.tableElement,
                 category: .globals,

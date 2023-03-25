@@ -48,7 +48,8 @@ extension Factories {
             )
 
             try symbols[1].assert(
-                .hasReturnValue
+                .hasReturnValue,
+                .isTableRoot
             )
 
             try symbols[0].assert(
@@ -60,11 +61,8 @@ extension Factories {
 
         @discardableResult
         override func process() throws -> Symbol {
-            let variable = symbols[0]
-            let value = symbols[1]
-
-            return .statement(
-                id: variable.code,
+            .statement(
+                id: symbols[0].code,
                 code: { statement in
                     let type = statement.type
                     var assignment: String {
@@ -74,20 +72,22 @@ extension Factories {
                         if type.confidence < .assured, statement.isMutable == true {
                             return statement.type.emptyValueAssignment
                         }
-                        return " = \(value.code)"
+                        return " = \(statement.payload.symbols[1].code)"
                     }
                     let declare = statement.isMutable != false ? "var" : "let"
+                    let variable = statement.payload.symbols[0].handle
+//                    print("▶️ \(declare) \(variable)\(assignment)")
 
-                    return "\(declare) \(variable.handle)\(assignment)"
+                    return "\(declare) \(variable)\(assignment)"
                 },
-                type: value.type,
+                type: symbols[1].type,
                 payload: .init(
-                    evaluation: value.evaluation,
+                    evaluation: symbols[1].evaluation,
                     symbols: symbols
                 ),
-                category: variable.category,
+                category: symbols[0].category,
                 isCommittable: true,
-                isMutable: variable.isMutable
+                isMutable: symbols[0].isMutable
             )
         }
     }

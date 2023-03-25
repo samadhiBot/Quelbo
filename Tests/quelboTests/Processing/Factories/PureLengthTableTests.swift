@@ -18,6 +18,8 @@ final class PureLengthTableTests: QuelboTests {
         super.setUp()
 
         process("""
+            <GLOBAL THIEF-MELEE <TABLE (PURE) "Thief melee message">>
+            <GLOBAL TROLL-MELEE <TABLE (PURE) "Troll melee message">>
             <OBJECT KNIFE>
             <OBJECT SWORD>
             <OBJECT THIEF>
@@ -27,8 +29,6 @@ final class PureLengthTableTests: QuelboTests {
             <ROOM FOREST2>
             <ROOM FOREST3>
             <ROOM PATH>
-            <ROUTINE THIEF-MELEE () T>
-            <ROUTINE TROLL-MELEE () T>
         """)
     }
 
@@ -46,9 +46,9 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3"),
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
                     flags: .length, .pure
                 )
                 """,
@@ -69,11 +69,11 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object("Objects.troll"),
-                    .object("Objects.sword"),
-                    .int(1),
-                    .int(0),
-                    .bool(Routines.trollMelee),
+                    .object("troll"),
+                    .object("sword"),
+                    1,
+                    0,
+                    .table(Globals.trollMelee),
                     flags: .length, .pure
                 )
                 """,
@@ -124,12 +124,12 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3"),
-                    .room("Rooms.path"),
-                    .room("Rooms.clearing"),
-                    .room("Rooms.forest1"),
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .length, .pure
                 )
                 """,
@@ -162,19 +162,19 @@ final class PureLengthTableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object("Objects.troll"),
-                        .object("Objects.sword"),
-                        .int(1),
-                        .int(0),
-                        .bool(Routines.trollMelee),
+                        .object("troll"),
+                        .object("sword"),
+                        1,
+                        0,
+                        .table(Globals.trollMelee),
                         flags: .length, .pure
                     ),
                     .table(
-                        .object("Objects.thief"),
-                        .object("Objects.knife"),
-                        .int(1),
-                        .int(0),
-                        .bool(Routines.thiefMelee)
+                        .object("thief"),
+                        .object("knife"),
+                        1,
+                        0,
+                        .table(Globals.thiefMelee)
                     ),
                     flags: .length, .pure
                 )

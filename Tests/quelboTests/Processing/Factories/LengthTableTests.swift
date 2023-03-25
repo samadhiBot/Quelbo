@@ -44,9 +44,9 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3"),
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
                     flags: .length
                 )
                 """,
@@ -63,10 +63,10 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .object("Objects.troll"),
-                    .object("Objects.sword"),
-                    .int(1),
-                    .int(0),
+                    .object("troll"),
+                    .object("sword"),
+                    1,
+                    0,
                     .table(Globals.trollMelee),
                     flags: .length
                 )
@@ -110,12 +110,12 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 Table(
-                    .room("Rooms.forest1"),
-                    .room("Rooms.forest2"),
-                    .room("Rooms.forest3"),
-                    .room("Rooms.path"),
-                    .room("Rooms.clearing"),
-                    .room("Rooms.forest1"),
+                    .room("forest1"),
+                    .room("forest2"),
+                    .room("forest3"),
+                    .room("path"),
+                    .room("clearing"),
+                    .room("forest1"),
                     flags: .length, .pure
                 )
                 """,
@@ -135,18 +135,18 @@ final class LengthTableTests: QuelboTests {
             code: """
                 Table(
                     .table(
-                        .object("Objects.troll"),
-                        .object("Objects.sword"),
-                        .int(1),
-                        .int(0),
+                        .object("troll"),
+                        .object("sword"),
+                        1,
+                        0,
                         .table(Globals.trollMelee),
                         flags: .length
                     ),
                     .table(
-                        .object("Objects.thief"),
-                        .object("Objects.knife"),
-                        .int(1),
-                        .int(0),
+                        .object("thief"),
+                        .object("knife"),
+                        1,
+                        0,
                         .table(Globals.thiefMelee)
                     ),
                     flags: .length

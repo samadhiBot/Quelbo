@@ -637,7 +637,7 @@ final class VillainBlowTests: QuelboTests {
                             }
                             if _ = .and(
                                 res.equals(Constants.stagger),
-                                dweapon,
+                                .object("dweapon"),
                                 prob(
                                     isBase: 25,
                                     isLoser: {
