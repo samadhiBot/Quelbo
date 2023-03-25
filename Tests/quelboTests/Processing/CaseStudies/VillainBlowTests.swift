@@ -507,7 +507,7 @@ final class VillainBlowTests: QuelboTests {
                                 Globals.thiefEngrossed.set(to: false)
                             }
                             if _ = .and(
-                                .object("Globals.parsedIndirectObject"),
+                                .object(Globals.parsedIndirectObject),
                                 Globals.parsedIndirectObject.hasFlag(.isWeapon),
                                 try oo.get(at: Constants.vBest).equals(Globals.parsedIndirectObject)
                             ) {
@@ -637,7 +637,7 @@ final class VillainBlowTests: QuelboTests {
                             }
                             if _ = .and(
                                 res.equals(Constants.stagger),
-                                .object("dweapon"),
+                                .object(dweapon),
                                 prob(
                                     isBase: 25,
                                     isLoser: {

@@ -243,29 +243,6 @@ extension TypeInfo {
         throw Symbol.AssertionError.isTableElementAssertionFailed(
             "\(self) already assigned with `.isTableElement: \(currentValue)`"
         )
-
-//        if self.isTableElement == assertedValue { return }
-//        guard self.isTableElement == nil else {
-//            throw Symbol.AssertionError.isTableElementAssertionFailed(
-//                "\(self) already assigned with `.isTableElement: \(self.isTableElement)`"
-//            )
-//        }
-
-
-        /*
-         if self.isTableElement == nil {
-
-             return
-         }
-
-         // TODO: replace the following with stricter handling
-         if isTableElement, !isInstance, self.isTableElement == false {
-             print("▶️ returning without change")
-             return
-         }
-         print("🧂", self.isTableElement, "->", isTableElement)
-         self.isTableElement = isTableElement
-         */
     }
 }
 
@@ -323,34 +300,34 @@ extension TypeInfo {
         )
     }
 
-    func codeMultiType(
-        code: String,
-        category: Category?
-    ) -> String {
-        guard isTableElement == true else { return code }
-
-        switch (dataType, category) {
-        case (.bool, _):
-            return code
-        case (.int16, _):
-            return ".int16(\(code))"
-        case (.int32, _):
-            return ".int32(\(code))"
-        case (.int8, _):
-            return ".int8(\(code))"
-        case (.int, _):
-            return code
-        case (.object, .rooms):
-            return ".room(\"\(code)\")"
-        case (.object, _):
-            return ".object(\"\(code)\")"
-        case (.string, _):
-            return code
-        case (.table, _):
-            return ".table(\(code))"
-        default: return code
-        }
-    }
+//    func codeMultiType(
+//        code: String,
+//        category: Category?
+//    ) -> String {
+//        guard isTableElement == true else { return code }
+//
+//        switch (dataType, category) {
+//        case (.bool, _):
+//            return code
+//        case (.int16, _):
+//            return ".int16(\(code))"
+//        case (.int32, _):
+//            return ".int32(\(code))"
+//        case (.int8, _):
+//            return ".int8(\(code))"
+//        case (.int, _):
+//            return code
+//        case (.object, .rooms):
+//            return ".room(\"\(code)\")"
+//        case (.object, _):
+//            return ".object(\"\(code)\")"
+//        case (.string, _):
+//            return code
+//        case (.table, _):
+//            return ".table(\(code))"
+//        default: return code
+//        }
+//    }
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
@@ -433,7 +410,7 @@ extension TypeInfo {
         isProperty newIsProperty: Bool? = nil,
         isTableElement newIsTableElement: Bool? = nil
     ) -> TypeInfo {
-        // print("\t▶️ before", self.objID, self.debugDescription)
+        // print("\t👀 before", self.objID, self.debugDescription)
         self.dataType = newDataType ?? type.dataType ?? dataType
         self.confidence = newConfidence ?? max(type.confidence, confidence)
         self.isArray = newIsArray ?? type.isArray ?? isArray
@@ -443,7 +420,7 @@ extension TypeInfo {
         self.isProperty = newIsProperty ?? type.isProperty ?? isProperty
         // print("\t🍴", newIsTableElement, type.isTableElement, isTableElement)
         self.isTableElement = newIsTableElement ?? type.isTableElement ?? isTableElement
-        // print("\t▶️ after", self.objID, self.debugDescription)
+        // print("\t👀 after", self.objID, self.debugDescription)
 
         type.dataType = self.dataType
         type.confidence = self.confidence

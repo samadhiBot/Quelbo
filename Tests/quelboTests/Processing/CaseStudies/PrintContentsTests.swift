@@ -110,7 +110,7 @@ final class PrintContentsTests: QuelboTests {
                                 }
                                 f.set(to: n)
                                 if .isNot(f) {
-                                    if _ = .and(.object("isIt"), .isNot(isTwo)) {
+                                    if _ = .and(.object(isIt), .isNot(isTwo)) {
                                         thisIsIt(obj: isIt)
                                     }
                                     return true

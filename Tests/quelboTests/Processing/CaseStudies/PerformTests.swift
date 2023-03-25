@@ -289,7 +289,7 @@ final class PerformTests: QuelboTests {
                         if Globals.debug {
                             output("** PERFORM: PRSA = ")
                             output(Globals.actions.nthElement(.add(.multiply(a, 2), 1)))
-                            if .and(.object("o"), .isNot(a.equals(Verb.walk))) {
+                            if .and(.object(o), .isNot(a.equals(Verb.walk))) {
                                 output("""
 
                                      PRSO =
@@ -323,7 +323,7 @@ final class PerformTests: QuelboTests {
                         Globals.parsedVerb.set(to: a)
                         Globals.parsedDirectObject.set(to: o)
                         if _ = .and(
-                            .object("Globals.parsedDirectObject"),
+                            .object(Globals.parsedDirectObject),
                             .isNot(isParsedVerb(.walk))
                         ) {
                             Globals.pItObject.set(to: Globals.parsedDirectObject)
@@ -361,14 +361,14 @@ final class PerformTests: QuelboTests {
                             )) {
                                 return v
                             } else if _ = .and(
-                                i,
+                                .object(i),
                                 v.set(to: dApply(str: "PRSI", fcn: i.action))
                             ) {
                                 return v
                             } else if _ = .and(
-                                o,
+                                .object(o),
                                 .isNot(a.equals(Verb.walk)),
-                                o.parent,
+                                .object(o.parent),
                                 o.parent.containerFunction,
                                 v.set(to: ddApply(
                                     str: "Container",
@@ -378,7 +378,7 @@ final class PerformTests: QuelboTests {
                             ) {
                                 return v
                             } else if _ = .and(
-                                o,
+                                .object(o),
                                 .isNot(a.equals(Verb.walk)),
                                 v.set(to: dApply(str: "PRSO", fcn: o.action))
                             ) {

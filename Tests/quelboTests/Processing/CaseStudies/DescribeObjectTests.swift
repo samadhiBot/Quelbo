@@ -260,7 +260,7 @@ final class DescribeObjectTests: QuelboTests {
                         nullFunc()
                         if .and(
                             level.isZero,
-                            .object("av.set(to: Globals.winner.parent)"),
+                            .object(av.set(to: Globals.winner.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -270,7 +270,7 @@ final class DescribeObjectTests: QuelboTests {
                         output("\n")
                         if .and(
                             isSeeInside(obj: obj),
-                            .object("obj.firstChild")
+                            .object(obj.firstChild)
                         ) {
                             try printCont(obj: obj, isV: isV, level: level)
                         }
@@ -344,7 +344,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if .and(
                             level.isZero,
-                            .object("av.set(to: Globals.winner.parent)"),
+                            .object(av.set(to: Globals.winner.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -354,7 +354,7 @@ final class DescribeObjectTests: QuelboTests {
                         output("\n")
                         if .and(
                             isSeeInside(obj: obj),
-                            .object("obj.firstChild")
+                            .object(obj.firstChild)
                         ) {
                             try printCont(obj: obj, isV: isV, level: level)
                         }
@@ -396,7 +396,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            .object("av.set(to: Globals.winner.parent)"),
+                            .object(av.set(to: Globals.winner.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -428,7 +428,7 @@ final class DescribeObjectTests: QuelboTests {
                                     if .and(
                                         isSeeInside(obj: y),
                                         .isNot(y.parent.descriptionFunction),
-                                        .object("y.firstChild")
+                                        .object(y.firstChild)
                                     ) {
                                         if try printCont(obj: y, isV: isV, level: 0) {
                                             is1St.set(to: false)
@@ -441,11 +441,7 @@ final class DescribeObjectTests: QuelboTests {
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if _ = .and(
-                                    isPv,
-                                    .object("av"),
-                                    .object("av.firstChild")
-                                ) {
+                                if _ = .and(isPv, .object(av), .object(av.firstChild)) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
                                     try printCont(obj: av, isV: isV, level: level)
@@ -476,7 +472,7 @@ final class DescribeObjectTests: QuelboTests {
                                     }
                                     try describeObject(obj: y, isV: isV, level: level)
                                 } else if _ = .and(
-                                    .object("y.firstChild"),
+                                    .object(y.firstChild),
                                     isSeeInside(obj: y)
                                 ) {
                                     level.set(to: .add(level, 1))
@@ -531,7 +527,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            .object("av.set(to: Globals.winner.parent)"),
+                            .object(av.set(to: Globals.winner.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -573,7 +569,7 @@ final class DescribeObjectTests: QuelboTests {
                                     if .and(
                                         isSeeInside(obj: y),
                                         .isNot(y.parent.descriptionFunction),
-                                        .object("y.firstChild")
+                                        .object(y.firstChild)
                                     ) {
                                         if try printCont(obj: y, isV: isV, level: 0) {
                                             is1St.set(to: false)
@@ -586,11 +582,7 @@ final class DescribeObjectTests: QuelboTests {
                         y.set(to: obj.firstChild)
                         while true {
                             if .isNot(y) {
-                                if _ = .and(
-                                    isPv,
-                                    .object("av"),
-                                    .object("av.firstChild")
-                                ) {
+                                if _ = .and(isPv, .object(av), .object(av.firstChild)) {
                                     level.set(to: .add(level, 1))
                                     // "not in Zork III"
                                     try printCont(obj: av, isV: isV, level: level)
@@ -621,7 +613,7 @@ final class DescribeObjectTests: QuelboTests {
                                     }
                                     try describeObject(obj: y, isV: isV, level: level)
                                 } else if _ = .and(
-                                    .object("y.firstChild"),
+                                    .object(y.firstChild),
                                     isSeeInside(obj: y)
                                 ) {
                                     level.set(to: .add(level, 1))

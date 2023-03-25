@@ -70,7 +70,6 @@ extension Game {
                 return
             }
             if definition.isCommittable {
-                // print("▶️ Committing definition:", definition.id, "\n", definition.tokens.first)
                 shared.definitions.append(definition)
             }
 
@@ -85,7 +84,6 @@ extension Game {
                 if let existing = try? find(id, in: [category]) {
                     try existing.assertHasType(statement.type)
                 } else {
-                    // print("▶️ Committing statement:", statement.id, statement.code)
                     shared.symbols.append(symbol)
                 }
             }

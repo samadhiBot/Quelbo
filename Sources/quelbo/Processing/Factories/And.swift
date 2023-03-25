@@ -57,7 +57,6 @@ extension Factories {
             let function = function
             let operands = symbols
 
-            print("▶️", operands.handles())
             return .statement(
                 code: { _ in
                     ".\(function)(\(operands.handles(.commaSeparatedNoTrailingComma)))"

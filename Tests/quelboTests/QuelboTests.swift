@@ -100,7 +100,7 @@ class QuelboTests: XCTestCase {
                         else {
                             throw GameError.unknownRootEvaluation(token)
                         }
-                        let symbol = try Game.Element(
+                        _ = try Game.Element(
                             zil: zilString,
                             tokens: evalFormTokens,
                             with: &localVariables,

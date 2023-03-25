@@ -76,7 +76,6 @@ extension Factories {
                     }
                     let declare = statement.isMutable != false ? "var" : "let"
                     let variable = statement.payload.symbols[0].handle
-//                    print("▶️ \(declare) \(variable)\(assignment)")
 
                     return "\(declare) \(variable)\(assignment)"
                 },

@@ -47,10 +47,30 @@ extension Symbol {
         case .definition, .statement:
             return code
         case .instance, .literal:
-            return type.codeMultiType(
-                code: code,
-                category: category
-            )
+            switch (type.dataType, category) {
+            case (.bool, _):
+                return code
+            case (.int16, _):
+                return ".int16(\(code))"
+            case (.int32, _):
+                return ".int32(\(code))"
+            case (.int8, _):
+                return ".int8(\(code))"
+            case (.int, _):
+                return code
+            case (.object, .rooms):
+                return code
+            case (.object, .constants), (.object, .globals):
+                return ".object(\(code))"
+            case (.object, _):
+                return isInstance ? ".object(\"\(code)\")" : ".object(\(code))"
+            case (.string, _):
+                return code
+            case (.table, _):
+                return isInstance ? ".table(\(code))" : handle
+            default:
+                return code
+            }
         }
     }
 
@@ -100,48 +120,34 @@ extension Symbol {
     var handleMultiType: String {
         if case .definition = self { return handle }
 
+        var codeValue: String {
+            isInstance ? globalID : code
+        }
+
         switch (type.dataType, category) {
         case (.bool, _):
-            return code
+            return codeValue
         case (.int16, _):
-            return ".int16(\(code))"
+            return ".int16(\(codeValue))"
         case (.int32, _):
-            return ".int32(\(code))"
+            return ".int32(\(codeValue))"
         case (.int8, _):
-            return ".int8(\(code))"
+            return ".int8(\(codeValue))"
         case (.int, _):
-            return code
+            return codeValue
         case (.object, .rooms):
-            return ".room(\"\(code)\")"
+            return category == nil ? handle : ".room(\"\(code)\")"
+        case (.object, .constants), (.object, .globals):
+            return ".object(\(codeValue))"
         case (.object, _):
-            return ".object(\"\(code)\")"
+            return isInstance ? ".object(\"\(code)\")" : ".object(\(codeValue))"
         case (.string, _):
-            return code
+            return codeValue
         case (.table, _):
-            if case .instance(let instance) = self {
-                return ".table(\(instance.globalID))"
-            }
-            return handle
+            return isInstance ? ".table(\(codeValue))" : handle
         default:
-            if case .instance = self {
-                return globalID
-            }
-            return code
+            return codeValue
         }
-//        print("▶️", handle, type.dataType)
-//        switch self {
-//        case .definition:
-//
-//        case .instance, .literal, .statement:
-////            guard type.isTableElement == true else { return handle }
-//
-//
-//
-////            return type.codeMultiType(
-////                code: handle,
-////                category: category
-////            )
-//        }
     }
 
     var id: String? {
@@ -155,6 +161,21 @@ extension Symbol {
         case .statement(let statement):
             return statement.id
         }
+    }
+
+    var isDefinition: Bool {
+        if case .definition = self { return true }
+        return false
+    }
+
+    var isInstance: Bool {
+        if case .instance = self { return true }
+        return false
+    }
+
+    var isLiteral: Bool {
+        if case .literal = self { return true }
+        return false
     }
 
     var isMutable: Bool? {
@@ -186,6 +207,11 @@ extension Symbol {
             return false
         }
         return statement.isRepeating
+    }
+
+    var isStatement: Bool {
+        if case .statement = self { return true }
+        return false
     }
 
     var isThrowing: Bool {

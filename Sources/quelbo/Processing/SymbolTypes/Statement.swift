@@ -177,20 +177,6 @@ extension Statement {
             )
         }
         self.isMutable = assertedMutability
-
-//        print("▶️", code)
-//        switch isMutable {
-//        case mutability:
-//            break
-//        case .none:
-//            self.isMutable = mutability
-//        default:
-//            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
-//                for: "\(Self.self)",
-//                asserted: mutability,
-//                actual: isMutable
-//            )
-//        }
     }
 
     func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
@@ -204,12 +190,6 @@ extension Statement {
             try payload.assertHasReturnHandling(.forced, from: returnHandling)
         case (.forced, .suppressedPassthrough):
             try payload.assertHasReturnHandling(.forced, from: returnHandling)
-//        case (.suppressed, .forced):
-//            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-//                for: id ?? code,
-//                asserted: assertedHandling,
-//                actual: returnHandling
-//            )
         case (.forced, .forced),
              (.forced, .suppressed),
              (.implicit, .implicit),
@@ -221,10 +201,6 @@ extension Statement {
                 asserted: assertedHandling,
                 actual: returnHandling
             )
-
-//            assertionFailure(
-//                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
-//            )
         }
     }
 

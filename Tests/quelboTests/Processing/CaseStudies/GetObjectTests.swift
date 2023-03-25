@@ -169,20 +169,6 @@ final class GetObjectTests: QuelboTests {
         """)
     }
 
-//    func testPNam() throws {
-//        XCTAssertNoDifference(
-//            Game.globals.find("pNam"),
-//            Statement(
-//                id: "pNam",
-//                code: "var pNam: [Word]",
-//                type: .word.array.property.optional.tableElement,
-//                category: .globals,
-//                isCommittable: true,
-//                isMutable: true
-//            )
-//        )
-//    }
-
     func testGetObject() throws {
         XCTAssertNoDifference(
             Game.routines.find("getObject"),
@@ -204,7 +190,10 @@ final class GetObjectTests: QuelboTests {
                         if _ = .bitwiseCompare(Globals.pGetflags, Constants.pInhiBit) {
                             return true
                         }
-                        if _ = .and(.isNot(Globals.pNam), .object("pAdj")) {
+                        if _ = .and(
+                            .isNot(Globals.pNam),
+                            .object(Globals.pAdj)
+                        ) {
                             if try isWt(
                                 ptr: Globals.pAdjn,
                                 bit: PartsOfSpeech.object,

@@ -179,7 +179,7 @@ final class SearchListTests: QuelboTests {
                                         obj.hasFlag(.isSearchable),
                                         obj.hasFlag(.isSurface)
                                     ),
-                                    .object("nobj.set(to: obj.firstChild)"),
+                                    .object(nobj.set(to: obj.firstChild)),
                                     .or(
                                         obj.hasFlag(.isOpen),
                                         obj.hasFlag(.isTransparent)
