@@ -30,7 +30,7 @@ final class RemarkTests: QuelboTests {
         let fWep = Statement(
             id: "fWep",
             code: "let fWep = 0",
-            type: .integerZero,
+            type: .int.tableElement,
             category: .constants,
             isCommittable: true,
             isMutable: false
@@ -38,6 +38,20 @@ final class RemarkTests: QuelboTests {
 
         XCTAssertNoDifference(Game.constants.find("fWep"), fWep)
         XCTAssertNoDifference(Game.findInstance("fWep"), Instance(fWep))
+    }
+
+    func testDecimalOne() throws {
+        let fDef = Statement(
+            id: "fDef",
+            code: "let fDef = 1",
+            type: .int,
+            category: .constants,
+            isCommittable: true,
+            isMutable: false
+        )
+
+        XCTAssertNoDifference(Game.constants.find("fDef"), fDef)
+        XCTAssertNoDifference(Game.findInstance("fDef"), Instance(fDef))
     }
 
     func testRemark() throws {
@@ -50,7 +64,7 @@ final class RemarkTests: QuelboTests {
                     func remark(remark: Table, d: Object, w: Object) {
                         var len = try remark.get(at: 0)
                         var cnt = 0
-                        var str = ""
+                        var str = 0
                         while true {
                             if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                                 break

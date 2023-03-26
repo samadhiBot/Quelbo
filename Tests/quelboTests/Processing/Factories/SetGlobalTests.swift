@@ -81,7 +81,7 @@ final class SetGlobalTests: QuelboTests {
             Statement(
                 id: "isCEnabled",
                 code: "let isCEnabled = 0",
-                type: .integerZero,
+                type: .int,
                 category: .constants,
                 isCommittable: true,
                 isMutable: false
@@ -101,7 +101,7 @@ final class SetGlobalTests: QuelboTests {
             Statement(
                 id: "isCEnabled",
                 code: "var isCEnabled = 0",
-                type: .integerZero,
+                type: .int,
                 category: .globals,
                 isCommittable: true,
                 isMutable: true

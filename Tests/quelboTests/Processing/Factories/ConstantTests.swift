@@ -38,7 +38,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: "let foo = true",
-            type: .booleanTrue,
+            type: .bool,
             category: .constants,
             isCommittable: true,
             isMutable: false
@@ -54,7 +54,7 @@ final class ConstantTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: "let foo = false",
-            type: .booleanFalse,
+            type: .bool,
             category: .constants,
             isCommittable: true,
             isMutable: false

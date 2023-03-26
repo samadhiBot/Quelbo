@@ -126,9 +126,9 @@ extension Symbol {
 
         switch (type.dataType, category, isInstance) {
         case (.bool, _, true):
-            return ".int(\(codeValue))"
+            return ".int(\(globalID))"
         case (.bool, _, false):
-            return codeValue
+            return code
         case (.int16, _, _):
             return ".int16(\(codeValue))"
         case (.int32, _, _):
@@ -136,21 +136,27 @@ extension Symbol {
         case (.int8, _, _):
             return ".int8(\(codeValue))"
         case (.int, _, true):
-            return ".int(\(codeValue))"
+            return ".int(\(globalID))"
         case (.int, _, false):
-            return codeValue
-        case (.object, .rooms, _):
+            return code
+        case (.object, .rooms, true):
             return ".room(\"\(code)\")"
+        case (.object, .rooms, false):
+            return ".room(\(code))"
         case (.object, .constants, _), (.object, .globals, _):
             return ".object(\(codeValue))"
-        case (.object, _, _):
-            return isInstance ? ".object(\"\(code)\")" : ".object(\(codeValue))"
+        case (.object, _, true):
+            return ".object(\"\(code)\")"
+        case (.object, _, false):
+            return ".object(\(code))"
         case (.string, _, true):
-            return ".string(\(codeValue))"
+            return ".string(\(globalID))"
         case (.string, _, false):
-            return codeValue
-        case (.table, _, _):
-            return isInstance ? ".table(\(codeValue))" : handle
+            return code
+        case (.table, _, true):
+            return ".table(\(globalID))"
+        case (.table, _, false):
+            return handle
         default:
             return codeValue
         }

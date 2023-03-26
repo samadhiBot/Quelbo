@@ -177,6 +177,9 @@ extension Statement {
             )
         }
         self.isMutable = assertedMutability
+        if !assertedMutability {
+            self.type.assertIsCertain()
+        }
     }
 
     func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {

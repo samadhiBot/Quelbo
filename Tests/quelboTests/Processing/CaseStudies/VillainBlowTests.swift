@@ -458,7 +458,7 @@ final class VillainBlowTests: QuelboTests {
                     func remark(remark: Table, d: Object, w: Object) {
                         var len = try remark.get(at: 0)
                         var cnt = 0
-                        var str = ""
+                        var str = 0
                         while true {
                             if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
                                 break

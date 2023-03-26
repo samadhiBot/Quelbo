@@ -21,7 +21,7 @@ final class PropertyDefaultTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             code: "setPropertyDefault(adjective, false)",
-            type: .booleanFalse
+            type: .bool
         ))
     }
 

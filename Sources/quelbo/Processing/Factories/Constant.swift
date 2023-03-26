@@ -23,8 +23,7 @@ extension Factories {
             )
 
             try symbols[1].assert(
-                .hasReturnValue,
-                .isMutable
+                .hasReturnValue
             )
 
             try symbols[0].assert(

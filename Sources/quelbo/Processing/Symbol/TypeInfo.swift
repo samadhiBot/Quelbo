@@ -206,6 +206,10 @@ extension TypeInfo {
         self.isArray = true
     }
 
+    func assertIsCertain() {
+        self.confidence = .certain
+    }
+
     func assertIsOptional() throws {
         guard isOptional != false else {
             throw Symbol.AssertionError.isOptionalAssertionFailed
@@ -299,35 +303,6 @@ extension TypeInfo {
             isTableElement: newIsTableElement ?? isTableElement
         )
     }
-
-//    func codeMultiType(
-//        code: String,
-//        category: Category?
-//    ) -> String {
-//        guard isTableElement == true else { return code }
-//
-//        switch (dataType, category) {
-//        case (.bool, _):
-//            return code
-//        case (.int16, _):
-//            return ".int16(\(code))"
-//        case (.int32, _):
-//            return ".int32(\(code))"
-//        case (.int8, _):
-//            return ".int8(\(code))"
-//        case (.int, _):
-//            return code
-//        case (.object, .rooms):
-//            return ".room(\"\(code)\")"
-//        case (.object, _):
-//            return ".object(\"\(code)\")"
-//        case (.string, _):
-//            return code
-//        case (.table, _):
-//            return ".table(\(code))"
-//        default: return code
-//        }
-//    }
 
     /// An empty placeholder value for the data type.
     var emptyValueAssignment: String {
@@ -436,7 +411,7 @@ extension TypeInfo {
         _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
-        let logValuesToConsole = false
+        let logValuesToConsole = true
 
         let initialType = dataType?.description ?? "nil"
         let assertedType = asserted.dataType?.description ?? "nil"
