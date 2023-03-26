@@ -220,7 +220,7 @@ final class PerformTests: QuelboTests {
                                     fcn()
                                 }
                             }())
-                            if .and(Globals.debug, str) {
+                            if .and(.int(Globals.debug), str) {
                                 if res.equals(2) {
                                     output("Fatal")
                                 } else if .isNot(res) {

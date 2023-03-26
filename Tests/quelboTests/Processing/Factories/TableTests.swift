@@ -77,6 +77,36 @@ final class TableTests: QuelboTests {
         ))
     }
 
+    func testTableWithConstantReference() throws {
+        process("""
+            <CONSTANT F-WEP 0>    ;"means print weapon name"
+
+            <GLOBAL CYCLOPS-MINI
+              <LTABLE (PURE) "The Cyclops grabs your " F-WEP
+                ", tastes it, and throws it to the ground in disgust.">>
+            """)
+
+        XCTAssertNoDifference(
+            Game.globals.find("cyclopsMini"),
+            Statement(
+                id: "cyclopsMini",
+                code: """
+                var cyclopsMini = Table(
+                    "The Cyclops grabs your ",
+                    .int(Constants.fWep),
+                    ", tastes it, and throws it to the ground in disgust.",
+                    flags: .length, .pure
+                )
+                """,
+                type: .tableDeclaration,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true,
+                returnHandling: .implicit
+            )
+        )
+    }
+
     func testByteTable() throws {
         let symbol = try factory.init([
             .list([
@@ -249,7 +279,7 @@ final class TableTests: QuelboTests {
         ))
     }
 
-    func testReferencedTable() throws {
+    func testTableGlobalDeclaration() throws {
         process("""
             <GLOBAL VILLAINS
               <LTABLE <TABLE TROLL SWORD 1 0 TROLL-MELEE>

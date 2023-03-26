@@ -54,28 +54,6 @@ extension Factories {
                     let tableValues = elements.handleMultiTypeValues(
                         .commaSeparatedNoTrailingComma
                     )
-
-//                        switch types.first {
-//                        case .object, .routine:
-//                            return elements.codeMultiTypeValues(
-//                                .commaSeparatedNoTrailingComma
-//                            )
-//                        default:
-//                            return elements.handleMultiTypeValues(
-//                                .commaSeparatedNoTrailingComma
-//                            )
-////                            if types.count > 1 {
-////                                return elements.handleMultiTypeValues(
-////                                    .commaSeparatedNoTrailingComma
-////                                )
-////                            } else {
-////                                return elements.handles(
-////                                    .commaSeparatedNoTrailingComma,
-////                                    .forceSingleType
-////                                )
-////                            }
-//                        }
-//                    }
                     if $0.type.isTableElement == true {
                         return ".table(\(tableValues))"
                     } else {

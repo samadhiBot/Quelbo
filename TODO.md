@@ -1,32 +1,49 @@
 # TODO
 
-􀃳 Variable definitions should use type inference
+- [ ] Wrap table element references
+```
+Table(
+    "The blow lands, making a shallow gash in the ",
+    Constants.fDef, // 🛑 Cannot convert value of type 'Int' to expected argument type 'ZilElement'
+    "'s arm!",
+    flags: .length, .pure
+)
+```
+
+- [ ] Fix tables declaration
+```  
+var reserveLexv = .table( // 🛑 Reference to member 'table' cannot be resolved without a contextual type
+    count: 59,
+    defaults: 0, .int8(0), .int8(0),
+    flags: .lexv
+)
+```
+
+- [ ] Correctly handle `wbreaks`
+```
+<SETG WBREAKS <STRING !\" !,WBREAKS>>>
+
+var wbreaks = ["\"", wbreaks].joined() // 🛑 Circular reference
+```
+
+`<SETG WBREAKS <STRING !\" !,WBREAKS>>>`
+
+- [ ] Non-optional globals should have a default value if none is assigned
+```
+var againDir: Bool // 🛑 Class 'Zork1Globals' has no initializers
+```
+
+## Done
+- [x] Update directions declaration in game package
+  - e.g. `directions = Direction.defaults + [.land]`
+
+- [x] Variable definitions should use type inference
   - e.g. `var beachDig: Int = -1` -> `var beachDig = -1`
 
-􀃳 Fix tables declaration
-  - e.g. `let def1: Table = .table(...)` -> `let def1 = Table(...)`
+- [x] Constants should ignore optionality and always declare a value
 
-􀂒 Constants should ignore optionality and always declare a value
-
-􀂒 Globals with references to constants should use `Constants.` prefix
-    ```
-    static var Constant: Constants {
-        Zork1.shared.constants
-    }
-
-    ❌ var def1Res = Table(def1, .int(0), .int(0))
-    ✅ var def1Res = Table(Constants.def1, .int(0), .int(0))
-    ```
-
-􀂒 Correctly handle `<SETG WBREAKS <STRING !\" !,WBREAKS>>>`
-
-􀂒 Non-optional globals should have a default value if none is assigned
-
-  - e.g. `var againDir: Bool`
-
-􀂒 Globals that are immutable should be constants
-  - e.g. `let candleTable: Table = Table(..., flags: .pure)`
-  - Tables with 'flags: .pure' should omit `.pure` and become constants
-
-􀂒 Update directions declaration in game package
-  - e.g. `directions = Direction.defaults + [.land]`
+- [x] Globals with references to constants should use `Constants.` prefix
+```
+❌ var def1Res = Table(def1, .int(0), .int(0))
+✅ var def1Res = Table(Constants.def1, .int(0), .int(0))
+```
