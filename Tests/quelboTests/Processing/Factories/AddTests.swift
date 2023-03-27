@@ -125,7 +125,10 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "score",
-            code: "var score = .add(Globals.baseScore, otvalFrob())",
+            code: """
+                /// The `score` (SCORE) 􀎠Int global.
+                var score = .add(Globals.baseScore, otvalFrob())
+                """,
             type: .int,
             category: .globals,
             isCommittable: true,
@@ -137,7 +140,10 @@ final class AddTests: QuelboTests {
             Game.findInstance("baseScore"),
             Instance(Statement(
                 id: "baseScore",
-                code: "var baseScore = 0",
+                code: """
+                    /// The `baseScore` (BASE-SCORE) 􀎠Int global.
+                    var baseScore = 0
+                    """,
                 type: .int,
                 category: .globals,
                 isCommittable: true,
@@ -172,7 +178,10 @@ final class AddTests: QuelboTests {
 
         let processed = Statement(
             id: "pAclause",
-            code: "var pAclause = false",
+            code: """
+                /// The `pAclause` (P-ACLAUSE) Bool global.
+                var pAclause = false
+                """,
             type: .booleanFalse,
             category: .globals,
             isCommittable: true,
@@ -199,7 +208,10 @@ final class AddTests: QuelboTests {
             Game.findInstance("pAclause"),
             Instance(Statement(
                 id: "pAclause",
-                code: "var pAclause: Int?",
+                code: """
+                    /// The `pAclause` (P-ACLAUSE) 􀎠Int? global.
+                    var pAclause: Int?
+                    """,
                 type: .int.optional,
                 category: .globals,
                 isCommittable: true,
@@ -209,7 +221,10 @@ final class AddTests: QuelboTests {
 
         XCTAssertNoDifference(pAclause, .statement(
             id: "pAclause",
-            code: "var pAclause: Int?",
+            code: """
+                /// The `pAclause` (P-ACLAUSE) 􀎠Int? global.
+                var pAclause: Int?
+                """,
             type: .int.optional,
             category: .globals,
             isCommittable: true,

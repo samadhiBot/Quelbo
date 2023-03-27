@@ -29,7 +29,10 @@ final class RemarkTests: QuelboTests {
     func testDecimalZero() throws {
         let fWep = Statement(
             id: "fWep",
-            code: "let fWep = 0",
+            code: """
+                /// The `fWep` (F-WEP) 􀎠􀀪Int constant.
+                let fWep = 0
+                """,
             type: .int.tableElement,
             category: .constants,
             isCommittable: true,
@@ -43,7 +46,10 @@ final class RemarkTests: QuelboTests {
     func testDecimalOne() throws {
         let fDef = Statement(
             id: "fDef",
-            code: "let fDef = 1",
+            code: """
+                /// The `fDef` (F-DEF) 􀎠Int constant.
+                let fDef = 1
+                """,
             type: .int,
             category: .constants,
             isCommittable: true,

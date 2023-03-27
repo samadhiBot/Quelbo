@@ -45,7 +45,10 @@ final class RemoveCarefullyTests: QuelboTests {
             Game.findInstance("pItObject"),
             Instance(Statement(
                 id: "pItObject",
-                code: "var pItObject: Object?",
+                code: """
+                    /// The `pItObject` (P-IT-OBJECT) 􀎠Object? global.
+                    var pItObject: Object?
+                    """,
                 type: .object.optional,
                 category: .globals,
                 isCommittable: true,

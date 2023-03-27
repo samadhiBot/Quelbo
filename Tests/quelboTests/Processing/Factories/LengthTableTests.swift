@@ -88,6 +88,7 @@ final class LengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "jumploss",
             code: """
+                /// The `jumploss` (JUMPLOSS) 􀎠􀁮Table global.
                 var jumploss = Table(
                     "You should have looked before you leaped.",
                     "In the movies, your life would be passing before your eyes.",
@@ -171,6 +172,7 @@ final class LengthTableTests: QuelboTests {
             Statement(
                 id: "hellos",
                 code: """
+                    /// The `hellos` (HELLOS) 􀎠􀁮Table global.
                     var hellos = Table(
                         "Hello.",
                         "Good day.",

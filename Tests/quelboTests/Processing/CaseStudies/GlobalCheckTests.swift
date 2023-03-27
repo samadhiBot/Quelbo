@@ -69,7 +69,10 @@ final class GlobalCheckTests: QuelboTests {
             Game.globals.find("pNam"),
             Statement(
                 id: "pNam",
-                code: "var pNam: [Object]",
+                code: """
+                    /// The `pNam` (P-NAM) 􀎠􀀢􀀪[Object] global.
+                    var pNam: [Object]
+                    """,
                 type: .object.array.property.optional.tableElement,
                 category: .globals,
                 isCommittable: true,

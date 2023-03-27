@@ -91,13 +91,14 @@ final class TableTests: QuelboTests {
             Statement(
                 id: "cyclopsMini",
                 code: """
-                var cyclopsMini = Table(
-                    "The Cyclops grabs your ",
-                    .int(Constants.fWep),
-                    ", tastes it, and throws it to the ground in disgust.",
-                    flags: .length, .pure
-                )
-                """,
+                    /// The `cyclopsMini` (CYCLOPS-MINI) 􀎠􀁮Table global.
+                    var cyclopsMini = Table(
+                        "The Cyclops grabs your ",
+                        .int(Constants.fWep),
+                        ", tastes it, and throws it to the ground in disgust.",
+                        flags: .length, .pure
+                    )
+                    """,
                 type: .tableDeclaration,
                 category: .globals,
                 isCommittable: true,
@@ -158,6 +159,7 @@ final class TableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "candleTable",
             code: """
+                /// The `candleTable` (CANDLE-TABLE) 􀎠􀁮Table global.
                 var candleTable = Table(
                     20,
                     "The candles grow shorter.",
@@ -292,6 +294,7 @@ final class TableTests: QuelboTests {
             Statement(
                 id: "trollMelee",
                 code: #"""
+                    /// The `trollMelee` (TROLL-MELEE) 􀎠􀁮Table global.
                     var trollMelee = Table(
                         .table(
                             .table(
@@ -330,6 +333,7 @@ final class TableTests: QuelboTests {
             Statement(
                 id: "villains",
                 code: """
+                    /// The `villains` (VILLAINS) 􀎠􀁮Table global.
                     var villains = Table(
                         .table(
                             .object("troll"),

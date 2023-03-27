@@ -38,7 +38,10 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo = true",
+            code: """
+                /// The `foo` (FOO) Bool global.
+                var foo = true
+                """,
             type: .booleanTrue,
             category: .globals,
             isCommittable: true,
@@ -54,7 +57,10 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo = false",
+            code: """
+                /// The `foo` (FOO) Bool global.
+                var foo = false
+                """,
             type: .booleanFalse,
             category: .globals,
             isCommittable: true,
@@ -82,7 +88,10 @@ final class GlobalTests: QuelboTests {
             Game.globals.find("againDir"),
             Statement(
                 id: "againDir",
-                code: "var againDir: Object?",
+                code: """
+                    /// The `againDir` (AGAIN-DIR) 􀎠Object? global.
+                    var againDir: Object?
+                    """,
                 type: .object.optional,
                 category: .globals,
                 isCommittable: true,
@@ -105,7 +114,10 @@ final class GlobalTests: QuelboTests {
 
         let foo = Statement(
             id: "foo",
-            code: "var foo = 42",
+            code: """
+                /// The `foo` (FOO) 􀎠Int global.
+                var foo = 42
+                """,
             type: .int,
             category: .globals,
             isCommittable: true,
@@ -122,6 +134,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
+                /// The `foo` (FOO) 􀎠􀁮Table global.
                 var foo = Table(
                     .room("forest1"),
                     .room("forest2"),
@@ -146,6 +159,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
+                /// The `foo` (FOO) 􀎠􀁮Table global.
                 var foo = Table(
                     .room("forest1"),
                     .room("forest2"),
@@ -177,6 +191,7 @@ final class GlobalTests: QuelboTests {
         let villains = Statement(
             id: "villains",
             code: """
+                /// The `villains` (VILLAINS) 􀎠􀁮Table global.
                 var villains = Table(
                     .table(
                         .object("troll"),
@@ -222,7 +237,10 @@ final class GlobalTests: QuelboTests {
 
         let def1Res = Statement(
             id: "def1Res",
-            code: "var def1Res = Table(.table(Globals.def1), 0, 0)",
+            code: """
+                /// The `def1Res` (DEF1-RES) 􀎠􀁮Table global.
+                var def1Res = Table(.table(Globals.def1), 0, 0)
+                """,
             type: .table.root,
             category: .globals,
             isCommittable: true,
@@ -241,6 +259,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
+                /// The `foo` (FOO) 􀎠[String] global.
                 var foo = ["BAR", "BAT"]
                 """,
             type: .string.array,
@@ -261,6 +280,7 @@ final class GlobalTests: QuelboTests {
         let foo = Statement(
             id: "foo",
             code: """
+                /// The `foo` (FOO) 􀎠String global.
                 var foo = "Forty Two!"
                 """,
             type: .string,
@@ -282,7 +302,10 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("againDir"),
             Instance(Statement(
                 id: "againDir",
-                code: "var againDir = false",
+                code: """
+                    /// The `againDir` (AGAIN-DIR) Bool global.
+                    var againDir = false
+                    """,
                 type: .booleanFalse,
                 category: .globals,
                 isCommittable: true,
@@ -300,7 +323,10 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("againDir"),
             Instance(Statement(
                 id: "againDir",
-                code: "var againDir: Object?",
+                code: """
+                    /// The `againDir` (AGAIN-DIR) 􀎠Object? global.
+                    var againDir: Object?
+                    """,
                 type: .object.optional,
                 category: .globals,
                 isCommittable: true,
@@ -318,7 +344,10 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
-                code: "var kitchenWindowFlag = false",
+                code: """
+                    /// The `kitchenWindowFlag` (KITCHEN-WINDOW-FLAG) Bool global.
+                    var kitchenWindowFlag = false
+                    """,
                 type: .booleanFalse,
                 category: .globals,
                 isCommittable: true,
@@ -356,7 +385,10 @@ final class GlobalTests: QuelboTests {
             Game.findInstance("kitchenWindowFlag"),
             Instance(Statement(
                 id: "kitchenWindowFlag",
-                code: "var kitchenWindowFlag = false",
+                code: """
+                    /// The `kitchenWindowFlag` (KITCHEN-WINDOW-FLAG) Bool global.
+                    var kitchenWindowFlag = false
+                    """,
                 type: .booleanTrue,
                 category: .globals,
                 isCommittable: true,

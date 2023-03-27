@@ -42,3 +42,21 @@ enum Category: String {
     /// Symbols representing syntax declarations specified by the game.
     case syntax
 }
+
+extension Category {
+    /// Returns a human-readable name for the category.
+    var name: String {
+        switch self {
+        case .constants: return "constant"
+        case .definitions: return "definition"
+        case .directions: return "direction"
+        case .flags: return "flag"
+        case .globals: return "global"
+        case .objects: return "object"
+        case .properties: return "property"
+        case .rooms: return "room"
+        case .routines: return "routine"
+        case .syntax: return "syntax"
+        }
+    }
+}

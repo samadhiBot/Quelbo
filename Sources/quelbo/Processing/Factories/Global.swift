@@ -21,10 +21,14 @@ extension Factories {
             ["GLOBAL", "SETG"]
         }
 
+        var zilName: String?
+
         override func processTokens() throws {
             var tokens = tokens
 
-            let globalName = try findName(in: &tokens).lowerCamelCase
+            let zilName = try findName(in: &tokens)
+            let globalName = zilName.lowerCamelCase
+            self.zilName = zilName
 
             let values = try symbolize(tokens)
             guard values.nonCommentSymbols.count == 1 else {
@@ -61,7 +65,9 @@ extension Factories {
 
         @discardableResult
         override func process() throws -> Symbol {
-            .statement(
+            let zilName = zilName
+
+            return .statement(
                 id: symbols[0].code,
                 code: { statement in
                     let type = statement.type
@@ -74,10 +80,19 @@ extension Factories {
                         }
                         return " = \(statement.payload.symbols[1].code)"
                     }
+                    var comment: String {
+                        guard let zilName else {
+                            return ""
+                        }
+                        return """
+                            /// The `\(variable)` (\(zilName)) \(type.debugDescription) \
+                            \(statement.payload.symbols[0].category?.name ?? "variable").\n
+                            """
+                    }
                     let declare = statement.isMutable != false ? "var" : "let"
                     let variable = statement.payload.symbols[0].handle
 
-                    return "\(declare) \(variable)\(assignment)"
+                    return "\(comment)\(declare) \(variable)\(assignment)"
                 },
                 type: symbols[1].type,
                 payload: .init(

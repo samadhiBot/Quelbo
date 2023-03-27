@@ -30,7 +30,10 @@ final class SetGlobalTests: QuelboTests {
             Game.globals.find("foo"),
             Statement(
                 id: "foo",
-                code: "var foo: Int?",
+                code: """
+                    /// The `foo` (FOO) 􀎠Int? global.
+                    var foo: Int?
+                    """,
                 type: .int.optional,
                 category: .globals,
                 isCommittable: true,
@@ -80,7 +83,10 @@ final class SetGlobalTests: QuelboTests {
             try Game.find("isCEnabled"),
             Statement(
                 id: "isCEnabled",
-                code: "let isCEnabled = 0",
+                code: """
+                    /// The `isCEnabled` (C-ENABLED?) 􀎠Int constant.
+                    let isCEnabled = 0
+                    """,
                 type: .int,
                 category: .constants,
                 isCommittable: true,
@@ -100,7 +106,10 @@ final class SetGlobalTests: QuelboTests {
             try Game.find("isCEnabled"),
             Statement(
                 id: "isCEnabled",
-                code: "var isCEnabled = 0",
+                code: """
+                    /// The `isCEnabled` (C-ENABLED?) 􀎠Int constant.
+                    var isCEnabled = 0
+                    """,
                 type: .int,
                 category: .globals,
                 isCommittable: true,

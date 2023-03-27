@@ -50,6 +50,7 @@ final class RestTests: QuelboTests {
             Statement(
                 id: "struct2",
                 code: """
+                    /// The `struct2` (STRUCT2) 􀀪[TableElement] global.
                     var struct2 = [1, 2, "AB", "C"]
                     """,
                 type: .someTableElement.array.tableElement,

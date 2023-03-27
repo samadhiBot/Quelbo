@@ -56,6 +56,7 @@ final class PickOneTests: QuelboTests {
             Statement(
                 id: "hellos",
                 code: """
+                    /// The `hellos` (HELLOS) 􀎠􀁮Table global.
                     var hellos = Table(
                         "Hello.",
                         "Good day.",

@@ -52,7 +52,10 @@ final class ApplyTests: QuelboTests {
             Game.findInstance("dispatchTbl"),
             Instance(Statement(
                 id: "dispatchTbl",
-                code: "let dispatchTbl = [func1, func2]",
+                code: """
+                    /// The `dispatchTbl` (DISPATCH-TBL) 􀎠[Int] constant.
+                    let dispatchTbl = [func1, func2]
+                    """,
                 type: .int.array,
                 category: .constants,
                 isCommittable: true,

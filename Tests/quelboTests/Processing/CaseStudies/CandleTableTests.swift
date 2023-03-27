@@ -83,6 +83,7 @@ final class CandleTableTests: QuelboTests {
             Statement(
                 id: "candleTable",
                 code: """
+                    /// The `candleTable` (CANDLE-TABLE) 􀎠􀁮Table global.
                     var candleTable = Table(
                         20,
                         "The candles grow shorter.",

@@ -30,6 +30,7 @@ final class ConditionMDLTests: QuelboTests {
             Statement(
                 id: "swimyuks",
                 code: """
+                    /// The `swimyuks` (SWIMYUKS) 􀎠􀁮Table global.
                     var swimyuks = Table(
                         "You can't swim in the dungeon.",
                         flags: .length

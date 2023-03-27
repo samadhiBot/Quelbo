@@ -24,7 +24,10 @@ final class ScoreTests: QuelboTests {
             Game.globals.find("score"),
             Statement(
                 id: "score",
-                code: "var score = 0",
+                code: """
+                    /// The `score` (SCORE) 􀎠Int global.
+                    var score = 0
+                    """,
                 type: .int,
                 category: .globals,
                 isCommittable: true,
@@ -60,7 +63,10 @@ final class ScoreTests: QuelboTests {
             Game.globals.find("score"),
             Statement(
                 id: "score",
-                code: "var score = 0",
+                code: """
+                    /// The `score` (SCORE) 􀎠Int global.
+                    var score = 0
+                    """,
                 type: .int,
                 category: .globals,
                 isCommittable: true,

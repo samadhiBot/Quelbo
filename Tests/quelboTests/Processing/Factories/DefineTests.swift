@@ -30,7 +30,10 @@ final class DefineTests: QuelboTests {
             Game.constants.find("readbufSize"),
             Statement(
                 id: "readbufSize",
-                code: "let readbufSize = 100",
+                code: """
+                    /// The `readbufSize` (READBUF-SIZE) 􀎠Int constant.
+                    let readbufSize = 100
+                    """,
                 type: .int,
                 category: .constants,
                 isCommittable: true,
@@ -78,7 +81,10 @@ final class DefineTests: QuelboTests {
             Game.constants.find("kbdReadbuf"),
             Statement(
                 id: "kbdReadbuf",
-                code: "let kbdReadbuf = makeReadbuf()",
+                code: """
+                    /// The `kbdReadbuf` (KBD-READBUF) 􀎠Table constant.
+                    let kbdReadbuf = makeReadbuf()
+                    """,
                 type: .table,
                 category: .constants,
                 isCommittable: true,
@@ -90,7 +96,10 @@ final class DefineTests: QuelboTests {
             Game.constants.find("editReadbuf"),
             Statement(
                 id: "editReadbuf",
-                code: "let editReadbuf = makeReadbuf()",
+                code: """
+                    /// The `editReadbuf` (EDIT-READBUF) 􀎠Table constant.
+                    let editReadbuf = makeReadbuf()
+                    """,
                 type: .table,
                 category: .constants,
                 isCommittable: true,

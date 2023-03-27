@@ -94,6 +94,7 @@ final class PureLengthTableTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             id: "jumploss",
             code: """
+                /// The `jumploss` (JUMPLOSS) 􀎠􀁮Table global.
                 var jumploss = Table(
                     "You should have looked before you leaped.",
                     "In the movies, your life would be passing before your eyes.",

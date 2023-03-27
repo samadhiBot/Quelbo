@@ -31,7 +31,10 @@ final class OrMDLTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "shouldSee",
-            code: "var shouldSee = 42",
+            code: """
+                /// The `shouldSee` (SHOULD-SEE) 􀎠Int global.
+                var shouldSee = 42
+                """,
             type: .int,
             category: .globals,
             isCommittable: true,

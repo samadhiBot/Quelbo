@@ -81,6 +81,7 @@ final class DoFightTests: QuelboTests {
             Statement(
                 id: "villains",
                 code: """
+                    /// The `villains` (VILLAINS) 􀎠􀁮Table global.
                     var villains = Table(
                         .table(
                             .object("troll"),

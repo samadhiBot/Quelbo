@@ -1117,6 +1117,7 @@ final class ParserTests: QuelboTests {
             Statement(
                 id: "reserveLexv",
                 code: """
+                    /// The `reserveLexv` (RESERVE-LEXV) 􀎠􀁮Table global.
                     var reserveLexv = Table(
                         count: 59,
                         defaults: 0, .int8(0), .int8(0),
