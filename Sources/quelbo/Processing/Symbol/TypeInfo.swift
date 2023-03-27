@@ -394,7 +394,10 @@ extension TypeInfo {
                           isOptional(versus: type) ? true : nil
         self.isProperty = newIsProperty ?? type.isProperty ?? isProperty
         // print("\t🍴", newIsTableElement, type.isTableElement, isTableElement)
-        self.isTableElement = newIsTableElement ?? type.isTableElement ?? isTableElement
+        self.isTableElement = {
+            if isTableElement == false { return false }
+            return newIsTableElement ?? type.isTableElement ?? isTableElement
+        }()
         // print("\t👀 after", self.objID, self.debugDescription)
 
         type.dataType = self.dataType
@@ -411,7 +414,7 @@ extension TypeInfo {
         _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
-        let logValuesToConsole = true
+        let logValuesToConsole = false
 
         let initialType = dataType?.description ?? "nil"
         let assertedType = asserted.dataType?.description ?? "nil"

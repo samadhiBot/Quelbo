@@ -1,23 +1,4 @@
-# TODO
-
-- [ ] Wrap table element references
-```
-Table(
-    "The blow lands, making a shallow gash in the ",
-    Constants.fDef, // 🛑 Cannot convert value of type 'Int' to expected argument type 'ZilElement'
-    "'s arm!",
-    flags: .length, .pure
-)
-```
-
-- [ ] Fix tables declaration
-```  
-var reserveLexv = .table( // 🛑 Reference to member 'table' cannot be resolved without a contextual type
-    count: 59,
-    defaults: 0, .int8(0), .int8(0),
-    flags: .lexv
-)
-```
+# Quelbo TODO
 
 - [ ] Correctly handle `wbreaks`
 ```
@@ -34,6 +15,7 @@ var againDir: Bool // 🛑 Class 'Zork1Globals' has no initializers
 ```
 
 ## Done
+
 - [x] Update directions declaration in game package
   - e.g. `directions = Direction.defaults + [.land]`
 
@@ -46,4 +28,23 @@ var againDir: Bool // 🛑 Class 'Zork1Globals' has no initializers
 ```
 ❌ var def1Res = Table(def1, .int(0), .int(0))
 ✅ var def1Res = Table(Constants.def1, .int(0), .int(0))
+```
+
+- [x] Wrap table element references
+```
+Table(
+    "The blow lands, making a shallow gash in the ",
+    Constants.fDef, // 🛑 Cannot convert value of type 'Int' to expected argument type 'ZilElement'
+    "'s arm!",
+    flags: .length, .pure
+)
+```
+
+- [x] Fix tables declaration
+```  
+var reserveLexv = .table( // 🛑 Reference to member 'table' cannot be resolved without a contextual type
+    count: 59,
+    defaults: 0, .int8(0), .int8(0),
+    flags: .lexv
+)
 ```

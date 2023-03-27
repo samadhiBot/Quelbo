@@ -116,17 +116,9 @@ final class InitTableTests: QuelboTests {
     }
 
     func testInitTableRepeatingDefaults() throws {
-        let symbol = try factory.init([
-            .decimal(59),
-            .list([
-                .atom("LEXV")
-            ]),
-            .decimal(0),
-            .type("BYTE"),
-            .decimal(0),
-            .type("BYTE"),
-            .decimal(0)
-        ], with: &localVariables).process()
+        let symbol = process("""
+            <ITABLE 59 (LEXV) 0 #BYTE 0 #BYTE 0>
+        """)
 
         XCTAssertNoDifference(symbol, .statement(
             code: """
