@@ -25,7 +25,7 @@ extension Factories {
         override func processOrEvaluate() throws -> Symbol {
             guard
                 let globalID = symbols.first?.id,
-                Game.globals.find(globalID) != nil
+                try Game.find(globalID) != nil
             else {
                 return .false
             }

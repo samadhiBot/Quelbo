@@ -74,6 +74,23 @@ final class SearchListTests: QuelboTests {
         """)
     }
 
+    func testPGwimBit() throws {
+        XCTAssertNoDifference(
+            Game.globals.find("pGwimBit"),
+            Statement(
+                id: "pGwimBit",
+                code: """
+                    /// The `pGwimBit` (P-GWIMBIT) 􀎠Bool global.
+                    var pGwimBit = false
+                    """,
+                type: .bool.optional,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true
+            )
+        )
+    }
+
     func testIsThisIt() throws {
         XCTAssertNoDifference(
             Game.routines.find("isThisIt"),

@@ -8,6 +8,7 @@
 import XCTest
 @testable import quelbo
 
+/// A test class for the Quelbo module.
 class QuelboTests: XCTestCase {
     var localVariables: [Statement] = []
 
@@ -21,6 +22,13 @@ class QuelboTests: XCTestCase {
         self.localVariables = []
     }
 
+    /// Asserts that the two provided factory types are the same.
+    ///
+    /// - Parameters:
+    ///   - factory1: The first factory type to compare.
+    ///   - factory2: The second factory type to compare.
+    ///   - file: The file path of the calling function.
+    ///   - line: The line number of the calling function.
     func AssertSameFactory(
         _ factory1: Factory.Type?,
         _ factory2: Factory.Type?,
@@ -41,6 +49,15 @@ class QuelboTests: XCTestCase {
         )
     }
 
+    /// Evaluates the provided ZIL string and returns the resulting symbol.
+    ///
+    /// - Parameters:
+    ///   - zil: The ZIL string to evaluate.
+    ///   - file: The file path of the calling function.
+    ///   - line: The line number of the calling function.
+    ///
+    /// - Returns: The resulting symbol after evaluating the ZIL string.
+    @discardableResult
     func evaluate(
         _ zil: String,
         file: StaticString = #filePath,
@@ -54,16 +71,22 @@ class QuelboTests: XCTestCase {
         )
     }
 
-    /// <#Description#>
-    /// - Parameter id: <#id description#>
-    /// - Returns: <#description#>
+    /// Finds a local variable with the given identifier.
+    ///
+    /// - Parameter id: The identifier of the local variable to find.
+    ///
+    /// - Returns: The local variable if found, otherwise nil.
     func findLocalVariable(_ id: String) -> Statement? {
         localVariables.first { $0.id == id }
     }
 
-    /// <#Description#>
-    /// - Parameter source: <#source description#>
-    /// - Returns: <#description#>
+    /// Parses the provided source string and returns an array of tokens.
+    ///
+    /// - Parameter source: The ZIL source string to parse.
+    ///
+    /// - Returns: An array of tokens parsed from the source string.
+    ///
+    /// - Throws: Any errors that occur during parsing.
     func parse(_ source: String) throws -> [Token] {
         let parsed = try Self.zilParser.parse(source)
         if parsed.count == 1, case .form(let tokens) = parsed[0] {
@@ -72,11 +95,18 @@ class QuelboTests: XCTestCase {
         return parsed
     }
 
-    @discardableResult
-    /// <#Description#>
+    /// Processes the provided ZIL string and returns the resulting symbol.
+    ///
     /// - Parameters:
-    ///   - zil: <#zil description#>
-    /// - Returns: <#description#>
+    ///   - zil: The ZIL string to process.
+    ///   - factoryType: The factory type to use during processing (optional, default: .mdl).
+    ///   - factoryMode: The factory mode to use during processing (optional, default: .process).
+    ///   - injectedLocalVariables: An array of local variables to inject (optional, default: []).
+    ///   - file: The file path of the calling function.
+    ///   - line: The line number of the calling function.
+    ///
+    /// - Returns: The resulting symbol after processing the ZIL string.
+    @discardableResult
     func process(
         _ zil: String,
         type factoryType: Factories.FactoryType? = .mdl,
@@ -168,6 +198,7 @@ class QuelboTests: XCTestCase {
 // MARK: - ZorkNumber
 
 extension QuelboTests {
+    /// An enumeration representing the different Zork game numbers.
     enum ZorkNumber: Int {
         case zork1 = 1
         case zork2 = 2
@@ -178,6 +209,7 @@ extension QuelboTests {
 // MARK: - TestError
 
 extension QuelboTests {
+    /// An enumeration representing test-related errors.
     enum TestError: Error {
         case emptyProcess(String)
         case expectedOneSymbol(String, got: Int)

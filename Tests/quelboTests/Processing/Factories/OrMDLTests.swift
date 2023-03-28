@@ -41,4 +41,38 @@ final class OrMDLTests: QuelboTests {
             isMutable: true
         ))
     }
+
+    func testSecondElementAfterFalseFirstElement() throws {
+        process(
+            """
+            <OR <GASSIGNED? ZELDA>
+                <SETG WBREAKS <STRING !\" !,WBREAKS>>>
+            """,
+            mode: .evaluate
+        )
+
+        XCTAssertNoDifference(
+            Game.globals.find("wbreaks"),
+            Statement(
+                id: "wbreaks",
+                code: """
+                    /// The `wbreaks` (WBREAKS) 􀎠String global.
+                    var wbreaks = [", wbreaks].joined()
+                    """,
+                type: .string,
+                category: .globals,
+                isCommittable: true,
+                isMutable: true
+            )
+        )
+    }
+
+    func testSecondElementAfterTrueFirstElement() throws {
+        evaluate("""
+            <OR <GASSIGNED? ZILCH>
+                <SETG WBREAKS <STRING !\" !,WBREAKS>>>
+        """)
+
+        XCTAssertNil(Game.globals.find("wbreaks"))
+    }
 }

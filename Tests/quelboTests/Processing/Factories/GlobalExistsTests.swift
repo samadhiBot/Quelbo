@@ -18,7 +18,7 @@ final class GlobalExistsTests: QuelboTests {
 
     func testGlobalExistsTrue() throws {
         let symbol = process("""
-            <GASSIGNED? ZILCH>
+            <GASSIGNED? ZELDA>
         """)
 
         XCTAssertNoDifference(symbol, .false)
@@ -26,9 +26,9 @@ final class GlobalExistsTests: QuelboTests {
 
     func testGlobalExistsFalse() throws {
         let symbol = process("""
-            <GLOBAL ZILCH 42>
+            <GLOBAL ZELDA 42>
 
-            <GASSIGNED? ZILCH>
+            <GASSIGNED? ZELDA>
         """)
 
         XCTAssertNoDifference(symbol, .true)

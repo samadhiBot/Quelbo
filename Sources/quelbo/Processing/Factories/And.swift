@@ -45,8 +45,10 @@ extension Factories {
             }
             while let element = elements.shift() {
                 switch function {
-                case "and": result = result && element
-                case "or": result = result || element
+                case "and":
+                    result = result && element
+                case "or":
+                    result = result || element
                 default: throw Error.invalidBooleanEvaluationFunction(function)
                 }
             }

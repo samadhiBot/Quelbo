@@ -21,11 +21,18 @@ extension Factories {
         }
 
         override func processTokens() throws {
-            self.symbols = try symbolize(
-                tokens,
-                mode: .process,
-                type: .mdl
-            )
+            for token in tokens {
+                let symbol = try symbolize(
+                    token,
+                    mode: .process,
+                    type: .mdl
+                )
+                if symbol == .false {
+                    continue
+                }
+                symbols.append(symbol)
+                break
+            }
         }
 
         override func processOrEvaluate() throws -> Symbol {

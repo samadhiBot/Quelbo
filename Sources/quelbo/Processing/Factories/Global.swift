@@ -73,6 +73,9 @@ extension Factories {
                     let type = statement.type
                     var assignment: String {
                         if type.isOptional == true, statement.isMutable == true {
+                            if type.dataType == .bool {
+                                return " = false"
+                            }
                             return ": \(statement.typeDescription)"
                         }
                         if type.confidence < .assured, statement.isMutable == true {

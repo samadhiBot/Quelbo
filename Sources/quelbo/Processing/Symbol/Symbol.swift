@@ -8,6 +8,7 @@
 import CustomDump
 import Foundation
 
+/// Represents the different types of symbols in the game.
 enum Symbol: SymbolType {
     case definition(Definition)
     case literal(Literal)
@@ -16,6 +17,7 @@ enum Symbol: SymbolType {
 }
 
 extension Symbol {
+    /// Returns the category of the symbol.
     var category: Category? {
         switch self {
         case .definition(let definition):
@@ -29,6 +31,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the code representation of the symbol.
     var code: String {
         switch self {
         case .definition(let definition):
@@ -42,6 +45,9 @@ extension Symbol {
         }
     }
 
+    /// Returns the multi-type code representation of the symbol.
+    ///
+    /// Multi-type code representation is used in heterogeneous collections like tables.
     var codeMultiType: String {
         switch self {
         case .definition, .statement:
@@ -74,6 +80,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the symbol's definition if it's a definition; otherwise, returns nil.
     var definition: Definition? {
         guard case .definition(let definition) = self else {
             return nil
@@ -81,6 +88,7 @@ extension Symbol {
         return definition
     }
 
+    /// Returns the evaluation of the symbol if it has one; otherwise, returns nil.
     var evaluation: Literal? {
         switch self {
         case .definition:
@@ -94,6 +102,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the global ID of the symbol if it's an instance; otherwise, returns the handle.
     var globalID: String {
         guard case .instance(let instance) = self else {
             return handle
@@ -101,6 +110,7 @@ extension Symbol {
         return instance.globalID
     }
 
+    /// Returns the handle representation of the symbol.
     var handle: String {
         switch self {
         case .definition(let definition):
@@ -117,6 +127,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the multi-type handle representation of the symbol.
     var handleMultiType: String {
         if case .definition = self { return handle }
 
@@ -162,6 +173,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the symbol's ID if it has one; otherwise, returns nil.
     var id: String? {
         switch self {
         case .definition(let definition):
@@ -175,21 +187,25 @@ extension Symbol {
         }
     }
 
+    /// Returns true if the symbol is a definition, otherwise, returns false.
     var isDefinition: Bool {
         if case .definition = self { return true }
         return false
     }
 
+    /// Returns true if the symbol is an instance, otherwise, returns false.
     var isInstance: Bool {
         if case .instance = self { return true }
         return false
     }
 
+    /// Returns true if the symbol is a literal, otherwise, returns false.
     var isLiteral: Bool {
         if case .literal = self { return true }
         return false
     }
 
+    /// Returns the mutability of the symbol if it has one; otherwise, returns nil.
     var isMutable: Bool? {
         switch self {
         case .definition(let definition):
@@ -203,6 +219,7 @@ extension Symbol {
         }
     }
 
+    /// Returns true if the symbol is a property, otherwise, returns false.
     var isProperty: Bool {
         switch self {
         case .definition, .literal:
@@ -214,6 +231,7 @@ extension Symbol {
         }
     }
 
+    /// Returns true if the symbol is a repeating statement, otherwise, returns false.
     var isRepeating: Bool {
         guard case .statement(let statement) = self else {
             return false
@@ -221,11 +239,13 @@ extension Symbol {
         return statement.isRepeating
     }
 
+    /// Returns true if the symbol is a statement, otherwise, returns false.
     var isStatement: Bool {
         if case .statement = self { return true }
         return false
     }
 
+    /// Returns true if the symbol is a throwing statement, otherwise, returns false.
     var isThrowing: Bool {
         guard case .statement(let statement) = self else {
             return false
@@ -233,6 +253,7 @@ extension Symbol {
         return statement.isThrowing
     }
 
+    /// Returns the object identifier (objID) of the symbol.
     var objID: String {
         let objID = {
             switch self {
@@ -249,6 +270,7 @@ extension Symbol {
         return String("\(objID)".dropLast().suffix(4))
     }
 
+    /// Returns the payload of the symbol if it's a statement; otherwise, returns nil.
     var payload: Statement.Payload? {
         guard case .statement(let statement) = self else {
             return nil
@@ -256,6 +278,7 @@ extension Symbol {
         return statement.payload
     }
 
+    /// Returns the return handling strategy of the symbol.
     var returnHandling: ReturnHandling {
         switch self {
         case .definition(let definition):
@@ -269,6 +292,7 @@ extension Symbol {
         }
     }
 
+    /// Returns the try-handle representation of the symbol.
     var tryHandle: String {
         let code = handle
         if code.hasPrefix("try ") {
@@ -277,6 +301,7 @@ extension Symbol {
         return "try \(code)"
     }
 
+    /// Returns the type information of the symbol.
     var type: TypeInfo {
         switch self {
         case .definition(let definition):

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Represents the possible assertions for a single ``Symbol`` element.
 enum SymbolElementAssertion {
     case hasCategory(Category)
     case hasKnownType
@@ -25,6 +26,7 @@ enum SymbolElementAssertion {
     case isVariable
 }
 
+/// Represents possible assertions for a collection of ``Symbol`` elements.
 enum SymbolCollectionAssertion {
     case areTableElements
     case areVariables
@@ -38,6 +40,7 @@ enum SymbolCollectionAssertion {
     case haveType(TypeInfo)
 }
 
+/// Represents count assertions for a collection of ``Symbol`` elements.
 enum SymbolCollectionCount {
     case atLeast(Int)
     case between(ClosedRange<Int>)
@@ -45,6 +48,11 @@ enum SymbolCollectionCount {
 }
 
 extension Symbol {
+    /// Asserts that the given `SymbolElementAssertion` is true for the ``Symbol``.
+    ///
+    /// - Parameter assertion: The `SymbolElementAssertion` to assert.
+    ///
+    /// - Throws: `Symbol.AssertionError` if the assertion fails.
     func assert(_ assertion: SymbolElementAssertion) throws {
         switch assertion {
         case .hasCategory(let category):
@@ -82,6 +90,11 @@ extension Symbol {
         }
     }
 
+    /// Asserts that the given list of `SymbolElementAssertion`s is true for the ``Symbol``.
+    ///
+    /// - Parameter assertions: The list of `SymbolElementAssertion`s to assert.
+    ///
+    /// - Throws: `Symbol.AssertionError` if any of the assertions fails.
     func assert(_ assertions: SymbolElementAssertion...) throws {
         for assertion in assertions {
             try assert(assertion)
@@ -90,6 +103,12 @@ extension Symbol {
 }
 
 extension Array where Element == Symbol {
+    /// Asserts that the given `SymbolCollectionAssertion` is true for the array of ``Symbol``
+    /// elements.
+    ///
+    /// - Parameter assertion: The `SymbolCollectionAssertion` to assert.
+    ///
+    /// - Throws: `Symbol.AssertionError` if the assertion fails.
     func assert(_ assertion: SymbolCollectionAssertion) throws {
         switch assertion {
         case .areVariables:
@@ -115,6 +134,12 @@ extension Array where Element == Symbol {
         }
     }
 
+    /// Asserts that the given `SymbolCollectionAssertion` is true for the array of ``Symbol``
+    /// elements.
+    ///
+    /// - Parameter assertion: The `SymbolCollectionAssertion` to assert.
+    ///
+    /// - Throws: `Symbol.AssertionError` if the assertion fails.
     func assert(_ assertions: SymbolCollectionAssertion...) throws {
         for assertion in assertions {
             try assert(assertion)
@@ -125,6 +150,11 @@ extension Array where Element == Symbol {
 // MARK: - Symbol element assertions
 
 extension Symbol {
+    /// Asserts that the symbol belongs to the specified category.
+    ///
+    /// - Parameter assertionCategory: The category to check against.
+    ///
+    /// - Throws: An error if the symbol doesn't belong to the specified category.
     func assertHasCategory(_ assertionCategory: Category) throws {
         switch self {
         case .definition(let definition):
@@ -138,12 +168,20 @@ extension Symbol {
         }
     }
 
+    /// Asserts that the symbol has a known type.
+    ///
+    /// - Throws: An error if the symbol's type confidence is `.none`.
     func assertHasKnownType() throws {
         guard type.confidence > .none else {
             throw AssertionError.hasKnownTypeAssertionFailed(for: handle)
         }
     }
 
+    /// Asserts that the symbol has the specified mutability.
+    ///
+    /// - Parameter mutability: The desired mutability (true for mutable, false for immutable).
+    ///
+    /// - Throws: An error if the symbol's mutability doesn't match the specified value.
     func assertHasMutability(_ mutability: Bool) throws {
         switch self {
         case .definition(let definition):
@@ -157,6 +195,10 @@ extension Symbol {
         }
     }
 
+    /// Asserts that the symbol has a return value.
+    ///
+    /// - Throws: An error if the symbol doesn't have a return value or its return handling is
+    ///           suppressed.
     func assertHasReturnValue() throws {
         guard type.hasReturnValue || returnHandling > .suppressed else {
             throw AssertionError.hasReturnValueAssertionFailed(
@@ -168,6 +210,11 @@ extension Symbol {
         try assertHasReturnHandling(.forced)
     }
 
+    /// Asserts that the symbol has the specified return handling.
+    ///
+    /// - Parameter handling: The desired return handling.
+    ///
+    /// - Throws: An error if the symbol's return handling doesn't match the specified value.
     func assertHasReturnHandling(_ handling: Symbol.ReturnHandling) throws {
         switch self {
         case .definition(let definition):
@@ -181,6 +228,11 @@ extension Symbol {
         }
     }
 
+    /// Asserts that the symbol has the specified type.
+    ///
+    /// - Parameter assertedType: The desired type.
+    ///
+    /// - Throws: An error if the symbol's type doesn't match the specified value.
     func assertHasType(_ assertedType: TypeInfo) throws {
         if assertedType === type { return }
 
@@ -196,35 +248,43 @@ extension Symbol {
         }
     }
 
+    /// Asserts that the symbol represents an array type.
+    ///
+    /// - Throws: An error if the symbol doesn't represent an array type.
     func assertIsArray() throws {
         try type.assertIsArray()
     }
 
+    /// Asserts that the symbol represents an optional type.
+    ///
+    /// - Throws: An error if the symbol doesn't represent an optional type.
     func assertIsOptional() throws {
         try type.assertIsOptional()
     }
 
+    /// Asserts that the symbol represents a property.
+    ///
+    /// - Throws: An error if the symbol doesn't represent a property.
     func assertIsProperty() throws {
         try type.assertIsProperty()
     }
 
+    /// Asserts that the symbol is a table element, with optional forcing.
+    ///
+    /// - Parameters:
+    ///   - value: The desired value for the table element status (default is true).
+    ///   - force: Optional flag to force the assertion (default is false).
+    ///
+    /// - Throws: An error if the symbol doesn't match the specified table element status.
     func assertIsTableElement(
         _ value: Bool = true,
         force: Bool = false
     ) throws {
         switch self {
-        case .definition:
-//            print("❤️‍🔥 \(handle) <\(value)> -> .definition")
-            return
-        case .statement(let statement):
-//            print("❤️‍🔥 \(handle) <\(value)> -> .statement; <skip: \(statement.id != nil)>")
-            if statement.id != nil { return }
-        case .instance:
-//            print("❤️‍🔥 \(handle) <\(value)> -> .instance")
-            break
-        case .literal:
-//            print("❤️‍🔥 \(handle) <\(value)> -> .literal")
-            break
+        case .definition: return
+        case .statement(let statement): if statement.id != nil { return }
+        case .instance: break
+        case .literal: break
         }
         try type.assertIsTableElement(
             isTableElement: value,
@@ -232,6 +292,9 @@ extension Symbol {
         )
     }
 
+    /// Asserts that the symbol represents a variable.
+    ///
+    /// - Throws: An error if the symbol doesn't represent a variable.
     func assertIsVariable() throws {
         switch self {
         case .definition, .literal:
@@ -249,6 +312,9 @@ extension Symbol {
 // MARK: - Symbol array assertions
 
 extension Array where Element == Symbol {
+    /// Asserts that the symbols in the array have a common type.
+    ///
+    /// - Throws: An error if the symbols don't have a common type.
     func assertHaveCommonType() throws {
         guard count > 1 else { return }
 
@@ -278,6 +344,10 @@ extension Array where Element == Symbol {
         }
     }
 
+    /// Asserts that the array has the specified count based on a comparator.
+    ///
+    /// - Parameter comparator: The comparator describing the desired count for the array.
+    /// - Throws: An error if the array's count doesn't match the specified comparator.
     func assertHaveCount(_ comparator: SymbolCollectionCount) throws {
         switch comparator {
         case .atLeast(let int): if count >= int { return }
@@ -292,6 +362,9 @@ extension Array where Element == Symbol {
         )
     }
 
+    /// Asserts that the symbols in the array have a single return type.
+    ///
+    /// - Throws: An error if the symbols don't have a single return type.
     func assertHaveSingleReturnType() throws {
         let (explicitlyReturning, nonReturning) = {
             let returningSymbols = explicitlyReturningSymbols
@@ -305,18 +378,6 @@ extension Array where Element == Symbol {
         }()
         let alphas = explicitlyReturning.withMaxConfidence
         let uniqueTypes = alphas.returnTypes
-
-        /*
-         Swift.print(
-             "😀 assertHaveSingleReturnType",
-             "\nsymbols:\n\(self.map({ "\($0.handle) [\($0.returnHandling)]" }).joined(separator: "\n").indented)",
-             "\nreturningSymbols:\n\(returningSymbols.handles(.singleLineBreak).indented)",
-             "\nexplicitlyReturning:\n\(explicitlyReturning.handles(.singleLineBreak).indented)",
-             "\nnonReturning:\n\(nonReturning.handles(.singleLineBreak).indented)",
-             "\nalphas:\n\(alphas.map { "\($0.handle) [\($0.type.debugDescription)]" }.values(.singleLineBreak).indented)",
-             "\nuniqueTypes:", uniqueTypes
-         )
-         */
 
         func assertType(_ type: TypeInfo) throws {
             try explicitlyReturning.assert(

@@ -442,7 +442,7 @@ extension GlobalTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "p.isLessThan(lowDirection)",
+            code: "p.isLessThan(Constants.lowDirection)",
             type: .bool
         ))
     }
@@ -466,18 +466,33 @@ extension GlobalTests {
     }
 
     func testPartsOfSpeech() throws {
-        let symbol = process(
-            "<L? .P ,LOW-DIRECTION>",
-            type: .zCode,
-            with: [
-                Statement(id: "p", type: .int)
-            ]
+        process("""
+            <CONSTANT P-PSOFF 4> ;"Offset to first part of speech"
+
+            <ROUTINE TEST-ROUTINE ("AUX" WRD)
+              <BTST <GETB .WRD ,P-PSOFF> ,PS?OBJECT>>
+        """)
+
+        XCTAssertNoDifference(
+            Game.routines.find("testRoutine"),
+            Statement(
+                id: "testRoutine",
+                code: """
+                    @discardableResult
+                    /// The `testRoutine` (TEST-ROUTINE) routine.
+                    func testRoutine() -> Int {
+                        var wrd: Table?
+                        return .bitwiseCompare(
+                            try wrd.get(at: Constants.pPsoff),
+                            PartsOfSpeech.object
+                        )
+                    }
+                    """,
+                type: .int.tableElement,
+                category: .routines,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
         )
-
-        XCTAssertNoDifference(symbol, .statement(
-            code: "p.isLessThan(lowDirection)",
-            type: .bool
-        ))
     }
-
 }

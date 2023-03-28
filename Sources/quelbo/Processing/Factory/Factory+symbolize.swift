@@ -132,9 +132,14 @@ extension Factory {
     /// - Throws: When token translation fails.
     func symbolize(
         _ token: Token,
-        mode factoryMode: FactoryMode? = nil
+        mode factoryMode: FactoryMode? = nil,
+        type factoryType: Factories.FactoryType = .zCode
     ) throws -> Symbol {
-        let symbols = try symbolize([token], mode: factoryMode)
+        let symbols = try symbolize(
+            [token],
+            mode: factoryMode,
+            type: factoryType
+        )
         guard symbols.count == 1 else {
             throw SymbolizationError.singleTokenSymbolizationFailed(token)
         }

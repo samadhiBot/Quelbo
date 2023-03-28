@@ -12,23 +12,30 @@ extension Game {
         [
             .statement(
                 id: "actions",
-                code: { _ in "var actions = Table()" },
+                code: { _ in
+                    """
+                    /// The `actions` (ACTIONS) 􀎠􀁮Table global.
+                    var actions = Table()
+                    """
+                },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
-            .statement(
-                id: "debug",
-                code: { _ in "var debug = false" },
-                type: .bool,
-                category: .globals,
-                isMutable: true
-            ),
+
             .statement(
                 id: "lowDirection",
-                code: { _ in "let lowDirection = 0" },
-                type: .int
+                code: { _ in
+                    """
+                    /// The `lowDirection` (LOW-DIRECTION) 􀎠Int global.
+                    let lowDirection = 0
+                    """
+                },
+                type: .int,
+                category: .constants,
+                isMutable: false
             ),
+
             .statement(
                 id: "nullFunc",
                 code: { _ in
@@ -43,69 +50,96 @@ extension Game {
                 type: .bool,
                 category: .routines
             ),
+
             .statement(
                 id: "parsedVerb",
-                code: { _ in "var parsedVerb: Verb?" },
+                code: { _ in
+                    """
+                    /// The `parsedVerb` (PARSED-VERB) 􀎠Verb? global.
+                    var parsedVerb: Verb?
+                    """
+                },
                 type: .verb.optional,
                 category: .globals,
                 isMutable: true
             ),
+
             .statement(
                 id: "parsedIndirectObject",
-                code: { _ in "var parsedIndirectObject: Object?" },
-                type: .object.optional,
-                category: .globals,
-                isMutable: true
-            ),
-            .statement(
-                id: "parsedDirectObject",
-                code: { _ in "var parsedDirectObject: Object?" },
-                type: .object.optional,
-                category: .globals,
-                isMutable: true
-            ),
-            .statement(
-                id: "partsOfSpeech",
                 code: { _ in
                     """
-                    enum PartsOfSpeech: Int {
-                        case objectFirst = 0
-                        case verbFirst = 1
-                        case adjectiveFirst = 2
-                        case directionFirst = 3
-                        case buzzWord = 4
-                        case preposition = 8
-                        case direction = 16
-                        case adjective = 32
-                        case verb = 64
-                        case object = 128
-                    }
+                    /// The `parsedIndirectObject` (PARSED-INDIRECT-OBJECT) 􀎠Object? global.
+                    var parsedIndirectObject: Object?
                     """
                 },
-                type: .void,
+                type: .object.optional,
                 category: .globals,
                 isMutable: true
             ),
+
+            .statement(
+                id: "parsedDirectObject",
+                code: { _ in
+                    """
+                    /// The `parsedDirectObject` (PARSED-DIRECT-OBJECT) 􀎠Object? global.
+                    var parsedDirectObject: Object?
+                    """
+                },
+                type: .object.optional,
+                category: .globals,
+                isMutable: true
+            ),
+
             .statement(
                 id: "preactions",
-                code: { _ in "var preactions = Table()" },
+                code: { _ in
+                    """
+                    /// The `preactions` (PREACTIONS) 􀎠􀁮Table global.
+                    var preactions = Table()
+                    """
+                },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
+
             .statement(
                 id: "prepositions",
-                code: { _ in "var prepositions = Table()" },
+                code: { _ in
+                    """
+                    /// The `prepositions` (PREPOSITIONS) 􀎠􀁮Table global.
+                    var prepositions = Table()
+                    """
+                },
                 type: .table,
                 category: .globals,
                 isMutable: true
             ),
+
             .statement(
                 id: "verbs",
-                code: { _ in "var verbs = Table()" },
+                code: { _ in
+                    """
+                    /// The `verbs` (VERBS) 􀎠􀁮Table global.
+                    var verbs = Table()
+                    """
+                },
                 type: .table,
                 category: .globals,
                 isMutable: true
+            ),
+
+            .statement(
+                id: "zilch",
+                code: { _ in
+                    """
+                    /// The `zilch` (ZILCH) 􀎠Bool global.
+                    let zilch = true
+                    """
+                },
+                type: .bool,
+                category: .constants,
+                isMutable: false
             ),
         ]
     }
