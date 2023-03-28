@@ -11,9 +11,8 @@ import Parsing
 import os.log
 
 /// A container for a Zil to Swift game translation.
-///
 class Game {
-    /// <#Description#>
+    /// An array of `Definition` values representing the game's definitions.
     private(set) var definitions: [Definition] = []
 
     /// An array of ``Symbol`` symbols processed from the `tokens`.
@@ -28,18 +27,20 @@ class Game {
     /// A shared instance of the ``Game`` representation.
     static var shared = Game()
 
-    /// <#Description#>
-    /// - Parameter path: <#path description#>
+    /// Parses Zil source code from a file at the specified path.
+    /// - Parameter path: The path to the Zil source code file.
     func parseZilSource(at path: String) throws {
         let parser = Game.Parser()
         try parser.parseZilSource(at: path)
         tokens = parser.parsedTokens
     }
 
-    /// <#Description#>
+    /// Processes the parsed tokens and converts them to Swift.
     /// - Parameters:
-    ///   - target: <#target description#>
-    ///   - printSymbolsOnFail: <#printSymbolsOnFail description#>
+    ///   - target: The target location for the output.
+    ///   - printSymbolsOnFail: A flag that indicates whether symbols should be printed on failure.
+    ///   - printUnprocessedTokensOnFail: A flag that indicates whether unprocessed tokens should
+    ///                                   be printed on failure.
     func processTokens(
         to target: String? = nil,
         printSymbolsOnFail: Bool,
@@ -58,8 +59,8 @@ class Game {
 // MARK: - Game symbol storage
 
 extension Game {
-    /// <#Description#>
-    /// - Parameter symbol: <#symbol description#>
+    /// Commits a `Symbol` to the game.
+    /// - Parameter symbol: The `Symbol` to commit.
     static func commit(_ symbol: Symbol) throws {
         switch symbol {
         case .definition(let definition):
@@ -92,14 +93,28 @@ extension Game {
         }
     }
 
-    /// <#Description#>
-    /// - Parameter symbols: <#symbols description#>
+    /// Commits an array of `Symbol`s to the game.
+    /// - Parameter symbols: The array of `Symbol`s to commit.
     static func commit(_ symbols: [Symbol]) throws {
         for symbol in symbols {
             try commit(symbol)
         }
     }
 
+    /// Finds a statement in the given categories based on its ID.
+    ///
+    /// Throws an error if the statement is not found or if multiple statements with the same ID
+    /// are found.
+    ///
+    /// - Parameters:
+    ///   - id: The ID of the statement to be found.
+    ///   - categories: An array of categories to search in (default is an empty array).
+    ///
+    /// - Throws: `GameError.statementNotFound` if the statement is not found, or
+    ///           `GameError.multipleStatementsFound` if multiple statements with
+    ///           the same ID are found.
+    ///
+    /// - Returns: The found statement, or nil if not found.
     static func find(
         _ id: String,
         in categories: [Category] = []
@@ -139,9 +154,11 @@ extension Game {
         }
     }
 
-    /// <#Description#>
-    /// - Parameter id: <#id description#>
-    /// - Returns: <#description#>
+    /// Finds a definition with the given ID.
+    ///
+    /// - Parameter id: The ID of the definition to be found.
+    ///
+    /// - Returns: The found definition, or nil if not found.
     static func findDefinition(_ id: String) -> Definition? {
         guard let found = shared.definitions.first(where: { $0.id == id }) else {
             return nil
@@ -149,11 +166,13 @@ extension Game {
         return found
     }
 
-    /// <#Description#>
+    /// Finds a factory with the given ID and optional type.
+    ///
     /// - Parameters:
-    ///   - id: <#id description#>
-    ///   - root: <#root description#>
-    /// - Returns: <#description#>
+    ///   - id: The ID of the factory to be found.
+    ///   - type: The factory type to match (default is nil).
+    ///
+    /// - Returns: The found factory of the specified type, or nil if not found.
     static func findFactory(
         _ id: String,
         type: Factories.FactoryType? = nil
@@ -165,12 +184,22 @@ extension Game {
         default: return found.first { type == $0.factoryType }
         }
     }
-    
+
+    /// Finds an instance with the given ID.
+    ///
+    /// - Parameter id: The ID of the instance to be found.
+    ///
+    /// - Returns: The found instance, or nil if not found.
     static func findInstance(_ id: String) -> Instance? {
         guard let global = try? find(id) else { return nil }
         return Instance(global)
     }
 
+    /// Finds a routine with the given ID.
+    ///
+    /// - Parameter id: The ID of the routine to be found.
+    ///
+    /// - Returns: The found routine, or nil if not found.
     static func findRoutine(_ id: String) -> Statement? {
         if let routine = Game.routines.find(id) {
             return routine
@@ -185,7 +214,13 @@ extension Game {
         return actionRoutine
     }
 
-    /// <#Description#>
+    /// Resets the game state with the given definitions, symbols, tokens, and Z-Machine version.
+    ///
+    /// - Parameters:
+    ///   - definitions: An array of definitions to use (default is an empty array).
+    ///   - symbols: An array of symbols to use (default is an empty array).
+    ///   - tokens: An array of tokens to use (default is an empty array).
+    ///   - zMachineVersion: The Z-Machine version to use (default is .z3).
     static func reset(
         definitions: [Definition] = [],
         symbols: [Symbol] = [],
@@ -211,7 +246,7 @@ extension Game {
 // MARK: - setZMachineVersion
 
 extension Game {
-    /// <#Description#>
+    /// Sets the ZMachine version for the game.
     func setZMachineVersion() throws {
         for token in tokens {
             guard
@@ -236,20 +271,32 @@ extension Game {
 
 // MARK: - GameError
 
+/// <#Description#>
 enum GameError: Swift.Error {
+    /// Indicates a conflict when committing a definition.
     case commitDefinitionConflict(String)
-    case commitStatementConflict(String)
-    case factoryNotFound(String)
+
+    /// Indicates an error in processing tokens.
     case failedToProcessTokens([String])
+
+    /// Indicates a global symbol was not found with the given ID and ZIL.
     case globalNotFound(id: String, zil: String)
-    case invalidCommitType(Symbol)
+
+    /// Indicates an invalid Z-Machine version for the given tokens.
     case invalidZMachineVersion([Token])
+
+    /// Indicates multiple statements were found with the given ID.
     case multipleStatementsFound(String)
+
+    /// Indicates a statement was not found with the given ID.
     case statementNotFound(String)
+
+    /// Indicates a statement was not found with the given ID and categories.
     case statementNotFound(String, in: [Category])
-    case unexpectedAtRootLevel(Token)
+
+    /// Indicates an unknown root evaluation for the given token.
     case unknownRootEvaluation(Token)
+
+    /// Indicates an unknown directive for the given tokens.
     case unknownDirective([Token])
-    case unknownOperation(String)
-    case variableUpsertConflict(old: Statement, new: Statement)
 }

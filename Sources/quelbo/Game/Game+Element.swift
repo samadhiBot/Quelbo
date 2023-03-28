@@ -28,6 +28,14 @@ extension Game {
         /// Specifies the mode for factories to use during processing.
         let factoryMode: Factory.FactoryMode
 
+        /// Initializes a new instance with the given parameters.
+        ///
+        /// - Parameters:
+        ///   - zil: The ZIL name of the instance.
+        ///   - tokens: An array of tokens associated with the instance.
+        ///   - localVariables: A reference to an array of local variables (inout parameter).
+        ///   - type: The factory type (default is `nil`).
+        ///   - mode: The factory mode (default is `.process`).
         init(
             zil: String,
             tokens: [Token],
@@ -43,6 +51,12 @@ extension Game {
             self.zilName = zil
         }
 
+        /// Processes the instance and returns a symbol based on the factory, routine,
+        /// or definition.
+        ///
+        /// - Throws: Any errors that occur during processing.
+        ///
+        /// - Returns: A symbol based on the processed instance.
         func process() throws -> Symbol {
             if let factory = Game.findFactory(zilName, type: factoryType) {
                 return try processFactory(factory)
@@ -67,6 +81,11 @@ extension Game {
 }
 
 extension Game.Element {
+    /// Processes a definition and returns the resulting symbol.
+    ///
+    /// - Throws: Any errors that occur during processing.
+    ///
+    /// - Returns: The symbol based on the processed definition.
     @discardableResult
     func processDefinition() throws -> Symbol {
         let routine = try Factories.DefinitionEvaluate(
@@ -80,6 +99,13 @@ extension Game.Element {
         return routine
     }
 
+    /// Processes a factory of the given type and returns the resulting symbol.
+    ///
+    /// - Parameter factory: The factory type to process.
+    ///
+    /// - Throws: Any errors that occur during processing.
+    ///
+    /// - Returns: The symbol based on the processed factory.
     func processFactory(_ factory: Factory.Type) throws -> Symbol {
         let factoryTokens: [Token] = {
             switch tokens.first {
@@ -101,6 +127,11 @@ extension Game.Element {
         return symbol
     }
 
+    /// Processes a routine and returns the resulting symbol.
+    ///
+    /// - Throws: Any errors that occur during processing.
+    ///
+    /// - Returns: The symbol based on the processed routine.
     @discardableResult
     func processRoutine() throws -> Symbol {
         let routineFactory = try Factories.Routine(
@@ -119,6 +150,10 @@ extension Game.Element {
         return routine
     }
 
+    /// Processes a routine call and returns the resulting symbol.
+    ///
+    /// - Throws: Any errors that occur during processing.
+    /// - Returns: The symbol based on the processed routine call.
     func processRoutineCall() throws -> Symbol {
         try Factories.RoutineCall(
             tokens,
