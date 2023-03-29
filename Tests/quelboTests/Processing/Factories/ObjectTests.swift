@@ -442,7 +442,7 @@ final class ObjectTests: QuelboTests {
                 /// The `adventurer` (ADVENTURER) object.
                 var adventurer = Object(
                     id: "adventurer",
-                    action: "nil",
+                    action: nil,
                     description: "cretin",
                     flags: [
                         .isActor,

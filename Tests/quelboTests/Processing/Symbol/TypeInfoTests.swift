@@ -74,4 +74,24 @@ final class TypeInfoTests: QuelboTests {
             )
         )
     }
+
+    func testSignature() {
+        XCTAssertNoDifference(TypeInfo.bool.signature, "Bool")
+        XCTAssertNoDifference(TypeInfo.booleanFalse.signature, "Bool")
+        XCTAssertNoDifference(TypeInfo.booleanTrue.signature, "Bool")
+
+        XCTAssertNoDifference(TypeInfo.int.signature, "Int")
+        XCTAssertNoDifference(TypeInfo.integerOne.signature, "Int")
+        XCTAssertNoDifference(TypeInfo.integerZero.signature, "Int")
+
+        XCTAssertNoDifference(TypeInfo.object.signature, "Object")
+        XCTAssertNoDifference(TypeInfo.object.array.signature, "ObjectArray")
+        XCTAssertNoDifference(TypeInfo.object.optional.signature, "OptionalObject")
+
+        XCTAssertNoDifference(TypeInfo.someTableElement.signature, "TableElement")
+
+        XCTAssertNoDifference(TypeInfo.string.signature, "String")
+
+        XCTAssertNoDifference(TypeInfo.table.signature, "Table")
+    }
 }

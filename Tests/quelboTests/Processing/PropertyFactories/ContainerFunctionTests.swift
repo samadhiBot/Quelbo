@@ -23,7 +23,9 @@ final class ContainerFunctionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "containerFunction",
-            code: "containerFunction: batD",
+            code: """
+                containerFunction: "batD"
+                """,
             type: .routine
         ))
     }

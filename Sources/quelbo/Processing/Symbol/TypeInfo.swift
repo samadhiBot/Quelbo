@@ -371,6 +371,23 @@ extension TypeInfo {
             isTableElement != nil ? 1 : 0,
         ].reduce(0, +)
     }
+
+    var signature: String {
+        var signature = dataType?.description ?? (
+            isTableElement == true ? "TableElement" : "Unit"
+        )
+        if case .oneOf(let dataTypes) = dataType {
+            signature = dataTypes
+                .min(by: { $0.baseConfidence < $1.baseConfidence })?
+                .description ?? "Unit"
+        }
+        if isArray == true {
+            signature = "\(signature)Array"
+        } else if isOptional == true && dataType != .bool {
+            signature = "Optional\(signature)"
+        }
+        return signature
+    }
 }
 
 // MARK: - Reconcile

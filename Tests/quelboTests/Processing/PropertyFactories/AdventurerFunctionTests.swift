@@ -23,7 +23,9 @@ final class AdventurerFunctionTests: QuelboTests {
 
         XCTAssertNoDifference(symbol, .statement(
             id: "adventurerFunction",
-            code: "adventurerFunction: batD",
+            code: """
+                adventurerFunction: "batD"
+                """,
             type: .routine
         ))
     }

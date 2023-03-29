@@ -292,6 +292,17 @@ extension Symbol {
         }
     }
 
+    var signature: String {
+        switch self {
+        case .definition, .literal:
+            return handle
+        case .statement(let statement):
+            return statement.signature
+        case .instance(let instance):
+            return instance.variable.signature
+        }
+    }
+
     /// Returns the try-handle representation of the symbol.
     var tryHandle: String {
         let code = handle

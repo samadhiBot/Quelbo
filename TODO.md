@@ -1,20 +1,10 @@
-# Quelbo TODO
+# # Quelbo TODO
 
-- [ ] Correctly handle `wbreaks`
-```
-<SETG WBREAKS <STRING !\" !,WBREAKS>>>
-
-var wbreaks = ["\"", wbreaks].joined() // 🛑 Circular reference
-```
-
-`<SETG WBREAKS <STRING !\" !,WBREAKS>>>`
-
-- [ ] Non-optional globals should have a default value if none is assigned
-```
-var againDir: Bool // 🛑 Class 'Zork1Globals' has no initializers
-```
-
-## Done
+- [ ] The `actions: [Routine.ID: Routine.Function]` dictionary:
+    - [ ] Should only contain routines referenced in Objects and Rooms.
+    - [ ] Should map to the correct `Routine.Function` type
+ 
+### ## Done
 
 - [x] Update directions declaration in game package
   - e.g. `directions = Direction.defaults + [.land]`
@@ -48,3 +38,18 @@ var reserveLexv = .table( // 🛑 Reference to member 'table' cannot be resolved
     flags: .lexv
 )
 ```
+
+- [x] Correctly handle `wbreaks`
+```
+<SETG WBREAKS <STRING !\" !,WBREAKS>>>
+
+var wbreaks = ["\"", wbreaks].joined() // 🛑 Circular reference
+```
+
+`<SETG WBREAKS <STRING !\" !,WBREAKS>>>`
+
+- [x] Non-optional globals should have a default value if none is assigned
+```
+var againDir: Bool // 🛑 Class 'Zork1Globals' has no initializers
+```
+

@@ -55,7 +55,11 @@ final class Statement: SymbolType {
         self.returnHandling = returnHandling
         self.type = type
     }
+}
 
+// MARK: - Computed properties
+
+extension Statement {
     var code: String {
         do {
             return try codeBlock(self)
@@ -74,6 +78,11 @@ final class Statement: SymbolType {
             guard case .statement(let statement) = $0 else { return false }
             return statement.isAgainStatement
         }
+    }
+
+    var signature: String {
+        guard let id else { return code }
+        return ".\(payload.signatureType)(\(id.quoted))"
     }
 }
 

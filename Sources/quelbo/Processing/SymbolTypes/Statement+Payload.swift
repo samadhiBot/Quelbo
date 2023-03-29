@@ -47,141 +47,157 @@ extension Statement {
         static var empty: Payload {
             .init()
         }
+    }
+}
 
-        var auxiliaryDefs: String {
-            let auxVariables = auxiliaries + parameters.mutable
-            guard !auxVariables.isEmpty else { return "" }
+// MARK: - Computed properties
 
-            return auxVariables
-                .map(\.initialization)
-                .joined(separator: "\n")
-                .appending("\n")
+extension Statement.Payload {
+    var auxiliaryDefs: String {
+        let auxVariables = auxiliaries + parameters.mutable
+        guard !auxVariables.isEmpty else { return "" }
+
+        return auxVariables
+            .map(\.initialization)
+            .joined(separator: "\n")
+            .appending("\n")
+    }
+
+    var auxiliaryDefsWithDefaultValues: String {
+        let auxVariables = auxiliaries + parameters.mutable
+        guard !auxVariables.isEmpty else { return "" }
+
+        return auxVariables
+            .map(\.emptyValueAssignment)
+            .joined(separator: "\n")
+            .appending("\n")
+    }
+
+    var code: String {
+        var lines = symbols
+        guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
+            return lines.handles(.singleLineBreak)
         }
 
-        var auxiliaryDefsWithDefaultValues: String {
-            let auxVariables = auxiliaries + parameters.mutable
-            guard !auxVariables.isEmpty else { return "" }
+        let last = lines.remove(at: lastIndex)
+        var codeLines = lines.map(\.code)
+        let lastLine = {
+            let handle = last.handle
+            guard
+                last.returnHandling > .implicit,
+                last.type.hasReturnValue,
+                !handle.hasPrefix("return")
+            else {
+                return last.handle
+            }
+            return "return \(last.handle)"
+        }()
+        codeLines.insert(lastLine, at: lastIndex)
 
-            return auxVariables
-                .map(\.emptyValueAssignment)
-                .joined(separator: "\n")
-                .appending("\n")
+        return codeLines
+            .filter { !$0.isEmpty }
+            .values(.singleLineBreak)
+    }
+
+    var codeHandlingRepeating: String {
+        switch (isRepeating, repeatingBindChild?.activation) {
+        case (true, nil), (true, ""):
+            break
+        case (true, _), (false, _):
+            return code
         }
 
-        var code: String {
-            var lines = symbols
-            guard let lastIndex = lines.lastIndex(where: { $0.type != .comment }) else {
-                return lines.handles(.singleLineBreak)
-            }
+        var blockActivation: String {
+            guard
+                let activationName = self.activation,
+                !activationName.isEmpty
+            else { return "" }
 
-            let last = lines.remove(at: lastIndex)
-            var codeLines = lines.map(\.code)
-            let lastLine = {
-                let handle = last.handle
-                guard
-                    last.returnHandling > .implicit,
-                    last.type.hasReturnValue,
-                    !handle.hasPrefix("return")
-                else {
-                    return last.handle
-                }
-                return "return \(last.handle)"
-            }()
-            codeLines.insert(lastLine, at: lastIndex)
-
-            return codeLines
-                .filter { !$0.isEmpty }
-                .values(.singleLineBreak)
+            return "\(activationName): "
         }
 
-        var codeHandlingRepeating: String {
-            switch (isRepeating, repeatingBindChild?.activation) {
-            case (true, nil), (true, ""):
-                break
-            case (true, _), (false, _):
-                return code
-            }
-
-            var blockActivation: String {
-                guard
-                    let activationName = self.activation,
-                    !activationName.isEmpty
-                else { return "" }
-
-                return "\(activationName): "
-            }
-
-            return """
+        return """
                 \(blockActivation)\
                 while true {
                 \(code.indented)
                 }
                 """
-        }
+    }
 
-        var discardableResult: String {
-            switch returnType?.dataType {
-            case .comment, .none, .void:
-                return ""
-            default:
-                return "@discardableResult\n"
+    var discardableResult: String {
+        switch returnType?.dataType {
+        case .comment, .none, .void:
+            return ""
+        default:
+            return "@discardableResult\n"
+        }
+    }
+
+    var hasActivation: Bool {
+        guard
+            let activation = activation,
+            !activation.isEmpty
+        else { return false }
+
+        return true
+    }
+
+    var isRepeating: Bool {
+        repeating || symbols.contains {
+            guard case .statement(let statement) = $0 else { return false }
+
+            return statement.isAgainStatement || statement.isBindingAndRepeatingStatement
+        }
+    }
+
+    var paramDeclarations: String {
+        parameters
+            .map(\.declaration)
+            .values(.commaSeparatedNoTrailingComma)
+    }
+
+    var repeatingBindChild: Statement? {
+        for child in symbols {
+            guard case .statement(let statement) = child else { continue }
+
+            if statement.isBindingAndRepeatingStatement {
+                return statement
             }
         }
+        return nil
+    }
 
-        var hasActivation: Bool {
-            guard
-                let activation = activation,
-                !activation.isEmpty
-            else { return false }
+    var returnDeclaration: String {
+        guard let returnType else { return "" }
 
-            return true
+        switch returnType.dataType {
+        case .comment, .void:
+            return ""
+        default:
+            return " -> \(returnType)"
         }
+    }
 
-        var isRepeating: Bool {
-            repeating || symbols.contains {
-                guard case .statement(let statement) = $0 else { return false }
+    var returnType: TypeInfo? {
+        symbols
+            .returningSymbols
+            .returnType
+    }
 
-                return statement.isAgainStatement || statement.isBindingAndRepeatingStatement
+    var signatureType: String {
+        var params: String {
+            var params = parameters.map(\.type.signature).joined()
+            guard !params.isEmpty else {
+                return "void"
             }
+            let firstChar = params.removeFirst()
+            return "\(firstChar.lowercased())\(params)"
         }
+        return "\(params)To\(returnType?.signature ?? "Void")"
+    }
 
-        var paramDeclarations: String {
-            parameters
-                .map(\.declaration)
-                .values(.commaSeparatedNoTrailingComma)
-        }
-
-        var repeatingBindChild: Statement? {
-            for child in symbols {
-                guard case .statement(let statement) = child else { continue }
-
-                if statement.isBindingAndRepeatingStatement {
-                    return statement
-                }
-            }
-            return nil
-        }
-
-        var returnDeclaration: String {
-            guard let returnType else { return "" }
-
-            switch returnType.dataType {
-            case .comment, .void:
-                return ""
-            default:
-                return " -> \(returnType)"
-            }
-        }
-
-        var returnType: TypeInfo? {
-            symbols
-                .returningSymbols
-                .returnType
-        }
-
-        var throwsDeclaration: String {
-            symbols.containThrowingStatement ? " throws" : ""
-        }
+    var throwsDeclaration: String {
+        symbols.containThrowingStatement ? " throws" : ""
     }
 }
 
@@ -213,22 +229,12 @@ extension Statement.Payload {
                     .haveSingleReturnType
                 )
             }
-//        case (.suppressed, .forced):
-//            throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
-//                for: "Payload",
-//                asserted: assertedHandling,
-//                actual: returnHandling
-//            )
         default:
             throw Symbol.AssertionError.hasReturnHandlingAssertionFailed(
                 for: "Payload",
                 asserted: assertedHandling,
                 actual: returnHandling
             )
-
-//            assertionFailure(
-//                "Unexpected assertHasReturnHandling \(assertedHandling) -> \(returnHandling)"
-//            )
         }
     }
 }

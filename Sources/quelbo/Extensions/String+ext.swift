@@ -70,6 +70,8 @@ extension String {
     ///
     /// - Returns: The quoted `String`.
     var quoted: String {
+        guard self != "nil" else { return self }
+
         let text = convertToMultiline()
         if text.contains("\n") {
             return """
