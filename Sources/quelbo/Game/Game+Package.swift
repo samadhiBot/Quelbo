@@ -42,12 +42,12 @@ extension Game {
 
 private extension Game.Package {
     func addActions() throws {
-        guard !Game.routines.isEmpty else { return }
+        guard !Game.actions.isEmpty else { return }
 
         let mappings = Game.routines.sorted.compactMap { routine in
             guard let id = routine.id else { return nil }
             return """
-                "\(id)": .voidVoid(\(id)),
+                "\(id)": .\(routine.signature)(\(id)),
                 """
         }.joined(separator: "\n")
 

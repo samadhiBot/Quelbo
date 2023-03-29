@@ -13,13 +13,13 @@ extension Game {
     static var actions: [Symbol] {
         let objects = shared.symbols.filter { [.objects, .rooms].contains($0.category) }
         return objects.reduce(into: []) { actions, object in
-            for property in object.payload?.symbols ?? [] {
+            for function in object.payload?.symbols ?? [] {
                 guard
-                    property.type == .object.property,
+                    function.type == .routine.property,
                     !actions.contains(object)
                 else { continue }
 
-                actions.append(object)
+                actions.append(function)
             }
         }
     }
