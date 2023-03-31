@@ -135,7 +135,6 @@ extension Factories.Object {
 
 extension Factories.Object {
     enum Error: Swift.Error {
-        case invalidObjectListProperty(Token)
         case invalidObjectProperty(Token)
     }
 }

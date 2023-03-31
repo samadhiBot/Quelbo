@@ -28,6 +28,7 @@ class Game {
     static var shared = Game()
 
     /// Parses Zil source code from a file at the specified path.
+    /// 
     /// - Parameter path: The path to the Zil source code file.
     func parseZilSource(at path: String) throws {
         let parser = Game.Parser()
@@ -36,6 +37,7 @@ class Game {
     }
 
     /// Processes the parsed tokens and converts them to Swift.
+    ///
     /// - Parameters:
     ///   - target: The target location for the output.
     ///   - printSymbolsOnFail: A flag that indicates whether symbols should be printed on failure.
@@ -60,6 +62,7 @@ class Game {
 
 extension Game {
     /// Commits a `Symbol` to the game.
+    ///
     /// - Parameter symbol: The `Symbol` to commit.
     static func commit(_ symbol: Symbol) throws {
         switch symbol {

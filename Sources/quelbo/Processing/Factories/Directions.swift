@@ -86,7 +86,6 @@ extension Factories {
 
 extension Factories.Directions {
     enum Error: Swift.Error {
-        case missingDirectionID(Symbol)
         case noDirectionsDefined([Token])
         case unconsumedDirectionTokens([Token])
     }

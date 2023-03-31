@@ -12,28 +12,37 @@ import os.log
 import SwiftPrettyPrint
 
 extension Game {
+    /// A class responsible for processing game tokens.
     class Processor {
         /// An array of any errors encountered during game processing.
         private(set) var errors: [String] = []
 
-        /// <#Description#>
+        /// A flag indicating whether to print symbols on failure.
         let printSymbolsOnFail: Bool
 
-        /// <#Description#>
+        /// A flag indicating whether to print unprocessed tokens on failure.
         let printUnprocessedTokensOnFail: Bool
 
-        /// <#Description#>
+        /// A progress bar representing the processing progress.
         private(set) var progressBar: ProgressBar
 
-        /// <#Description#>
+        /// The target file path for writing the game translation, if applicable.
         let target: String?
 
-        /// <#Description#>
+        /// An array of tokens to be processed.
         private(set) var tokens: [Token]
 
-        /// <#Description#>
+        /// The initial count of tokens to be processed.
         let initialTokenCount: Int
 
+        /// Initializes a new `Processor` with the provided tokens and options.
+        ///
+        /// - Parameters:
+        ///   - tokens: An array of tokens to be processed.
+        ///   - target: The target file path for writing the game translation, if applicable.
+        ///   - printSymbolsOnFail: A flag indicating whether to print symbols on failure.
+        ///   - printUnprocessedTokensOnFail: A flag indicating whether to print unprocessed tokens
+        ///                                   on failure.
         init(
             tokens: [Token],
             target: String?,
@@ -54,6 +63,9 @@ extension Game {
             )
         }
 
+        /// Processes the tokens in the `tokens` array.
+        ///
+        /// - Throws: An error if processing fails.
         func processTokens() throws {
             Game.Print.heading("􀥏  Processing Zil Tokens")
 
@@ -101,6 +113,11 @@ extension Game {
 }
 
 extension Game.Processor {
+    /// Processes the remaining ZIL tokens.
+    ///
+    /// Iteratively processes the tokens and updates the progress bar. This function continues
+    /// processing tokens until there are no tokens left or an error occurs. If all tokens are
+    /// successfully processed, a "Processing complete!" message is displayed.
     private func process() throws {
         let total = initialTokenCount
         var iteration = 0
@@ -128,6 +145,11 @@ extension Game.Processor {
         Game.Print.heading("􀦆  Processing complete!")
     }
 
+    /// Processes each ZIL token.
+    ///
+    /// Processes the ZIL tokens and appends unprocessed tokens and errors to their respective
+    /// arrays. This method processes each token based on its type, handling comments, evaluations,
+    /// and forms.
     private func processZilTokens() throws {
         var errors: [String] = []
         var unprocessedTokens: [Token] = []

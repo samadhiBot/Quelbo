@@ -116,6 +116,5 @@ extension Factories {
 extension Factories.Conditional {
     enum Error: Swift.Error {
         case missingConditionPredicate
-        case unevaluatedPredicate(Symbol)
     }
 }

@@ -10,8 +10,6 @@ import XCTest
 @testable import quelbo
 
 final class FactorySymbolizeTests: QuelboTests {
-    let testFactory = TestFactory.self
-
     let boardedWindow = Instance(.init(
         id: "boardedWindow",
         code: """

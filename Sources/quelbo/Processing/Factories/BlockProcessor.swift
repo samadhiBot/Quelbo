@@ -185,8 +185,6 @@ extension Factories.BlockProcessor {
 
 extension Factories.BlockProcessor {
     enum Error: Swift.Error {
-        case missingFunctionType
-        case unexpectedNameSymbolType(Symbol, [Token])
         case unexpectedTokenWhileFindingParameters([Token])
     }
 }

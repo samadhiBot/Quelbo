@@ -12,7 +12,6 @@ import XCTest
 
 final class RepeatTests: QuelboTests {
     let factory = Factories.Repeat.self
-    let routineFactory = Factories.Routine.self
 
     override func setUp() {
         super.setUp()

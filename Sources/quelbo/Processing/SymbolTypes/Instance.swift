@@ -12,7 +12,6 @@ final class Instance: SymbolType {
     let _isArray: Bool?
     let _isMutable: Bool?
     let _isOptional: Bool?
-    let _isProperty: Bool?
     let _isTableElement: Bool?
     let context: Context
     let defaultValue: Symbol?
@@ -25,13 +24,11 @@ final class Instance: SymbolType {
         isArray: Bool? = nil,
         isMutable: Bool? = nil,
         isOptional: Bool? = nil,
-        isProperty: Bool? = nil,
         isTableElement: Bool? = nil
     ) {
         self._isArray = isArray
         self._isMutable = isMutable
         self._isOptional = isOptional
-        self._isProperty = isProperty
         self._isTableElement = isTableElement
         self.context = context
         self.defaultValue = nil
@@ -46,12 +43,10 @@ final class Instance: SymbolType {
         isArray: Bool? = nil,
         isMutable: Bool? = nil,
         isOptional: Bool? = nil,
-        isProperty: Bool? = nil,
         isTableElement: Bool? = nil
     ) throws {
         self._isArray = isArray
         self._isMutable = isMutable
-        self._isProperty = isProperty
         self._isTableElement = isTableElement
         self.context = context
         self.defaultValue = defaultValue
@@ -113,10 +108,6 @@ final class Instance: SymbolType {
 
     var isOptional: Bool? {
         _isOptional ?? variable.type.isOptional
-    }
-
-    var isProperty: Bool? {
-        _isProperty ?? variable.type.isProperty
     }
 
     var isTableElement: Bool? {
@@ -207,7 +198,6 @@ extension Symbol {
         isArray: Bool? = nil,
         isMutable: Bool? = nil,
         isOptional: Bool? = nil,
-        isProperty: Bool? = nil,
         isTableElement: Bool? = nil
     ) -> Symbol {
         .instance(Instance(
@@ -216,24 +206,7 @@ extension Symbol {
             isArray: isArray,
             isMutable: isMutable,
             isOptional: isOptional,
-            isProperty: isProperty,
             isTableElement: isTableElement
-        ))
-    }
-
-    static func instance(
-        _ variable: Statement,
-        context: Instance.Context = .normal,
-        defaultValue: Symbol,
-        isOptional: Bool = false,
-        isMutable: Bool? = nil
-    ) throws -> Symbol {
-        .instance(try Instance(
-            variable,
-            context: context,
-            defaultValue: defaultValue,
-            isMutable: isMutable,
-            isOptional: isOptional
         ))
     }
 }
@@ -241,18 +214,6 @@ extension Symbol {
 // MARK: - Special assertion handlers
 
 extension Instance {
-//    func assertHasMutability(_ assertedMutability: Bool) throws {
-//        if assertedMutability == isMutable { return }
-//        guard isMutable == nil || assertedMutability == false else {
-//            throw Symbol.AssertionError.hasMutabilityAssertionFailed(
-//                for: "\(Self.self)",
-//                asserted: assertedMutability,
-//                actual: assertedMutability
-//            )
-//        }
-//        try variable.assertHasMutability(assertedMutability)
-//    }
-
     func assertHasReturnHandling(_ assertedHandling: Symbol.ReturnHandling) throws {
         switch (assertedHandling, returnHandling) {
         case (.forced, .suppressed), (.suppressed, .forced):
@@ -283,7 +244,6 @@ extension Instance: CustomDumpReflectable {
                 "_isArray": self._isArray as Any,
                 "_isMutable": self._isMutable as Any,
                 "_isOptional": self._isOptional as Any,
-                "_isProperty": self._isProperty as Any,
                 "_isTableElement": self._isTableElement as Any,
                 "context": self.context,
                 "defaultValue": self.defaultValue as Any,
@@ -300,7 +260,6 @@ extension Instance: Equatable {
         lhs._isArray == rhs._isArray &&
         lhs._isMutable == rhs._isMutable &&
         lhs._isOptional == rhs._isOptional &&
-        lhs._isProperty == rhs._isProperty &&
         lhs._isTableElement == rhs._isTableElement &&
         lhs.context == rhs.context &&
         lhs.defaultValue == rhs.defaultValue &&

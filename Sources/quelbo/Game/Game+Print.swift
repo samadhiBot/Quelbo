@@ -10,7 +10,15 @@ import SwiftPrettyPrint
 import os.log
 
 extension Game {
+    /// A utility for printing various game components and metadata to the console.
     struct Print {
+        /// Creates a formatted comment with a title and code section.
+        ///
+        /// - Parameters:
+        ///   - title: The title for the comment section.
+        ///   - code: The code to be included in the comment section.
+        ///
+        /// - Returns: A formatted comment string.
         static func comment(_ title: String, _ code: String) -> String {
             """
             // \(title)
@@ -21,6 +29,11 @@ extension Game {
             """
         }
 
+        /// Prints a formatted heading with an optional code section.
+        ///
+        /// - Parameters:
+        ///   - title: The title for the heading section.
+        ///   - code: The optional code to be included in the heading section.
         static func heading(_ title: String, _ code: String = "") {
             Logger.heading.info(
                 "\("\(title) \(code)".trimmingCharacters(in: .whitespacesAndNewlines), privacy: .public)"
@@ -35,6 +48,8 @@ extension Game {
             )
         }
 
+        /// Prints the directions, constants, globals, objects, rooms, and routines in a formatted
+        /// manner.
         static func symbols() {
             let directions = Game.directions.sorted
             if !directions.isEmpty {
@@ -83,6 +98,9 @@ extension Game {
             }
         }
 
+        /// Prints the provided tokens with a formatted heading.
+        ///
+        /// - Parameter tokens: An array of tokens to print.
         static func tokens(_ tokens: [Token]) {
             heading(
                 """

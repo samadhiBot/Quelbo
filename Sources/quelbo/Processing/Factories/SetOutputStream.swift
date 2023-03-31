@@ -88,7 +88,5 @@ extension Factories.SetOutputStream {
 extension Factories.SetOutputStream {
     enum Error: Swift.Error {
         case invalidOutputStream(String)
-        case missingOutputStream([Token])
-        case missingOutputTable([Token])
     }
 }

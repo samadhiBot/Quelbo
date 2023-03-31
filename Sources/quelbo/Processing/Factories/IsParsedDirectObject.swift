@@ -25,7 +25,7 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let values = symbols.nonCommentSymbols.map { ".\($0.handle)" }
+            let values = symbols.nonCommentSymbols.map(\.globalID)
 
             return .statement(
                 code: { _ in

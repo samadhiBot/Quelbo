@@ -205,14 +205,3 @@ extension QuelboTests {
         case zork3 = 3
     }
 }
-
-// MARK: - TestError
-
-extension QuelboTests {
-    /// An enumeration representing test-related errors.
-    enum TestError: Error {
-        case emptyProcess(String)
-        case expectedOneSymbol(String, got: Int)
-        case invalidProcess([Token])
-    }
-}

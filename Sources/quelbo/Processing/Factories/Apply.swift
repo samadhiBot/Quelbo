@@ -35,12 +35,3 @@ extension Factories {
         }
     }
 }
-
-// MARK: - Errors
-
-extension Factories.Apply {
-    enum Error: Swift.Error {
-        case missingApplyRoutine(String)
-        case missingApplyParameter(Instance)
-    }
-}

@@ -73,7 +73,8 @@ final class DefineTests: QuelboTests {
                             .atom("BYTE")
                         ])
                     ]),
-                ]
+                ],
+                isCommittable: true
             )
         )
 
@@ -117,7 +118,8 @@ final class DefineTests: QuelboTests {
 
         XCTAssertNoDifference(definition, .definition(
             id: "incForm",
-            tokens: try parse("(A) <FORM SET .A <FORM + 1 <FORM LVAL .A>>>")
+            tokens: try parse("(A) <FORM SET .A <FORM + 1 <FORM LVAL .A>>>"),
+            isCommittable: true
         ))
 
         // `incForm` isn't processed until it has been called

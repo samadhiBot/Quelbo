@@ -12,7 +12,6 @@ import XCTest
 
 final class BindTests: QuelboTests {
     let factory = Factories.Bind.self
-    let routineFactory = Factories.Routine.self
 
     override func setUp() {
         super.setUp()

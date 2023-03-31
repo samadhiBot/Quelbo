@@ -28,7 +28,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(value.code).isType(\(type.code))"
+                    "\(value.handle).isType(.\(type.code))"
                 },
                 type: .bool
             )

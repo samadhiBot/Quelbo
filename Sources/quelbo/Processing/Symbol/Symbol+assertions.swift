@@ -420,25 +420,18 @@ extension Symbol {
             actual: Symbol.ReturnHandling
         )
         case hasReturnValueAssertionFailed(for: String, asserted: Bool, actual: Bool)
-        case hasSameTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
         case hasTypeAssertionFailed(for: String, asserted: TypeInfo, actual: TypeInfo)
-        case isImmutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
-        case isMutableAssertionFailed(for: String, asserted: Bool, actual: Bool?)
         case isVariableAssertionFailed(for: String)
 
         case isArrayAssertionFailed
         case isOptionalAssertionFailed
         case isPropertyAssertionFailed
         case isTableElementAssertionFailed(String)
-        case shouldReturnAssertionFailed
 
-        case areVariablesAssertionFailed(asserted: Bool, actual: Bool)
         case haveCountAssertionFailed(
             asserted: SymbolCollectionCount,
             actual: Int,
             symbols: [Symbol]
         )
-        case haveSameTypeAssertionFailed(asserted: Bool, actual: Bool)
-        case haveTypeAssertionFailed(asserted: Bool, actual: Bool)
     }
 }

@@ -133,15 +133,6 @@ extension Statement.Payload {
         }
     }
 
-    var hasActivation: Bool {
-        guard
-            let activation = activation,
-            !activation.isEmpty
-        else { return false }
-
-        return true
-    }
-
     var isRepeating: Bool {
         repeating || symbols.contains {
             guard case .statement(let statement) = $0 else { return false }
@@ -269,13 +260,5 @@ extension Statement.Payload: Equatable {
         lhs.repeating == rhs.repeating &&
         lhs.symbols == rhs.symbols &&
         lhs.returnHandling == rhs.returnHandling
-    }
-}
-
-// MARK: - Errors
-
-extension Statement.Payload {
-    enum Error: Swift.Error {
-        case returnHandlingAssertionFailed(for: Statement.Payload)
     }
 }

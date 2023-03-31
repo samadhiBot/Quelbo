@@ -105,7 +105,6 @@ extension Factories.DefinitionEvaluate {
     enum Error: Swift.Error {
         case definitionNotFound(String)
         case definitionParametersNotFound([Token])
-        case missingDefinitionIdentifier(Symbol)
     }
 }
 

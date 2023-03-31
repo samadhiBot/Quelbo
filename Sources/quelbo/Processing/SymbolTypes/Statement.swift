@@ -229,34 +229,9 @@ extension Statement {
             )
         }
     }
-
-    func assertShouldReturn() throws {
-        switch returnHandling {
-        case .forced, .forcedPassthrough:
-            break
-        case .implicit:
-            returnHandling = .forced
-        case .passthrough, .suppressedPassthrough:
-            for symbol in payload.symbols {
-                if case .statement(let statement) = symbol {
-                    try statement.assertShouldReturn()
-                }
-            }
-        case .suppressed:
-            throw Symbol.AssertionError.shouldReturnAssertionFailed
-        }
-    }
 }
 
 // MARK: - Conformances
-
-extension Array where Element == Statement {
-    func routineSelfReference(for id: String) -> Statement? {
-        first { statement in
-            statement.id == id && statement.isFunctionCall
-        }
-    }
-}
 
 extension Statement: CustomDumpReflectable {
     var customDumpMirror: Mirror {

@@ -8,6 +8,7 @@
 import Foundation
 
 extension Game {
+    /// An array of reserved globals that are implicitly present in ZIL.
     static var reservedGlobals: [Symbol] {
         [
             .statement(

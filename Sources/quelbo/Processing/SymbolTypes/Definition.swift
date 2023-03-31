@@ -12,7 +12,6 @@ final class Definition: SymbolType, Identifiable {
     let id: String
     let tokens: [Token]
     private(set) var evaluatedCode: String?
-    private(set) var evaluationError: Swift.Error?
     private(set) var isCommittable: Bool
     private(set) var localVariables: [Statement]
     private(set) var returnHandling: Symbol.ReturnHandling
@@ -56,14 +55,14 @@ final class Definition: SymbolType, Identifiable {
             let code = processed.code
 
             self.evaluatedCode = code
-            self.evaluationError = nil
             self.type = try type.reconcile(id, with: processed.type)
 
             return code
 
         } catch {
-            self.evaluationError = error
-            return "/* _evaluationError_ \(id): \(error) */"
+            return """
+                #error("Error evaluating \(id): \(error)")
+                """
         }
     }
 
@@ -132,6 +131,10 @@ extension Definition: CustomDumpReflectable {
             children: [
                 "id": self.id as Any,
                 "tokens": self.tokens,
+                "evaluatedCode": evaluatedCode as Any,
+                "isCommittable": isCommittable,
+                "localVariables": localVariables,
+                "returnHandling": returnHandling,
                 "type": self.type
             ],
             displayStyle: .struct
@@ -143,14 +146,10 @@ extension Definition: Equatable {
     static func == (lhs: Definition, rhs: Definition) -> Bool {
         lhs.id == rhs.id &&
         lhs.tokens == rhs.tokens &&
+        lhs.evaluatedCode == rhs.evaluatedCode &&
+        lhs.isCommittable == rhs.isCommittable &&
+        lhs.localVariables == rhs.localVariables &&
+        lhs.returnHandling == rhs.returnHandling &&
         lhs.type == rhs.type
-    }
-}
-
-// MARK: - Errors
-
-extension Definition {
-    enum Error: Swift.Error {
-        case failedToFindNameToken([Token])
     }
 }

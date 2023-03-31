@@ -7,7 +7,10 @@
 
 import Foundation
 
-/// The set of tokens that can be parsed from ZIL source code.
+/// Represents the set of tokens that can be parsed from ZIL (Zork Implementation Language)
+/// source code.
+///
+/// ZIL is a domain-specific language used to create interactive fiction games.
 indirect enum Token: Hashable {
     /// Represents a Zil action global.
     case action(String)
@@ -74,7 +77,7 @@ indirect enum Token: Hashable {
 }
 
 extension Token {
-    /// Returns a token's value.
+    /// Returns a token's value as a string.
     public var value: String {
         switch self {
         case .action(let value):             return "\(value)"
@@ -103,6 +106,7 @@ extension Token {
 }
 
 extension Token: CustomStringConvertible {
+    /// A textual representation of the token.
     var description: String {
         switch self {
         case .action(let value):             return ".action(\(value))"
@@ -130,6 +134,7 @@ extension Token: CustomStringConvertible {
     }
 
     var zil: String {
+        /// A ZIL-formatted textual representation of the token.
         switch self {
         case .action(let value):             return ",ACT?\(value)"
         case .atom(let value):               return value
@@ -157,6 +162,7 @@ extension Token: CustomStringConvertible {
 }
 
 extension Array where Element == Token {
+    /// An array of evaluated tokens.
     var evaluated: [Token] {
         map { token in
             switch token {

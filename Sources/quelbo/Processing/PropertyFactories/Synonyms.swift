@@ -44,12 +44,3 @@ extension Factories {
         }
     }
 }
-
-// MARK: - Errors
-
-extension Factories.Synonyms {
-    enum Error: Swift.Error {
-        case unexpectedSynonymToken(Token)
-    }
-}
-

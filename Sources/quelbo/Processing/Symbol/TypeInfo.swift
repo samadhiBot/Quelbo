@@ -150,14 +150,6 @@ extension TypeInfo {
         )
     }
 
-    static var tableElement: TypeInfo {
-        .init(
-            dataType: .tableElement,
-            confidence: .certain,
-            isArray: false
-        )
-    }
-
     static var unknown: TypeInfo {
         .init(
             dataType: nil,
@@ -260,10 +252,6 @@ extension TypeInfo {
     var element: TypeInfo {
         if dataType == .table { return .someTableElement }
         return clone(isArray: false)
-    }
-
-    var nonOptional: TypeInfo {
-        clone(isOptional: false)
     }
 
     var root: TypeInfo {

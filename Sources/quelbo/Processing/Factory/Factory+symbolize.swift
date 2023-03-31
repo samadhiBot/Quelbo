@@ -67,7 +67,7 @@ extension Factory {
                 )
             case .global(let token):
                 symbols.append(
-                    try symbolizeGlobal(token, mode: factoryMode ?? mode)
+                    try symbolizeGlobal(token)
                 )
             case .list(let tokens):
                 symbols.append(
@@ -280,10 +280,7 @@ extension Factory {
     ///   - index: The index at which the global occurs in a block of Zil code.
     ///
     /// - Returns: A ``Symbol`` representation of a Zil global atom.
-    func symbolizeGlobal(
-        _ token: Token,
-        mode factoryMode: FactoryMode
-    ) throws -> Symbol {
+    func symbolizeGlobal(_ token: Token) throws -> Symbol {
         guard case .atom(let zil) = token else {
             return try symbolize(token)
         }
@@ -417,7 +414,6 @@ extension Factory {
     enum SymbolizationError: Swift.Error {
         case invalidZilForm([Token])
         case missingDeclarationValue([Token])
-        case noRoutineOrDefinition([Token])
         case singleTokenSymbolizationFailed(Token)
         case unknownLocal(String)
         case unknownType(String)

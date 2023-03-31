@@ -33,13 +33,4 @@ final class IsVerbTests: QuelboTests {
             type: .bool
         ))
     }
-
-    func testIsVerbMultilineOutput() throws {
-        let symbol = process("<VERB? CLIMB-UP CLIMB-DOWN CLIMB-FOO>")
-
-        XCTAssertNoDifference(symbol, .statement(
-            code: "isParsedVerb(.climbUp, .climbDown, .climbFoo)",
-            type: .bool
-        ))
-    }
 }

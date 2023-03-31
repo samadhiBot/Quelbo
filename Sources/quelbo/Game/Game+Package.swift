@@ -10,11 +10,17 @@ import Foundation
 import os.log
 
 extension Game {
+    /// A structure representing a Swift package containing the game translation.
     struct Package {
         private let project: String
         private var folder: Folder = .current
         private var sourcesFolder: Folder = .current
 
+        /// Initializes a new `Package` with the provided target path.
+        ///
+        /// - Parameter target: The target file path for the package.
+        ///
+        /// - Throws: An error if unable to create a package name.
         init(path target: String) throws {
             guard let name = target.split(separator: "/").last else {
                 throw FilesError(path: target, reason: "Unable to create package name.")
@@ -27,6 +33,9 @@ extension Game {
             self.sourcesFolder = try folder.subfolder(at: "Sources/\(name)")
         }
 
+        /// Builds the package by adding various game components.
+        ///
+        /// - Throws: An error if unable to add game components to the package.
         func build() throws {
             try addActions()
             try addConstants()
@@ -41,6 +50,9 @@ extension Game {
 }
 
 private extension Game.Package {
+    /// Adds the action mappings to the package.
+    ///
+    /// - Throws: An error if unable to add actions.
     func addActions() throws {
         guard !Game.actions.isEmpty else { return }
 
@@ -69,6 +81,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds constants to the package.
+    ///
+    /// - Throws: An error if unable to add constants.
     func addConstants() throws {
         guard !Game.constants.isEmpty else { return }
 
@@ -86,6 +101,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds directions to the package.
+    ///
+    /// - Throws: An error if unable to add directions.
     func addDirections() throws {
         guard !Game.directions.isEmpty else { return }
 
@@ -103,7 +121,9 @@ private extension Game.Package {
         )
     }
 
-
+    /// Adds global values to the package.
+    ///
+    /// - Throws: An error if unable to add globals.
     func addGlobals() throws {
         guard !Game.globals.isEmpty else { return }
 
@@ -121,6 +141,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds objects to the package.
+    ///
+    /// - Throws: An error if unable to add objects.
     func addObjects() throws {
         guard !Game.objects.isEmpty else { return }
 
@@ -138,6 +161,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds rooms to the package.
+    ///
+    /// - Throws: An error if unable to add rooms.
     func addRooms() throws {
         guard !Game.rooms.isEmpty else { return }
 
@@ -155,6 +181,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds routines to the package.
+    ///
+    /// - Throws: An error if unable to add routines.
     func addRoutines() throws {
         guard !Game.routines.isEmpty else { return }
 
@@ -172,6 +201,9 @@ private extension Game.Package {
         )
     }
 
+    /// Adds syntax rules to the package.
+    ///
+    /// - Throws: An error if unable to add syntax.
     func addSyntax() throws {
         guard !Game.syntax.isEmpty else { return }
 
@@ -190,10 +222,19 @@ private extension Game.Package {
                 """
         )
     }
-
 }
 
 private extension Game.Package {
+    /// Creates a file with the provided information.
+    ///
+    /// - Parameters:
+    ///   - fileName: The name of the file to create.
+    ///   - project: The name of the project.
+    ///   - folder: The folder in which to create the file.
+    ///   - code: The code to write in the file.
+    ///   - wrapper: An optional wrapper string for the code.
+    ///
+    /// - Throws: An error if unable to create or write to the file.
     private func createFile(
         named fileName: String,
         project: String,
@@ -225,6 +266,13 @@ private extension Game.Package {
         )
     }
 
+    /// Creates a package with the provided name in the specified folder.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the package.
+    ///   - folder: The folder in which to create the package.
+    ///
+    /// - Throws: An error if unable to create the package.
     private func createPackage(named name: String, in folder: Folder) throws {
         let sources = try folder.createSubfolder(at: "Sources/\(name)")
         let tests = try folder.createSubfolder(at: "Tests/\(name)Tests")
@@ -344,6 +392,11 @@ private extension Game.Package {
         )
     }
 
+    /// Returns a folder for the specified path.
+    ///
+    /// - Parameter target: The target path for the folder.
+    ///
+    /// - Throws: An error if unable to create or find the folder.
     private func folder(path target: String) throws -> Folder {
         var target = target
         if target.hasSuffix("/") {
@@ -359,6 +412,7 @@ private extension Game.Package {
         return existing
     }
 
+    /// Returns a string representation of the current date.
     private var today: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short

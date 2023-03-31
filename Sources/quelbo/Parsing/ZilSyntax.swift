@@ -7,10 +7,15 @@
 
 import Parsing
 
-/// A recursive ZIL syntax parser.
+/// A recursive ZIL (Zork Implementation Language) syntax parser.
+///
+/// ZIL is a domain-specific language used to create interactive fiction games. This parser is used
+/// for parsing ZIL source code into a syntax tree composed of ``Token`` values.
 struct ZilSyntax {
+    /// The main parser used for translating the ZIL source code into ``Token`` values.
     var parser: AnyParser<Substring.UTF8View, Token>
 
+    /// Initializes a new instance of the `ZilSyntax` parser.
     init() {
         var parser: AnyParser<Substring.UTF8View, Token>!
 

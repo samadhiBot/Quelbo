@@ -23,10 +23,6 @@ extension Array where Element == Symbol {
             .values(displayOptions)
     }
 
-    func codeMultiTypeValues(_ displayOptions: CodeValuesDisplayOption...) -> String {
-        codeMultiTypeValues(displayOptions)
-    }
-
     func codeMultiTypeValues(_ displayOptions: [CodeValuesDisplayOption]) -> String {
         nonCommentSymbols
             .map(\.codeMultiType)
@@ -46,16 +42,6 @@ extension Array where Element == Symbol {
             return true
         }
         return false
-    }
-
-    var evaluationErrors: [Swift.Error] {
-        compactMap { symbol in
-            guard
-                case .definition(let definition) = symbol,
-                let evaluationError = definition.evaluationError
-            else { return nil }
-            return evaluationError
-        }
     }
 
     /// <#Description#>

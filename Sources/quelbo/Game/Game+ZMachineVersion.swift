@@ -8,7 +8,10 @@
 import Foundation
 
 extension Game {
-    /// The ZMachine version to emulate during processing.
+    /// Represents the Z-Machine version to emulate during processing.
+    ///
+    /// The Z-Machine is a virtual machine used by Infocom to run their text adventure games.
+    /// Different versions of the Z-Machine support different features.
     enum ZMachineVersion: String {
         case z3
         case z3Time
@@ -18,6 +21,12 @@ extension Game {
         case z7
         case z8
 
+        /// Initializes a ``ZMachineVersion`` instance from the provided tokens.
+        ///
+        /// - Parameter tokens: An array of tokens used to determine the Z-Machine version.
+        ///
+        /// - Throws: A ``GameError/invalidZMachineVersion`` error if the tokens do not represent a
+        ///           valid Z-Machine version.
         init(tokens: [Token]) throws {
             guard (1...2).contains(tokens.count) else {
                 throw GameError.invalidZMachineVersion(tokens)

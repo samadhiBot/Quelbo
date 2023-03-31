@@ -129,7 +129,7 @@ extension Symbol {
 
     /// Returns the multi-type handle representation of the symbol.
     var handleMultiType: String {
-        if case .definition = self { return handle }
+        if isDefinition { return handle }
 
         var codeValue: String {
             isInstance ? globalID : code

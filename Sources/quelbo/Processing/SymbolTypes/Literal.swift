@@ -251,6 +251,8 @@ extension Literal: CustomDumpReflectable {
             self,
             children: [
                 "code": self.code,
+                "isMutable": self.isMutable as Any,
+                "returnHandling": self.returnHandling,
                 "type": self.type as Any,
             ],
             displayStyle: .struct
@@ -261,6 +263,8 @@ extension Literal: CustomDumpReflectable {
 extension Literal: Equatable {
     static func == (lhs: Literal, rhs: Literal) -> Bool {
         lhs._code == rhs._code &&
+        lhs.isMutable == rhs.isMutable &&
+        lhs.returnHandling == rhs.returnHandling &&
         lhs.type.dataType == rhs.type.dataType
     }
 }

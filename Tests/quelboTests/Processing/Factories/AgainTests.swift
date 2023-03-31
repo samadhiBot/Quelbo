@@ -12,7 +12,6 @@ import XCTest
 
 final class AgainTests: QuelboTests {
     let factory = Factories.Again.self
-    let routineFactory = Factories.Routine.self
 
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("AGAIN"))
