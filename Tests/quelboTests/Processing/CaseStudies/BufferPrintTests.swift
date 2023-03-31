@@ -92,7 +92,7 @@ final class BufferPrintTests: QuelboTests {
                                 break
                             } else {
                                 output(try Globals.pInbuf.get(at: buf))
-                                buf.set(to: .add(buf, 1))
+                                buf.set(to: buf.add(1))
                             }
                         }
                     }

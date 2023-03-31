@@ -88,10 +88,10 @@ final class PickOneTests: QuelboTests {
                         var msg = ""
                         var rfrob: Table?
                         var frob = frob
-                        l.set(to: .subtract(l, 1))
+                        l.set(to: l.subtract(1))
                         frob.set(to: frob.rest(bytes: 2))
-                        rfrob.set(to: frob.rest(bytes: .multiply(cnt, 2)))
-                        rnd.set(to: .random(.subtract(l, cnt)))
+                        rfrob.set(to: frob.rest(bytes: cnt.multiply(2)))
+                        rnd.set(to: .random(l.subtract(cnt)))
                         msg.set(to: try rfrob.get(at: rnd))
                         try rfrob.put(
                             element: try rfrob.get(at: 1),
@@ -101,7 +101,7 @@ final class PickOneTests: QuelboTests {
                             element: msg,
                             at: 1
                         )
-                        cnt.set(to: .add(cnt, 1))
+                        cnt.set(to: cnt.add(1))
                         if cnt.equals(l) {
                             cnt.set(to: 0)
                         }

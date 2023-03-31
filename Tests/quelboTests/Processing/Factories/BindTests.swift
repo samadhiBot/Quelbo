@@ -121,7 +121,7 @@ final class BindTests: QuelboTests {
                     while true {
                         output("START ")
                         do {
-                            x.set(to: .add(x, 1))
+                            x.set(to: x.add(1))
                             output(x)
                             output(" ")
                             if x.equals(3) {
@@ -150,7 +150,7 @@ final class BindTests: QuelboTests {
             while true {
                 output("START ")
                 do {
-                    x.set(to: .add(x, 1))
+                    x.set(to: x.add(1))
                     output(x)
                     output(" ")
                     if x.equals(3) {

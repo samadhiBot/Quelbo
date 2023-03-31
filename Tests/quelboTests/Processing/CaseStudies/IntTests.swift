@@ -64,10 +64,10 @@ final class IntTests: QuelboTests {
                         c.set(to: Globals.cTable.rest(bytes: Globals.cInts))
                         while true {
                             if c.equals(e) {
-                                Globals.cInts.set(to: .subtract(Globals.cInts, Constants.cIntlen))
+                                Globals.cInts.set(to: Globals.cInts.subtract(Constants.cIntlen))
                                 .and(
                                     demon,
-                                    Globals.cDemons.set(to: .subtract(Globals.cDemons, Constants.cIntlen))
+                                    Globals.cDemons.set(to: Globals.cDemons.subtract(Constants.cIntlen))
                                 )
                                 int.set(to: Globals.cTable.rest(bytes: Globals.cInts))
                                 try int.put(

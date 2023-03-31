@@ -40,7 +40,7 @@ final class DefineMacroTests: QuelboTests {
                 /// The `inc` (INC) macro.
                 func inc(atm: Int, n: Int = 1) -> Int {
                     var atm = atm
-                    return atm.set(to: .add(atm, n))
+                    return atm.set(to: atm.add(n))
                 }
                 """,
             type: .int,
@@ -122,7 +122,7 @@ final class DefineMacroTests: QuelboTests {
                 /// The `double` (DOUBLE) macro.
                 func double(any: Int) -> Int {
                     do {
-                        return .add(x, x)
+                        return x.add(x)
                     }
                 }
                 """,

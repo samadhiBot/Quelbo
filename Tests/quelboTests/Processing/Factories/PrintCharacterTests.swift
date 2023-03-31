@@ -86,7 +86,7 @@ final class PrintCharacterTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "output(utf8: .add(2, 88))",
+            code: "output(utf8: 2.add(88))",
             type: .void
         ))
     }

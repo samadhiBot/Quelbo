@@ -236,7 +236,7 @@ final class FactorySymbolizeTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".add(2, 3)",
+            code: "2.add(3)",
             type: .int,
             returnHandling: .implicit
         ))

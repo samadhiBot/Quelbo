@@ -41,7 +41,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".multiply(9, 3)",
+            code: "9.multiply(3)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -55,7 +55,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".multiply(20, 5, 2)",
+            code: "20.multiply(5, 2)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -68,7 +68,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".multiply(bigNumber, biggerNumber)",
+            code: "bigNumber.multiply(biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -81,7 +81,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".multiply(Globals.cyclowrath, 1)",
+            code: "Globals.cyclowrath.multiply(1)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -96,7 +96,7 @@ final class MultiplyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".multiply(Globals.baseScore, otvalFrob())",
+            code: "Globals.baseScore.multiply(otvalFrob())",
             type: .int,
             returnHandling: .implicit
         ))

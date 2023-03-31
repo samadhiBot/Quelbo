@@ -20,7 +20,7 @@ final class ModuloTests: QuelboTests {
         let symbol = process("<MOD 9 3>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".modulo(9, 3)",
+            code: "9.modulo(3)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -43,7 +43,7 @@ final class ModuloTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".modulo(bigNumber, biggerNumber)",
+            code: "bigNumber.modulo(biggerNumber)",
             type: .int,
             returnHandling: .implicit
         ))

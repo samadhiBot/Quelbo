@@ -57,7 +57,7 @@ final class PrintNumberTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "output(.add(2, 3))",
+            code: "output(2.add(3))",
             type: .void
         ))
     }

@@ -164,10 +164,7 @@ final class ItakeTests: QuelboTests {
                             return false
                         } else if .and(
                             .isNot(Globals.parsedDirectObject.parent.isIn(Globals.winner)),
-                            .add(
-                                weight(obj: Globals.parsedDirectObject),
-                                weight(obj: Globals.winner)
-                            ).isGreaterThan(Globals.loadAllowed)
+                            weight(obj: Globals.parsedDirectObject).add(weight(obj: Globals.winner)).isGreaterThan(Globals.loadAllowed)
                         ) {
                             if vb {
                                 output("Your load is too heavy")
@@ -182,9 +179,7 @@ final class ItakeTests: QuelboTests {
                         } else if .and(
                             isParsedVerb(.take),
                             cnt.set(to: ccount(obj: Globals.winner)).isGreaterThan(Globals.fumbleNumber),
-                            prob(
-                                isBase: .multiply(cnt, Globals.fumbleProb)
-                            )
+                            prob(isBase: cnt.multiply(Globals.fumbleProb))
                         ) {
                             output("You're holding too many things already!")
                             return false

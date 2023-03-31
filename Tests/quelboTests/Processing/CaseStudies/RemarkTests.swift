@@ -72,7 +72,7 @@ final class RemarkTests: QuelboTests {
                         var cnt = 0
                         var str = 0
                         while true {
-                            if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
+                            if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
                                 break
                             }
                             str.set(to: try remark.get(at: cnt))

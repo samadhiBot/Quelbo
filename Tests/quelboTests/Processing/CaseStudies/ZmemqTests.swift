@@ -62,7 +62,7 @@ final class ZmemqTests: QuelboTests {
                         }
                         while true {
                             if itm.equals(try tbl.get(at: cnt)) {
-                                return tbl.rest(bytes: .multiply(cnt, 2))
+                                return tbl.rest(bytes: cnt.multiply(2))
                             } else if cnt.increment().isGreaterThan(size) {
                                 return nil
                             }

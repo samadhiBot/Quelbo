@@ -381,21 +381,15 @@ final class VillainBlowTests: QuelboTests {
                     /// The `fightStrength` (FIGHT-STRENGTH) routine.
                     func fightStrength(isAdjust: Bool = true) -> Int {
                         var s = 0
-                        s.set(to: .add(
-                            Constants.strengthMin,
-                            .divide(
-                                Globals.score,
-                                .divide(
-                                    Globals.scoreMax,
-                                    .subtract(
-                                        Constants.strengthMax,
-                                        Constants.strengthMin
-                                    )
+                        s.set(to: Constants.strengthMin.add(
+                            Globals.score.divide(
+                                Globals.scoreMax.divide(
+                                    Constants.strengthMax.subtract(Constants.strengthMin)
                                 )
                             )
                         ))
                         if isAdjust {
-                            .add(s, Globals.winner.strength)
+                            s.add(Globals.winner.strength)
                         } else {
                             return s
                         }
@@ -460,7 +454,7 @@ final class VillainBlowTests: QuelboTests {
                         var cnt = 0
                         var str = 0
                         while true {
-                            if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
+                            if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
                                 break
                             }
                             str.set(to: try remark.get(at: cnt))
@@ -511,7 +505,7 @@ final class VillainBlowTests: QuelboTests {
                                 Globals.parsedIndirectObject.hasFlag(.isWeapon),
                                 try oo.get(at: Constants.vBest).equals(Globals.parsedIndirectObject)
                             ) {
-                                tmp.set(to: .subtract(od, try oo.get(at: Constants.vBestAdv)))
+                                tmp.set(to: od.subtract(try oo.get(at: Constants.vBestAdv)))
                                 if tmp.isLessThan(1) {
                                     tmp.set(to: 1)
                                 }
@@ -542,15 +536,15 @@ final class VillainBlowTests: QuelboTests {
                         winner.strength = if def.isZero {
                             return -10000
                         } else {
-                            .subtract(def, od)
+                            def.subtract(od)
                         }
-                        if .subtract(def, od).isLessThan(0) {
+                        if def.subtract(od).isLessThan(0) {
                             try enable(
                                 int: try queue(rtn: iCure, tick: Constants.cureWait)
                             )
                         }
                         if .isNot(fightStrength().isGreaterThan(0)) {
-                            winner.strength = .add(1, -fightStrength(isAdjust: false))
+                            winner.strength = 1.add(-fightStrength(isAdjust: false))
                             try jigsUp(
                                 desc: """
                                     It appears that that last blow was too much for you. I'm \
@@ -612,22 +606,22 @@ final class VillainBlowTests: QuelboTests {
                                 if att.isGreaterThan(2) {
                                     att.set(to: 3)
                                 }
-                                tbl.set(to: try Globals.def1Res.get(at: .subtract(att, 1)))
+                                tbl.set(to: try Globals.def1Res.get(at: att.subtract(1)))
                             } else if def.equals(2) {
                                 if att.isGreaterThan(3) {
                                     att.set(to: 4)
                                 }
-                                tbl.set(to: try Globals.def2Res.get(at: .subtract(att, 1)))
+                                tbl.set(to: try Globals.def2Res.get(at: att.subtract(1)))
                             } else if def.isGreaterThan(2) {
-                                att.set(to: .subtract(att, def))
+                                att.set(to: att.subtract(def))
                                 if att.isLessThan(-1) {
                                     att.set(to: -2)
                                 } else if att.isGreaterThan(1) {
                                     att.set(to: 2)
                                 }
-                                tbl.set(to: try Globals.def3Res.get(at: .add(att, 2)))
+                                tbl.set(to: try Globals.def3Res.get(at: att.add(2)))
                             }
-                            res.set(to: try tbl.get(at: .subtract(.random(9), 1)))
+                            res.set(to: try tbl.get(at: .random(9).subtract(1)))
                             if isOut {
                                 if res.equals(Constants.stagger) {
                                     res.set(to: Constants.hesitate)
@@ -651,7 +645,7 @@ final class VillainBlowTests: QuelboTests {
                             }
                             remark(
                                 remark: try randomElement(
-                                    frob: try remarks.get(at: .subtract(res, 1))
+                                    frob: try remarks.get(at: res.subtract(1))
                                 ),
                                 d: Globals.winner,
                                 w: dweapon
@@ -670,20 +664,20 @@ final class VillainBlowTests: QuelboTests {
                         ) {
                             def.set(to: 0)
                         } else if res.equals(Constants.lightWound) {
-                            def.set(to: .subtract(def, 1))
+                            def.set(to: def.subtract(1))
                             if def.isLessThan(0) {
                                 def.set(to: 0)
                             }
                             if Globals.loadAllowed.isGreaterThan(50) {
-                                Globals.loadAllowed.set(to: .subtract(Globals.loadAllowed, 10))
+                                Globals.loadAllowed.set(to: Globals.loadAllowed.subtract(10))
                             }
                         } else if res.equals(Constants.seriousWound) {
-                            def.set(to: .subtract(def, 2))
+                            def.set(to: def.subtract(2))
                             if def.isLessThan(0) {
                                 def.set(to: 0)
                             }
                             if Globals.loadAllowed.isGreaterThan(50) {
-                                Globals.loadAllowed.set(to: .subtract(Globals.loadAllowed, 20))
+                                Globals.loadAllowed.set(to: Globals.loadAllowed.subtract(20))
                             }
                         } else if res.equals(Constants.stagger) {
                             Globals.winner.isStaggered.set(true)

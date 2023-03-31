@@ -442,7 +442,7 @@ final class DescribeObjectTests: QuelboTests {
                         while true {
                             if .isNot(y) {
                                 if _ = .and(isPv, .object(av), .object(av.firstChild)) {
-                                    level.set(to: .add(level, 1))
+                                    level.set(to: level.add(1))
                                     // "not in Zork III"
                                     try printCont(obj: av, isV: isV, level: level)
                                 }
@@ -464,7 +464,7 @@ final class DescribeObjectTests: QuelboTests {
                                                 level.set(to: 0)
                                             }
                                         }
-                                        level.set(to: .add(1, level))
+                                        level.set(to: 1.add(level))
                                         is1St.set(to: false)
                                     }
                                     if level.isLessThan(0) {
@@ -475,10 +475,10 @@ final class DescribeObjectTests: QuelboTests {
                                     .object(y.firstChild),
                                     isSeeInside(obj: y)
                                 ) {
-                                    level.set(to: .add(level, 1))
+                                    level.set(to: level.add(1))
                                     // "not in Zork III"
                                     try printCont(obj: y, isV: isV, level: level)
-                                    level.set(to: .subtract(level, 1))
+                                    level.set(to: level.subtract(1))
                                     // "not in Zork III"
                                 }
                             }
@@ -583,7 +583,7 @@ final class DescribeObjectTests: QuelboTests {
                         while true {
                             if .isNot(y) {
                                 if _ = .and(isPv, .object(av), .object(av.firstChild)) {
-                                    level.set(to: .add(level, 1))
+                                    level.set(to: level.add(1))
                                     // "not in Zork III"
                                     try printCont(obj: av, isV: isV, level: level)
                                 }
@@ -605,7 +605,7 @@ final class DescribeObjectTests: QuelboTests {
                                                 level.set(to: 0)
                                             }
                                         }
-                                        level.set(to: .add(1, level))
+                                        level.set(to: 1.add(level))
                                         is1St.set(to: false)
                                     }
                                     if level.isLessThan(0) {
@@ -616,10 +616,10 @@ final class DescribeObjectTests: QuelboTests {
                                     .object(y.firstChild),
                                     isSeeInside(obj: y)
                                 ) {
-                                    level.set(to: .add(level, 1))
+                                    level.set(to: level.add(1))
                                     // "not in Zork III"
                                     try printCont(obj: y, isV: isV, level: level)
-                                    level.set(to: .subtract(level, 1))
+                                    level.set(to: level.subtract(1))
                                     // "not in Zork III"
                                 }
                             }

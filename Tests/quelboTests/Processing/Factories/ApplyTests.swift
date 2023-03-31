@@ -36,7 +36,7 @@ final class ApplyTests: QuelboTests {
                     @discardableResult
                     /// The `func1` (FUNC1) routine.
                     func func1(x: Int) -> Int {
-                        return .multiply(x, x)
+                        return x.multiply(x)
                     }
                     """,
                 type: .int,

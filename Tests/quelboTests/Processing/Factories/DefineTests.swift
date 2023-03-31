@@ -144,7 +144,7 @@ final class DefineTests: QuelboTests {
                     /// The `incForm` (INC-FORM) routine.
                     func incForm(foo: Int) -> Int {
                         var foo = foo
-                        return foo.set(to: .add(1, foo))
+                        return foo.set(to: 1.add(foo))
                     }
                     """,
                 type: .int,
@@ -185,7 +185,7 @@ final class DefineTests: QuelboTests {
                     @discardableResult
                     /// The `double` (DOUBLE) routine.
                     func double(foo: Int) -> Int {
-                        return .add(foo, foo)
+                        return foo.add(foo)
                     }
                     """,
                 type: .int,
@@ -239,8 +239,8 @@ final class DefineTests: QuelboTests {
                         var z = 1
                         var i = 0
                         while true {
-                            z.set(to: .multiply(z, foo))
-                            i.set(to: .add(i, 1))
+                            z.set(to: z.multiply(foo))
+                            i.set(to: i.add(1))
                             if i.equals(y) {
                                 return z
                             }

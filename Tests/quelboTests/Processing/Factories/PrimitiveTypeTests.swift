@@ -94,7 +94,7 @@ final class PrimitiveTypeTests: QuelboTests {
         """)
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".add(1, 2)",
+            code: "1.add(2)",
             type: .int
         ))
     }

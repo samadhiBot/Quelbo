@@ -242,7 +242,7 @@ final class GetObjectTests: QuelboTests {
                                     bit2: Constants.sc
                                 )
                             }
-                            len.set(to: .subtract(try tbl.get(at: Globals.pMatchlen), tlen))
+                            len.set(to: try tbl.get(at: Globals.pMatchlen).subtract(tlen))
                             if _ = .bitwiseCompare(Globals.pGetflags, Constants.pAll) {
                                 // do nothing
                             } else if _ = .and(
@@ -273,7 +273,7 @@ final class GetObjectTests: QuelboTests {
                                     Globals.pSlocbits.set(to: xbits)
                                     olen.set(to: len)
                                     try tbl.put(
-                                        element: .subtract(try tbl.get(at: Globals.pMatchlen), len),
+                                        element: try tbl.get(at: Globals.pMatchlen).subtract(len),
                                         at: Globals.pMatchlen
                                     )
                                     continue

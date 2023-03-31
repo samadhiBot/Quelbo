@@ -120,13 +120,10 @@ final class OrphanTests: QuelboTests {
                     /// The `clauseAdd` (CLAUSE-ADD) routine.
                     func clauseAdd(wrd: TableElement) throws {
                         var ptr = 0
-                        ptr.set(to: .add(
-                            try Globals.pOclause.get(at: Globals.pMatchlen),
-                            2
-                        ))
+                        ptr.set(to: try Globals.pOclause.get(at: Globals.pMatchlen).add(2))
                         try Globals.pOclause.put(
                             element: wrd,
-                            at: .subtract(ptr, 1)
+                            at: ptr.subtract(1)
                         )
                         try Globals.pOclause.put(
                             element: 0,
@@ -164,25 +161,13 @@ final class OrphanTests: QuelboTests {
                         beg.set(to: try src.get(at: try Globals.pCctbl.get(at: Constants.ccSbptr)))
                         end.set(to: try src.get(at: try Globals.pCctbl.get(at: Constants.ccSeptr)))
                         try dest.put(
-                            element: Globals.pOclause.rest(bytes: .add(
-                            .multiply(
-                                try Globals.pOclause.get(at: Globals.pMatchlen),
-                                Constants.pLexelen
-                            ),
-                            2
-                        )),
+                            element: Globals.pOclause.rest(bytes: try Globals.pOclause.get(at: Globals.pMatchlen).multiply(Constants.pLexelen).add(2)),
                             at: try Globals.pCctbl.get(at: Constants.ccDbptr)
                         )
                         while true {
                             if beg.equals(end) {
                                 try dest.put(
-                                    element: Globals.pOclause.rest(bytes: .add(
-                                    .multiply(
-                                        try Globals.pOclause.get(at: Globals.pMatchlen),
-                                        Constants.pLexelen
-                                    ),
-                                    2
-                                )),
+                                    element: Globals.pOclause.rest(bytes: try Globals.pOclause.get(at: Globals.pMatchlen).multiply(Constants.pLexelen).add(2)),
                                     at: try Globals.pCctbl.get(at: Constants.ccDeptr)
                                 )
                                 break

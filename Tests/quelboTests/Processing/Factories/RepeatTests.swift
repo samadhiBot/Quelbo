@@ -50,7 +50,7 @@ final class RepeatTests: QuelboTests {
                     var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
-                        x.set(to: .add(x, 1))
+                        x.set(to: x.add(1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
@@ -75,7 +75,7 @@ final class RepeatTests: QuelboTests {
             var x: Int = 0
             while true {
                 // X is not reinitialized between iterations. Default ACTIVATION created.
-                x.set(to: .add(x, 1))
+                x.set(to: x.add(1))
                 output(x)
                 output(" ")
                 if x.equals(3) {
@@ -120,7 +120,7 @@ final class RepeatTests: QuelboTests {
                     var x = 0
                     while true {
                         // "X is not reinitialized between iterations. Default ACTIVATION created."
-                        x.set(to: .add(x, 1))
+                        x.set(to: x.add(1))
                         output(x)
                         output(" ")
                         if x.equals(3) {
@@ -151,7 +151,7 @@ final class RepeatTests: QuelboTests {
             var x: Int = 0
             while true {
                 // "X is not reinitialized between iterations. Default ACTIVATION created."
-                x.set(to: .add(x, 1))
+                x.set(to: x.add(1))
                 output(x)
                 output(" ")
                 if x.equals(3) {

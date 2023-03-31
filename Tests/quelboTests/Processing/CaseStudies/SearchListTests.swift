@@ -108,7 +108,7 @@ final class SearchListTests: QuelboTests {
                             .isNot(zmemq(
                                 itm: Globals.pNam,
                                 tbl: syns.set(to: obj.synonyms),
-                                size: .subtract(.divide(syns.propertySize, 2), 1)
+                                size: syns.propertySize.divide(2).subtract(1)
                             ))
                         ) {
                             return false
@@ -119,7 +119,7 @@ final class SearchListTests: QuelboTests {
                                 .isNot(zmemqb(
                                     itm: Globals.pAdj,
                                     tbl: syns,
-                                    size: .subtract(syns.propertySize, 1)
+                                    size: syns.propertySize.subtract(1)
                                 ))
                             )
                         ) {
@@ -153,10 +153,10 @@ final class SearchListTests: QuelboTests {
                         ptr.set(to: try tbl.get(at: Globals.pMatchlen))
                         try tbl.put(
                             element: obj,
-                            at: .add(ptr, 1)
+                            at: ptr.add(1)
                         )
                         try tbl.put(
-                            element: .add(ptr, 1),
+                            element: ptr.add(1),
                             at: Globals.pMatchlen
                         )
                     }

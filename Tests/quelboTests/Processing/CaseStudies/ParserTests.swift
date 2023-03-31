@@ -611,7 +611,7 @@ final class ParserTests: QuelboTests {
                         var lw: Word?
                         var cnt = -1
                         while true {
-                            if cnt.set(to: .add(cnt, 1)).isGreaterThan(Constants.pItbllen) {
+                            if cnt.set(to: cnt.add(1)).isGreaterThan(Constants.pItbllen) {
                                 break
                             } else {
                                 if .isNot(Globals.pOflag) {
@@ -695,9 +695,9 @@ final class ParserTests: QuelboTests {
                             return false
                         }
                         if wrd.set(to: try Globals.pLexv.get(at: ptr)).equals(Word.oops) {
-                            if try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)).equals(Word.period, Word.comma) {
-                                ptr.set(to: .add(ptr, Constants.pLexelen))
-                                Globals.pLen.set(to: .subtract(Globals.pLen, 1))
+                            if try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)).equals(Word.period, Word.comma) {
+                                ptr.set(to: ptr.add(Constants.pLexelen))
+                                Globals.pLen.set(to: Globals.pLen.subtract(1))
                             }
                             if .isNot(Globals.pLen.isGreaterThan(1)) {
                                 output("I can't help your clumsiness.")
@@ -705,7 +705,7 @@ final class ParserTests: QuelboTests {
                             } else if _ = try Globals.oopsTable.get(at: Constants.oPtr) {
                                 if .and(
                                     Globals.pLen.isGreaterThan(2),
-                                    try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)).equals(Word.quote)
+                                    try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)).equals(Word.quote)
                                 ) {
                                     output("Sorry, you can't correct mistakes in quoted text.")
                                     return false
@@ -713,21 +713,15 @@ final class ParserTests: QuelboTests {
                                     output("Warning: only the first word after OOPS is used.")
                                 }
                                 try Globals.againLexv.put(
-                                    element: try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)),
+                                    element: try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)),
                                     at: try Globals.oopsTable.get(at: Constants.oPtr)
                                 )
                                 Globals.winner.set(to: owinner)
                                 // "maybe fix oops vs. chars.?"
                                 try inbufAdd(
-                                    len: try Globals.pLexv.get(at: .add(.multiply(ptr, Constants.pLexelen), 6)),
-                                    beg: try Globals.pLexv.get(at: .add(.multiply(ptr, Constants.pLexelen), 7)),
-                                    slot: .add(
-                                        .multiply(
-                                            try Globals.oopsTable.get(at: Constants.oPtr),
-                                            Constants.pLexelen
-                                        ),
-                                        3
-                                    )
+                                    len: try Globals.pLexv.get(at: ptr.multiply(Constants.pLexelen).add(6)),
+                                    beg: try Globals.pLexv.get(at: ptr.multiply(Constants.pLexelen).add(7)),
+                                    slot: try Globals.oopsTable.get(at: Constants.oPtr).multiply(Constants.pLexelen).add(3)
                                 )
                                 try stuff(
                                     src: Globals.againLexv,
@@ -768,15 +762,12 @@ final class ParserTests: QuelboTests {
                                 return false
                             } else if Globals.pLen.isGreaterThan(1) {
                                 if .or(
-                                    try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)).equals(Word.period, Word.comma, Word.then),
-                                    try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)).equals(Word.and)
+                                    try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)).equals(Word.period, Word.comma, Word.then),
+                                    try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)).equals(Word.and)
                                 ) {
-                                    ptr.set(to: .add(ptr, .multiply(2, Constants.pLexelen)))
+                                    ptr.set(to: ptr.add(2.multiply(Constants.pLexelen)))
                                     try Globals.pLexv.put(
-                                        element: .subtract(
-                                        try Globals.pLexv.get(at: Constants.pLexwords),
-                                        2
-                                    ),
+                                        element: try Globals.pLexv.get(at: Constants.pLexwords).subtract(2),
                                         at: Constants.pLexwords
                                     )
                                 } else {
@@ -784,12 +775,9 @@ final class ParserTests: QuelboTests {
                                     return false
                                 }
                             } else {
-                                ptr.set(to: .add(ptr, Constants.pLexelen))
+                                ptr.set(to: ptr.add(Constants.pLexelen))
                                 try Globals.pLexv.put(
-                                    element: .subtract(
-                                    try Globals.pLexv.get(at: Constants.pLexwords),
-                                    1
-                                ),
+                                    element: try Globals.pLexv.get(at: Constants.pLexwords).subtract(1),
                                     at: Constants.pLexwords
                                 )
                             }
@@ -839,23 +827,19 @@ final class ParserTests: QuelboTests {
                                 at: Constants.oStart
                             )
                             try Globals.oopsTable.put(
-                                element: .multiply(4, Globals.pLen),
+                                element: 4.multiply(Globals.pLen),
                                 at: Constants.oLength
                             )
-                            len.set(to: .multiply(
-                                2,
-                                .add(
-                                    ptr,
-                                    .multiply(
-                                        Constants.pLexelen,
+                            len.set(to: 2.multiply(
+                                ptr.add(
+                                    Constants.pLexelen.multiply(
                                         try Globals.pLexv.get(at: Constants.pLexwords)
                                     )
                                 )
                             ))
                             try Globals.oopsTable.put(
-                                element: .add(
-                                try Globals.pLexv.get(at: .subtract(len, 1)),
-                                try Globals.pLexv.get(at: .subtract(len, 2))
+                                element: try Globals.pLexv.get(at: len.subtract(1)).add(
+                                try Globals.pLexv.get(at: len.subtract(2))
                             ),
                                 at: Constants.oEnd
                             )
@@ -865,7 +849,7 @@ final class ParserTests: QuelboTests {
                             Globals.pNcn.set(to: 0)
                             Globals.pGetflags.set(to: 0)
                             while true {
-                                if Globals.pLen.set(to: .subtract(Globals.pLen, 1)).isLessThan(0) {
+                                if Globals.pLen.set(to: Globals.pLen.subtract(1)).isLessThan(0) {
                                     Globals.quoteFlag.set(to: false)
                                     break
                                 } else if _ = .or(
@@ -875,7 +859,7 @@ final class ParserTests: QuelboTests {
                                     if Globals.pLen.isZero {
                                         nw.set(to: nil)
                                     } else {
-                                        nw.set(to: try Globals.pLexv.get(at: .add(ptr, Constants.pLexelen)))
+                                        nw.set(to: try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)))
                                     }
                                     if .and(
                                         wrd.equals(Word.to),
@@ -912,7 +896,7 @@ final class ParserTests: QuelboTests {
                                         }
                                         .or(
                                             Globals.pLen.isZero,
-                                            Globals.pCont.set(to: .add(ptr, Constants.pLexelen))
+                                            Globals.pCont.set(to: ptr.add(Constants.pLexelen))
                                         )
                                         try Globals.pLexv.put(
                                             element: Globals.pLen,
@@ -951,7 +935,7 @@ final class ParserTests: QuelboTests {
                                         if nw.equals(Word.comma, Word.and) {
                                             try Globals.pLexv.put(
                                                 element: Word.then,
-                                                at: .add(ptr, Constants.pLexelen)
+                                                at: ptr.add(Constants.pLexelen)
                                             )
                                         }
                                         if .isNot(len.isGreaterThan(2)) {
@@ -980,11 +964,11 @@ final class ParserTests: QuelboTests {
                                             at: 0
                                         )
                                         try Globals.pVtbl.put(
-                                            element: try Globals.pLexv.get(at: cnt.set(to: .add(.multiply(ptr, 2), 2))),
+                                            element: try Globals.pLexv.get(at: cnt.set(to: ptr.multiply(2).add(2))),
                                             at: 2
                                         )
                                         try Globals.pVtbl.put(
-                                            element: try Globals.pLexv.get(at: .add(cnt, 1)),
+                                            element: try Globals.pLexv.get(at: cnt.add(1)),
                                             at: 3
                                         )
                                     } else if _ = .or(
@@ -1026,7 +1010,7 @@ final class ParserTests: QuelboTests {
                                             output("There were too many nouns in that sentence.")
                                             return false
                                         } else {
-                                            Globals.pNcn.set(to: .add(Globals.pNcn, 1))
+                                            Globals.pNcn.set(to: Globals.pNcn.add(1))
                                             pAct.set(to: verb)
                                             .or(
                                                 ptr.set(to: try clause(ptr: ptr, val: val, wrd: wrd)),
@@ -1072,7 +1056,7 @@ final class ParserTests: QuelboTests {
                                     return false
                                 }
                                 lw.set(to: wrd)
-                                ptr.set(to: .add(ptr, Constants.pLexelen))
+                                ptr.set(to: ptr.add(Constants.pLexelen))
                             }
                         }
                         try Globals.oopsTable.put(

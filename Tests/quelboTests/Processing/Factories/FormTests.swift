@@ -24,7 +24,7 @@ final class FormTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: ".add(1, 2)",
+            code: "1.add(2)",
             type: .int,
             returnHandling: .implicit
         ))
@@ -51,7 +51,7 @@ final class FormTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "a.set(to: .add(1, a))",
+            code: "a.set(to: 1.add(a))",
             type: .int
         ))
     }

@@ -71,7 +71,7 @@ final class SetGlobalTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Globals.n.set(to: .subtract(Globals.n, 1))",
+            code: "Globals.n.set(to: Globals.n.subtract(1))",
             type: .int
         ))
     }

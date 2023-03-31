@@ -132,7 +132,7 @@ final class DoFightTests: QuelboTests {
                         while true {
                             cnt.set(to: 0)
                             while true {
-                                cnt.set(to: .add(cnt, 1))
+                                cnt.set(to: cnt.add(1))
                                 if cnt.equals(len) {
                                     res.set(to: 1)
                                     return true
@@ -147,14 +147,14 @@ final class DoFightTests: QuelboTests {
                                     res.set(to: 0)
                                     break
                                 } else if res.equals(Constants.unconscious) {
-                                    out.set(to: .add(1, .random(3)))
+                                    out.set(to: 1.add(.random(3)))
                                 }
                             }
                             if let res {
                                 if .isNot(out) {
                                     break
                                 } else {
-                                    out.set(to: .subtract(out, 1))
+                                    out.set(to: out.subtract(1))
                                     if out.isFalse {
                                         break
                                     }

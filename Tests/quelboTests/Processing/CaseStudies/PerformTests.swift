@@ -288,7 +288,7 @@ final class PerformTests: QuelboTests {
                         var i: Object?
                         if Globals.debug {
                             output("** PERFORM: PRSA = ")
-                            output(Globals.actions.nthElement(.add(.multiply(a, 2), 1)))
+                            output(Globals.actions.nthElement(a.multiply(2).add(1)))
                             if .and(.object(o), .isNot(a.equals(Verb.walk))) {
                                 output("""
 

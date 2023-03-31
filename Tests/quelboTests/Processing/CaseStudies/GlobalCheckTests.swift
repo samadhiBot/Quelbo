@@ -120,7 +120,7 @@ final class GlobalCheckTests: QuelboTests {
                         len.set(to: try tbl.get(at: Globals.pMatchlen))
                         obits.set(to: Globals.pSlocbits)
                         if _ = rmg.set(to: Globals.here.globals) {
-                            rmgl.set(to: .subtract(rmg.propertySize, 1))
+                            rmgl.set(to: rmg.propertySize.subtract(1))
                             while true {
                                 if isThisIt(
                                     obj: obj.set(to: try rmg.get(at: cnt)),
@@ -134,11 +134,11 @@ final class GlobalCheckTests: QuelboTests {
                             }
                         }
                         if _ = rmg.set(to: Globals.here.things) {
-                            rmgl.set(to: .subtract(.divide(rmg.propertySize, 4), 1))
+                            rmgl.set(to: rmg.propertySize.divide(4).subtract(1))
                             cnt.set(to: 0)
                             while true {
-                                if Globals.pNam.equals(try rmg.get(at: .multiply(cnt, 2))) {
-                                    pseudoObject.action = try rmg.get(at: .add(.multiply(cnt, 2), 1))
+                                if Globals.pNam.equals(try rmg.get(at: cnt.multiply(2))) {
+                                    pseudoObject.action = try rmg.get(at: cnt.multiply(2).add(1))
                                     foo.set(to: Objects.pseudoObject.action.back(bytes: 5))
                                     try foo.put(
                                         element: try Globals.pNam.get(at: 0),

@@ -126,7 +126,7 @@ final class WhichPrintTests: QuelboTests {
                         }
                         output(" do you mean, ")
                         while true {
-                            tlen.set(to: .add(tlen, 1))
+                            tlen.set(to: tlen.add(1))
                             obj.set(to: try tbl.get(at: tlen))
                             output("the ")
                             output(obj.description)
@@ -138,7 +138,7 @@ final class WhichPrintTests: QuelboTests {
                             } else if len.isGreaterThan(2) {
                                 output(", ")
                             }
-                            if len.set(to: .subtract(len, 1)).isLessThan(1) {
+                            if len.set(to: len.subtract(1)).isLessThan(1) {
                                 output("?")
                                 break
                             }

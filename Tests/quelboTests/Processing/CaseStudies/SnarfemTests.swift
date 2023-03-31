@@ -280,11 +280,11 @@ final class SnarfemTests: QuelboTests {
                             } else {
                                 try Globals.pMerge.put(
                                     element: obj,
-                                    at: .add(matches, 1)
+                                    at: matches.add(1)
                                 )
-                                matches.set(to: .add(matches, 1))
+                                matches.set(to: matches.add(1))
                             }
-                            cnt.set(to: .add(cnt, 1))
+                            cnt.set(to: cnt.add(1))
                         }
                         try Globals.pMerge.put(
                             element: matches,

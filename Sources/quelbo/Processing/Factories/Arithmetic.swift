@@ -50,12 +50,17 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let arguments = symbols
+            var arguments = symbols
+            let firstArg = arguments.removeFirst()
             let function = operation
 
             return .statement(
                 code: { _ in
-                    ".\(function)(\(arguments.handles(.commaSeparatedNoTrailingComma)))"
+                    """
+                    \(firstArg.handle).\
+                    \(function)\
+                    (\(arguments.handles(.commaSeparatedNoTrailingComma)))
+                    """
                 },
                 type: .int
             )

@@ -312,7 +312,7 @@ final class RoutineTests: QuelboTests {
                     @discardableResult
                     /// The `batBat` (BAT-BAT) routine.
                     func batBat(foo: Int? = nil, bar: Int = 42) -> Int {
-                        return .add(foo, bar)
+                        return foo.add(bar)
                     }
                     """,
             type: .int,
@@ -412,7 +412,7 @@ final class RoutineTests: QuelboTests {
                     var cnt = 0
                     var str = 0
                     while true {
-                        if cnt.set(to: .add(cnt, 1)).isGreaterThan(len) {
+                        if cnt.set(to: cnt.add(1)).isGreaterThan(len) {
                             break
                         }
                         str.set(to: try remark.get(at: cnt))

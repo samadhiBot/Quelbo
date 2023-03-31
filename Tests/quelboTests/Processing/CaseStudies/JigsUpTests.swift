@@ -434,8 +434,8 @@ final class JigsUpTests: QuelboTests {
                     @discardableResult
                     /// The `scoreUpd` (SCORE-UPD) routine.
                     func scoreUpd(num: Int) -> Bool {
-                        Globals.baseScore.set(to: .add(Globals.baseScore, num))
-                        Globals.score.set(to: .add(Globals.score, num))
+                        Globals.baseScore.set(to: Globals.baseScore.add(num))
+                        Globals.score.set(to: Globals.score.add(num))
                         if .and(
                             Globals.score.equals(350),
                             .isNot(Globals.wonFlag)
@@ -644,7 +644,7 @@ final class JigsUpTests: QuelboTests {
                                     """)
                                 finish()
                             } else {
-                                Globals.deaths.set(to: .add(Globals.deaths, 1))
+                                Globals.deaths.set(to: Globals.deaths.add(1))
                                 winner.move(to: Globals.here)
                                 if Rooms.southTemple.hasFlag(.hasBeenTouched) {
                                     output("""
