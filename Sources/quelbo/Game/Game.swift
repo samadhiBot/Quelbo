@@ -12,6 +12,9 @@ import os.log
 
 /// A container for a Zil to Swift game translation.
 class Game {
+    /// An array of ID strings for routines that are referenced by an object or room.
+    private(set) var actionIDs: [String] = []
+
     /// An array of `Definition` values representing the game's definitions.
     private(set) var definitions: [Definition] = []
 
@@ -196,6 +199,10 @@ extension Game {
     static func findInstance(_ id: String) -> Instance? {
         guard let global = try? find(id) else { return nil }
         return Instance(global)
+    }
+
+    static func registerAction(_ routineID: String) {
+        shared.actionIDs.append(routineID)
     }
 
     /// Finds a routine with the given ID.

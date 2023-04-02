@@ -48,8 +48,8 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
+            let isMacro = isMacro
             let name = zilName.lowerCamelCase
-            let typeName = isMacro ? "macro" : "routine"
             let zilName = zilName!
 
             guard Game.findFactory(zilName) == nil else {
@@ -58,23 +58,30 @@ extension Factories {
 
             return .statement(
                 id: name,
-                code: {
-                    """
-                        \($0.payload.discardableResult)\
+                code: { statement in
+                    let payload = statement.payload
+                    var typeName: String {
+                        if isMacro { return "macro" }
+                        return statement.isActionRoutine ? "action routine" : "routine"
+                    }
+
+                    return """
+                        \(payload.discardableResult)\
                         /// The `\(name)` (\(zilName)) \(typeName).
                         func \(name)\
-                        (\($0.payload.paramDeclarations))\
-                        \($0.payload.throwsDeclaration)\
-                        \($0.payload.returnDeclaration) \
+                        (\(payload.paramDeclarations))\
+                        \(payload.throwsDeclaration)\
+                        \(payload.returnDeclaration) \
                         {
-                        \($0.payload.auxiliaryDefs.indented)\
-                        \($0.payload.codeHandlingRepeating.indented)
+                        \(payload.auxiliaryDefs.indented)\
+                        \(payload.codeHandlingRepeating.indented)
                         }
                         """
                 },
                 type: blockProcessor.payload.returnType ?? .void,
                 payload: blockProcessor.payload,
                 category: .routines,
+                isActionRoutine: Game.shared.actionIDs.contains(name),
                 isCommittable: true,
                 isThrowing: blockProcessor.payload.symbols.containThrowingStatement,
                 returnHandling: .passthrough

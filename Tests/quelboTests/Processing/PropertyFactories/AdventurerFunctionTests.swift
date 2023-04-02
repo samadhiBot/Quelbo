@@ -12,22 +12,59 @@ import XCTest
 final class AdventurerFunctionTests: QuelboTests {
     let factory = Factories.AdventurerFunction.self
 
+    override func setUp() {
+        super.setUp()
+
+        process("""
+            <ROUTINE BAT-F ()
+                <TELL "Fweep!" CR>>
+
+            <OBJECT BAT
+                (ADVFCN BAT-F)>
+        """)
+    }
+
     func testFindFactory() throws {
         AssertSameFactory(factory, Game.findFactory("ADVFCN", type: .property))
     }
 
-    func testAdventurerFunction() throws {
-        let symbol = try factory.init([
-            .atom("BAT-D")
-        ], with: &localVariables).process()
+    func testObject() throws {
+        XCTAssertNoDifference(
+            Game.objects.find("bat"),
+            Statement(
+                id: "bat",
+                code: """
+                    /// The `bat` (BAT) object.
+                    var bat = Object(
+                        id: "bat",
+                        adventurerFunction: "batFunc"
+                    )
+                    """,
+                type: .object,
+                category: .objects,
+                isCommittable: true
+            )
+        )
+    }
 
-        XCTAssertNoDifference(symbol, .statement(
-            id: "adventurerFunction",
-            code: """
-                adventurerFunction: "batD"
-                """,
-            type: .routine
-        ))
+    func testAdventurerFunction() throws {
+        XCTAssertNoDifference(
+            Game.actionRoutines.find("batFunc"),
+            Statement(
+                id: "batFunc",
+                code: """
+                    /// The `batFunc` (BAT-F) action routine.
+                    func batFunc() {
+                        output("Fweep!")
+                    }
+                    """,
+                type: .routine,
+                category: .routines,
+                isActionRoutine: true,
+                isCommittable: true,
+                returnHandling: .passthrough
+            )
+        )
     }
 
     func testEmptyReturnsPropertyName() throws {

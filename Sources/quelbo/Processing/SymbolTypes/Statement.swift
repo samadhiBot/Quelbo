@@ -13,6 +13,7 @@ final class Statement: SymbolType {
     private(set) var category: Category?
     private(set) var codeBlock: (Statement) throws -> String
     private(set) var id: String?
+    private(set) var isActionRoutine: Bool
     private(set) var isAgainStatement: Bool
     private(set) var isBindingAndRepeatingStatement: Bool
     private(set) var isCommittable: Bool
@@ -31,6 +32,7 @@ final class Statement: SymbolType {
         payload: Payload? = nil,
         category: Category? = nil,
         activation: String? = nil,
+        isActionRoutine: Bool = false,
         isAgainStatement: Bool = false,
         isBindingAndRepeatingStatement: Bool = false,
         isCommittable: Bool = false,
@@ -44,6 +46,7 @@ final class Statement: SymbolType {
         self.category = category
         self.codeBlock = code
         self.id = id
+        self.isActionRoutine = isActionRoutine
         self.isAgainStatement = isAgainStatement
         self.isBindingAndRepeatingStatement = isBindingAndRepeatingStatement
         self.isCommittable = isCommittable
@@ -103,6 +106,7 @@ extension Symbol {
         payload: Statement.Payload? = nil,
         category: Category? = nil,
         activation: String? = nil,
+        isActionRoutine: Bool = false,
         isAgainStatement: Bool = false,
         isBindingAndRepeatingStatement: Bool = false,
         isCommittable: Bool = false,
@@ -119,6 +123,7 @@ extension Symbol {
             payload: payload,
             category: category,
             activation: activation,
+            isActionRoutine: isActionRoutine,
             isAgainStatement: isAgainStatement,
             isBindingAndRepeatingStatement: isBindingAndRepeatingStatement,
             isCommittable: isCommittable,
@@ -229,6 +234,11 @@ extension Statement {
             )
         }
     }
+
+    /// Asserts that the statement represents an action routine.
+    func assertIsActionRoutine() {
+        self.isActionRoutine = true
+    }
 }
 
 // MARK: - Conformances
@@ -244,6 +254,7 @@ extension Statement: CustomDumpReflectable {
                 // "payload": self.payload,
                 "category": self.category as Any,
                 "activation": self.activation as Any,
+                "isActionRoutine": self.isActionRoutine,
                 "isAgainStatement": self.isAgainStatement,
                 "isBindingAndRepeatingStatement": self.isBindingAndRepeatingStatement,
                 "isCommittable": self.isCommittable,
@@ -265,6 +276,7 @@ extension Statement: Equatable {
         (rhs.payload == .empty ? true : (lhs.payload == rhs.payload)) &&
         lhs.category == rhs.category &&
         lhs.activation == rhs.activation &&
+        lhs.isActionRoutine == rhs.isActionRoutine &&
         lhs.isAgainStatement == rhs.isAgainStatement &&
         lhs.isBindingAndRepeatingStatement == rhs.isBindingAndRepeatingStatement &&
         lhs.isCommittable == rhs.isCommittable &&

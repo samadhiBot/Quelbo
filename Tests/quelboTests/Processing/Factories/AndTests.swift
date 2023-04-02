@@ -15,10 +15,10 @@ final class AndTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "foundTreasureChest", type: .bool, category: .globals),
-            .variable(id: "mEnter", type: .int, category: .globals),
-        ])
+        process("""
+            <CONSTANT M-ENTER 3>
+            <GLOBAL FOUND-TREASURE-CHEST <>>
+        """)
     }
 
     func testFindFactory() throws {
@@ -81,7 +81,7 @@ final class AndTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
             .and(
-                rarg.equals(Globals.mEnter),
+                rarg.equals(Constants.mEnter),
                 .isNot(Globals.foundTreasureChest)
             )
             """,

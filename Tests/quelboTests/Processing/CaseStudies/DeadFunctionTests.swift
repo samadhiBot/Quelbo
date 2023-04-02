@@ -110,7 +110,7 @@ final class DeadFunctionTests: QuelboTests {
                 id: "deadFunc",
                 code: #"""
                     @discardableResult
-                    /// The `deadFunc` (DEAD-FUNCTION) routine.
+                    /// The `deadFunc` (DEAD-FUNCTION) action routine.
                     func deadFunc(foo: Bool = false) throws -> Bool {
                         // var m: <Unknown>
                         if isParsedVerb(.walk) {

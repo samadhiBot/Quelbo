@@ -20,27 +20,38 @@ extension Factories {
             ["ACTION"]
         }
 
+        var propertyName: String {
+            "action"
+        }
+
         override func processSymbols() throws {
             try symbols.assert(
                 .haveCount(.between(0...1)),
-                .haveType(.routine.property)
+                .haveType(.routine)
             )
+
+            guard let routineID = symbols.first?.id else { return }
+
+            Game.registerAction(routineID)
+
+            if let routine = try Game.find(routineID) {
+                routine.assertIsActionRoutine()
+            }
         }
 
         override func process() throws -> Symbol {
-            guard symbols.count > 0 else {
+            let propertyName = propertyName
+
+            guard let actionID = symbols.first?.id else {
                 return .statement(
-                    code: { _ in "action" },
+                    code: { _ in propertyName },
                     type: .routine
                 )
             }
 
-            let action = symbols[0]
-
             return .statement(
-                id: "action",
                 code: { _ in
-                    "action: \(action.handle.quoted)"
+                    "\(propertyName): \(actionID.quoted)"
                 },
                 type: .routine
             )

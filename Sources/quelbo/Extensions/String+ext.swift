@@ -123,6 +123,9 @@ extension String {
         } else if string.hasSuffix("-FCN") {
             string.removeLast(3)
             string.append("FUNC")
+        } else if string.hasSuffix("FCN") {
+            string.removeLast(3)
+            string.append("-FUNC")
         } else if string.hasSuffix("-FUNCTION") {
             string.removeLast(8)
             string.append("FUNC")

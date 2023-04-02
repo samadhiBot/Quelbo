@@ -8,22 +8,6 @@
 import Foundation
 
 extension Game {
-    /// Returns an array of game symbols representing routines referenced in an object or room
-    /// definition.
-    static var actions: [Symbol] {
-        let objects = shared.symbols.filter { [.objects, .rooms].contains($0.category) }
-        return objects.reduce(into: []) { actions, object in
-            for function in object.payload?.symbols ?? [] {
-                guard
-                    function.type == .routine.property,
-                    !actions.contains(object)
-                else { continue }
-
-                actions.append(function)
-            }
-        }
-    }
-
     /// Returns an array of game symbols in the ``Symbol/Category/constants`` category.
     static var constants: [Symbol] {
         shared.symbols.filter { $0.category == .constants }
@@ -67,5 +51,27 @@ extension Game {
     /// Returns an array of game symbols in the ``Symbol/Category/syntax`` category.
     static var syntax: [Symbol] {
         shared.symbols.filter { $0.category == .syntax }
+    }
+}
+
+extension Game {
+    /// Returns an array of game symbols in the ``Symbol/Category/routines`` category, where each
+    /// symbol represents an action routine referenced by an object or room.
+    static var actionRoutines: [Symbol] {
+        routines.filter {
+            guard case .statement(let statement) = $0 else { return false }
+
+            return statement.isActionRoutine
+        }
+    }
+
+    /// Returns an array of game symbols in the ``Symbol/Category/routines`` category, where each
+    /// symbol represents a routine that is not referenced by an object or room.
+    static var nonActionRoutines: [Symbol] {
+        routines.filter {
+            guard case .statement(let statement) = $0 else { return false }
+
+            return !statement.isActionRoutine
+        }
     }
 }

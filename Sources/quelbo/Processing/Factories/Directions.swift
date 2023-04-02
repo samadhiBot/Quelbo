@@ -69,7 +69,7 @@ extension Factories {
                 code: { _ in
                     guard !customDirections.isEmpty else { return "" }
 
-                    return customDirections.codeValues(.singleLineBreak)
+                    return customDirections.codeValues(.doubleLineBreak)
                 },
                 type: .void,
                 payload: .init(
