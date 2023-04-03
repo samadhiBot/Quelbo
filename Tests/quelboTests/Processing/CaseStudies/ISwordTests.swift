@@ -154,7 +154,7 @@ final class SwordTests: QuelboTests {
                             } else if ng.isZero {
                                 output("Your sword is no longer glowing.")
                             }
-                            sword.takeValue = ng
+                            Objects.sword.takeValue = ng
                             return true
                         } else {
                             try dem.put(

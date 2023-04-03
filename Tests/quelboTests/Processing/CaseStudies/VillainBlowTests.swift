@@ -533,7 +533,7 @@ final class VillainBlowTests: QuelboTests {
                     /// The `winnerResult` (WINNER-RESULT) routine.
                     func winnerResult(def: Int, res: Int, od: Int) throws -> Int? {
                         var def = def
-                        winner.strength = if def.isZero {
+                        Globals.winner.strength = if def.isZero {
                             return -10000
                         } else {
                             def.subtract(od)
@@ -544,7 +544,7 @@ final class VillainBlowTests: QuelboTests {
                             )
                         }
                         if .isNot(fightStrength().isGreaterThan(0)) {
-                            winner.strength = 1.add(-fightStrength(isAdjust: false))
+                            Globals.winner.strength = 1.add(-fightStrength(isAdjust: false))
                             try jigsUp(
                                 desc: """
                                     It appears that that last blow was too much for you. I'm \

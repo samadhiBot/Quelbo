@@ -33,7 +33,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).\(property.id ?? property.code) = \(value.code)"
+                    "\(object.handle).\(property.handle) = \(value.handle)"
                 },
                 type: .void,
                 returnHandling: .suppressed

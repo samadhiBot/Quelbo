@@ -140,7 +140,7 @@ final class NotHereTests: QuelboTests {
                 id: "notHereObjectFunc",
                 code: #"""
                     @discardableResult
-                    /// The `notHereObjectFunc` (NOT-HERE-OBJECT-F) routine.
+                    /// The `notHereObjectFunc` (NOT-HERE-OBJECT-F) action routine.
                     func notHereObjectFunc() throws -> Bool {
                         var tbl: Table?
                         var isPrso = true
@@ -177,6 +177,7 @@ final class NotHereTests: QuelboTests {
                     """#,
                 type: .booleanTrue,
                 category: .routines,
+                isActionRoutine: true,
                 isCommittable: true,
                 isThrowing: true,
                 returnHandling: .passthrough

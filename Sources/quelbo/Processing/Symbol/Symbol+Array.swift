@@ -19,13 +19,13 @@ extension Array where Element == Symbol {
             return codeMultiTypeValues(displayOptions)
         }
         return nonCommentSymbols
-            .map(\.code)
+            .compactMap(\.code.nonEmpty)
             .values(displayOptions)
     }
 
     func codeMultiTypeValues(_ displayOptions: [CodeValuesDisplayOption]) -> String {
         nonCommentSymbols
-            .map(\.codeMultiType)
+            .compactMap(\.codeMultiType.nonEmpty)
             .values(displayOptions)
     }
 
@@ -63,7 +63,7 @@ extension Array where Element == Symbol {
 
     func handleMultiTypeValues(_ displayOptions: [CodeValuesDisplayOption]) -> String {
         nonCommentSymbols
-            .map(\.handleMultiType)
+            .compactMap(\.handleMultiType.nonEmpty)
             .values(displayOptions)
     }
 
@@ -72,7 +72,7 @@ extension Array where Element == Symbol {
             return handleMultiTypeValues(displayOptions)
         }
         return nonCommentSymbols
-            .map(\.handle)
+            .compactMap(\.handle.nonEmpty)
             .values(displayOptions)
     }
 

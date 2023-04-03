@@ -63,7 +63,7 @@ final class PuttyTests: QuelboTests {
             Statement(
                 id: "puttyFunc",
                 code: """
-                    /// The `puttyFunc` (PUTTY-FCN) routine.
+                    /// The `puttyFunc` (PUTTY-FCN) action routine.
                     func puttyFunc() {
                         if .or(
                             .and(
@@ -81,6 +81,7 @@ final class PuttyTests: QuelboTests {
                     """,
                 type: .void,
                 category: .routines,
+                isActionRoutine: true,
                 isCommittable: true,
                 returnHandling: .passthrough
             )

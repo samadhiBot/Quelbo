@@ -33,7 +33,7 @@ final class PutPropertyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "troll.strength = 10",
+            code: "Objects.troll.strength = 10",
             type: .void,
             returnHandling: .suppressed
         ))
@@ -47,7 +47,7 @@ final class PutPropertyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "winner.action = 0",
+            code: "Globals.winner.action = 0",
             type: .void,
             returnHandling: .suppressed
         ))

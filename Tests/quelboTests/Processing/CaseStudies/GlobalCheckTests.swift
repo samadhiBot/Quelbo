@@ -138,7 +138,7 @@ final class GlobalCheckTests: QuelboTests {
                             cnt.set(to: 0)
                             while true {
                                 if Globals.pNam.equals(try rmg.get(at: cnt.multiply(2))) {
-                                    pseudoObject.action = try rmg.get(at: cnt.multiply(2).add(1))
+                                    Objects.pseudoObject.action = try rmg.get(at: cnt.multiply(2).add(1))
                                     foo.set(to: Objects.pseudoObject.action.back(bytes: 5))
                                     try foo.put(
                                         element: try Globals.pNam.get(at: 0),

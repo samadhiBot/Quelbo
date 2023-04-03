@@ -19,8 +19,8 @@ final class OtherTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            id: "advfcn",
-            code: "advfcn: 0",
+            id: "advFunc",
+            code: "advFunc: 0",
             type: .integerZero
         ))
     }

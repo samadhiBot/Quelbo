@@ -232,11 +232,13 @@ extension Game {
     ///   - tokens: An array of tokens to use (default is an empty array).
     ///   - zMachineVersion: The Z-Machine version to use (default is .z3).
     static func reset(
+        actionIDs: [String] = [],
         definitions: [Definition] = [],
         symbols: [Symbol] = [],
         tokens: [Token] = [],
         zMachineVersion: Game.ZMachineVersion = .z3
     ) {
+        shared.actionIDs = actionIDs
         shared.definitions = definitions
         shared.symbols = Game.reservedGlobals + symbols
         shared.tokens = tokens

@@ -42,16 +42,22 @@ extension Factories {
         override func process() throws -> Symbol {
             let propertyName = propertyName
 
-            guard let actionID = symbols.first?.id else {
+            guard
+                let action = symbols.first,
+                let actionID = action.id
+            else {
                 return .statement(
                     code: { _ in propertyName },
                     type: .routine
                 )
             }
 
+            let propertyValue = actionID == "0" ? action.handle : actionID.quoted
+
             return .statement(
+                id: propertyName,
                 code: { _ in
-                    "\(propertyName): \(actionID.quoted)"
+                    "\(propertyName): \(propertyValue)"
                 },
                 type: .routine
             )

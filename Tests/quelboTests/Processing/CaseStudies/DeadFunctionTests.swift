@@ -178,7 +178,7 @@ final class DeadFunctionTests: QuelboTests {
                         } else if isParsedVerb(.pray) {
                             if Globals.here.equals(Rooms.southTemple) {
                                 Objects.lamp.isInvisible.set(false)
-                                winner.action = 0
+                                Globals.winner.action = 0
                                 // <SETG GWIM-DISABLE false>
                                 Globals.alwaysLit.set(to: false)
                                 Globals.dead.set(to: false)
@@ -205,6 +205,7 @@ final class DeadFunctionTests: QuelboTests {
                     """#,
                 type: .booleanFalse,
                 category: .routines,
+                isActionRoutine: true,
                 isCommittable: true,
                 isThrowing: true,
                 returnHandling: .passthrough

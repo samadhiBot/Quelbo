@@ -63,6 +63,11 @@ extension String {
             .joined()
     }
 
+    var nonEmpty: String? {
+        guard !self.isEmpty else { return nil }
+        return self
+    }
+
     /// Returns the `String` in the appropriate quotes, depending on whether it is a single or
     /// multiline `String`.
     ///

@@ -199,9 +199,13 @@ final class PerformTests: QuelboTests {
                 code: #"""
                     @discardableResult
                     /// The `dApply` (D-APPLY) routine.
-                    func dApply(str: String, fcn: Routine, foo: Int? = nil) -> Int? {
+                    func dApply(
+                        str: String,
+                        func: Routine,
+                        foo: Int? = nil
+                    ) -> Int? {
                         var res = 0
-                        if .isNot(fcn) {
+                        if .isNot(func) {
                             return 0
                         } else {
                             if Globals.debug {
@@ -215,9 +219,9 @@ final class PerformTests: QuelboTests {
                             }
                             res.set(to: {
                                 if foo.isAssigned {
-                                    fcn(foo)
+                                    func(foo)
                                 } else {
-                                    fcn()
+                                    func()
                                 }
                             }())
                             if .and(.int(Globals.debug), str) {
@@ -252,7 +256,7 @@ final class PerformTests: QuelboTests {
                     func ddApply(
                         str: String,
                         obj: Object,
-                        fcn: Routine,
+                        func: Routine,
                         foo: Int = 0
                     ) -> Int? {
                         if Globals.debug {
@@ -260,7 +264,7 @@ final class PerformTests: QuelboTests {
                             output(obj.description)
                             output("=]")
                         }
-                        return dApply(str: str, fcn: fcn, foo: foo)
+                        return dApply(str: str, func: func, foo: foo)
                     }
                     """,
                 type: .int.optional,
@@ -336,7 +340,7 @@ final class PerformTests: QuelboTests {
                             ),
                             v.set(to: dApply(
                                 str: "Not Here",
-                                fcn: Routines.notHereObjectFunc
+                                func: Routines.notHereObjectFunc
                             ))
                         ) {
                             return v
@@ -346,23 +350,23 @@ final class PerformTests: QuelboTests {
                             if _ = v.set(to: ddApply(
                                 str: "Actor",
                                 obj: Globals.winner,
-                                fcn: Globals.winner.action
+                                func: Globals.winner.action
                             )) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: "Room (M-BEG)",
-                                fcn: Globals.winner.parent.action,
+                                func: Globals.winner.parent.action,
                                 foo: Constants.mBeg
                             )) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: "Preaction",
-                                fcn: try Globals.preactions.get(at: a)
+                                func: try Globals.preactions.get(at: a)
                             )) {
                                 return v
                             } else if _ = .and(
                                 .object(i),
-                                v.set(to: dApply(str: "PRSI", fcn: i.action))
+                                v.set(to: dApply(str: "PRSI", func: i.action))
                             ) {
                                 return v
                             } else if _ = .and(
@@ -373,19 +377,19 @@ final class PerformTests: QuelboTests {
                                 v.set(to: ddApply(
                                     str: "Container",
                                     obj: o.parent,
-                                    fcn: o.parent.containerFunction
+                                    func: o.parent.containerFunction
                                 ))
                             ) {
                                 return v
                             } else if _ = .and(
                                 .object(o),
                                 .isNot(a.equals(Verb.walk)),
-                                v.set(to: dApply(str: "PRSO", fcn: o.action))
+                                v.set(to: dApply(str: "PRSO", func: o.action))
                             ) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: nil,
-                                fcn: try Globals.actions.get(at: a)
+                                func: try Globals.actions.get(at: a)
                             )) {
                                 return v
                             }

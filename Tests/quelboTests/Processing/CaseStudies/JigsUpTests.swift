@@ -330,7 +330,7 @@ final class JigsUpTests: QuelboTests {
                         if Objects.coffin.isIn(Globals.winner) {
                             coffin.move(to: Rooms.egyptRoom)
                         }
-                        sword.takeValue = 0
+                        Objects.sword.takeValue = 0
                         n.set(to: Globals.winner.firstChild)
                         l.set(to: try Globals.aboveGround.get(at: 0))
                         while true {
@@ -658,7 +658,7 @@ final class JigsUpTests: QuelboTests {
                                     Globals.trollFlag.set(to: true)
                                     // <SETG GWIM-DISABLE T>
                                     Globals.alwaysLit.set(to: true)
-                                    winner.action = deadFunc
+                                    Globals.winner.action = deadFunc
                                     try goto(rm: Rooms.entranceToHades)
                                 } else {
                                     output("""
