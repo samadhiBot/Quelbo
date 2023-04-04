@@ -67,11 +67,11 @@ final class PuttyTests: QuelboTests {
                     func puttyFunc() {
                         if .or(
                             .and(
-                                isParsedVerb(.oil),
+                                isParsedVerb("oil"),
                                 Globals.parsedIndirectObject.equals(Objects.putty)
                             ),
                             .and(
-                                isParsedVerb(.put),
+                                isParsedVerb("put"),
                                 Globals.parsedDirectObject.equals(Objects.putty)
                             )
                         ) {

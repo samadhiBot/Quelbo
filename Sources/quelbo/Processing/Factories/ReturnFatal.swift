@@ -17,7 +17,9 @@ extension Factories {
         }
 
         override func processSymbols() throws {
-            try symbols.assert(.haveCount(.exactly(0)))
+            try symbols.assert(
+                .haveCount(.exactly(0))
+            )
         }
 
         override func process() throws -> Symbol {

@@ -34,7 +34,7 @@ final class MoveTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "sandwich.move(to: Objects.paperBag)",
+            code: "Objects.sandwich.move(to: Objects.paperBag)",
             type: .void
         ))
     }
@@ -46,7 +46,7 @@ final class MoveTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "paperBag.move(to: Rooms.kitchen)",
+            code: "Objects.paperBag.move(to: Rooms.kitchen)",
             type: .void
         ))
     }

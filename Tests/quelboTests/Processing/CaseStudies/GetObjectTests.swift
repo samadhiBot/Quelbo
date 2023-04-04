@@ -309,7 +309,7 @@ final class GetObjectTests: QuelboTests {
                                 if vrb {
                                     // "next added 1/2/85 by JW"
                                     Globals.pSlocbits.set(to: xbits)
-                                    if .or(Globals.lit, isParsedVerb(.tell)) {
+                                    if .or(Globals.lit, isParsedVerb("tell")) {
                                         // "Changed 6/10/83 - MARC"
                                         try objFound(obj: Objects.notHereObject, tbl: tbl)
                                         pXnam.set(to: Globals.pNam)

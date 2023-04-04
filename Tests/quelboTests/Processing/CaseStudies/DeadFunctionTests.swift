@@ -113,7 +113,7 @@ final class DeadFunctionTests: QuelboTests {
                     /// The `deadFunc` (DEAD-FUNCTION) action routine.
                     func deadFunc(foo: Bool = false) throws -> Bool {
                         // var m: <Unknown>
-                        if isParsedVerb(.walk) {
+                        if isParsedVerb("walk") {
                             if .and(
                                 Globals.here.equals(Rooms.timberRoom),
                                 Globals.parsedDirectObject.equals(west)
@@ -121,45 +121,45 @@ final class DeadFunctionTests: QuelboTests {
                                 output("You cannot enter in your condition.")
                             }
                         } else if isParsedVerb(
-                            .brief,
-                            .verbose,
-                            .superBrief,
-                            .version,
-                            .save,
-                            .restore,
-                            .quit,
-                            .restart
+                            "brief",
+                            "verbose",
+                            "superBrief",
+                            "version",
+                            "save",
+                            "restore",
+                            "quit",
+                            "restart"
                         ) {
                             return false
-                        } else if isParsedVerb(.attack, .mung, .alarm, .swing) {
+                        } else if isParsedVerb("attack", "mung", "alarm", "swing") {
                             output("All such attacks are vain in your condition.")
                         } else if isParsedVerb(
-                            .open,
-                            .close,
-                            .eat,
-                            .drink,
-                            .inflate,
-                            .deflate,
-                            .turn,
-                            .burn,
-                            .tie,
-                            .untie,
-                            .rub
+                            "open",
+                            "close",
+                            "eat",
+                            "drink",
+                            "inflate",
+                            "deflate",
+                            "turn",
+                            "burn",
+                            "tie",
+                            "untie",
+                            "rub"
                         ) {
                             output("Even such an action is beyond your capabilities.")
-                        } else if isParsedVerb(.wait) {
+                        } else if isParsedVerb("wait") {
                             output("Might as well. You've got an eternity.")
-                        } else if isParsedVerb(.lampOn) {
+                        } else if isParsedVerb("lampOn") {
                             output("You need no light to guide you.")
-                        } else if isParsedVerb(.score) {
+                        } else if isParsedVerb("score") {
                             output("You're dead! How can you think of your score?")
-                        } else if isParsedVerb(.take, .rub) {
+                        } else if isParsedVerb("take", "rub") {
                             output("Your hand passes through its object.")
-                        } else if isParsedVerb(.drop, .throw, .inventory) {
+                        } else if isParsedVerb("drop", "throw", "inventory") {
                             output("You have no possessions.")
-                        } else if isParsedVerb(.diagnose) {
+                        } else if isParsedVerb("diagnose") {
                             output("You are dead.")
-                        } else if isParsedVerb(.look) {
+                        } else if isParsedVerb("look") {
                             output("The room looks strange and unearthly")
                             if .isNot(Globals.here.firstChild) {
                                 output(".")
@@ -175,7 +175,7 @@ final class DeadFunctionTests: QuelboTests {
                             }
                             output("\n")
                             return false
-                        } else if isParsedVerb(.pray) {
+                        } else if isParsedVerb("pray") {
                             if Globals.here.equals(Rooms.southTemple) {
                                 Objects.lamp.isInvisible.set(false)
                                 Globals.winner.action = 0

@@ -27,8 +27,8 @@ extension Factories {
         override func process() throws -> Symbol {
             let verbs = symbols.codeValues(
                 .commaSeparatedNoTrailingComma,
-                .dotPrefixed,
-                .forceSingleType
+                .forceSingleType,
+                .quoted
             )
 
             return .statement(

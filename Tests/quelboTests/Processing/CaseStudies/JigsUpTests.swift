@@ -325,10 +325,10 @@ final class JigsUpTests: QuelboTests {
                         var n: Object?
                         var l = 0
                         if Objects.lamp.isIn(Globals.winner) {
-                            lamp.move(to: Rooms.livingRoom)
+                            Objects.lamp.move(to: Rooms.livingRoom)
                         }
                         if Objects.coffin.isIn(Globals.winner) {
-                            coffin.move(to: Rooms.egyptRoom)
+                            Objects.coffin.move(to: Rooms.egyptRoom)
                         }
                         Objects.sword.takeValue = 0
                         n.set(to: Globals.winner.firstChild)
@@ -533,7 +533,7 @@ final class JigsUpTests: QuelboTests {
                             if av {
                                 wloc.move(to: rm)
                             } else {
-                                winner.move(to: rm)
+                                Globals.winner.move(to: rm)
                             }
                             Globals.here.set(to: rm)
                             Globals.lit.set(to: try isLit(rm: Globals.here))
@@ -633,7 +633,7 @@ final class JigsUpTests: QuelboTests {
 
                                 """)
                             if Globals.winner.parent.hasFlag(.isVehicle) {
-                                winner.move(to: Globals.here)
+                                Globals.winner.move(to: Globals.here)
                             }
                             if .isNot(Globals.deaths.isLessThan(2)) {
                                 output("""
@@ -645,7 +645,7 @@ final class JigsUpTests: QuelboTests {
                                 finish()
                             } else {
                                 Globals.deaths.set(to: Globals.deaths.add(1))
-                                winner.move(to: Globals.here)
+                                Globals.winner.move(to: Globals.here)
                                 if Rooms.southTemple.hasFlag(.hasBeenTouched) {
                                     output("""
                                         As you take your last breath, you feel relieved of your \

@@ -171,7 +171,7 @@ final class ClauseTests: QuelboTests {
                     /// The `cantUse` (CANT-USE) routine.
                     func cantUse(ptr: Int) throws -> Bool {
                         var buf = 0
-                        if isParsedVerb(.say) {
+                        if isParsedVerb("say") {
                             output("Nothing happens.")
                             return false
                         }
@@ -269,7 +269,7 @@ final class ClauseTests: QuelboTests {
                             element: ptr,
                             at: Constants.oPtr
                         )
-                        if isParsedVerb(.say) {
+                        if isParsedVerb("say") {
                             output("Nothing happens.")
                             return false
                         }

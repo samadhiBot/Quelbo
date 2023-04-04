@@ -81,7 +81,7 @@ final class NullFuncTests: QuelboTests {
                     @discardableResult
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() -> Bool {
-                        if isParsedVerb(.examine) {
+                        if isParsedVerb("examine") {
                             if nullFunc() {
                                 return true
                             } else {
@@ -106,7 +106,7 @@ final class NullFuncTests: QuelboTests {
                 code: """
                     /// The `abridgedGroundFunc` (ABRIDGED-GROUND-FUNCTION) routine.
                     func abridgedGroundFunc() {
-                        if isParsedVerb(.dig) {
+                        if isParsedVerb("dig") {
                             output("The ground is too hard for digging here.")
                         }
                     }

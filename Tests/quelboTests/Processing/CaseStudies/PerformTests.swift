@@ -328,7 +328,7 @@ final class PerformTests: QuelboTests {
                         Globals.parsedDirectObject.set(to: o)
                         if _ = .and(
                             .object(Globals.parsedDirectObject),
-                            .isNot(isParsedVerb(.walk))
+                            .isNot(isParsedVerb("walk"))
                         ) {
                             Globals.pItObject.set(to: Globals.parsedDirectObject)
                         }

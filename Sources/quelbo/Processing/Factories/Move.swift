@@ -33,7 +33,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.code).move(to: \(location.handle))"
+                    "\(object.handle).move(to: \(location.handle))"
                 },
                 type: .void
             )

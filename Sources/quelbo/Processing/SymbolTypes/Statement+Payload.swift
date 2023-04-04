@@ -175,12 +175,12 @@ extension Statement.Payload {
             .returnType
     }
 
-    var signatureType: String {
+    func signatureType(throwing: Bool) -> String {
         var params: String {
             var params = parameters.map(\.type.signature).joined()
-            guard !params.isEmpty else {
-                return "void"
-            }
+            if params.isEmpty { params = "Void" }
+            if throwing { params = "Throwing\(params)" }
+
             let firstChar = params.removeFirst()
             return "\(firstChar.lowercased())\(params)"
         }

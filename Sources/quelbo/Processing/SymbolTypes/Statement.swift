@@ -85,7 +85,7 @@ extension Statement {
 
     var signature: String {
         guard let id else { return code }
-        return ".\(payload.signatureType)(\(id.quoted))"
+        return ".\(payload.signatureType(throwing: isThrowing))(\(id))"
     }
 }
 

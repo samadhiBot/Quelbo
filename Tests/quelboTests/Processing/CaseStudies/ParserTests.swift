@@ -671,7 +671,7 @@ final class ParserTests: QuelboTests {
                             if .and(
                                 .isNot(Globals.superBrief),
                                 Globals.player.equals(Globals.winner),
-                                .isNot(isParsedVerb(.say))
+                                .isNot(isParsedVerb("say"))
                             ) {
                                 output("\n")
                             }

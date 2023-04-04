@@ -20,7 +20,9 @@ final class IsVerbTests: QuelboTests {
         let symbol = process("<VERB? EXAMINE>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isParsedVerb(.examine)",
+            code: """
+                isParsedVerb("examine")
+                """,
             type: .bool
         ))
     }
@@ -29,7 +31,9 @@ final class IsVerbTests: QuelboTests {
         let symbol = process("<VERB? PUT PUT-ON>")
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "isParsedVerb(.put, .putOn)",
+            code: """
+                isParsedVerb("put", "putOn")
+                """,
             type: .bool
         ))
     }

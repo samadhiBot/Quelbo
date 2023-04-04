@@ -177,14 +177,14 @@ final class ItakeTests: QuelboTests {
                             }
                             returnFatal()
                         } else if .and(
-                            isParsedVerb(.take),
+                            isParsedVerb("take"),
                             cnt.set(to: ccount(obj: Globals.winner)).isGreaterThan(Globals.fumbleNumber),
                             prob(isBase: cnt.multiply(Globals.fumbleProb))
                         ) {
                             output("You're holding too many things already!")
                             return false
                         } else {
-                            parsedDirectObject.move(to: Globals.winner)
+                            Globals.parsedDirectObject.move(to: Globals.winner)
                             Globals.parsedDirectObject.omitDescription.set(false)
                             Globals.parsedDirectObject.hasBeenTouched.set(true)
                             nullFunc()

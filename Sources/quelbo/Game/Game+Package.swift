@@ -38,6 +38,7 @@ extension Game {
         /// - Throws: An error if unable to add game components to the package.
         func build() throws {
             try addActions()
+            try addActionMappings()
             try addConstants()
             try addDirections()
             try addGlobals()
@@ -50,22 +51,44 @@ extension Game {
 }
 
 private extension Game.Package {
-    /// Adds the action mappings to the package.
+    /// Adds action routines to the package.
+    ///
+    /// Action routines are those routines that are called by an object or room.
     ///
     /// - Throws: An error if unable to add actions.
     func addActions() throws {
+        guard !Game.routines.isEmpty else { return }
+
+        try createFile(
+            named: "Actions.swift",
+            project: project,
+            in: sourcesFolder,
+            with: Game.actionRoutines.sorted.codeValues(.doubleLineBreak),
+            wrapper: """
+                /// \(project) action routine definitions.
+                extension \(project) {
+                    {{code}}
+                }
+                """
+        )
+    }
+
+    /// Adds the action mappings to the package.
+    ///
+    /// - Throws: An error if unable to add actions.
+    func addActionMappings() throws {
         let actions = Game.actionRoutines
         guard !actions.isEmpty else { return }
 
         let mappings = actions.sorted.compactMap { action in
             guard let id = action.id else { return nil }
             return """
-                "\(id)": .\(action.signature)(\(id)),
+                "\(id)": \(action.signature),
                 """
         }.joined(separator: "\n")
 
         try createFile(
-            named: "Actions.swift",
+            named: "Actions+mappings.swift",
             project: project,
             in: sourcesFolder,
             with: mappings,
@@ -182,7 +205,7 @@ private extension Game.Package {
         )
     }
 
-    /// Adds routines to the package.
+    /// Adds non-action routines to the package.
     ///
     /// - Throws: An error if unable to add routines.
     func addRoutines() throws {
@@ -192,9 +215,9 @@ private extension Game.Package {
             named: "Routines.swift",
             project: project,
             in: sourcesFolder,
-            with: Game.routines.sorted.codeValues(.doubleLineBreak),
+            with: Game.nonActionRoutines.sorted.codeValues(.doubleLineBreak),
             wrapper: """
-                /// \(project) action definitions.
+                /// \(project) non-action routine definitions.
                 extension \(project) {
                     {{code}}
                 }

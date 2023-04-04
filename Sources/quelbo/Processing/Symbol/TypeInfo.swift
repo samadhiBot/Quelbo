@@ -362,12 +362,12 @@ extension TypeInfo {
 
     var signature: String {
         var signature = dataType?.description ?? (
-            isTableElement == true ? "TableElement" : "Unit"
+            isTableElement == true ? "TableElement" : "Void"
         )
         if case .oneOf(let dataTypes) = dataType {
             signature = dataTypes
                 .min(by: { $0.baseConfidence < $1.baseConfidence })?
-                .description ?? "Unit"
+                .description ?? "Void"
         }
         if isArray == true {
             signature = "\(signature)Array"

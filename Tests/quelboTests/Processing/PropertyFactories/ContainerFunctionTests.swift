@@ -55,7 +55,7 @@ final class ContainerFunctionTests: QuelboTests {
                 code: """
                     /// The `bottleContFunc` (BOTTLE-CONTFCN) action routine.
                     func bottleContFunc() {
-                        if isParsedVerb(.take) {
+                        if isParsedVerb("take") {
                             output("You're holding that already (in ")
                             output(true)
                             output(Objects.bottle)
