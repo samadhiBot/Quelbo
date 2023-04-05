@@ -30,7 +30,7 @@ extension Factories {
                 code: { _ in
                     "\(object.chainingID).parent"
                 },
-                type: .object
+                type: .object.optional
             )
         }
     }

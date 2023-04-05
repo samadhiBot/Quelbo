@@ -15,10 +15,7 @@ final class ParentTests: QuelboTests {
     override func setUp() {
         super.setUp()
 
-        try! Game.commit([
-            .variable(id: "clearing", type: .object, category: .rooms),
-            .variable(id: "thief", type: .object, category: .objects),
-        ])
+        process("<OBJECT THIEF>")
     }
 
     func testFindFactory() throws {
@@ -26,13 +23,11 @@ final class ParentTests: QuelboTests {
     }
 
     func testThiefsLocation() throws {
-        let symbol = try factory.init([
-            .global(.atom("THIEF"))
-        ], with: &localVariables).process()
+        let symbol = process("<LOC THIEF>", type: .zCode)
 
         XCTAssertNoDifference(symbol, .statement(
             code: "Objects.thief.parent",
-            type: .object
+            type: .object.optional
         ))
     }
 

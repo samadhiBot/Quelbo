@@ -139,12 +139,12 @@ final class CandleTableTests: QuelboTests {
                     @discardableResult
                     /// The `isHeld` (HELD?) routine.
                     func isHeld(can: Object) -> Bool {
-                        var can = can
+                        var can: Object? = can
                         while true {
-                            can.set(to: can.parent)
+                            can?.set(to: can?.parent)
                             if .isNot(can) {
                                 return false
-                            } else if can.equals(Globals.winner) {
+                            } else if can?.equals(Globals.winner) {
                                 return true
                             }
                         }

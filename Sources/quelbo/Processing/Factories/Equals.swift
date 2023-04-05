@@ -38,15 +38,23 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let first = symbols[0]
             let function = function
-            let rest = Array(symbols[1..<symbols.count])
 
             return .statement(
-                code: { _ in
-                    "\(first.chainingID).\(function)(\(rest.handles(.commaSeparatedNoTrailingComma)))"
+                code: {
+                    var symbols = $0.payload.symbols
+                    let first = symbols.removeFirst()
+
+                    return """
+                        \(first.chainingID)\
+                        .\(function)\
+                        (\(symbols.handles(.commaSeparatedNoTrailingComma)))
+                        """
                 },
-                type: .bool
+                type: .bool,
+                payload: .init(
+                    symbols: symbols
+                )
             )
         }
     }
