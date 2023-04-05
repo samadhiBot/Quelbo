@@ -95,10 +95,10 @@ final class VLeapTests: QuelboTests {
                         var tx: Object?
                         var s = 0
                         if let Globals.parsedDirectObject {
-                            if Globals.parsedDirectObject.isIn(Globals.here) {
-                                if Globals.parsedDirectObject.hasFlag(.isActor) {
+                            if Globals.parsedDirectObject?.isIn(Globals.here) {
+                                if Globals.parsedDirectObject?.hasFlag(.isActor) {
                                     output("The ")
-                                    output(Globals.parsedDirectObject.description)
+                                    output(Globals.parsedDirectObject?.description)
                                     output(" is too big to jump over.")
                                 } else {
                                     try vSkip()
@@ -106,7 +106,7 @@ final class VLeapTests: QuelboTests {
                             } else {
                                 output("That would be a good trick.")
                             }
-                        } else if _ = tx.set(to: Globals.here.down) {
+                        } else if _ = tx.set(to: Globals.here?.down) {
                             s.set(to: tx.propertySize)
                             if .or(
                                 s.equals(2),
@@ -116,7 +116,7 @@ final class VLeapTests: QuelboTests {
                                 try jigsUp(
                                     desc: try pickOne(frob: Globals.jumploss)
                                 )
-                            } else if Globals.here.equals(Rooms.upATree) {
+                            } else if Globals.here?.equals(Rooms.upATree) {
                                 output("""
                                     In a feat of unaccustomed daring, you manage to land on your \
                                     feet without killing yourself.

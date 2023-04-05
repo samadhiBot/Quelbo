@@ -68,7 +68,7 @@ final class RemoveCarefullyTests: QuelboTests {
                     func removeCarefully(obj: Object) -> Bool {
                         var olit = false
                         if obj.equals(Globals.pItObject) {
-                            Globals.pItObject.set(to: nil)
+                            Globals.pItObject?.set(to: nil)
                         }
                         olit.set(to: Globals.lit)
                         obj.remove()

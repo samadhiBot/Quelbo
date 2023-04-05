@@ -67,7 +67,7 @@ final class PrintContentsTests: QuelboTests {
                     @discardableResult
                     /// The `thisIsIt` (THIS-IS-IT) routine.
                     func thisIsIt(obj: Object) -> Object? {
-                        return Globals.pItObject.set(to: obj)
+                        return Globals.pItObject?.set(to: obj)
                     }
                     """,
                 type: .object.optional,

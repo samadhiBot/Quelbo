@@ -28,7 +28,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "output(\(string.handle).description)"
+                    "output(\(string.chainingID).description)"
                 },
                 type: .void
             )

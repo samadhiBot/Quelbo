@@ -508,7 +508,7 @@ final class JigsUpTests: QuelboTests {
                             noGoTell(av: av, wloc: wloc)
                             return false
                         } else if .and(
-                            Globals.here.hasFlag(.isDryLand),
+                            Globals.here?.hasFlag(.isDryLand),
                             lb,
                             av,
                             .isNot(av.equals(.isDryLand)),
@@ -522,7 +522,7 @@ final class JigsUpTests: QuelboTests {
                         } else {
                             if .and(
                                 lb,
-                                .isNot(Globals.here.hasFlag(.isDryLand)),
+                                .isNot(Globals.here?.hasFlag(.isDryLand)),
                                 .isNot(Globals.dead),
                                 wloc.hasFlag(.isVehicle)
                             ) {
@@ -535,7 +535,7 @@ final class JigsUpTests: QuelboTests {
                             } else {
                                 Globals.winner.move(to: rm)
                             }
-                            Globals.here.set(to: rm)
+                            Globals.here?.set(to: rm)
                             Globals.lit.set(to: try isLit(rm: Globals.here))
                             if .and(
                                 .isNot(olit),
@@ -567,9 +567,9 @@ final class JigsUpTests: QuelboTests {
                                 output("You have moved into a dark place.")
                                 pCont.set(to: false)
                             }
-                            Globals.here.action(Constants.mEnter)
+                            Globals.here?.action(Constants.mEnter)
                             scoreObj(obj: rm)
-                            if .isNot(Globals.here.equals(rm)) {
+                            if .isNot(Globals.here?.equals(rm)) {
                                 return true
                             } else if .and(
                                 .isNot(Objects.adventurer.equals(Globals.winner)),
@@ -579,8 +579,8 @@ final class JigsUpTests: QuelboTests {
                                 output(Globals.winner.description)
                                 output(" leaves the room.")
                             } else if .and(
-                                Globals.here.equals(ohere),
-                                Globals.here.equals(Rooms.entranceToHades)
+                                Globals.here?.equals(ohere),
+                                Globals.here?.equals(Rooms.entranceToHades)
                             ) {
                                 return true
                             } else if .and(

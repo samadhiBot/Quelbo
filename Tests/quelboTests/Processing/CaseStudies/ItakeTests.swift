@@ -149,7 +149,7 @@ final class ItakeTests: QuelboTests {
                                 output("Your hand passes through its object.")
                             }
                             return false
-                        } else if .isNot(Globals.parsedDirectObject.hasFlag(.isTakable)) {
+                        } else if .isNot(Globals.parsedDirectObject?.hasFlag(.isTakable)) {
                             if vb {
                                 output(try pickOne(frob: Globals.yuks))
                             }
@@ -157,13 +157,13 @@ final class ItakeTests: QuelboTests {
                         } else if nullFunc() {
                             return false
                         } else if .and(
-                            Globals.parsedDirectObject.parent.hasFlag(.isContainer),
-                            .isNot(Globals.parsedDirectObject.parent.hasFlag(.isOpen))
+                            Globals.parsedDirectObject?.parent.hasFlag(.isContainer),
+                            .isNot(Globals.parsedDirectObject?.parent.hasFlag(.isOpen))
                         ) {
                             // "Kludge for parser calling itake"
                             return false
                         } else if .and(
-                            .isNot(Globals.parsedDirectObject.parent.isIn(Globals.winner)),
+                            .isNot(Globals.parsedDirectObject?.parent.isIn(Globals.winner)),
                             weight(obj: Globals.parsedDirectObject).add(weight(obj: Globals.winner)).isGreaterThan(Globals.loadAllowed)
                         ) {
                             if vb {
@@ -184,9 +184,9 @@ final class ItakeTests: QuelboTests {
                             output("You're holding too many things already!")
                             return false
                         } else {
-                            Globals.parsedDirectObject.move(to: Globals.winner)
-                            Globals.parsedDirectObject.omitDescription.set(false)
-                            Globals.parsedDirectObject.hasBeenTouched.set(true)
+                            Globals.parsedDirectObject?.move(to: Globals.winner)
+                            Globals.parsedDirectObject?.omitDescription.set(false)
+                            Globals.parsedDirectObject?.hasBeenTouched.set(true)
                             nullFunc()
                             scoreObj(obj: Globals.parsedDirectObject)
                             return true

@@ -44,7 +44,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(first.handle).\(function)(\(rest.handles(.commaSeparatedNoTrailingComma)))"
+                    "\(first.chainingID).\(function)(\(rest.handles(.commaSeparatedNoTrailingComma)))"
                 },
                 type: .bool
             )

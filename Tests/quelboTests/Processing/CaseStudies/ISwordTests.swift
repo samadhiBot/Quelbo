@@ -130,7 +130,7 @@ final class SwordTests: QuelboTests {
                                     if p.set(to: here.property(after: p)).isZero {
                                         break
                                     } else if .isNot(p.isLessThan(Constants.lowDirection)) {
-                                        t.set(to: Globals.here.property(p))
+                                        t.set(to: Globals.here?.property(p))
                                         l.set(to: t.propertySize)
                                         if l.equals(
                                             Constants.uexit,

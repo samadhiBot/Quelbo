@@ -43,7 +43,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(structure.handle).\(method)(bytes: \(bytes))"
+                    "\(structure.chainingID).\(method)(bytes: \(bytes))"
                 },
                 type: structure.type
             )

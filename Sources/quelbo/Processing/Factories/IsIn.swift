@@ -29,7 +29,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(child.handle).isIn(\(parent.handle))"
+                    "\(child.chainingID).isIn(\(parent.handle))"
                 },
                 type: .bool
             )

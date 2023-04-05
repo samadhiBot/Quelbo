@@ -119,7 +119,7 @@ final class GlobalCheckTests: QuelboTests {
                         var foo = [[Routine]]()
                         len.set(to: try tbl.get(at: Globals.pMatchlen))
                         obits.set(to: Globals.pSlocbits)
-                        if _ = rmg.set(to: Globals.here.globals) {
+                        if _ = rmg.set(to: Globals.here?.globals) {
                             rmgl.set(to: rmg.propertySize.subtract(1))
                             while true {
                                 if isThisIt(
@@ -133,7 +133,7 @@ final class GlobalCheckTests: QuelboTests {
                                 }
                             }
                         }
-                        if _ = rmg.set(to: Globals.here.things) {
+                        if _ = rmg.set(to: Globals.here?.things) {
                             rmgl.set(to: rmg.propertySize.divide(4).subtract(1))
                             cnt.set(to: 0)
                             while true {

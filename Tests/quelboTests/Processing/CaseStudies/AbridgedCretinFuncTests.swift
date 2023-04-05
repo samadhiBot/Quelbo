@@ -44,7 +44,7 @@ final class AbridgedCretinFuncTests: QuelboTests {
                     /// The `abridgedCretinFunc` (ABRIDGED-CRETIN-FCN) routine.
                     func abridgedCretinFunc() {
                         if isParsedVerb("examine") {
-                            if Globals.here.equals(
+                            if Globals.here?.equals(
                                 Objects.mirror1.parent,
                                 Objects.mirror2.parent
                             ) {

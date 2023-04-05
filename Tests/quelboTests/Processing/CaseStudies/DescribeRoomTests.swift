@@ -120,16 +120,16 @@ final class DescribeRoomTests: QuelboTests {
                             nullFunc()
                             return false
                         }
-                        if .isNot(Globals.here.hasFlag(.hasBeenTouched)) {
-                            Globals.here.hasBeenTouched.set(true)
+                        if .isNot(Globals.here?.hasFlag(.hasBeenTouched)) {
+                            Globals.here?.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
-                        if Globals.here.hasFlag(.isMaze) {
-                            Globals.here.hasBeenTouched.set(false)
+                        if Globals.here?.hasFlag(.isMaze) {
+                            Globals.here?.hasBeenTouched.set(false)
                         }
-                        if Globals.here.isIn(Objects.rooms) {
+                        if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(Globals.here.description)
+                            output(Globals.here?.description)
                             if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
@@ -139,18 +139,18 @@ final class DescribeRoomTests: QuelboTests {
                         if .or(isLook, .isNot(Globals.superBrief)) {
                             av.set(to: Globals.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(isV, Globals.here.action(Constants.mLook)) {
+                            if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: Globals.here.longDescription)
+                                str.set(to: Globals.here?.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                Globals.here.action(Constants.mFlash)
+                                Globals.here?.action(Constants.mFlash)
                             }
                             if .and(
-                                .isNot(Globals.here.equals(av)),
+                                .isNot(Globals.here?.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
                                 av.action(Constants.mLook)
@@ -191,14 +191,14 @@ final class DescribeRoomTests: QuelboTests {
                             nullFunc()
                             return false
                         }
-                        if .isNot(Globals.here.hasFlag(.hasBeenTouched)) {
-                            Globals.here.hasBeenTouched.set(true)
+                        if .isNot(Globals.here?.hasFlag(.hasBeenTouched)) {
+                            Globals.here?.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
                         nullFunc()
-                        if Globals.here.isIn(Objects.rooms) {
+                        if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(Globals.here.description)
+                            output(Globals.here?.description)
                             if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
@@ -208,22 +208,22 @@ final class DescribeRoomTests: QuelboTests {
                         if .or(
                             isLook,
                             .isNot(Globals.superBrief),
-                            Globals.here.equals(Rooms.zork3)
+                            Globals.here?.equals(Rooms.zork3)
                         ) {
                             av.set(to: Globals.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(isV, Globals.here.action(Constants.mLook)) {
+                            if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: Globals.here.longDescription)
+                                str.set(to: Globals.here?.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                Globals.here.action(Constants.mFlash)
+                                Globals.here?.action(Constants.mFlash)
                             }
                             if .and(
-                                .isNot(Globals.here.equals(av)),
+                                .isNot(Globals.here?.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
                                 av.action(Constants.mLook)
@@ -261,7 +261,7 @@ final class DescribeRoomTests: QuelboTests {
                                 output(" You are likely to be eaten by a grue.")
                             }
                             output("\n")
-                            if Globals.here.equals(Rooms.dark2) {
+                            if Globals.here?.equals(Rooms.dark2) {
                                 output("""
                                     The ground continues to slope upwards away from the lake. \
                                     You can barely detect a dim light from the east.
@@ -269,14 +269,14 @@ final class DescribeRoomTests: QuelboTests {
                             }
                             return false
                         }
-                        if .isNot(Globals.here.hasFlag(.hasBeenTouched)) {
-                            Globals.here.hasBeenTouched.set(true)
+                        if .isNot(Globals.here?.hasFlag(.hasBeenTouched)) {
+                            Globals.here?.hasBeenTouched.set(true)
                             isV.set(to: true)
                         }
                         nullFunc()
-                        if Globals.here.isIn(Objects.rooms) {
+                        if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
-                            output(Globals.here.description)
+                            output(Globals.here?.description)
                             if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
@@ -286,18 +286,18 @@ final class DescribeRoomTests: QuelboTests {
                         if .or(isLook, .isNot(Globals.superBrief)) {
                             av.set(to: Globals.winner.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
-                            if _ = .and(isV, Globals.here.action(Constants.mLook)) {
+                            if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true
                             } else if _ = .and(
                                 isV,
-                                str.set(to: Globals.here.longDescription)
+                                str.set(to: Globals.here?.longDescription)
                             ) {
                                 output(str)
                             } else {
-                                Globals.here.action(Constants.mFlash)
+                                Globals.here?.action(Constants.mFlash)
                             }
                             if .and(
-                                .isNot(Globals.here.equals(av)),
+                                .isNot(Globals.here?.equals(av)),
                                 av.hasFlag(.isVehicle)
                             ) {
                                 av.action(Constants.mLook)

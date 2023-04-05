@@ -33,7 +33,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.handle).\(property.handle) = \(value.handle)"
+                    "\(object.chainingID).\(property.handle) = \(value.handle)"
                 },
                 type: .void,
                 returnHandling: .suppressed

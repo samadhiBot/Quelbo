@@ -502,7 +502,7 @@ final class VillainBlowTests: QuelboTests {
                             }
                             if _ = .and(
                                 .object(Globals.parsedIndirectObject),
-                                Globals.parsedIndirectObject.hasFlag(.isWeapon),
+                                Globals.parsedIndirectObject?.hasFlag(.isWeapon),
                                 try oo.get(at: Constants.vBest).equals(Globals.parsedIndirectObject)
                             ) {
                                 tmp.set(to: od.subtract(try oo.get(at: Constants.vBestAdv)))

@@ -115,8 +115,8 @@ final class DeadFunctionTests: QuelboTests {
                         // var m: <Unknown>
                         if isParsedVerb("walk") {
                             if .and(
-                                Globals.here.equals(Rooms.timberRoom),
-                                Globals.parsedDirectObject.equals(west)
+                                Globals.here?.equals(Rooms.timberRoom),
+                                Globals.parsedDirectObject?.equals(west)
                             ) {
                                 output("You cannot enter in your condition.")
                             }
@@ -161,13 +161,13 @@ final class DeadFunctionTests: QuelboTests {
                             output("You are dead.")
                         } else if isParsedVerb("look") {
                             output("The room looks strange and unearthly")
-                            if .isNot(Globals.here.firstChild) {
+                            if .isNot(Globals.here?.firstChild) {
                                 output(".")
                             } else {
                                 output(" and objects appear indistinct.")
                             }
                             output("\n")
-                            if .isNot(Globals.here.hasFlag(.isOn)) {
+                            if .isNot(Globals.here?.hasFlag(.isOn)) {
                                 output("""
                                     Although there is no light, the room seems dimly \
                                     illuminated.
@@ -176,7 +176,7 @@ final class DeadFunctionTests: QuelboTests {
                             output("\n")
                             return false
                         } else if isParsedVerb("pray") {
-                            if Globals.here.equals(Rooms.southTemple) {
+                            if Globals.here?.equals(Rooms.southTemple) {
                                 Objects.lamp.isInvisible.set(false)
                                 Globals.winner.action = 0
                                 // <SETG GWIM-DISABLE false>

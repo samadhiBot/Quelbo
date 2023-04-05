@@ -28,7 +28,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(value.handle).isOne"
+                    "\(value.chainingID).isOne"
                 },
                 type: .bool
             )

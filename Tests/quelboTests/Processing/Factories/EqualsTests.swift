@@ -100,6 +100,34 @@ final class EqualsTests: QuelboTests {
         ))
     }
 
+    func testEqualOptionalNonOptional() throws {
+        process("<CONSTANT EXPAND-PRONOUN-FAILED -1>")
+
+        let symbol = process(
+            "<=? ,PRSO ,EXPAND-PRONOUN-FAILED>",
+            type: .zCode
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "Globals.parsedDirectObject?.equals(Constants.expandPronounFailed)",
+            type: .bool
+        ))
+    }
+
+    func testEqualNonOptionalOptional() throws {
+        process("<CONSTANT EXPAND-PRONOUN-FAILED -1>")
+
+        let symbol = process(
+            "<=? ,EXPAND-PRONOUN-FAILED ,PRSO>",
+            type: .zCode
+        )
+
+        XCTAssertNoDifference(symbol, .statement(
+            code: "Constants.expandPronounFailed.equals(Globals.parsedDirectObject)",
+            type: .bool
+        ))
+    }
+
     func testEqualOneArgument() throws {
         XCTAssertThrowsError(
             try factory.init([

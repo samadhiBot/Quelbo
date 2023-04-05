@@ -57,7 +57,7 @@ extension Factories {
             return .statement(
                 code: { _ in
                     """
-                    \(firstArg.handle).\
+                    \(firstArg.chainingID).\
                     \(function)\
                     (\(arguments.handles(.commaSeparatedNoTrailingComma)))
                     """

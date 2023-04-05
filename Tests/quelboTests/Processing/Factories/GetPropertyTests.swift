@@ -53,7 +53,7 @@ final class GetPropertyTests: QuelboTests {
         )
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Globals.here.property(dir)",
+            code: "Globals.here?.property(dir)",
             type: .unknown.property
         ))
     }

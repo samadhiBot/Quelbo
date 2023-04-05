@@ -38,7 +38,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(variable.handle).set(to: \(value.handle))"
+                    "\(variable.chainingID).set(to: \(value.handle))"
                 },
                 type: value.type
             )

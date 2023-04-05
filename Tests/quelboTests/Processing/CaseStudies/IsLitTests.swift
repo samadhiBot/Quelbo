@@ -73,7 +73,7 @@ final class IsLitTests: QuelboTests {
                         }
                         Globals.pGwimBit.set(to: .isOn)
                         ohere.set(to: Globals.here)
-                        Globals.here.set(to: rm)
+                        Globals.here?.set(to: rm)
                         if .and(rmBit, rm.hasFlag(.isOn)) {
                             lit.set(to: true)
                         } else {
@@ -97,7 +97,7 @@ final class IsLitTests: QuelboTests {
                                 lit.set(to: true)
                             }
                         }
-                        Globals.here.set(to: ohere)
+                        Globals.here?.set(to: ohere)
                         Globals.pGwimBit.set(to: false)
                         return lit
                     }

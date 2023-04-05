@@ -40,7 +40,7 @@ final class DescribeObjectsTests: QuelboTests {
                     func describeObjects(isV: Bool = false) throws {
                         var isV = false
                         if Globals.lit {
-                            if _ = Globals.here.firstChild {
+                            if _ = Globals.here?.firstChild {
                                 try printCont(
                                     obj: Globals.here,
                                     isV: isV.set(to: .or(isV, Globals.verbose)),

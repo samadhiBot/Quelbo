@@ -273,9 +273,9 @@ final class ConditionTests: QuelboTests {
         XCTAssertNoDifference(symbol, .statement(
             code: """
                 if .or(
-                    Globals.parsedIndirectObject.hasFlag(.openBit),
+                    Globals.parsedIndirectObject?.hasFlag(.openBit),
                     isOpenable(),
-                    Globals.parsedIndirectObject.hasFlag(.vehBit)
+                    Globals.parsedIndirectObject?.hasFlag(.vehBit)
                 ) {
                     // do nothing
                 } else {

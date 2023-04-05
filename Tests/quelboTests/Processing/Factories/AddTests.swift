@@ -198,7 +198,7 @@ final class AddTests: QuelboTests {
         XCTAssertNoDifference(
             process("<+ P-ACLAUSE 1>"),
             .statement(
-                code: "Globals.pAclause.add(1)",
+                code: "Globals.pAclause?.add(1)",
                 type: .int,
                 returnHandling: .implicit
             )

@@ -31,7 +31,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(property.handle).propertySize"
+                    "\(property.chainingID).propertySize"
                 },
                 type: .int
             )

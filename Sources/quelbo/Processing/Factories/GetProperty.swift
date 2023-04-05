@@ -48,9 +48,9 @@ extension Factories {
             return .statement(
                 code: { _ in
                     if isDirectProperty {
-                        return "\(object.handle).\(property.code)"
+                        return "\(object.chainingID).\(property.code)"
                     } else {
-                        return "\(object.handle).property(\(property.code))"
+                        return "\(object.chainingID).property(\(property.code))"
                     }
                 },
                 type: type,

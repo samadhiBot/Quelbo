@@ -103,6 +103,15 @@ extension Symbol {
     }
 
     /// Returns the global ID of the symbol if it's an instance; otherwise, returns the handle.
+    var chainingID: String {
+        guard case .instance(let instance) = self else {
+            return handle
+        }
+        let optional = instance.isOptional == true ? "?" : ""
+        return "\(instance.globalID)\(optional)"
+    }
+
+    /// Returns the global ID of the symbol if it's an instance; otherwise, returns the handle.
     var globalID: String {
         guard case .instance(let instance) = self else {
             return handle

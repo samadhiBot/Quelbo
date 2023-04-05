@@ -648,7 +648,7 @@ final class ParserTests: QuelboTests {
                             Globals.winner.isNotEqualTo(Globals.player)
                         ) {
                             Globals.winner.set(to: Globals.player)
-                            Globals.here.set(to: metaLoc(obj: Globals.player))
+                            Globals.here?.set(to: metaLoc(obj: Globals.player))
                             // <COND (<NOT <FSET? <LOC ,WINNER> ,VEHBIT>> <SETG HERE <LOC ,WINNER>>)>
                             Globals.lit.set(to: try isLit(rm: Globals.here))
                         }
@@ -680,7 +680,7 @@ final class ParserTests: QuelboTests {
                             Globals.winner.set(to: Globals.player)
                             Globals.quoteFlag.set(to: false)
                             if .isNot(Globals.winner.parent.hasFlag(.isVehicle)) {
-                                Globals.here.set(to: Globals.winner.parent)
+                                Globals.here?.set(to: Globals.winner.parent)
                             }
                             Globals.lit.set(to: try isLit(rm: Globals.here))
                             if .isNot(Globals.superBrief) {
@@ -1065,7 +1065,7 @@ final class ParserTests: QuelboTests {
                         )
                         if let dir {
                             Globals.parsedVerb.set(to: Verb.walk)
-                            Globals.parsedDirectObject.set(to: dir)
+                            Globals.parsedDirectObject?.set(to: dir)
                             Globals.pOflag.set(to: false)
                             pWalkDir.set(to: dir)
                             Globals.againDir.set(to: dir)

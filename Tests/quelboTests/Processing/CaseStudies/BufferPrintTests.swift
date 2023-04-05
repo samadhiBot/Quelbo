@@ -149,7 +149,7 @@ final class BufferPrintTests: QuelboTests {
                                         wrd.equals(Word.it),
                                         isAccessible(obj: Globals.pItObject)
                                     ) {
-                                        output(Globals.pItObject.description)
+                                        output(Globals.pItObject?.description)
                                     } else {
                                         wordPrint(
                                             cnt: try beg.get(at: 2),

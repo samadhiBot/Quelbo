@@ -28,7 +28,7 @@ extension Factories {
 
             return .statement(
                 code: { _ in
-                    "\(object.handle).firstChild"
+                    "\(object.chainingID).firstChild"
                 },
                 type: .object
             )

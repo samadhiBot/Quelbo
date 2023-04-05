@@ -325,14 +325,14 @@ final class PerformTests: QuelboTests {
                             i.set(to: Globals.pItObject)
                         }
                         Globals.parsedVerb.set(to: a)
-                        Globals.parsedDirectObject.set(to: o)
+                        Globals.parsedDirectObject?.set(to: o)
                         if _ = .and(
                             .object(Globals.parsedDirectObject),
                             .isNot(isParsedVerb("walk"))
                         ) {
-                            Globals.pItObject.set(to: Globals.parsedDirectObject)
+                            Globals.pItObject?.set(to: Globals.parsedDirectObject)
                         }
-                        Globals.parsedIndirectObject.set(to: i)
+                        Globals.parsedIndirectObject?.set(to: i)
                         if _ = .and(
                             Objects.notHereObject.equals(
                                 Globals.parsedDirectObject,
@@ -395,8 +395,8 @@ final class PerformTests: QuelboTests {
                             }
                         }
                         Globals.parsedVerb.set(to: oa)
-                        Globals.parsedDirectObject.set(to: oo)
-                        Globals.parsedIndirectObject.set(to: oi)
+                        Globals.parsedDirectObject?.set(to: oo)
+                        Globals.parsedIndirectObject?.set(to: oi)
                         return v
                     }
                     """#,
