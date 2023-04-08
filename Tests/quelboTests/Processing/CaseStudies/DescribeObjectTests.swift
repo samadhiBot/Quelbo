@@ -260,7 +260,7 @@ final class DescribeObjectTests: QuelboTests {
                         nullFunc()
                         if .and(
                             level.isZero,
-                            .object(av.set(to: Globals.winner.parent)),
+                            .object(av.set(to: Globals.winner?.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -344,7 +344,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         if .and(
                             level.isZero,
-                            .object(av.set(to: Globals.winner.parent)),
+                            .object(av.set(to: Globals.winner?.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             output(" (outside the ")
@@ -396,7 +396,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            .object(av.set(to: Globals.winner.parent)),
+                            .object(av.set(to: Globals.winner?.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -405,7 +405,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if Globals.winner.equals(obj, obj.parent) {
+                        if Globals.winner?.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {
@@ -527,7 +527,7 @@ final class DescribeObjectTests: QuelboTests {
                             return true
                         }
                         if _ = .and(
-                            .object(av.set(to: Globals.winner.parent)),
+                            .object(av.set(to: Globals.winner?.parent)),
                             av.hasFlag(.isVehicle)
                         ) {
                             return true
@@ -536,7 +536,7 @@ final class DescribeObjectTests: QuelboTests {
                         }
                         is1St.set(to: true)
                         shit.set(to: true)
-                        if Globals.winner.equals(obj, obj.parent) {
+                        if Globals.winner?.equals(obj, obj.parent) {
                             isInv.set(to: true)
                         } else {
                             while true {

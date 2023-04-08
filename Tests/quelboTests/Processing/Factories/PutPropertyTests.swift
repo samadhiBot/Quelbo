@@ -47,7 +47,7 @@ final class PutPropertyTests: QuelboTests {
         ], with: &localVariables).process()
 
         XCTAssertNoDifference(symbol, .statement(
-            code: "Globals.winner.action = 0",
+            code: "Globals.winner?.action = 0",
             type: .void,
             returnHandling: .suppressed
         ))

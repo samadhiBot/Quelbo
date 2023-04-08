@@ -67,7 +67,7 @@ final class IsLitTests: QuelboTests {
                         var lit = false
                         if .and(
                             Globals.alwaysLit,
-                            Globals.winner.equals(Globals.player)
+                            Globals.winner?.equals(Globals.player)
                         ) {
                             return true
                         }
@@ -86,7 +86,7 @@ final class IsLitTests: QuelboTests {
                             if ohere.equals(rm) {
                                 try doSl(obj: Globals.winner, bit1: 1, bit2: 1)
                                 if .and(
-                                    .isNot(Globals.winner.equals(Globals.player)),
+                                    .isNot(Globals.winner?.equals(Globals.player)),
                                     Globals.player.isIn(rm)
                                 ) {
                                     try doSl(obj: Globals.player, bit1: 1, bit2: 1)

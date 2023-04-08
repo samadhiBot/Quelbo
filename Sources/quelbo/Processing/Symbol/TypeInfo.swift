@@ -419,7 +419,7 @@ extension TypeInfo {
         _ handle: @autoclosure () -> String,
         with asserted: TypeInfo
     ) throws -> TypeInfo {
-        let logValuesToConsole = false
+        let logValuesToConsole = true
 
         let initialType = dataType?.description ?? "nil"
         let assertedType = asserted.dataType?.description ?? "nil"
@@ -427,14 +427,15 @@ extension TypeInfo {
         func logged(_ typeInfo: TypeInfo) -> TypeInfo {
             guard logValuesToConsole && NSClassFromString("XCTest") != nil else { return typeInfo }
 
-            let identifier = handle()
-                .replacingOccurrences(of: "\n", with: "")
-                .replacingOccurrences(of: "    ", with: " ")
+            let identifier = handle().replacing(/\n\s+/, with: "")
+            let msg = """
+                \t􀄢\(identifier): \
+                \(initialType) 􁝮 \(assertedType) 􁉂 \
+                \(typeInfo.debugDescription)
+                """
+            print(msg)
 
-            print(
-                "\t􀄢\(identifier): \(initialType) 􁝮 \(assertedType) 􁉂 \(typeInfo.debugDescription)"
-            )
-
+            // Breakpoint condition: msg.contains(<#T##regex: RegexComponent##RegexComponent#>)
             return typeInfo
         }
 

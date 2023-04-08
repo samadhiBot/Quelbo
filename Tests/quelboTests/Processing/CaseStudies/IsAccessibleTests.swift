@@ -91,12 +91,12 @@ final class IsAccessibleTests: QuelboTests {
                             isGlobalIn(obj1: obj, obj2: Globals.here)
                         ) {
                             return true
-                        } else if .isNot(metaLoc(obj: obj).equals(Globals.here, Globals.winner.parent)) {
+                        } else if .isNot(metaLoc(obj: obj).equals(Globals.here, Globals.winner?.parent)) {
                             return false
                         } else if l.equals(
                             Globals.winner,
                             Globals.here,
-                            Globals.winner.parent
+                            Globals.winner?.parent
                         ) {
                             return true
                         } else if .and(l.hasFlag(.isOpen), isAccessible(obj: l)) {

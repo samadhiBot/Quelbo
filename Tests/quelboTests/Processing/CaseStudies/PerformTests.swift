@@ -350,12 +350,12 @@ final class PerformTests: QuelboTests {
                             if _ = v.set(to: ddApply(
                                 str: "Actor",
                                 obj: Globals.winner,
-                                func: Globals.winner.action
+                                func: Globals.winner?.action
                             )) {
                                 return v
                             } else if _ = v.set(to: dApply(
                                 str: "Room (M-BEG)",
-                                func: Globals.winner.parent.action,
+                                func: Globals.winner?.parent.action,
                                 foo: Constants.mBeg
                             )) {
                                 return v

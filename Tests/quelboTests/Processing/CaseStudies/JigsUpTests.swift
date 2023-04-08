@@ -331,7 +331,7 @@ final class JigsUpTests: QuelboTests {
                             Objects.coffin.move(to: Rooms.egyptRoom)
                         }
                         Objects.sword.takeValue = 0
-                        n.set(to: Globals.winner.firstChild)
+                        n.set(to: Globals.winner?.firstChild)
                         l.set(to: try Globals.aboveGround.get(at: 0))
                         while true {
                             f.set(to: n)
@@ -492,7 +492,7 @@ final class JigsUpTests: QuelboTests {
                     /// The `goto` (GOTO) routine.
                     func goto(rm: Object, isV: Bool = true) throws -> Bool {
                         var lb = rm.hasFlag(.isDryLand)
-                        var wloc = Globals.winner.parent
+                        var wloc = Globals.winner?.parent
                         var av = false
                         var olit = false
                         var ohere: Object?
@@ -533,7 +533,7 @@ final class JigsUpTests: QuelboTests {
                             if av {
                                 wloc.move(to: rm)
                             } else {
-                                Globals.winner.move(to: rm)
+                                Globals.winner?.move(to: rm)
                             }
                             Globals.here?.set(to: rm)
                             Globals.lit.set(to: try isLit(rm: Globals.here))
@@ -551,8 +551,8 @@ final class JigsUpTests: QuelboTests {
                                     return false
                                 } else {
                                     output("Oh, no! A lurking grue slithered into the ")
-                                    if Globals.winner.parent.hasFlag(.isVehicle) {
-                                        output(Globals.winner.parent.description)
+                                    if Globals.winner?.parent.hasFlag(.isVehicle) {
+                                        output(Globals.winner?.parent.description)
                                     } else {
                                         output("room")
                                     }
@@ -562,7 +562,7 @@ final class JigsUpTests: QuelboTests {
                             }
                             if .and(
                                 .isNot(Globals.lit),
-                                Globals.winner.equals(Objects.adventurer)
+                                Globals.winner?.equals(Objects.adventurer)
                             ) {
                                 output("You have moved into a dark place.")
                                 pCont.set(to: false)
@@ -576,7 +576,7 @@ final class JigsUpTests: QuelboTests {
                                 Objects.adventurer.isIn(ohere)
                             ) {
                                 output("The ")
-                                output(Globals.winner.description)
+                                output(Globals.winner?.description)
                                 output(" leaves the room.")
                             } else if .and(
                                 Globals.here?.equals(ohere),
@@ -585,7 +585,7 @@ final class JigsUpTests: QuelboTests {
                                 return true
                             } else if .and(
                                 isV,
-                                Globals.winner.equals(Objects.adventurer)
+                                Globals.winner?.equals(Objects.adventurer)
                             ) {
                                 try vFirstLook()
                             }
@@ -610,7 +610,7 @@ final class JigsUpTests: QuelboTests {
                 code: #"""
                     /// The `jigsUp` (JIGS-UP) routine.
                     func jigsUp(desc: String, isPlayer: Bool = false) throws {
-                        Globals.winner.set(to: Objects.adventurer)
+                        Globals.winner?.set(to: Objects.adventurer)
                         if Globals.dead {
                             output("""
 
@@ -632,8 +632,8 @@ final class JigsUpTests: QuelboTests {
 
 
                                 """)
-                            if Globals.winner.parent.hasFlag(.isVehicle) {
-                                Globals.winner.move(to: Globals.here)
+                            if Globals.winner?.parent.hasFlag(.isVehicle) {
+                                Globals.winner?.move(to: Globals.here)
                             }
                             if .isNot(Globals.deaths.isLessThan(2)) {
                                 output("""
@@ -645,7 +645,7 @@ final class JigsUpTests: QuelboTests {
                                 finish()
                             } else {
                                 Globals.deaths.set(to: Globals.deaths.add(1))
-                                Globals.winner.move(to: Globals.here)
+                                Globals.winner?.move(to: Globals.here)
                                 if Rooms.southTemple.hasFlag(.hasBeenTouched) {
                                     output("""
                                         As you take your last breath, you feel relieved of your \
@@ -658,7 +658,7 @@ final class JigsUpTests: QuelboTests {
                                     Globals.trollFlag.set(to: true)
                                     // <SETG GWIM-DISABLE T>
                                     Globals.alwaysLit.set(to: true)
-                                    Globals.winner.action = deadFunc
+                                    Globals.winner?.action = deadFunc
                                     try goto(rm: Rooms.entranceToHades)
                                 } else {
                                     output("""

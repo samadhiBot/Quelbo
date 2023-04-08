@@ -130,14 +130,14 @@ final class DescribeRoomTests: QuelboTests {
                         if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(Globals.here?.description)
-                            if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
+                            if av.set(to: Globals.winner?.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
                             output("\n")
                         }
                         if .or(isLook, .isNot(Globals.superBrief)) {
-                            av.set(to: Globals.winner.parent)
+                            av.set(to: Globals.winner?.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
                             if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true
@@ -199,7 +199,7 @@ final class DescribeRoomTests: QuelboTests {
                         if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(Globals.here?.description)
-                            if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
+                            if av.set(to: Globals.winner?.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
@@ -210,7 +210,7 @@ final class DescribeRoomTests: QuelboTests {
                             .isNot(Globals.superBrief),
                             Globals.here?.equals(Rooms.zork3)
                         ) {
-                            av.set(to: Globals.winner.parent)
+                            av.set(to: Globals.winner?.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
                             if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true
@@ -277,14 +277,14 @@ final class DescribeRoomTests: QuelboTests {
                         if Globals.here?.isIn(Objects.rooms) {
                             // "Was <TELL D ,HERE CR>"
                             output(Globals.here?.description)
-                            if av.set(to: Globals.winner.parent).hasFlag(.isVehicle) {
+                            if av.set(to: Globals.winner?.parent).hasFlag(.isVehicle) {
                                 output(", in the ")
                                 output(av.description)
                             }
                             output("\n")
                         }
                         if .or(isLook, .isNot(Globals.superBrief)) {
-                            av.set(to: Globals.winner.parent)
+                            av.set(to: Globals.winner?.parent)
                             // <COND (<FSET? .AV ,VEHBIT> <TELL "(You are in the " D .AV ".)" CR>)>
                             if _ = .and(isV, Globals.here?.action(Constants.mLook)) {
                                 return true

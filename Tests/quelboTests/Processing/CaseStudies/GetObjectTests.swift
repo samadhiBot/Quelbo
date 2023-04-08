@@ -281,7 +281,7 @@ final class GetObjectTests: QuelboTests {
                                     if len.isZero {
                                         len.set(to: olen)
                                     }
-                                    if .isNot(Globals.winner.equals(Globals.player)) {
+                                    if .isNot(Globals.winner?.equals(Globals.player)) {
                                         cantOrphan()
                                         return false
                                     } else if _ = .and(vrb, Globals.pNam) {

@@ -161,13 +161,13 @@ final class NotHereTests: QuelboTests {
                         // "Here is the default 'cant see any' printer"
                         pCont.set(to: false)
                         quoteFlag.set(to: false)
-                        if Globals.winner.equals(Globals.player) {
+                        if Globals.winner?.equals(Globals.player) {
                             output("You can't see any ")
                             try notHerePrint(isPrso: isPrso)
                             output(" here!")
                         } else {
                             output("The ")
-                            output(Globals.winner.description)
+                            output(Globals.winner?.description)
                             output(" seems confused. \"I don't see any ")
                             try notHerePrint(isPrso: isPrso)
                             output(" here!\"")

@@ -24,13 +24,12 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let string = symbols[0]
-
-            return .statement(
-                code: { _ in
-                    "output(\(string.chainingID).description)"
+            .statement(
+                code: {
+                    "output(\($0.payload.symbols[0].chainingID).description)"
                 },
-                type: .void
+                type: .void,
+                payload: .init(symbols: symbols)
             )
         }
     }

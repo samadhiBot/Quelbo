@@ -645,9 +645,9 @@ final class ParserTests: QuelboTests {
                         )
                         if .and(
                             .isNot(Globals.quoteFlag),
-                            Globals.winner.isNotEqualTo(Globals.player)
+                            Globals.winner?.isNotEqualTo(Globals.player)
                         ) {
-                            Globals.winner.set(to: Globals.player)
+                            Globals.winner?.set(to: Globals.player)
                             Globals.here?.set(to: metaLoc(obj: Globals.player))
                             // <COND (<NOT <FSET? <LOC ,WINNER> ,VEHBIT>> <SETG HERE <LOC ,WINNER>>)>
                             Globals.lit.set(to: try isLit(rm: Globals.here))
@@ -677,10 +677,10 @@ final class ParserTests: QuelboTests {
                             }
                             Globals.pCont.set(to: 0)
                         } else {
-                            Globals.winner.set(to: Globals.player)
+                            Globals.winner?.set(to: Globals.player)
                             Globals.quoteFlag.set(to: false)
-                            if .isNot(Globals.winner.parent.hasFlag(.isVehicle)) {
-                                Globals.here?.set(to: Globals.winner.parent)
+                            if .isNot(Globals.winner?.parent.hasFlag(.isVehicle)) {
+                                Globals.here?.set(to: Globals.winner?.parent)
                             }
                             Globals.lit.set(to: try isLit(rm: Globals.here))
                             if .isNot(Globals.superBrief) {
@@ -716,7 +716,7 @@ final class ParserTests: QuelboTests {
                                     element: try Globals.pLexv.get(at: ptr.add(Constants.pLexelen)),
                                     at: try Globals.oopsTable.get(at: Constants.oPtr)
                                 )
-                                Globals.winner.set(to: owinner)
+                                Globals.winner?.set(to: owinner)
                                 // "maybe fix oops vs. chars.?"
                                 try inbufAdd(
                                     len: try Globals.pLexv.get(at: ptr.multiply(Constants.pLexelen).add(6)),
@@ -791,7 +791,7 @@ final class ParserTests: QuelboTests {
                                 Globals.reservePtr.set(to: 0)
                             }
                             // <SETG P-LEN <GETB ,AGAIN-LEXV ,P-LEXWORDS>>
-                            Globals.winner.set(to: owinner)
+                            Globals.winner?.set(to: owinner)
                             Globals.pMerged.set(to: omerged)
                             try inbufStuff(
                                 src: Globals.oopsInbuf,
@@ -1040,7 +1040,7 @@ final class ParserTests: QuelboTests {
                                             bit: PartsOfSpeech.verb,
                                             b1: PartsOfSpeech.verbFirst
                                         ),
-                                        Globals.winner.equals(Globals.player)
+                                        Globals.winner?.equals(Globals.player)
                                     ) {
                                         output("""
                                             Please consult your manual for the correct way to talk to \

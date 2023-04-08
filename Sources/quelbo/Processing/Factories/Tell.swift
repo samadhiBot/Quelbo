@@ -71,11 +71,9 @@ extension Factories {
         }
 
         override func process() throws -> Symbol {
-            let prints = symbols
-
             return .statement(
-                code: { _ in
-                    prints.codeValues(.singleLineBreak)
+                code: {
+                    $0.payload.symbols.codeValues(.singleLineBreak)
                 },
                 type: .void,
                 payload: .init(symbols: symbols)
